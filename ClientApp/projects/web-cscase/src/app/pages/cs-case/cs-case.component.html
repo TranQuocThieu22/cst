@@ -1,0 +1,353 @@
+<div class="card pb-2">
+  <ngx-spinner name="spinner" [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+  <div class="card-body p-0 m-0">
+    <div class="py-1">
+      <h3
+        [ngClass]="(isadmin || isadministrator) ? 'text-center align-middle my-1 clickable' : 'text-center align-middle my-1'"
+        *ngIf="currentUser" (dblclick)="checkState()">
+        {{currentUser.tenTruong}}
+      </h3>
+    </div>
+
+    <ng-container *ngIf="!isadministrator">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-3 col-md-12 my-1 px-1">
+            <ng-select [items]="cbMaTruong" [(ngModel)]="selectmatruong" bindLabel="matruong" bindValue="matruong"
+              [disabled]="disabled" [multiple]="true" [trackByFn]="trackByFn" [searchFn]="customSearchFn"
+              [placeholder]="'All trường'" [selectableGroup]="true" [closeOnSelect]="false"
+              (change)="changeTruong($event)">
+              <!-- <ng-template ng-option-tmp let-item="item">
+                {{item.matruong}} <br />
+                <small class="font-italic" style="white-space: normal">{{item.tentruong}}</small>
+              </ng-template> -->
+
+              <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" />
+                {{item.matruong}} <br />
+                <small class="font-italic" style="white-space: normal">{{item.tentruong}}</small>
+              </ng-template>
+            </ng-select>
+          </div>
+
+
+          <div class="col-lg-2 col-md-12 my-1 px-1">
+            <ng-select [items]="cbState" [(ngModel)]="selectrangthai" bindLabel="trangthai" bindValue="trangthai"
+              [multiple]="true" [trackByFn]="trackByFn" [placeholder]="'All trạng thái'" [selectOnTab]="true"
+              [clearable]="true" [selectableGroup]="true" [closeOnSelect]="false" (change)="changState($event)">
+              <!-- <ng-template ng-option-tmp let-item="item">
+                <small style="white-space: normal">{{item.trangthai}}</small>
+              </ng-template> -->
+
+              <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" />
+                <small class="ml-1">{{item.trangthai}}</small>
+              </ng-template>
+
+            </ng-select>
+          </div>
+
+          <div class="col-lg-2 col-md-12 my-1 px-1">
+            <ng-select [items]="cbloaicase" [(ngModel)]="selectloaicase" bindLabel="loaicase" bindValue="loaicase"
+              [multiple]="true" [trackByFn]="trackByFn" [placeholder]="'All loại case'" [selectOnTab]="false"
+              [clearable]="true" [selectableGroup]="true" [closeOnSelect]="false" (change)="changLoaiCase($event)">
+              <!-- <ng-template ng-option-tmp let-item="item">
+                <small style="white-space: normal">{{item.loaicase}}</small>
+              </ng-template> -->
+
+              <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" />
+                <small class="ml-1">{{item.loaicase}}</small>
+              </ng-template>
+            </ng-select>
+          </div>
+
+          <div class="col-lg-1 col-md-12 my-1 px-1">
+            <ng-select [items]="cbphanhe" [(ngModel)]="selectphanhe" bindLabel="phanhe" bindValue="phanhe"
+              [multiple]="true" [trackByFn]="trackByFn" [placeholder]="'All phân hệ'" [selectOnTab]="false"
+              [clearable]="true" [selectableGroup]="true" [closeOnSelect]="false" (change)="changPhanHe($event)">
+              <!-- <ng-template ng-option-tmp let-item="item">
+                <small class="ml-1">{{item.phanhe}}</small>
+              </ng-template> -->
+              <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" />
+                <small class="ml-1">{{item.phanhe}}</small>
+              </ng-template>
+            </ng-select>
+          </div>
+
+          <div class="col-lg-3 col-md-12 my-1 px-1">
+            <div class="input-group">
+              <input class="form-control" placeholder="Tìm mã Case hoặc yêu cầu" type="text" [(ngModel)]="searchText"
+                (keyup.enter)="doSearch()" (input)="ChangeSearch($event.target.value)" />
+              <div class="input-group-append">
+                <button class="btn btn-outline-primary" type="button" (click)="doSearch()">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="this.dataCsCase_Filter && this.dataCsCase_Filter.length>0">
+            <div class="col-lg-1 col-md-12 my-1 px-1">
+              <div class="d-flex justify-content-center justify-content-lg-end">
+                <button class="btn btn-outline-primary text-nowrap mr-1" [disabled]="!this.dataCsCase_Filter"
+                  (click)="Print()">In</button>
+
+                <button *ngIf="isadmin" class="btn btn-outline-primary text-nowrap" [disabled]="!this.dataCsCase_Filter"
+                  (click)="exportexcel()">Xuất</button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div *ngIf="ismess" class="alert alert-danger my-2" role="alert">{{ismess}}</div>
+
+      <ng-container *ngIf="dataCsCase_Filter">
+        <div id="printArea">
+          <table id="excel-table"
+            class="table table-sm table-responsive-sm table-hover table-bordered table-sticky-header my-0 py-0">
+            <thead>
+              <tr class="bg-primary text-white text-center">
+                <th style="width: 1%" class="align-middle">STT</th>
+                <th style="width: 5%" class="align-middle cusmacase clickable" [class.active]="orderby==='macase'"
+                  (click)="setOrder('macase')">Mã case
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <ng-container *ngIf="isadmin">
+                  <th style="width: 5%" class="align-middle cusmatruong clickable" [class.active]="orderby==='matruong'"
+                    (click)="setOrder('matruong')">Mã trường
+                    <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                    <span [hidden]="reverseOrderby" class="icon-down"></span>
+                  </th>
+                </ng-container>
+
+                <th style="width: 6%" class="align-middle cusngaynhan clickable" [class.active]="orderby==='ngaynhan'"
+                  (click)="setOrder('ngaynhan')">Ngày nhận yêu cầu
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <th class="align-middle cusyeucau">Yêu cầu</th>
+
+                <th style="width: 6%" class="align-middle cus100 clickable" [class.active]="orderby==='trangthai'"
+                  (click)="setOrder('trangthai')">Trạng thái
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <th style="width: 12%" class="align-middle cus150 clickable" [class.active]="orderby==='loaicase'"
+                  (click)="setOrder('loaicase')">Loại Case
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <th style="width: 5%" class="align-middle cus100 clickable " [class.active]="orderby==='phanhe'"
+                  (click)="setOrder('phanhe')">Phân hệ
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <th style="width: 8%" class="align-middle cus100 clickable cus120"
+                  [class.active]="orderby==='loaihopdong'" (click)="setOrder('loaihopdong')">
+                  Loại hợp đồng
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+                <th style="width: 9%" class="align-middle clickable cus150" [class.active]="orderby==='mucdo'"
+                  (click)="setOrder('mucdo')">
+                  Mức độ
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <!-- <th style="width: 6%" class="align-middle cus100 clickable" [class.active]="orderby==='hieuluc'"
+                  (click)="setOrder('hieuluc')">Hiệu lực Release
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th> -->
+                <th style="width: 6%" class="align-middle cus100 clickable" [class.active]="orderby==='ngaydukien'"
+                  (click)="setOrder('ngaydukien')">Ngày bàn giao (dự kiến)
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <th style="width: 4%" class="align-middle cusdbg clickable" [class.active]="orderby==='dabangiao'"
+                  (click)="setOrder('dabangiao')">Đã bàn giao
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <th style="width: 5%" class="align-middle cus100 clickable" [class.active]="orderby==='ngayemail'"
+                  (click)="setOrder('ngayemail')">Ngày gửi mail
+                  <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                  <span [hidden]="reverseOrderby" class="icon-down"></span>
+                </th>
+
+                <th style="width: 5%" class="align-middle align-top text-center clickable" (click)="HideMail()">
+                  <div *ngIf="isHideMail">
+                    <i class="fa-regular fa-square fa-beat fa-lg" style="color: #f33a3a;"></i>
+                    <p class="my-0">Hiện Mail</p>
+                  </div>
+
+                  <div *ngIf="!isHideMail"><i class="fa-regular fa-square fa-beat fa-lg" style="color: #f33a3a;"></i>
+                    <p class="my-0">Ẩn Mail</p>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr *ngIf="dataCsCase_Filter.length<=0">
+                <td colspan=100% class="table-secondary font-italic text-muted text-center align-middle">
+                  Không tìm thấy dữ liệu</td>
+              </tr>
+
+              <ng-container
+                *ngIf="dataCsCase_Filter.length>0 && dataCsCase_Filter[0].macase && dataCsCase_Filter[0].matruong">
+                <tr *ngFor="let dt of dataCsCase_Filter; trackBy: trackByFn; let i= index">
+
+                  <ng-container *ngIf="currentPage===1">
+                    <td class="align-middle text-center">{{i+1}}</td>
+                  </ng-container>
+
+                  <ng-container *ngIf="currentPage>1">
+                    <td class="align-middle text-center">{{((currentPage-1)*100)+(i+1)}}</td>
+                  </ng-container>
+
+                  <td class="align-middle text-center font-weight-bold" [innerHTML]="dt.macase | highlight: searchText">
+                  </td>
+
+                  <ng-container *ngIf="isadmin">
+                    <td class="align-middle text-center">{{dt.matruong}}</td>
+                  </ng-container>
+
+                  <td class="align-middle text-center">{{dt.ngaynhan | date: 'dd/MM/yyyy'}}</td>
+
+                  <td class="align-middle text-left link-primary clickable" (click)="XemChiTiet(dt, 0)">
+                    <span [innerHTML]="dt.chitietyc | highlight: searchText" placement="top" [tooltip]="popupTooltip"
+                      (mouseover)="hoverTooltip(1)"></span>
+                  </td>
+                  <!-- // Mở case  #008FFB
+                       // Đang phân tích   #008000
+                      // Đang xử lý       #6f0080
+                      // Đang test (Đã xử lý)         #b10754
+                      // Đóng case        #546E7A -->
+                  <td class="align-middle text-center text-nowrap">
+                    <div *ngIf="dt.trangthai === 'Mở Case'" class="thanhcolor" style="background-color: #008FFB;">
+                      {{dt.trangthai}}
+                    </div>
+                    <div *ngIf="dt.trangthai === 'Đang phân tích'" class="thanhcolor"
+                      style="background-color: #008000;">
+                      {{dt.trangthai}}
+                    </div>
+                    <div *ngIf="dt.trangthai==='Đang xử lý'" class=" thanhcolor" style="background-color: #6f0080;">
+                      {{dt.trangthai}}
+                    </div>
+                    <div *ngIf="dt.trangthai === 'Đang test'" class="thanhcolor" style="background-color: #b10754;">
+                      {{dt.trangthai}}
+                    </div>
+                    <div *ngIf="dt.trangthai === 'Đóng case'" class="thanhcolor" style="background-color: #546E7A;">
+                      {{dt.trangthai}}
+                    </div>
+                  </td>
+
+                  <td class="align-middle text-left user-select-none">
+                    <!-- // BF - Lỗi cần sửa code             #FEB019
+                        // EX - Lỗi Exception cần sửa code    #FF4560
+                        // NF - Yêu cầu mới cần sửa code      #008FFB
+                        // CV - Trao đổi hoặc chưa phân loại  #26a69a
+                    -->
+                    <div *ngIf="dt.loaicase.startsWith('BF')" class="thanhcolor" style="background-color: #FEB019;">
+                      {{dt.loaicase}}
+                    </div>
+                    <div *ngIf="dt.loaicase.startsWith('EX')" class="thanhcolor" style="background-color: #FF4560;">
+                      {{dt.loaicase}}
+                    </div>
+                    <div *ngIf="dt.loaicase.startsWith('NF')" class=" thanhcolor" style="background-color: #008FFB;">
+                      {{dt.loaicase}}
+                    </div>
+
+                    <div *ngIf="dt.loaicase.startsWith('CV')" class="thanhcolor clickable"
+                      style="background-color: #26a69a;" (click)="TraoDoi(dt)"
+                      [ngClass]="{'blink': dt.loaicase.startsWith('CV') && dt.dabangiao === '' && dt.trangthai !== 'Đóng case' && (dt.comment && dt.comment !== '')}">
+                      <span placement="top" [tooltip]="popupTooltip"
+                        (mouseover)="hoverTooltip(2)">{{dt.loaicase}}</span>
+                    </div>
+                  </td>
+
+                  <td class="align-middle text-center text-nowrap">{{dt.phanhe}}</td>
+                  <td class="align-middle text-left">{{dt.loaihopdong}}</td>
+                  <td class="align-middle text-left">{{dt.mucdo}}</td>
+                  <td class="align-middle text-center">{{dt.ngaydukien | date: 'dd/MM/yyyy'}}</td>
+
+                  <td class="align-middle text-center link-primary clickable" (click)="XemChiTiet(dt, 1)">
+                    <span placement="top" [tooltip]="popupTooltip" (mouseover)="hoverTooltip(3)">{{dt.dabangiao}}</span>
+                  </td>
+
+                  <td class="align-middle text-center">{{dt.ngayemail | date: 'dd/MM/yyyy'}}</td>
+
+                  <ng-container *ngIf="isHideMail">
+                    <td></td>
+                  </ng-container>
+
+                  <ng-container *ngIf="!isHideMail">
+                    <td class="align-middle text-left small" [innerHTML]="dt.mailto"></td>
+                  </ng-container>
+
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+
+          <div class="col-12 text-center py-2" *ngIf="dataCsCase_Filter && total>pageLimit">
+            <div class="d-inline-block mb-0">
+              <span class="d-inline-block small">
+                Tổng: {{total | number:'1.0-0'}} case - (Trang {{currentPage}}/{{pages-1 | number:'1.0-0'}})</span>
+              <pagination class="mb-0" [totalItems]="total" [rotate]="true" [maxSize]="5" [itemsPerPage]="pageLimit"
+                previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
+                [(ngModel)]="currentPage" [boundaryLinks]="true" (pageChanged)="pageChanged($event)">
+              </pagination>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+    </ng-container>
+
+    <ng-container *ngIf="isadministrator">
+      <div *ngIf="ismess" class="alert alert-danger my-2" role="alert">{{ismess}}</div>
+
+      <div class="container mt-2">
+        <div id="printArea">
+          <table id="excel-table"
+            class="table table-sm table-responsive-sm table-hover table-bordered table-sticky-header my-0 py-0">
+            <thead>
+              <tr class="bg-primary text-white text-center">
+                <th style="width: 5%" class="align-middle">STT</th>
+                <th style="width: 10%" class="align-middle">Mã Trường</th>
+                <th class="align-middle">Tên Trường</th>
+                <th style="width: 10%" class="align-middle">Số lượng case</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of dataCsCase_Filter_Ad; trackBy: trackByFn;let i = index">
+              <tr class="text-center">
+                <td class="align-middle">{{i+1}}</td>
+                <td class="align-middle text-primary clickable" (click)="xemcase(item.matruong)">
+                  <a [routerLink]="">{{item.matruong}}</a>
+                </td>
+                <td class="align-middle text-left">{{item.tentruong}}</td>
+                <td class="align-middle">{{item.soluong}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

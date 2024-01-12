@@ -1,0 +1,58 @@
+<ngx-spinner type="ball-clip-rotate-multiple">
+  <p style="color: white">Đang tải thông tin đăng nhập...</p>
+</ngx-spinner>
+
+<div class="container background-image1">
+  <div class="row">
+    <div class="col-lg-6 col-md-6 d-none d-lg-block p-0 m-0" style="height: 100vh;"></div>
+    <div class="col-lg-6 col-md-7 d-flex flex-column" style="height: 100vh;">
+      <div class="d-flex flex-column flex-fill justify-content-center cust">
+        <div class="card shadow-lg p-0 m-0 frinput" style="background-color: transparent;">
+          <div class="card-body p-2">
+            <form [formGroup]="loginForm" autocomplete="off">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-user"></i></span>
+                </div>
+
+                <input #myFocusField type="text" autocomplete="off" formControlName="username" class="form-control"
+                  autofocus (keyup.enter)="onLogin()" [ngClass]="{'is-invalid': submitted && f.username.errors}"
+                  required />
+
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                  <div *ngIf="f.username.errors.required" class="font-weight-bold">Vui lòng nhập tên đăng nhập</div>
+                </div>
+              </div>
+
+              <div class="input-group py-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                </div>
+
+                <input type="password" autocomplete="new-password" formControlName="password" class="form-control"
+                  (keyup.enter)="onLogin()" [type]="SHOW_BUTTON ? 'text' : 'password'"
+                  [ngClass]="{ 'is-invalid': submitted && f.password.errors }" required />
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width:40px;">
+                    <i [class]="SHOW_EYE ? 'fa fa-eye' : 'fa fa-eye-slash'" (mousedown)="SHOW_EYE = SHOW_BUTTON = true"
+                      (mouseup)="SHOW_EYE = SHOW_BUTTON = false" (mouseout)="SHOW_EYE = SHOW_BUTTON = false"></i>
+                  </span>
+                </div>
+
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required" class="font-weight-bold">Vui lòng nhập mật khẩu</div>
+                </div>
+              </div>
+
+              <div class="alert alert-danger py-1 mb-2" role="alert" *ngIf="messError">{{messError}}</div>
+
+              <button type="submit" class="btn btn-light btn-block" (click)=" onLogin()">
+                <i class="fas fa-sign-in-alt pr-2"></i>ĐĂNG NHẬP</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

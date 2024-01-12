@@ -1,0 +1,45 @@
+// .card-signin {
+//   border: 0;
+//   border-radius: 1rem;
+//   box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.7);
+// }
+
+
+:root {
+  --input-padding-x: 1.5rem;
+  --input-padding-y: 0.75rem;
+}
+
+.background-image1 {
+  background-image: url("../../../assets/images/CST.png");
+  min-height: 100%;
+  min-width: 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  position: relative;
+}
+
+@media (min-width: 993px) {
+  .frinput {
+    width: 350px;
+  }
+
+}
+
+@media (max-width: 995px) {
+  // .background-image1 {
+  //   background-image: none;
+  // }
+
+  .cust {
+    text-align: center;
+  }
+
+}
+
+@media (min-width: 993px) {
+  .frinput {
+    width: 350px;
+  }
+
+}

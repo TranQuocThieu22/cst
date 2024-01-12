@@ -1,0 +1,20 @@
+table tr th {
+  margin: 5px;
+  padding: 5px;
+  white-space: nowrap;
+}
+
+table tr td {
+  margin: 5px;
+  padding: 5px;
+}
+
+.icon-up:before {
+  content: "\25B2";
+  font-size: small;
+}
+
+.icon-down:before {
+  content: "\25BC";
+  font-size: small;
+}

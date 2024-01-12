@@ -1,0 +1,176 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "libs": {
+      "projectType": "library",
+      "root": "projects/libs",
+      "sourceRoot": "projects/libs/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/libs/tsconfig.lib.json",
+            "project": "projects/libs/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/libs/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/libs/src/test.ts",
+            "tsConfig": "projects/libs/tsconfig.spec.json",
+            "karmaConfig": "projects/libs/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/libs/tsconfig.lib.json",
+              "projects/libs/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "web-cscase": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/web-cscase",
+      "sourceRoot": "projects/web-cscase/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "allowedCommonJsDependencies": [
+              "linq-typed",
+              "timsort",
+              "lodash",
+              "xlsx",
+              "rxjs-compat",
+              "fortawesome/fontawesome-free",
+              "apexcharts",
+              "moment"
+            ],
+            "outputPath": "dist",
+            "index": "projects/web-cscase/src/index.html",
+            "main": "projects/web-cscase/src/main.ts",
+            "polyfills": "projects/web-cscase/src/polyfills.ts",
+            "tsConfig": "projects/web-cscase/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/web-cscase/src/favicon.ico",
+              "projects/web-cscase/src/assets"
+            ],
+            "styles": [
+              "projects/web-cscase/src/styles.scss",
+              "./node_modules/ngx-spinner/animations/ball-clip-rotate-multiple.css",
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.scss",
+              "./node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
+              "./node_modules/@fortawesome/fontawesome-free/scss/solid.scss",
+              "./node_modules/@fortawesome/fontawesome-free/scss/brands.scss",
+              "./node_modules/@fortawesome/fontawesome-free/scss/regular.scss",
+              "./node_modules/ngx-toastr/toastr.css",
+              "./node_modules/@ng-select/ng-select/themes/default.theme.css"
+            ],
+            "scripts": [
+              "./node_modules/apexcharts/dist/apexcharts.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "6mb",
+                  "maximumError": "7mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6mb",
+                  "maximumError": "7mb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/web-cscase/src/environments/environment.ts",
+                  "with": "projects/web-cscase/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "web-cscase:build:production"
+            },
+            "development": {
+              "browserTarget": "web-cscase:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "web-cscase:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/web-cscase/src/test.ts",
+            "polyfills": "projects/web-cscase/src/polyfills.ts",
+            "tsConfig": "projects/web-cscase/tsconfig.spec.json",
+            "karmaConfig": "projects/web-cscase/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/web-cscase/src/favicon.ico",
+              "projects/web-cscase/src/assets"
+            ],
+            "styles": [
+              "projects/web-cscase/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": "e9920847-5b3c-492a-af11-141a7a90dece",
+    "cache": {
+      "enabled": false
+    }
+  }
+}

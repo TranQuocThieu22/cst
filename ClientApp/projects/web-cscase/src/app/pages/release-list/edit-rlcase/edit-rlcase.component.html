@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <h6 class="modal-title pull-left">Sửa Version</h6>
+  <button type="button" class="btn-close pull-right" aria-label="Close" (click)="bsModalRefEditor.hide()"></button>
+</div>
+
+<div class="modal-body p-0 py-1">
+  <div class="container-fluid">
+
+    <div class="row py-1 text-nowrap">
+      <label for="tt" class="col-sm-2 col-form-label">Version</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" [(ngModel)]="vesion">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer py-1">
+  <button type="button" class="btn btn-outline-primary float-right" (click)="save()">
+    <i class="far fa-save pr-1"></i>Lưu</button>
+</div>

@@ -1,0 +1,20 @@
+{
+    "include": [
+        "E:/KTUYEN/WORK/Trunk2/AQDataTools/AQData.Contracts/API/ApiResultBaseDO.cs",
+        "E:/KTUYEN/WORK/Trunk2/AQDataTools/AQData.Contracts/DataContract/ChucNangWebDO.cs",
+        "E:/KTUYEN/WORK/Trunk2/AQDataTools/AQFramework/Wcf/Common/SinhVienInfoWebDO.cs",
+        "E:/KTUYEN/WORK/Trunk2/Edusoft.NET/Edusoft.DataObjects/Report/**/*.cs",
+        "E:/KTUYEN/WORK/Trunk2/Edusoft.NET/Edusoft.DataObjects/WEB/**/*.cs",
+        "E:/KTUYEN/WORK/Trunk2/Edusoft.NET/Edusoft.DataObjects/ZMS/**/*.cs"
+    ],
+    "exclude": [],
+    "output": "./src/lib/edu.models.ts",
+    "camelCase": false,
+    "camelCaseEnums": false,
+    "numericEnums": false,
+    "stringLiteralTypesInsteadOfEnums": false,
+    "customTypeTranslations": {
+        "ProductName": "string",
+        "ProductNumber": "string"
+    }
+}

@@ -1,0 +1,9 @@
+.dontWrapIt {
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 576px) {
+  .dontWrapIt {
+    white-space: normal !important;
+  }
+}

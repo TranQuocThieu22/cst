@@ -1,0 +1,15 @@
+.custom-file-input~.custom-file-label::after {
+  content: "Chọn";
+}
+
+img {
+  width: 20%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  img {
+    width: 60%;
+    height: 135px;
+  }
+}

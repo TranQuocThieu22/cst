@@ -1,0 +1,111 @@
+html,
+body,
+* {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1em;
+}
+
+.clickable {
+  cursor: pointer;
+  outline: none;
+}
+
+
+// sort table
+thead th {
+  span {
+    visibility: hidden;
+    display: none;
+  }
+
+  &.active {
+    span {
+      visibility: visible;
+      display: inline-flex;
+    }
+  }
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+// Dien thoai
+@media (max-width: 768px) {
+  .img-hd {
+    height: 100px;
+  }
+
+}
+
+// PC
+@media (min-width: 769px) {
+  .img-hd {
+    height: 190px;
+  }
+}
+
+@media print {
+  table {
+    width: 100%;
+    display: table;
+  }
+}
+
+@keyframes logo {
+  from {
+    left: -100%;
+  }
+
+  to {
+    left: 0;
+  }
+}
+
+// button scroll top
+.topbutton {
+  z-index: 10;
+  position: fixed;
+  font-size: 1.35rem;
+  right: 10px;
+  opacity: 0.4;
+  border-radius: 6px;
+}
+
+// button scroll top hover
+.topbutton:hover {
+  opacity: 1;
+}
+
+@media (min-width: 993px) {
+  .table-sticky-header thead th {
+    background: inherit;
+    position: -webkit-sticky;
+    position: sticky;
+    top: -1px;
+    z-index: 5;
+  }
+
+  .table-sticky-header-full thead tr th {
+    background: inherit;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+    white-space: normal;
+  }
+}
+
+// modal full screen
+.model-fullscreen {
+  width: 95%;
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+// modal full screen
+.model-fullscreen .modal-content {
+  width: 100%;
+  height: 100%;
+}

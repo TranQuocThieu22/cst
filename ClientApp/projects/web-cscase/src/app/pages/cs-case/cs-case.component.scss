@@ -1,0 +1,157 @@
+@media not print {
+
+  // highline search
+  ::ng-deep mark,
+  .mark {
+    padding: 0;
+    background-color: yellow;
+  }
+}
+
+::ng-deep .ng-select .ng-select-container {
+  min-height: 38px;
+}
+
+// .btn {
+//   min-width: 20px;
+// }
+
+.icon-up:before {
+  content: "\25B2";
+  font-size: small;
+}
+
+.icon-down:before {
+  content: "\25BC";
+  font-size: small;
+}
+
+thead tr th {
+  position: sticky;
+  top: -1px;
+  background: inherit;
+  z-index: 5;
+}
+
+.input-group-append button {
+  min-height: 30px;
+}
+
+.table tr td {
+  padding: 3px;
+}
+
+th {
+  font-size: small;
+}
+
+td {
+  font-size: small;
+}
+
+.bottomRight {
+  position: fixed;
+  bottom: 7vh;
+  right: 0;
+  z-index: 15;
+}
+
+#chart {
+  margin: 3px 0 0 0;
+  height: 300px;
+}
+
+::ng-deep .apexcharts-text tspan {
+  font-size: smaller;
+}
+
+@media (max-width: 768px) {
+  #chart_donut {
+    width: 310px;
+    margin: 20px auto;
+    padding-left: 10px;
+  }
+
+}
+
+@media (max-width: 576px) {
+  th.cusmacase {
+    min-width: 60px;
+  }
+
+  th.cusmatruong {
+    min-width: 70px;
+  }
+
+  th.cusngaynhan {
+    min-width: 90px;
+  }
+
+  th.cusyeucau {
+    min-width: 350px;
+  }
+
+  th.cusdbg {
+    min-width: 70px;
+  }
+
+  th.cus100 {
+    min-width: 100px;
+  }
+
+  th.cus120 {
+    min-width: 120px;
+  }
+
+  th.cus130 {
+    min-width: 130px;
+  }
+
+  th.cus150 {
+    min-width: 150px;
+  }
+
+  th.cus220 {
+    min-width: 220px;
+  }
+
+}
+
+::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  box-sizing: border-box;
+  cursor: pointer;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  padding-right: 1px;
+}
+
+::ng-deep .ng-placeholder {
+  font-size: smaller;
+  margin-top: 3px;
+}
+
+::placeholder {
+  font-size: smaller;
+  margin-top: 3px;
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+  color: white;
+  width: 100%;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.thanhcolor {
+  padding: 3px;
+  border-radius: 10px;
+  color: white;
+}

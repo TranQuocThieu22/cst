@@ -1,0 +1,9 @@
+<ngx-spinner type="ball-clip-rotate-multiple"></ngx-spinner>
+
+<router-outlet></router-outlet>
+
+<!-- button on top scroll -->
+<span class="topbutton text-white bg-primary px-3 py-2 d-print-none clickable" style="bottom: 0px;"
+    *ngIf="isShowButtonScroll" (click)="gotoTop()">
+    <i class="fa fa-arrow-up clickable" (click)="gotoTop()"></i>
+</span>

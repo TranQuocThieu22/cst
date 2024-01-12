@@ -1,0 +1,22 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/libs/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/libs/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/web-cscase/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/web-cscase/tsconfig.spec.json"
+    },
+  ],
+  "compilerOptions": {
+    "lib": [
+      "es2021"
+    ]
+  }
+}

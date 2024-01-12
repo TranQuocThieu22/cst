@@ -1,0 +1,59 @@
+<div class="modal-header">
+  <ngx-spinner name="spinner-dssv" [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+  <h6 class="modal-title text-uppercase">Danh sách case</h6>
+  <button type="button" class="close pull-right text-danger" aria-label="Close" (click)="bsModalRefEditor.hide()">
+    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+  </button>
+</div>
+
+<div class="modal-body p-0">
+  <div class="alert alert-danger my-1" role="alert" *ngIf="messError">{{messError}}</div>
+
+  <ng-container *ngIf="data">
+
+    <div class="table-responsive-sm">
+      <table class="table-hover table-bordered table-sticky-header-full w-100">
+        <thead>
+          <tr class="bg-primary text-white text-center">
+            <th style="width: 2%" class="align-middle">STT</th>
+
+            <th style="width: 7%" class="align-middle cusmacase clickable" [class.active]="orderby==='macase'"
+              (click)="setOrder('macase')">Mã case
+              <span [hidden]="!reverseOrderby" class="icon-up"></span>
+              <span [hidden]="reverseOrderby" class="icon-down"></span>
+            </th>
+
+            <th class="align-middle cusyeucau">Yêu cầu</th>
+
+            <th style="width: 12%" class="align-middle clickable custthai" [class.active]="orderby==='trangthai'"
+              (click)="setOrder('trangthai')">Trạng thái
+              <span [hidden]="!reverseOrderby" class="icon-up"></span>
+              <span [hidden]="reverseOrderby" class="icon-down"></span>
+            </th>
+
+            <th style="width: 8%" class="align-middle clickable cusngaynhan" [class.active]="orderby==='ngaynhan'"
+              (click)="setOrder('ngaynhan')">Ngày nhận
+              <span [hidden]="!reverseOrderby" class="icon-up"></span>
+              <span [hidden]="reverseOrderby" class="icon-down"></span>
+            </th>
+            <!-- <th style="width: 10%" class="align-middle clickable cusngaybg" [class.active]="orderby==='ngaydukien'"
+              (click)="setOrder('ngaydukien')">Ngày b.giao
+              <span [hidden]="!reverseOrderby" class="icon-up"></span>
+              <span [hidden]="reverseOrderby" class="icon-down"></span>
+            </th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let dt of data; trackBy: trackByFn; let i= index">
+            <td class="align-middle text-center">{{i+1}}</td>
+            <td class="align-middle text-center">{{dt.macase}}</td>
+            <td class="align-middle text-left">{{dt.chitietyc}}</td>
+            <td class="align-middle text-center">{{dt.trangthai}}</td>
+            <td class="align-middle text-center">{{dt.ngaynhan | date: 'dd/MM/yyyy'}}</td>
+            <!-- <td class="align-middle text-center">{{dt.ngaydukien | date: 'dd/MM/yyyy'}}</td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+</div>

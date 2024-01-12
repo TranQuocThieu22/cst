@@ -1,0 +1,112 @@
+<div class="container px-0 pb-3">
+
+  <div class="card border-0">
+    <ngx-spinner name="spinner_rlv" [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+
+    <div class="card-header text-white bg-primary"><i class="fas fa-atom pr-2"></i>Release Version</div>
+
+    <div class="card-body p-0">
+
+      <div class="alert alert-danger my-1" role="alert" *ngIf="messError" [innerHTML]="messError | safeHtml"></div>
+
+      <div class="table-responsive p-0 m-0">
+        <table class="table table-sm table-bordered p-0 m-0" style="overflow: hidden;">
+          <ng-container *ngFor="let gr of group; trackBy: trackByFn; let i=index">
+            <tr class="text-nowrap clickable" (click)="showDataFormDg(i); selectNgay(gr.vesion);clearInputValues()">
+
+              <td style="border-right: 0; height: 50px;" class="align-middle text-nowrap">
+                <h6 class="text-info text-nowrap align-middle mb-0">
+                  <div class="d-inline-flex">
+
+                    <ng-container *ngIf="isadmin">
+                      <div class="pr-2">
+                        <span class="text-success mr-1" (click)="Sua(gr)" title="Sửa">
+                          <i class="fa-solid fa-pen-to-square"></i></span>/
+                        <span class="text-danger ml-1 mr-2" (click)="Xoa(gr)" title="Xóa">
+                          <i class="fas fa-trash-alt"></i></span>
+                      </div>
+                    </ng-container>
+
+                    <span class="text-warning mr-1">
+                      <!-- Ngày chốt: {{gr.ngaychot}}</span>- {{gr.vesion}} -->
+                      {{gr.version_rl}}
+                    </span>
+                  </div>
+                </h6>
+              </td>
+
+              <td class="align-middle text-center" style="width: 50px; border-left: 0; ">
+                <a *ngIf="!hide[i]"><i class="fas fa-chevron-right"></i></a>
+                <a *ngIf="hide[i]"><i class="fas fa-chevron-down"></i></a>
+              </td>
+            </tr>
+
+            <tr [hidden]="!hide[i]">
+              <td colspan="3" class="p-0">
+                <table class="table table-sm table-responsive-sm table-bordered my-0 py-0">
+                  <thead>
+                    <tr class="text-center text-white" style="background-color: rgba(0, 0, 0, 0.734);">
+                      <th style="width: 20%" class="custlc text-nowrap">Loại case</th>
+                      <th style="width: 8%" class="align-middle text-nowrap">Khách hàng</th>
+                      <th style="width: 8%" class="align-middle text-nowrap">Phân hệ</th>
+                      <th class="custnd text-left align-middle text-nowrap">Nội dung xử lý</th>
+                    </tr>
+                    <tr>
+                      <td class="m-0 p-0"><input [(ngModel)]="values.loaicase" type="text"
+                          (input)="onSearchChange($event,gr.vesion, 'loaicase')" autocomplete="off" maxlength="20"
+                          placeholder="..." class="form-control form-control-sm small ng-pristine ng-valid ng-touched">
+                      </td>
+                      <td class="m-0 p-0"><input [(ngModel)]="values.matruong" name="searchFilter" type="text"
+                          (input)="onSearchChange($event, gr.vesion,'matruong')" autocomplete="off" maxlength="150"
+                          placeholder="..."
+                          class="form-control form-control-sm small ng-untouched ng-pristine ng-valid">
+                      </td>
+                      <td class="m-0 p-0"><input [(ngModel)]="values.phanhe" name="searchFilter" type="text"
+                          (input)="onSearchChange($event,gr.vesion ,'phanhe')" autocomplete="off" maxlength="150"
+                          placeholder="..."
+                          class="form-control form-control-sm small  ng-untouched ng-pristine ng-valid">
+                      </td>
+                      <td class="m-0 p-0"><input [(ngModel)]="values.whatnew" name="searchFilter" type="text"
+                          (input)="onSearchChange($event,gr.vesion ,'whatnew')" autocomplete="off" maxlength="150"
+                          placeholder="..."
+                          class="form-control form-control-sm small ng-untouched ng-pristine ng-valid">
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="text-center align-middle"
+                      *ngFor="let data of dataCsCase_Release; trackBy: trackByFn; let x = index">
+
+                      <td class="text-left align-middle font-weight-bold" *ngIf="x===indexGroup[data.loaicase]"
+                        [ngClass]="{'table-danger': data.groupnum===1, 'table-warning': data.groupnum===2,
+                                    'table-primary': data.groupnum===3, 'table-success': data.groupnum===4}"
+                        [attr.rowspan]="countGroup[data.loaicase]">{{data.loaicase}}
+                      </td>
+
+                      <td class="align-middle text-nowrap text-center" [ngClass]="{'table-danger': data.groupnum ===1, 'table-warning': data.groupnum ===2,
+                                  'table-primary': data.groupnum===3, 'table-success': data.groupnum===4 }">
+                        {{data.matruong}}
+                      </td>
+
+                      <td class="align-middle text-nowrap text-center" [ngClass]="{'table-danger': data.groupnum ===1, 'table-warning': data.groupnum ===2,
+                                    'table-primary': data.groupnum===3, 'table-success': data.groupnum===4 }">
+                        {{data.phanhe}}
+                      </td>
+
+                      <td class="align-middle text-left" [ngClass]="{'table-danger': data.groupnum ===1, 'table-warning': data.groupnum ===2,
+                                 'table-primary': data.groupnum===3, 'table-success': data.groupnum===4}"
+                        [innerHTML]="data.whatnew | safeHtml">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+          </ng-container>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Thông Báo</h4>
+  <button type="button" class="close pull-right text-danger" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div style="display:flex; align-items:center;">
+    <div [innerHTML]="titleIcon | safeHtml"></div> <span [innerHTML]="message | safeHtml"></span>
+  </div>
+</div>
+
+<div class="modal-footer py-1" *ngIf="button==='OK'">
+  <button type="button" class="btn btn-outline-danger float-right" (click)="bsModalRef.hide()">Đóng</button>
+</div>
+
+<div class="modal-footer py-1" *ngIf="!button">
+  <button type="button" class="btn btn-outline-primary float-right" (click)="doConfirm()">Xác nhận</button>
+  <button type="button" class="btn btn-outline-danger float-right" (click)="bsModalRef.hide()">Đóng</button>
+</div>

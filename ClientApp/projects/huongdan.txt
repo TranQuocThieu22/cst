@@ -1,0 +1,26 @@
+cd .\ClientApp\
+target: "http://localhost:5000/", // debug local code MainController.cs"
+or
+target: "https://cst.aqtech.vn"
+
+Create infos.dat tren server neu chua co
+
+---- BUILD RUN SERVER CSCASE ---
+\EduOnline\educlient>
+dotnet build
+dotnet run
+
+----- RUN CSCASE ------
+\EduOnline\educlient\ClientApp> npm run cscase
+
+---- BUILD MainController ---
+vào \EduOnline\educlient>dotnet build -c Release
+
+---- BUILD CSCASE -----
+\EduOnline\educlient\ClientApp> npm run build-cscase
+
+--- Build xong copy hêt trừ file data.info và .setting va (dist web) len server
+- copy file dll từ D:\EduOnline\educlient\bin\Release\net6.0\cscase.dll => \\192.168.1.205\cscase
+- copy dist web từ D:\APP_ANH_QUAN\EduOnline\educlient\ClientApp\dist => \\192.168.1.205\cscase\ClientApp\dist
+
+https://aqtech.vn:4243/#/

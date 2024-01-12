@@ -1,0 +1,415 @@
+<div class="container-fluid py-1" style="background-color: white">
+
+  <ng-container *ngIf="!disabled">
+    <div class="card mt-1">
+      <div class="card-body table-primary py-2">
+        <div class="row ">
+          <div class="d-flex justify-content-center">
+            <div class="col-lg-8 col-md-12 my-1">
+              <ng-select [items]="cbMaTruong" [(ngModel)]="selectmatruong" bindLabel="matruong" bindValue="matruong"
+                [disabled]="disabled" [multiple]="true" [trackByFn]="trackByFn" [searchFn]="customSearchFn"
+                [placeholder]="'All trường'" (change)="changeTruong($event)">
+                <ng-template ng-option-tmp let-item="item">
+                  {{item.matruong}} <br />
+                  <small class="font-italic" style="white-space: normal">{{item.tentruong}}</small>
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- CUM 1 CASE--> <!-- CUM 2 BAR-->
+  <div class="row">
+
+    <div class="col-lg-6 col-md-12 p-2">
+      <div class="card shadow-lg bg-white rounded">
+
+        <div class="card-header py-2">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group row pb-0 mb-0">
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Từ ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="tu_ngay_bd1"
+                    (bsValueChange)="onChangeDate($event, 1, 1)">
+                </div>
+
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Đến ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="den_ngay_bd1"
+                    (bsValueChange)="onChangeDate($event, 2 ,1)">
+                </div>
+
+                <div class="col-sm-2 text-lg-right text-center">
+                  <button type="button" class="btn btn-outline-primary mr-2" (click)="ViewBD(1)">Tìm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-1">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 p-1" *ngFor="let loacase of dataCase_gr; let i=index; trackBy: trackByFn;">
+                <div class="card shadow-lg bg-white rounded bd1">
+                  <div class="card-body p-1">
+
+                    <div class="d-flex justify-content-between px-2">
+                      <span class="small">Loại case</span>
+                      <span class="smaller">Số lượng / Tổng</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between px-2">
+                      <span class="small text-primary font-weight-bold">{{loacase.loaicase}}</span>
+                      <span class="small  font-weight-bold">
+                        <span class="text-success">{{loacase.soluong | number:'1.0-0'}}</span> /
+                        <span class="text-danger">{{TongSoLuongCase1 | number:'1.0-0'}}</span>
+                      </span>
+                    </div>
+
+                    <hr style="border-top: 1px dashed black; margin-top: 1px; margin-bottom: 1px;">
+                    <ng-container *ngIf="View1_case">
+                      <div id="chart1">
+                        <div *ngIf="loacase.type===1">
+                          <apx-chart [series]="chartOptions1.series" [colors]="chartOptions1.colors"
+                            [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions"
+                            [labels]="chartOptions.labels" [fill]="chartOptions.fill">
+                          </apx-chart>
+                        </div>
+
+                        <div *ngIf="loacase.type===2">
+                          <apx-chart [series]="chartOptions2.series" [colors]="chartOptions2.colors"
+                            [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions"
+                            [labels]="chartOptions.labels" [fill]="chartOptions.fill">
+                          </apx-chart>
+                        </div>
+
+                        <div *ngIf="loacase.type===3">
+                          <apx-chart [series]=" chartOptions3.series" [colors]="chartOptions3.colors"
+                            [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions"
+                            [labels]="chartOptions.labels" [fill]="chartOptions.fill">
+                          </apx-chart>
+                        </div>
+
+                        <div *ngIf="loacase.type===4">
+                          <apx-chart [series]="chartOptions4.series" [colors]="chartOptions4.colors"
+                            [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions"
+                            [labels]="chartOptions.labels" [fill]="chartOptions.fill">
+                          </apx-chart>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CUM 2 BAR-->
+    <div class="col-lg-6 col-md-12 p-2">
+      <div class="card shadow-lg bg-white rounded">
+        <div class="card-header py-2">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group row pb-0 mb-0">
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Từ ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="tu_ngay_bar"
+                    (bsValueChange)="onChangeDate($event, 1, 2)">
+                </div>
+
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Đến ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="den_ngay_bar"
+                    (bsValueChange)="onChangeDate($event, 2 , 2)">
+                </div>
+
+                <div class="col-sm-2 text-lg-right text-center">
+                  <button type="button" class="btn btn-outline-primary mr-2" (click)="ViewBD(2)">Tìm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-1">
+          <div class="container-fluid">
+
+            <div class="d-flex justify-content-between"></div>
+            <div class="d-flex justify-content-between px-2">
+              <h6 class="pl-3 mb-0">Thống kê theo trạng thái xử lý</h6>
+              <span>Tổng Case:
+                <span class="pl-1 text-danger font-weight-bold">{{TongSoLuongCase_cot | number:'1.0-0'}}</span>
+              </span>
+            </div>
+
+            <!-- <div class="d-flex justify-content-between">
+              <span class="pl-4">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id=1 [(ngModel)]="SelectAnDongCase"
+                    (click)="CheckAnDongCase($event)">
+                  <label class="custom-control-label text-primary" for=1>Ẩn đóng case</label>
+                </div>
+              </span>
+            </div> -->
+
+            <ng-container *ngIf="View2_bar">
+              <div id="chart_bar">
+                <apx-chart [series]="chartOptions_bar.series" [colors]="chartOptions_bar.colors"
+                  [chart]="chartOptions_bar.chart" [legend]="chartOptions_bar.legend"
+                  [dataLabels]="chartOptions_bar.dataLabels" [plotOptions]="chartOptions_bar.plotOptions"
+                  [xaxis]="chartOptions_bar.xaxis">
+                </apx-chart>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUM 3 line Số lượng case các tháng trong năm-->
+  <div class="row">
+    <div class="col-lg-12 col-md-12 p-2">
+      <div class="card shadow-lg bg-white rounded">
+        <div class="card-header py-2">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group row pb-0 mb-0">
+
+                <label for="nam" class="col-sm-1 col-form-label text-nowrap pl-4">Năm</label>
+                <div class="col-sm-4">
+                  <ng-select [items]="lstNam" bindLabel="nam" bindValue="nam" [trackByFn]="trackByFn"
+                    [selectOnTab]="true" [(ngModel)]="select_Nam" [clearable]="true" placeholder="All"
+                    (change)="ChangeNam($event)">
+                    <ng-template ng-option-tmp let-item="item">
+                      {{item.nam}}
+                    </ng-template>
+                  </ng-select>
+                </div>
+
+                <div class="col-sm-7">
+                  <button type="button" class="btn btn-outline-primary mr-2" (click)="ViewByNam()">Năm</button>
+                  <button type="button" class="btn btn-outline-primary mr-2" (click)="ViewByThang()">Tháng</button>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                      aria-expanded="false">Ngày trong tháng {{ select_thang }} </button>
+                    <ul class="dropdown-menu clickable">
+                      <li *ngFor="let tg of list_thang; trackBy: trackByFn;">
+                        <div class="dropdown-item clickable" (click)="ViewByNgay(tg.thang)">
+                          Tháng: {{tg.thang}}
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-2">
+          <div class="container-fluid">
+            <div class="d-flex justify-content-between"></div>
+            <div class="d-flex justify-content-between px-2">
+              <h6 class="pl-2 mb-0">{{title}}</h6>
+              <span>Tổng Case:
+                <span class="pl-1 text-danger font-weight-bold">{{TongSoLuongCase_bar | number:'1.0-0'}}</span>
+              </span>
+            </div>
+          </div>
+
+          <ng-container *ngIf="View3_line">
+            <div id="chart_line">
+              <apx-chart [series]="chartOptions_line_ngay.series" [chart]="chartOptions_line.chart"
+                [xaxis]="chartOptions_line_ngay.xaxis" [yaxis]="chartOptions_line.yaxis"
+                [dataLabels]="chartOptions_line.dataLabels" [grid]="chartOptions_line.grid"
+                [stroke]="chartOptions_line.stroke">
+              </apx-chart>
+            </div>
+          </ng-container>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUM 4 cột Thống kê theo phân hệ -->
+  <div class="row">
+    <div class="col-lg-12 col-md-12 p-2">
+      <div class="card shadow-lg bg-white rounded">
+        <div class="card-header py-2">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group row pb-0 mb-0">
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Từ ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="tu_ngay_cot"
+                    (bsValueChange)="onChangeDate($event, 1, 4)">
+                </div>
+
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Đến ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="den_ngay_cot"
+                    (bsValueChange)="onChangeDate($event, 2 , 4)">
+                </div>
+
+                <div class="col-sm-2 text-lg-right text-center">
+                  <button type="button" class="btn btn-outline-primary mr-2" (click)="ViewBD(4)">Tìm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="card-body p-2">
+
+          <div class="container-fluid">
+            <div class="d-flex justify-content-between"></div>
+            <div class="d-flex justify-content-between px-2">
+              <h6 class="pl-3 mb-0">Thống kê theo phân hệ</h6>
+              <span>Tổng Case:
+                <span class="pl-1 text-danger font-weight-bold">{{TongSoLuongCase_cot | number:'1.0-0'}}</span>
+              </span>
+            </div>
+          </div>
+          <ng-container *ngIf="View4_cot">
+            <div id="chart_cot">
+              <apx-chart [series]="chartOptions_cot.series" [chart]="chartOptions_cot.chart"
+                [dataLabels]="chartOptions_cot.dataLabels" [plotOptions]="chartOptions_cot.plotOptions"
+                [yaxis]="chartOptions_cot.yaxis" [xaxis]="chartOptions_cot.xaxis" [legend]="chartOptions_cot.legend"
+                [colors]="chartOptions_cot.colors" [grid]="chartOptions_cot.grid">
+              </apx-chart>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUM 5 tron Thống kê loại hợp đồng / muc do -->
+  <div class="row">
+
+    <!-- bieu do tron  loại hợp đồng-->
+    <div class="col-lg-6 col-md-12 p-2">
+      <div class="card shadow-lg bg-white rounded">
+
+        <div class="card-header py-2">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group row pb-0 mb-0">
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Từ ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="tu_ngay_tron_lhd"
+                    (bsValueChange)="onChangeDate($event, 1, 5)">
+                </div>
+
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Đến ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="den_ngay_tron_lhd"
+                    (bsValueChange)="onChangeDate($event, 2 , 5)">
+                </div>
+
+                <div class="col-sm-2 text-lg-right text-center">
+                  <button type="button" class="btn btn-outline-primary mr-2" (click)="ViewBD(5)">Tìm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-2">
+          <div class="container-fluid">
+            <div class="d-flex justify-content-between"></div>
+            <div class="d-flex justify-content-between px-2">
+              <h6 class="pl-3 mb-0">Thống kê theo loại hợp đồng</h6>
+              <span>Tổng Case:
+                <span class="pl-1 text-danger font-weight-bold">{{TongSoLuongCase_tron_lhd | number:'1.0-0'}}</span>
+              </span>
+            </div>
+          </div>
+          <ng-container *ngIf="View5_tron_lhd">
+            <div id="chart_tron_lhd">
+              <apx-chart [series]="chartOptions_tron_lhd.series" [chart]="chartOptions_tron.chart"
+                [colors]="chartOptions_tron_lhd.colors" [labels]="chartOptions_tron_lhd.labels"
+                [responsive]="chartOptions_tron.responsive"></apx-chart>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- bieu do tron muc do-->
+    <div class="col-lg-6 col-md-12 p-2">
+      <div class="card shadow-lg bg-white rounded">
+
+        <div class="card-header py-2">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group row pb-0 mb-0">
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Từ ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="tu_ngay_tron_mucdo"
+                    (bsValueChange)="onChangeDate($event, 1, 6)">
+                </div>
+
+                <label for="nam" class="col-sm-2 col-form-label text-nowrap pl-3">Đến ngày</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" aria-describedby="basic-addon" placeholder="dd/MM/yyyy"
+                    bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig" [(ngModel)]="den_ngay_tron_mucdo"
+                    (bsValueChange)="onChangeDate($event, 2 , 6)">
+                </div>
+
+                <div class="col-sm-2 text-lg-right text-center">
+                  <button type="button" class="btn btn-outline-primary mr-2" (click)="ViewBD(6)">Tìm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-2">
+          <div class="container-fluid">
+            <div class="d-flex justify-content-between"></div>
+            <div class="d-flex justify-content-between px-2">
+              <h6 class="pl-3 mb-0">Thống kê theo mức độ</h6>
+              <span>Tổng Case:
+                <span class="pl-1 text-danger font-weight-bold">{{TongSoLuongCase_tron_mucdo | number:'1.0-0'}}</span>
+              </span>
+            </div>
+          </div>
+
+          <ng-container *ngIf="View6_tron_mucdo">
+            <div id="chart_tron_mucdo">
+              <apx-chart [series]="chartOptions_tron_mucdo.series" [chart]="chartOptions_tron.chart"
+                [colors]="chartOptions_tron_mucdo.colors" [labels]="chartOptions_tron_mucdo.labels"
+                [responsive]="chartOptions_tron.responsive"></apx-chart>
+            </div>
+          </ng-container>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

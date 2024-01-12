@@ -1,0 +1,84 @@
+body {
+  font-family: Roboto;
+  height: 100%;
+}
+
+.clickable[title]:hover::after {
+  content: 'Những thay đổi của trang CST';
+  position: absolute;
+  z-index: 2;
+  top: 100%;
+  
+  white-space: nowrap;
+  background-color: #ff4560;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+
+.wrapper {
+  display: flex;
+  text-decoration: none;
+  min-height: 100%;
+  height: auto !important;
+  /* ie7 fix */
+  height: 100%;
+  width: 100%;
+  transition: all 0.3s;
+}
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.content {
+  min-height: 100%;
+  min-width: 100%
+}
+
+p {
+  margin: 0px;
+}
+
+footer {
+  bottom: 0;
+}
+
+.copyright {
+  padding-top: 5px;
+  font-size: 0.9em;
+}
+
+.logo_cut img {
+  max-width: 250px;
+  max-height: 74px;
+  position: absolute;
+}
+
+.logo_footer img {
+  max-width: 190px;
+}
+
+.table tr td {
+  line-height: 1.1;
+  padding: 0.1;
+}
+
+.navbar-brand {
+  display: inline-block;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+  font-size: 1rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+.img_sodo {
+  width: 100%;
+  height: 155px;
+}

@@ -1,0 +1,389 @@
+<div class="container px-0">
+  <div class="card border-0 mb-3">
+    <ngx-spinner name="spinner_tc" [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+
+    <div class="card-header text-white bg-primary">
+      <i class="fas fa-atom pr-2"></i>{{title}}
+    </div>
+
+    <div class="card-body p-0">
+
+      <div class="container p-2" style="background-color: whitesmoke;">
+        <div class="alert alert-primary" role="alert">
+          Nhờ Anh/Chị thông cảm bỏ chút thời gian hơn cùng phối hợp với chúng tôi mô tả cụ thể nội dung trước khi gửi
+        </div>
+
+        <!-- Phan anh loi -->
+        <ng-container *ngIf="!type_chucnang">
+          <form [formGroup]="FormPhanAnh">
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted && f.tieu_de.errors}">
+                  Tóm tắt ticket (Case)<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="tieu_de" rows="1"
+                  [ngClass]="{'is-invalid': submitted && f.tieu_de.errors }" placeholder="Tiêu đề case">
+                </textarea>
+                <div *ngIf="submitted && f.tieu_de.errors" class="invalid-feedback">
+                  <div *ngIf="f.tieu_de.errors.required">Vui lòng nhập giá trị</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted && f.mo_ta.errors}">
+                  Mô tả lỗi<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="mo_ta" rows="5"
+                  [ngClass]="{'is-invalid': submitted && f.mo_ta.errors }"
+                  placeholder="Nhập nội dung lỗi đang gặp phải">
+              </textarea>
+                <div *ngIf="submitted && f.mo_ta.errors" class="invalid-feedback">
+                  <div *ngIf="f.mo_ta.errors.required">Vui lòng nhập giá trị</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted && f.menu_thuc_hien.errors}">
+                  Menu thực hiện<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="menu_thuc_hien" rows="1"
+                  [ngClass]="{'is-invalid': submitted && f.mo_ta.errors }"
+                  placeholder="Vd: Tốt nghiệp / Khai thác báo biểu / Danh sách thi / In bảng điểm thi tốt nghiệp">
+              </textarea>
+
+                <small class="text-muted font-italic">
+                  <p class="mt-1 mb-0">
+                    - Edusoft.Net: Người dùng bấm tổ hợp phím 'Ctrl+shift+F' ở màn hình đang thao tác trên Edusoft.Net.
+                  <p class="mb-1">- NetWeb: Người dùng nêu rõ tính năng đang thao tác trên Web.</p>
+                </small>
+
+                <div *ngIf="submitted && f.menu_thuc_hien.errors" class="invalid-feedback">
+                  <div *ngIf="f.menu_thuc_hien.errors.required">Vui lòng nhập giá trị</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3"><label>Nút thực hiện gây lỗi (nếu có)</label></div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="nut_gay_loi" rows="1"
+                  placeholder="Vd: Bấm vào nút [Thêm] trên màn hình thì báo lỗi">
+              </textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3"><label>Nhiệm ý</label></div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="nhiem_y" rows="1"
+                  placeholder="Các điều kiện gì để thực hiện In ấn (nếu có)">
+               </textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted && f.hinh_anh.errors}">
+                  Hình ảnh<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <div class="border">
+                  <ckeditor #ckEditor [config]="config" [editor]="Editor" formControlName="hinh_anh">
+                  </ckeditor>
+                </div>
+                <div *ngIf="submitted && f.hinh_anh.errors" class="text-danger">
+                  <div *ngIf="f.hinh_anh.errors.required">
+                    <small>Vui lòng nhập giá trị</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3"><label>Thao tác các bước (nếu có)</label></div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="thao_tac" rows="5"
+                  placeholder="Mô tả thêm thao tác qua nhiều màn hình chức năng trong quá trình xử lý dữ liệu dẫn đến lỗi">
+              </textarea>
+              </div>
+            </div>
+
+
+            <div class="form-row mb-2">
+              <div class="col-md-3"><label>Kết quả đúng</label></div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="ket_qua_dung" rows="2"
+                  placeholder="Mô tả kết quả đúng sẽ là gì?">
+              </textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3"><label>File đính kèm (nếu có)</label></div>
+              <div class="col-md-9">
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input #myInput1 type="file" name="fileupload1" class="custom-file-input" [accept]="filetype"
+                      (change)="getFileUpLoad($event.target.files, 1)" formControlName="file_dinh_kem" multiple>
+                    <label class="custom-file-label" *ngIf="FileName_dinhkem1">{{FileName_dinhkem1}}</label>
+                    <label class="custom-file-label text-muted" *ngIf="!FileName_dinhkem1">
+                      Ví dụ: Upload file word/excel/csv/txt/pdf/jpg/png</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3"><label>Nội dung khác (nếu có)</label></div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="noi_dung_khac" rows="1"
+                  placeholder="Nhập nội dung khác"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label>Thông tin người gửi yêu cầu</label>
+              </div>
+
+              <div class="col-md-9">
+                <div class="form-row">
+                  <div class="col"><input type="text" class="form-control text-capitalize"
+                      formControlName="nguoi_yeu_cau_hoten" placeholder="Nhập họ tên"></div>
+                  <div class="col"><input type="text" class="form-control" formControlName="nguoi_yeu_cau_chucvu"
+                      placeholder="Chức vụ"></div>
+                  <div class="col"><input type="text" class="form-control" formControlName="nguoi_yeu_cau_phongban"
+                      placeholder="Phòng ban"></div>
+                  <div class="col"><input type="text" class="form-control" formControlName="nguoi_yeu_cau_dienthoai"
+                      placeholder="Điện thoại" maxlength="10"
+                      onkeypress="return event.charCode>47 && event.charCode<58">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </ng-container>
+
+        <!-- yeu cau hieu chinh tu van -->
+        <ng-container *ngIf="type_chucnang">
+          <form [formGroup]="FromHieuChinhTuVan">
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted1 && f1.tieu_de_hc.errors}">
+                  Tóm tắt ticket (Case)<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <!-- <textarea class="form-control" formControlName="tieu_de_hc" rows="1"
+                  [ngClass]="{'is-invalid': submitted1 && f1.tieu_de.errors }" placeholder="Tiêu đề case">
+                </textarea>
+                <div *ngIf="submitted1 && f1.tieu_de_hc.errors" class="invalid-feedback">
+                  <div *ngIf="f1.tieu_de_hc.errors.required">Vui lòng nhập giá trị</div>
+                </div> -->
+                <textarea class="form-control" formControlName="tieu_de_hc" rows="1"
+                  [ngClass]="{'is-invalid': submitted1 && f1.tieu_de_hc.errors }" placeholder="Tiêu đề case">
+                </textarea>
+                <div *ngIf="submitted1 && f1.tieu_de_hc.errors" class="invalid-feedback">
+                  <div *ngIf="f1.tieu_de_hc.errors.required">Vui lòng nhập giá trị</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted1 && f1.muc_dich.errors}">
+                  Mục đích và nghiệp vụ thực tế đang thực hiện<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="muc_dich" rows="4"
+                  [ngClass]="{'is-invalid': submitted1 && f1.muc_dich.errors }">
+                </textarea>
+                <div *ngIf="submitted1 && f1.muc_dich.errors" class="invalid-feedback">
+                  <div *ngIf="f1.muc_dich.errors.required">Vui lòng nhập giá trị</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted1 && f1.noi_dung_can_hc.errors}">
+                  Nội dung cần hiệu chỉnh/tư vấn<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="noi_dung_can_hc" rows="4"
+                  [ngClass]="{'is-invalid': submitted1 && f1.noi_dung_can_hc.errors }"
+                  placeholder="Mong muốn chương trình hỗ trợ, hiệu chỉnh, bổ sung những gì?">
+                </textarea>
+                <div *ngIf="submitted1 && f1.noi_dung_can_hc.errors" class="invalid-feedback">
+                  <div *ngIf="f1.noi_dung_can_hc.errors.required">Vui lòng nhập giá trị</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label>Ví dụ dữ liệu thực tế</label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="vi_du_thuc_te" rows="4"
+                  placeholder="Mô tả dữ liệu và kết quả đúng sẽ là gì?">
+              </textarea>
+                <small class="text-muted font-italic">
+                  Mô tả minh họa trên 1 trường hợp dữ liệu (SV/MH/GV…) cụ thể có trong chương trình
+                </small>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted1 && f1.menu_thuc_hien_hc.errors}">
+                  Menu thực hiện<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="menu_thuc_hien_hc" rows="1"
+                  [ngClass]="{'is-invalid': submitted1 && f1.menu_thuc_hien_hc.errors }"
+                  placeholder="Vd: Tốt nghiệp / Khai thác báo biểu / Danh sách thi / In bảng điểm thi tốt nghiệp">
+                 </textarea>
+
+                <small class="text-muted font-italic">
+                  <p class="mt-1 mb-0">
+                    - Edusoft.Net: Người dùng bấm tổ hợp phím 'Ctrl+shift+F' ở màn hình đang thao tác
+                    trên Edusoft.Net.
+                  <p class="mb-1">- NetWeb: Người dùng nêu rõ tính năng đang thao tác trên Web.</p>
+                </small>
+
+                <div *ngIf="submitted1 && f1.menu_thuc_hien_hc.errors" class="invalid-feedback">
+                  <div *ngIf="f1.menu_thuc_hien_hc.errors.required">Vui lòng nhập giá trị</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label>Nút thực hiện (nếu có)</label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="nut_thuc_hien" rows="1" placeholder="Vd: Nút [Thêm]">
+                </textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label>Nhiệm ý (nếu có)</label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="nhiem_y_thuc_hien" rows="1"
+                  placeholder="Chọn các điều kiện gì để thực hiện"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label [ngClass]="{'text-danger': submitted1 && f1.hinh_anh_hc.errors}">
+                  Hình ảnh<span class="text-danger ml-1">(*)</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <div class="border">
+                  <ckeditor #ckEditor [config]="config" [editor]="Editor" formControlName="hinh_anh_hc">
+                  </ckeditor>
+                </div>
+                <div *ngIf="submitted1 && f1.hinh_anh_hc.errors" class="text-danger">
+                  <div *ngIf="f1.hinh_anh_hc.errors.required">
+                    <small>Vui lòng nhập giá trị</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label>Thao tác các bước (nếu có)</label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="thao_tac_hc" rows="4"
+                  placeholder="Mô tả thêm thao tác qua nhiều màn hình chức năng trong quá trình xử lý dữ liệu">
+                </textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3"> <label>File đính kèm (nếu có)</label> </div>
+              <div class="col-md-9">
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input #myInput2 type="file" name="fileupload2" class="custom-file-input" [accept]="filetype"
+                      (change)="getFileUpLoad($event.target.files, 2)" formControlName="file_dinh_kem_hc" multiple>
+                    <label class="custom-file-label" *ngIf="FileName_dinhkem2">{{FileName_dinhkem2}}</label>
+                    <label class="custom-file-label text-muted" *ngIf="!FileName_dinhkem2">
+                      Ví dụ: Upload file word/excel/csv/txt/pdf/jpg/png</label>
+                  </div>
+                </div>
+                <small class="text-muted font-italic">
+                  - Nếu là excel có mô tả rõ công thức/format dữ liệu để chương trình phân tích & thực hiện.
+                  <br>- Nếu là Report thống kê cần gửi Report (kết quả cuối cùng) có tiêu đề & nội dung thực tế.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label>Nội dung khác (nếu có)</label>
+              </div>
+              <div class="col-md-9">
+                <textarea class="form-control" formControlName="noi_dung_khac_hc" rows="1"
+                  placeholder="Nhập nội dung khác"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="col-md-3">
+                <label>Thông tin người gửi yêu cầu</label>
+              </div>
+              <div class="col-md-9">
+                <div class="form-row">
+                  <div class="col"><input type="text" class="form-control text-capitalize"
+                      formControlName="nguoi_yeu_cau_hc_hoten" placeholder="Nhập họ tên"></div>
+                  <div class="col"><input type="text" class="form-control" formControlName="nguoi_yeu_cau_hc_chucvu"
+                      placeholder="Chức vụ"></div>
+                  <div class="col"><input type="text" class="form-control" formControlName="nguoi_yeu_cau_hc_phongban"
+                      placeholder="Phòng ban"></div>
+                  <div class="col"><input type="text" class="form-control" formControlName="nguoi_yeu_cau_hc_dienthoai"
+                      placeholder="Điện thoại" maxlength="10"
+                      onkeypress="return event.charCode>47 && event.charCode<58">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </ng-container>
+
+      </div>
+    </div>
+
+    <div class="card-footer text-center">
+      <button type="submit" class="btn btn-outline-primary" (click)="Btn_Create_Case()">
+        <i class="fa-solid fa-plus mr-1"></i>Gửi
+      </button>
+    </div>
+
+  </div>
+</div>

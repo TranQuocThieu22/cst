@@ -1,0 +1,19 @@
+{
+  "name": "libs",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "~14.1.0",
+    "@angular/core": "~14.1.0"
+  },
+  "options": {
+    "allowedCommonJsDependencies": [
+      "tslint"
+    ]
+  },
+  "dependencies": {
+    "ng-packagr": "^14.1.0"
+  },
+  "scripts": {
+    "gen-model": "csharp-models-to-typescript --config=models.json"
+  }
+}

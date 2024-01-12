@@ -1,0 +1,20 @@
+::ng-deep .custimg img {
+  border-style: none;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+label {
+  margin: 0;
+}
+
+.dontWrapIt {
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 576px) {
+  .dontWrapIt {
+    white-space: normal !important;
+  }
+}

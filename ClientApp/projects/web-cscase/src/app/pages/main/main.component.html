@@ -1,0 +1,248 @@
+<div class="wrapper">
+  <div class="page">
+    <div id="content">
+
+      <div class="container-fluid bg-primary" style="min-height: 30px; padding-left: 20px; padding-top: 4px;">
+        <div class="row text-white">
+          <div class="col-lg-2 col-md-3 col-sm-6 text-nowrap">
+            <i class="fas fa-phone-alt pr-2"></i>(028) 62 815 825
+          </div>
+          <div class="col-lg-2 col-md-3 col-sm-6 text-nowrap">
+            <i class="fas fa-at pr-2"></i>info@aqtech.vn
+          </div>
+          <div class="col float-lg-right text-lg-right text-md-right">
+            <a class="clickable text-white" href="https://goo.gl/maps/CGcguyPFEK1KiME88" target="_blank">
+              <i class="fas fa-map-marker-alt pr-2"></i>
+              8/24 Nguyễn Đình Khơi, Phường 4 Quận Tân Bình, TP.HCM.
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="logo_cut">
+        <a class="clickable" href="https://aqtech.vn/" target="_blank">
+          <img id="imglogo" src="../assets/images/Logo_AQTech.png" class="clickable img-fluid w-100 p-1"
+            style=" border: none; outline: none;" onerror="this.src='assets/images/no_img.png'">
+        </a>
+      </div>
+
+      <div style="width: 100%; height: 75px;"></div>
+
+      <div class="bg-primary text-white align-middle pt-1 pl-2" style="width: 100%; height: 38px;">
+        <form (ngSubmit)="onSubmitLocCase()">
+          <label class="mr-2" for="dateStart">Dữ liệu ghi nhận từ ngày </label>
+          <select class="mr-2" [(ngModel)]="selectedOption" name="dateRange">
+            <option value="24-25">01/01/2024 - 01/01/2025</option>
+            <option value="23-24">01/01/2023 - 01/01/2024</option>
+            <option value="22-23">01/01/2022 - 01/01/2023</option>
+          </select>
+          <button style="background-color: #008000; color: white;" class="mr-2" type="submit">
+            <i class="fas fa-search"></i>
+            Lọc case
+          </button>
+        </form>
+      </div>
+
+      <nav class="navbar navbar-light navbar-expand-md bg-light" style="width: 100%; height: 45px;">
+        <div class="container-fluid">
+          <a class="navbar-brand clickable" [routerLink]="['cscase']">
+            <i class="fa-solid fa-house pr-1"></i>Trang chủ</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-gear fa-spin pr-1"></i>Tiện ích
+                </a>
+                <ul class="dropdown-menu">
+                  <li *ngIf="IsData"><a class="dropdown-item clickable" [routerLink]="" (click)="showthongke()"
+                      *ngIf="!isadministrator">
+                      <i class="fa-sharp fa-solid fa-chart-column pr-1"></i>Xem biểu đồ thống kê</a>
+                  </li>
+                  <li><a class="dropdown-item clickable" [routerLink]="" (click)="showtrangthai()">
+                      <i class="fa-regular fa-circle-dot pr-1"></i>Hướng dẫn xem trạng thái case</a>
+                  </li>
+                </ul>
+              </li>
+
+              <ng-container *ngIf="currentUser && !isadmin">
+                <li class="nav-item">
+                  <a class="nav-link clickable" [routerLink]="['releasedlist']">
+                    <i class="fa-solid fa-circle-info pr-1"></i>Release Information</a>
+                </li>
+              </ng-container>
+
+              <ng-container *ngIf="currentUser && isadmin">
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-regular fa-file-lines fa-fade pr-1"></i>Release
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item clickable" [routerLink]="['releasedlist']">
+                        <i class="fa-solid fa-circle-info pr-1"></i>Release Information</a></li>
+                    <li><a class="dropdown-item clickable" [routerLink]="['release']">
+                        <i class="fa-solid fa-plus  pr-1"></i>Create Release</a>
+                    </li>
+                  </ul>
+                </li>
+              </ng-container>
+
+
+
+              <li class="nav-item dropdown" *ngIf="IsData">
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-envelope fa-beat pr-1"></i>Gửi thông tin
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item clickable" (click)="GuiYeuCau(0)">
+                      <i class="fa-solid fa-triangle-exclamation pr-1"></i>Phản ánh lỗi</a>
+                  </li>
+                  <li><a class="dropdown-item clickable" (click)="GuiYeuCau(1)">
+                      <i class="fa-solid fa-pen-to-square pr-1"></i>Yêu cầu hiệu chỉnh / Tư vấn</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
+            <div class="col text-nowrap text-lg-right px-1">
+              <span *ngIf="currentUser" class="clickable" (click)="Open_usage_manual()" style="color: #ff4560;"
+                [title]="''">
+                <i class="fa-solid fa-question-circle pr-1"></i> ||
+              </span>
+
+              <span *ngIf="currentUser" class="clickable text-success" (click)="Refesh_page()">
+                <i class="fa-solid fa-rotate fa-spin pr-1"></i>Refesh page || </span>
+
+              <a *ngIf="currentUser && isadmin" [routerLink]="['upload']" class="text-decoration-none">
+                <i class="fa-solid fa-upload pr-1"></i>Upload file || </a> Admin,
+              <span *ngIf="currentUser">{{currentUser.tenTruong}} || </span>
+              <a class="text-danger text-decoration-none clickable" [routerLink]="" (click)="onLogout()"> Đăng xuất</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+        <div [hidden]="!hideDiv" class="row">
+          <div class="col-12">
+            <div class="w-100" style="float:left; position: relative;">
+              <div class="pr-2" style="z-index: 2; position:absolute; right: 0;">
+                <button type="button" class="close pull-right text-danger pr-2" title="Đóng" aria-label="Close"
+                  (click)="closetrangthai()">
+                  <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                </button>
+              </div>
+              <img class="img-fluid img-hd p-1 w-100 img_sodo" style="border: none; outline: none; z-index: 1;"
+                src="../assets/images/sodo.png">
+            </div>
+          </div>
+          <!-- <p class="pl-3 py-2" style="font-size: smaller;">
+            <strong>
+              1. Khách hàng theo dõi cột "Hiệu lực" để biết yêu cầu tương ứng sẽ được hoàn thành và hiệu lực ở bản
+              Update trong Release tuần nào:
+            </strong><br>
+            <span class="pl-3">
+              - Ví dụ: "RL tuần thứ 1 tháng 03/2021" => AQ sẽ gửi mail bàn giao trong tuần dự kiến từ 1/3 - 5/3
+              (thường định kỳ vào thứ 4 sẽ gửi mail).
+            </span>
+            <br>
+            <strong>2. Các Case mà AQ đã bàn giao cho khách hàng xong thì:</strong>
+            <br>
+            <span class="pl-3">- Cột "Trạng thái" = <strong>"Đóng Case"</strong>;
+              Cột "Đã bàn giao" = <strong>"X"</strong>;
+              Cột "Ngày gửi mail" = <strong>khác rỗng</strong>
+            </span>
+          </p> -->
+
+        </div>
+      </div>
+
+      <router-outlet></router-outlet>
+    </div>
+
+    <div class="footer navbar-fixed-bottom">
+      <footer class="copyright text-muted" style="background-color: whitesmoke;">
+        <div class="container">
+          <div class="row px-1">
+            <div class="col-lg-6 col-md-3 col-sm-12 mb-0 pb-0">
+              <div class="d-flex justify-content-center justify-content-lg-start">
+                <div class="logo_footer">
+                  <a class="clickable" href="https://aqtech.vn/" target="_blank">
+                    <img src="../assets/images/Logo_AQTech.png" style="border: none; outline: none;"
+                      onerror="this.src='assets/images/no_img.png'">
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center justify-content-lg-start mt-2">
+                <p class="mb-1">
+                  <img src="../assets/images/Ngoac_Kep.png" width="23" height="12" style="border: none; outline: none;">
+                  <span class="text-left text-nowrap pl-2">Mọi nỗ lực của chúng tôi</span> <br>
+                  <span class="text-left text-nowrap">đều hướng tới sự thành công</span> <br>
+                  <span class="text-left text-nowrap">của khách hàng</span>
+                </p>
+              </div>
+            </div>
+
+
+            <div class="col-lg-6 col-md-6 col-sm-12 m-0 p-0">
+              <table class="table table-sm table-borderless mb-0 pb-0">
+                <tr class="align-middle">
+                  <td colspan="2" class="pb-1 text-md-left text-sm-center">
+                    <h6 class="m-0 text-primary text-md-left text-sm-center font-weight-bold">
+                      CÔNG TY TNHH CÔNG NGHỆ ANH QUÂN</h6>
+                  </td>
+                </tr>
+
+                <tr class="align-middle">
+                  <td class="align-middle py-0">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </td>
+                  <td class="align-middle py-0">
+                    <a class="clickable text-dark" href="https://goo.gl/maps/CGcguyPFEK1KiME88" target="_blank">
+                      8/24 Nguyễn Đình Khơi, Phường 4 Quận Tân Bình, TP.HCM.</a>
+                  </td>
+                </tr>
+
+                <tr class="align-middle">
+                  <td class="align-middle py-0">
+                    <i class="fas fa-phone-alt"></i>
+                  </td>
+                  <td class="align-middle py-0"><a class="clickable text-dark" href="tel:02862815825">(028) 62 815
+                      825</a>
+                  </td>
+                </tr>
+
+                <tr class="align-middle">
+                  <td class="align-middle py-0">
+                    <i class="fas fa-fax"></i>
+                  </td>
+                  <td class="align-middle py-0"><a class="clickable text-dark" href="tel:02862815819">
+                      (028) 62 815 819</a>
+                  </td>
+                </tr>
+
+                <tr class="align-middle">
+                  <td class="align-middle py-0">
+                    <i class="fas fa-at"></i>
+                  </td>
+                  <td class="align-middle py-0">info@aqtech.vn</td>
+                </tr>
+
+              </table>
+            </div>
+
+            <!-- <div class="col-lg-2 col-md-6 col-sm-12 m-0 p-0">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1679.8652442061841!2d106.65697845339537!3d10.794214220089627!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529f477512e73%3A0x50cd252b19b58f37!2zOC8yNCBOZ3V54buFbiDEkMOsbmggS2jGoWksIFBoxrDhu51uZyA0LCBUw6JuIELDrG5oLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmggNzAwMDAw!5e0!3m2!1svi!2s!4v1691980752679!5m2!1svi!2s" width="300" height="150" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              </div> -->
+
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

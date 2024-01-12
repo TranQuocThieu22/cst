@@ -1,0 +1,59 @@
+﻿[
+{ "maTruong": "QUANVT", "pass": "66778899", "TenTruong": "Anh Quân", "Roles": "administrator" },
+{ "maTruong": "AQ", "pass": "67788469", "TenTruong": "Anh Quân", "Roles": "admin" },
+
+{ "maTruong": "DHNT", "TenTruong": "Trường ĐH Ngoại Thương Hà Nội", "pass": "67819547", "Roles": "user" },
+{ "maTruong": "DHNTDHCQ", "TenTruong": "DVPC - Đại Học Chính Quy - Trường ĐH Ngoại Thương Hà Nội", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHNTCHCQ", "TenTruong": "DVPC - Sau Đại Học - Trường ĐH Ngoại Thương Hà Nội", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHNTDHTC", "TenTruong": "DVPC - Đào Tạo Trực Tuyến - Trường ĐH Ngoại Thương Hà Nội", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHNTNTC2", "TenTruong": "Trường ĐH Ngoại Thương - Tp.HCM - Cơ sở Tp Hồ Chí Minh", "pass": "67855652", "Roles": "user" },
+
+{ "maTruong": "MOHN", "TenTruong": "Trường ĐH Mỏ Địa chất", "pass": "67819597", "Roles": "user" },
+{ "maTruong": "MOHNMODH", "TenTruong": "DVPC - Đại Học - Trường ĐH Mỏ Địa chất", "pass": "null", "Roles": "user" },
+{ "maTruong": "MOHNMOCH", "TenTruong": "DVPC - Sau Đại Học - Trường ĐH Mỏ Địa chất", "pass": "null", "Roles": "user" },
+
+{ "maTruong": "DHTV", "TenTruong": "Trường ĐH Trà Vinh", "pass": "67819570", "Roles": "user" },
+{ "maTruong": "DHTVDHCQ", "TenTruong": "DVPC - Đại Học - Trường ĐH Trà Vinh", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHTVCHCQ", "TenTruong": "DVPC - Sau Đại Học - Trường ĐH Trà Vinh", "pass": "null", "Roles": "user" },
+
+{ "maTruong": "DHSG", "TenTruong": "Trường ĐH Sài Gòn", "pass": "67819563", "Roles": "user" },
+{ "maTruong": "DHSGDHCQ", "TenTruong": "DVPC - Đại Học - Trường ĐH Sài Gòn", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHSGCHCQ", "TenTruong": "DVPC - Sau Đại Học - Trường ĐH Sài Gòn", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHSGGDTX", "TenTruong": "DVPC - GD Thường Xuyên - Trường ĐH Sài Gòn ", "pass": "null", "Roles": "user" },
+
+{ "maTruong": "BCVT", "TenTruong": "Học viện Bưu chính Viễn thông", "pass": "67819447", "Roles": "user" },
+{ "maTruong": "BCVTVTMN", "TenTruong": "Học viện Bưu chính Viễn thông CS HCM", "pass": "null", "Roles": "user" },
+{ "maTruong": "BCVTVTHN", "TenTruong": "Học viện Bưu chính Viễn thông Hà Nội", "pass": "null", "Roles": "user" },
+
+{ "maTruong": "TDDM", "TenTruong": "Trường ĐH Thủ Dầu Một", "pass": "67819624", "Roles": "user" },
+{ "maTruong": "TDDMDHCQ", "TenTruong": "DVPC - Đại Học - Trường ĐH Thủ Dầu Một", "pass": "null", "Roles": "user" },
+{ "maTruong": "TDDMCHCQ", "TenTruong": "DVPC - Sau Đại Học - Trường ĐH Thủ Dầu Một", "pass": "null", "Roles": "user" },
+
+{ "maTruong": "DHQT", "TenTruong": "Trường ĐH Quốc tế", "pass": "67819555", "Roles": "user" },
+{ "maTruong": "DHQTDH", "TenTruong": "DVPC - Đại Học - Trường ĐH Quốc tế", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHQTCH", "TenTruong": "DVPC - Sau Đại Học - Trường ĐH Quốc tế", "pass": "null", "Roles": "user" },
+
+{ "maTruong": "DHMO", "TenTruong": "Trường ĐH Mở Tp.HCM", "pass": "67819536", "Roles": "user" },
+{ "maTruong": "DHMODH", "TenTruong": "DVPC - Đại Học - Trường ĐH Mở Tp.HCM", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHMOCH", "TenTruong": "DVPC - Sau Đại Học - Trường ĐH Mở Tp.HCM", "pass": "null", "Roles": "user" },
+{ "maTruong": "DHMOTX", "TenTruong": "DVPC - Đào Tạo Từ Xa - Trường ĐH Mở Tp.HCM", "pass": "67819536", "Roles": "user" },
+
+{ "maTruong": "QTSG", "TenTruong": "Trường ĐH Quốc tế Sài Gòn", "pass": "67819616", "Roles": "user" },
+{ "maTruong": "QTMD", "TenTruong": "Trường ĐH Quốc tế Miền Đông", "pass": "67819613", "Roles": "user" },
+{ "maTruong": "DHHN", "TenTruong": "Trường ĐH Hà Nội", "pass": "67819524", "Roles": "user" },
+{ "maTruong": "DHNL", "TenTruong": "Trường ĐH Nông Lâm", "pass": "67819543", "Roles": "user" },
+{ "maTruong": "DPCT", "TenTruong": "Trường ĐH Phan Châu Trinh", "pass": "61319555", "Roles": "user" },
+{ "maTruong": "DHDK", "TenTruong": "Trường ĐH Dầu Khí", "pass": "67819513", "Roles": "user" },
+{ "maTruong": "DHVL", "TenTruong": "Trường ĐH Văn Lang", "pass": "67819574", "Roles": "user" },
+{ "maTruong": "NTC2", "TenTruong": "Trường ĐH Ngoại Thương - Tp.HCM", "pass": "67819609", "Roles": "user" },
+{ "maTruong": "HVSG", "TenTruong": "Trường ĐH Hùng Vương Tp.HCM", "pass": "67819590", "Roles": "user" },
+{ "maTruong": "KTCN", "TenTruong": "Trường ĐH Công Nghệ Tp.HCM", "pass": "67819593", "Roles": "user" },
+{ "maTruong": "KTTC", "TenTruong": "Trường ĐH Kinh tế - Tài chính Tp.HCM", "pass": "67819593", "Roles": "user" },
+{ "maTruong": "CTTD", "TenTruong": "Trường CĐ Công Thương Tp.HCM", "pass": "67819505", "Roles": "user" },
+{ "maTruong": "DHLN", "TenTruong": "Phân hiệu - Trường ĐH Lâm nghiệp", "pass": "67819532", "Roles": "user" },
+{ "maTruong": "DHBD", "TenTruong": "Trường ĐH Bình Dương", "pass": "02747303399", "Roles": "user" },
+{ "maTruong": "DHHT", "TenTruong": "Trường ĐH Hà Tĩnh", "pass": "02393565565", "Roles": "user" },
+{ "maTruong": "DHVB", "TenTruong": "Trường ĐH VIỆT BẮC", "pass": "07062022", "Roles": "user" },
+{ "maTruong": "CNTN", "TenTruong": "Trường ĐH Kỹ Thuật Công Nghiệp", "pass": "0977268777", "Roles": "user" },
+{ "maTruong": "KKBD", "TenTruong": "Trường ĐH Kinh tế - Kỹ thuật Bình Dương", "pass": "20072022", "Roles": "user" },
+]

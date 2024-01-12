@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <ngx-spinner name="spinner-td" [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+  <h6 class="modal-title text-uppercase">Nội dung trao đổi giữa công ty và khách hàng</h6>
+  <button type="button" class="close pull-right text-danger" aria-label="Close" (click)="bsModalRefEditor.hide()">
+    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+  </button>
+</div>
+
+<div class="modal-body pt-0 pb-2 px-0" style="background-color: whitesmoke">
+  <div class=" container-fluid">
+
+    <div class="py-2 pl-2 mt-0" style="background-color: rgb(231, 230, 230)">
+      <div class="row">
+        <div class="col-lg-1 col-md-2 col-sm-12 font-weight-bold dontWrapIt">Mã Case:</div>
+        <div class="col-lg-11 col-md-10 col-sm-12 font-weight-bold">
+          <span class="text-danger">{{macase}}</span> - {{tieu_de}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-control" style="overflow: auto; background-color: rgb(248, 248, 248)"
+      [ngStyle]="{'height': da_ban_giao ? '84vh' : '67vh'}" [innerHTML]="data_comment | safeHtml">
+    </div>
+
+    <ng-container *ngIf="!da_ban_giao">
+      <hr class="my-1">
+      <textarea class="form-control" [(ngModel)]="str_noidung" rows="2" placeholder="Nhập nội dung..."></textarea>
+    </ng-container>
+
+  </div>
+
+</div>
+
+<div class="modal-footer justify-content-center text-center py-1" *ngIf="!da_ban_giao">
+  <button type="button" style="width: 80px;" class="btn btn-outline-primary" [disabled]="!str_noidung"
+    (click)="Send()">Gửi</button>
+</div>
