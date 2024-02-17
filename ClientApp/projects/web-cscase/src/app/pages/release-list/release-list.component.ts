@@ -199,20 +199,56 @@ export class ReleaseListComponent implements OnInit {
       });
     }
   }
+  private compareVersions(a, b) {
+    // Tách chuỗi version thành các phần
+    let partsA = a.version.split('.');
+    let partsB = b.version.split('.');
 
+    for (let i = 0; i < partsA.length; i++) {
+      if (partsA[i] !== partsB[i]) {
+        // So sánh số nếu có thể, nếu không thì so sánh như chuỗi
+        return isNaN(partsA[i]) || isNaN(partsB[i]) ? partsA[i].localeCompare(partsB[i]) : partsA[i] - partsB[i];
+      }
+    }
+
+    return 0; // Trả về 0 nếu tất cả các phần đều giống nhau
+  }
   private groupArry(arr: any) {
-    const uniqueVersions = {};
+    const uniqueVersions = [];
     arr.forEach(obj => {
       const { vesion, version_rl } = obj;
-      const key = `${vesion}_${version_rl}`;
+      const key = `${vesion}`;
 
       // Kiểm tra xem phiên bản đã tồn tại trong đối tượng chưa
       if (!uniqueVersions[key]) {
         uniqueVersions[key] = { vesion, version_rl };
       }
     });
-    return Object.values(uniqueVersions);
+    let keySort = this.Object.keys(uniqueVersions).sort((a, b) => {
+      const partsA = a.split('.');
+      const partsB = b.split('.');
+
+      // So sánh năm
+      const yearComparison = parseInt(partsB[0]) - parseInt(partsA[0]);
+      if (yearComparison !== 0) return yearComparison;
+
+      // So sánh chữ cái
+      const letterComparison = partsB[1].replace(/[0-9]/g, '').localeCompare(partsA[1].replace(/[0-9]/g, ''));
+      if (letterComparison !== 0) return letterComparison;
+
+      // So sánh phần cuối cùng
+      return parseInt(partsB[2]) - parseInt(partsA[2]);
+    });
+
+    let newArr = []
+    keySort.forEach(element => {
+      newArr[element] = { vesion: element, version_rl: uniqueVersions[element].version_rl }
+    });
+
+    return Object.values(newArr);
   }
+
+
 
   public showDataFormDg(index: number) {
     this.hide[index] = !this.hide[index];
