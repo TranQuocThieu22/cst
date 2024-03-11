@@ -17,7 +17,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Net.WebSockets;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -368,328 +367,311 @@ namespace educlient.Controllers
             {
                 return new CSCaseResult { data = null, code = 400, result = false };
             }
-        }
-        private async Task<List<workItem0>> GetAllCase(string maTruong, string listTrangThai, string dateRange, CSCaseBindingModel model)
-        {
-            string ngayBatDau = "'01/01/2022'";
-            string ngayKetThuc = "'29/12/2024'";
-            if (dateRange == "22-23")
-            {
-                ngayBatDau = "'01/01/2022'";
-                ngayKetThuc = "'01/01/2023'";
-            }
-            else if (dateRange == "23-24")
-            {
-                ngayBatDau = "'01/01/2023'";
-                ngayKetThuc = "'01/01/2024'";
-            }
-            else if (dateRange == "24-25")
-            {
-                ngayBatDau = "'01/01/2024'";
-                ngayKetThuc = "'01/01/2025'";
-            }
-            if (currentUser?.Roles?.ToLower() == "administrator")
-            {
-                return await DoTfsFetchData("Edusoft.Net-CS"
-                                                    , "Edusoft.Net-CS%20Team"
-                                                    , "'CS Case', 'CS CASE'"
-                                                    , "" // matruong
-                                                    , ""
-                                                    , listTrangThai
-                                                    , " ([System.CreatedDate] >=" + ngayBatDau + ")"
-                                                      + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
-                                                      + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
-                                                      + " AND ([System.State] NOT IN ('Đóng case', 'Đã xử lý'))"
-                                                      + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
-                                                      + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
-                                                     , "");
-            }
-            else
-            {
 
-                return await DoTfsFetchData("Edusoft.Net-CS"
-                                                   , "Edusoft.Net-CS%20Team"
-                                                   , "'CS Case', 'CS CASE'"
-                                                   , maTruong
-                                                   , ""
-                                                   , listTrangThai
-                                                   , " ([System.CreatedDate] >=" + ngayBatDau + ")"
-                                                     + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
-                                                     + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
-                                                     + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
-                                                     + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
-                                                     , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
-                                                   //, "38696"
-                                                   );
-            }
-
-            /*        string ngayBatDau = "'01/01/2022'";
-                    string ngayKetThuc = "'01/01/2022'";*//*
-            string ngayBatDau = "'29/12/2023'";
-            string ngayKetThuc = "'29/12/2024'";
-            if (dateRange == "22-23")
-            {
-                ngayBatDau = "'29/12/2022'";
-                ngayKetThuc = "'29/12/2023'";
-            }
-            else if (dateRange == "23-24")
-            {
-                ngayBatDau = "'29/12/2023'";
-                ngayKetThuc = "'29/12/2024'";
-            }
-            if (UtilsCscase.IsSuperAdmin(currentUser))
-            {
-                return await DoTfsFetchData("Edusoft.Net-CS"
-                                                   , "Edusoft.Net-CS%20Team"
-                                                   , "'CS Case', 'CS CASE'"
-                                                   , "" // matruong
-                                                   , ""
-                                                   , listTrangThai
-                                                   , " ([System.CreatedDate] >=" + ngayBatDau + ")"
-                                                    + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
-
-                                                     + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
-                                                     + " AND ([System.State] NOT IN ('Đóng case', 'Đã xử lý'))"
-                                                     + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
-                                                     + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
-                                                    , "");
-            }
-            else
-            {
-
-                return await DoTfsFetchData("Edusoft.Net-CS"
-                                                   , "Edusoft.Net-CS%20Team"
-                                                   , "'CS Case', 'CS CASE'"
-                                                   , maTruong
-                                                   , ""
-                                                   , listTrangThai
-                                                   , " ([System.CreatedDate] >=" + ngayBatDau + ")"
-                                                       + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
-                                                     + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
-                                                     + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
-                                                     + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
-                                                     , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
-                );
-            }*/
         }
 
         [HttpPost, Route("cscase")]
         public async Task<CSCaseResult> ViewCsCase(CSCaseBindingModel model)
         {
-            // Nếu user chưa đăng nhập
-            if (currentUser == null) return new CSCaseResult { code = 500, result = false, message = "Not Login" };
+            if (currentUser == null)
+            {
+                return new CSCaseResult { code = 500, result = false, message = "Not Login" };
+            }
 
             //get data thong tin ma truong ten truong trong file .dat
-            var clients = UtilsCscase.GetEduClients();
+            var dir = Path.Combine(AppContext.BaseDirectory, "clients.dat");
+            var clients = JsonConvert.DeserializeObject<List<EduClient>>(System.IO.File.ReadAllText(dir));
 
-            // Lấy ra mã trường
-            string maTruong = "";
-            if (!UtilsCscase.IsSuperAdmin(currentUser)) maTruong = UtilsCscase.GetSchoolIdName(currentUser, clients);
+            string list_matruong = "";
 
-            // Xác định các điều kiện
+            if (currentUser?.Roles?.ToLower().Equals("admin", StringComparison.OrdinalIgnoreCase) == true
+            || currentUser?.Roles?.ToLower().Equals("administrator", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                list_matruong = "";
+            }
+            else
+            {
+                var temp = clients.Where(s => s.MaTruong.StartsWith(currentUser.MaTruong)).ToList();
+                List<string> empnames = (from e in temp select e.MaTruong).ToList();
+                string StringMaTruong = string.Join("','", empnames);
+                list_matruong = "'" + StringMaTruong + "'";
+            }
+
+            string ngayBatDau = "'01/01/2022'";
+            string ngayKetThuc = "'29/12/2024'";
+            if (model.dateRange == "22-23")
+            {
+                ngayBatDau = "'01/01/2022'";
+                ngayKetThuc = "'01/01/2023'";
+            }
+            else if (model.dateRange == "23-24")
+            {
+                ngayBatDau = "'01/01/2023'";
+                ngayKetThuc = "'01/01/2024'";
+            }
+            else if (model.dateRange == "24-25")
+            {
+                ngayBatDau = "'01/01/2024'";
+                ngayKetThuc = "'01/01/2025'";
+            }
             string list_trangthai = ""; // "'Mở case', 'Đang xử lý', 'Đã xử lý', 'Đã gửi mail', 'Đóng case'";
 
-            // Lấy tất cả case với các điều kiện
-            List<workItem0> lstAll = await GetAllCase(maTruong, list_trangthai, model.dateRange, model);
+            List<workItem0> lstAll;
 
-            // Nếu ko có case nào thì trả về api data emty
-            if (lstAll == null || lstAll.Count == 0)
+            if (currentUser?.Roles?.ToLower() == "administrator")
             {
-                var datatempEmty = new CSCaseDataDO
+                var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
+                                                , "Edusoft.Net-CS%20Team"
+                                                , "'CS Case', 'CS CASE'"
+                                                , "" // matruong
+                                                , ""
+                                                , list_trangthai
+                                                , " ([System.CreatedDate] >=" + ngayBatDau + ")"
+                                                  + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
+                                                  + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
+                                                  + " AND ([System.State] NOT IN ('Đóng case', 'Đã xử lý'))"
+                                                  + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
+                                                  + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
+                                                 , "");
+                lstAll = lstAll0;
+            }
+            else
+            {
+
+                var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
+                                               , "Edusoft.Net-CS%20Team"
+                                               , "'CS Case', 'CS CASE'"
+                                               , list_matruong
+                                               , ""
+                                               , list_trangthai
+                                               , " ([System.CreatedDate] >=" + ngayBatDau + ")"
+                                                 + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
+                                                 + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
+                                                 + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
+                                                 + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
+                                                 , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
+                                               //, "38696"
+                                               );
+                lstAll = lstAll0;
+            }
+            var dayTargetCanAdd = double.Parse(config["targetDateAddDay"]);
+            string sRet = "";
+            if (lstAll != null && lstAll.Count > 0)
+            {
+                DataTable dt = new DataTable("tblTfsData");
+                dt.Clear();
+                dt.Columns.Add("macase", typeof(int));
+                dt.Columns.Add("matruong", typeof(string));
+                dt.Columns.Add("ngaynhan", typeof(DateTime));
+                dt.Columns.Add("chitietyc", typeof(string));
+                dt.Columns.Add("trangthai", typeof(string));
+                dt.Columns.Add("ngaydukien", typeof(DateTime));
+                dt.Columns.Add("loaihopdong", typeof(string));
+                dt.Columns.Add("mucdo", typeof(string));
+                dt.Columns.Add("hieuluc", typeof(string));
+                dt.Columns.Add("dabangiao", typeof(string));
+                dt.Columns.Add("ngayemail", typeof(DateTime));
+                dt.Columns.Add("mailto", typeof(string));
+                dt.Columns.Add("loaicase", typeof(string));
+                dt.Columns.Add("phanhe", typeof(string));
+                dt.Columns.Add("comment", typeof(string));
+
+                if (!string.IsNullOrEmpty(model.filter?.macase))
+                {
+                    dt.Columns.Add("thongtinkh", typeof(string));
+                    dt.Columns.Add("dapungcongty", typeof(string));
+                }
+
+                foreach (var r in lstAll)
+                {
+                    DataRow dr = dt.NewRow();
+                    bool isMoCase = false;
+                    bool fixTrangThai = false;
+                    bool fixTrangThai2 = false;
+                    bool fixDaBanGiao = false;
+                    dr["trangthai"] = "";
+
+                    foreach (KeyValuePair<string, string> kvp in r.fields)
+                    {
+                        if (kvp.Key.ToLower().Equals("system.id"))
+                            dr["macase"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.customer"))
+                            dr["matruong"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("system.createddate"))
+                            dr["ngaynhan"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("system.title"))
+                            dr["chitietyc"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.priority"))
+                        {
+                            if (kvp.Value.ToLower().Contains("cần phân tích"))
+                                fixTrangThai = true;
+                        }
+                        else if (kvp.Key.ToLower().Equals("system.state"))
+                        {
+                            if (kvp.Value.ToLower().Contains("mở case") || kvp.Value.ToLower().Contains("đang xử lý"))
+                                isMoCase = true;
+
+                            if (kvp.Value.ToLower().Contains("đóng case"))
+                                fixDaBanGiao = true;
+
+                            dr["trangthai"] = kvp.Value;
+                        }
+                        else if (kvp.Key.ToLower().Equals("aq.targetdate"))
+                            dr["ngaydukien"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.contracttype"))
+                            dr["loaihopdong"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.prioritytype"))
+                            dr["mucdo"] = kvp.Value;
+
+                        else if (kvp.Key.ToLower().Equals("aq.releasedate"))
+                            dr["hieuluc"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("microsoft.vsts.common.statechangedate") && fixDaBanGiao == true)
+                            dr["ngayemail"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.mailto"))
+                            dr["mailto"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.casetype"))
+                            dr["loaicase"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.module"))
+                            dr["phanhe"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.comment"))
+                            dr["comment"] = (string.IsNullOrEmpty(kvp.Value) || kvp.Value == "0" || kvp.Value == "1") ? "" : kvp.Value;
+
+                        else if (kvp.Key.ToLower().Equals("system.assignedto"))
+                        {
+                            if (kvp.Value.ToLower().Contains("tiepnhan"))
+                                fixTrangThai = true;
+                            else if (kvp.Value.ToLower().Contains("root"))
+                                fixTrangThai2 = true;
+                        }
+                        else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("system.description"))
+                            dr["thongtinkh"] = kvp.Value;
+                        else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
+                            dr["dapungcongty"] = kvp.Value;
+
+                    } // for each fields
+
+                    dr["dabangiao"] = ""; dr["hieuluc"] = "";
+
+                    // FIX 1
+                    if (isMoCase)
+                    {
+                        if (fixTrangThai)
+                            dr["trangthai"] = "Đang phân tích";
+                        else if (fixTrangThai2)
+                            dr["trangthai"] = "Đang chờ phân tích nghiệp vụ phức tạp";
+                    }
+
+                    // FIX 2
+                    if (fixDaBanGiao) dr["dabangiao"] = "X";
+
+
+                    // Kiểm tra thời gian ngày dữ kiến đôi với releaseCStTime nếu ngày dự kiến trước releaseCST time thì không thêm ngày
+                    if (dr["ngaydukien"] != null)
+                    {
+                        DateTime d = (DateTime)dr["ngaydukien"];
+                        dr["hieuluc"] = calcTuanRelease(d);
+                    }
+                    bool ngayDuKienCoTruoc = UtilsCscase.IsNgayDuKienCoTruocReleaseCST((DateTime)dr["ngaydukien"]);
+                    if (ngayDuKienCoTruoc && dayTargetCanAdd >= 0 && dr["ngaydukien"].ToString() != "")
+                    {
+                        var targetDate = (DateTime)dr["ngaydukien"];
+                        if (dr["mucdo"].ToString().ToLower().Contains("1"))
+                        {
+                            targetDate = targetDate.AddDays(1);
+                            while (!IsWeekDay(targetDate))
+                            {
+                                targetDate = targetDate.AddDays(1);
+                            }
+                        }
+                        else
+                        if (dr["mucdo"].ToString().ToLower().Contains("2"))
+                        {
+                            for (int i = 0; i < 2; i++)
+                            {
+                                targetDate = targetDate.AddDays(1);
+                                while (!IsWeekDay(targetDate))
+                                {
+                                    targetDate = targetDate.AddDays(1);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < dayTargetCanAdd; i++)
+                            {
+                                /*if (dr["macase"].ToString() == "40818")
+                             {
+                                 await Console.Out.WriteLineAsync("ss");
+                              }*/
+                                targetDate = targetDate.AddDays(1);
+                                while (!IsWeekDay(targetDate))
+                                {
+                                    targetDate = targetDate.AddDays(1);
+                                }
+                            }
+                        }
+                        dr["ngaydukien"] = targetDate.ToString();
+                    }
+                    // FIX 4
+                    if (dr["trangthai"].ToString().ToLower().Contains("đang phân tích")
+                       || dr["trangthai"].ToString().ToLower().Contains("đang chờ phân tích"))
+                    {
+                        dr["dabangiao"] = "";
+                        dr["ngaydukien"] = DBNull.Value;
+                        dr["hieuluc"] = "";
+                    }
+
+                    if (dr["trangthai"].ToString().ToLower().Contains("đã xử lý"))
+                    {
+                        dr["trangthai"] = "Đang test";
+                    }
+
+                    dt.Rows.Add(dr);
+                } // each record
+
+                sRet = JsonConvert.SerializeObject(dt);
+                var list1 = JsonConvert.DeserializeObject<List<EduCase>>(sRet);
+
+                // get list truong trong TFS (1)
+                var truongtemp = list1.Select(o => new
+                {
+                    matruong = o.matruong,
+                    tentruong = "",
+                }).Distinct().OrderBy(s => s.matruong).ToList();
+
+                var listTruong = new List<DataTruong>();
+
+                if (string.IsNullOrEmpty(model.filter?.macase))
+                {
+                    // list truong trong TFS (1) JOIN file data.dat logon (2) => get ten truong
+                    listTruong = clients.Join(truongtemp, a => a.MaTruong, b => b.matruong,
+                    (a, b) => new DataTruong
+                    {
+                        matruong = a.MaTruong,
+                        tentruong = a.TenTruong
+                    }).Distinct().OrderBy(s => s.matruong).ToList();
+
+                }
+                list1.Where(x => !string.IsNullOrEmpty(x.thongtinkh)).ToList().ForEach(x => x.thongtinkh = EmbedHtmlContent(x.thongtinkh));
+                var datatemp = new CSCaseDataDO
+                {
+                    is_tfs = true,
+                    data_case = list1.ToList(),
+                    data_truong = listTruong.Distinct().ToList(),
+                };
+
+                return new CSCaseResult { data = datatemp, code = 200, result = true };
+            }
+            else
+            {
+                var datatemp = new CSCaseDataDO
                 {
                     is_tfs = true,
                     data_case = new List<EduCase>(),
                     data_truong = new List<DataTruong>(),
                 };
-                return new CSCaseResult { data = datatempEmty, code = 200, result = true, message = maTruong };
+                return new CSCaseResult { data = datatemp, code = 200, result = true, message = list_matruong };
             }
-
-            // Setup DataTable for case
-            DataTable dt = UtilsCscase.GetTFSTable();
-            if (!string.IsNullOrEmpty(model.filter?.macase))
-            {
-                dt.Columns.Add("thongtinkh", typeof(string));
-                dt.Columns.Add("dapungcongty", typeof(string));
-            }
-
-
-            foreach (var row in lstAll)
-            {
-                DataRow dr = dt.NewRow();
-                bool isMoCase = false;
-                bool fixTrangThai = false;
-                bool fixTrangThai2 = false;
-                bool fixDaBanGiao = false;
-                dr["trangthai"] = "";
-
-                foreach (KeyValuePair<string, string> kvp in row.fields)
-                {
-                    if (kvp.Key.ToLower().Equals("system.id"))
-                        dr["macase"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.customer"))
-                        dr["matruong"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("system.createddate"))
-                        dr["ngaynhan"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("system.title"))
-                        dr["chitietyc"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.priority"))
-                    {
-                        if (kvp.Value.ToLower().Contains("cần phân tích"))
-                            fixTrangThai = true;
-                    }
-                    else if (kvp.Key.ToLower().Equals("system.state"))
-                    {
-                        if (kvp.Value.ToLower().Contains("mở case") || kvp.Value.ToLower().Contains("đang xử lý"))
-                            isMoCase = true;
-
-                        if (kvp.Value.ToLower().Contains("đóng case"))
-                            fixDaBanGiao = true;
-
-                        dr["trangthai"] = kvp.Value;
-                    }
-                    else if (kvp.Key.ToLower().Equals("aq.targetdate"))
-                        dr["ngaydukien"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.contracttype"))
-                        dr["loaihopdong"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.prioritytype"))
-                        dr["mucdo"] = kvp.Value;
-
-                    else if (kvp.Key.ToLower().Equals("aq.releasedate"))
-                        dr["hieuluc"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("microsoft.vsts.common.statechangedate") && fixDaBanGiao == true)
-                        dr["ngayemail"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.mailto"))
-                        dr["mailto"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.casetype"))
-                        dr["loaicase"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.module"))
-                        dr["phanhe"] = kvp.Value;
-                    else if (kvp.Key.ToLower().Equals("aq.comment"))
-                        dr["comment"] = (string.IsNullOrEmpty(kvp.Value) || kvp.Value == "0" || kvp.Value == "1") ? "" : kvp.Value;
-
-                    else if (kvp.Key.ToLower().Equals("system.assignedto"))
-                    {
-                        if (kvp.Value.ToLower().Contains("tiepnhan"))
-                            fixTrangThai = true;
-                        else if (kvp.Value.ToLower().Contains("root"))
-                            fixTrangThai2 = true;
-                    }
-                    else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("system.description"))
-                        dr["thongtinkh"] = kvp.Value;
-                    else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
-                        dr["dapungcongty"] = kvp.Value;
-
-                }
-
-                dr["dabangiao"] = "";
-                dr["hieuluc"] = "";
-
-                // FIX 1
-                if (isMoCase)
-                {
-                    if (fixTrangThai) dr["trangthai"] = "Đang phân tích";
-                    else if (fixTrangThai2) dr["trangthai"] = "Đang chờ phân tích nghiệp vụ phức tạp";
-                }
-
-                // FIX 2
-                if (fixDaBanGiao) dr["dabangiao"] = "X";
-
-                var dayTargetCanAdd = double.Parse(config["targetDateAddDay"]);
-
-                // Kiểm tra thời gian ngày dữ kiến đôi với releaseCStTime nếu ngày dự kiến trước releaseCST time thì không thêm ngày
-                if (dr["ngaydukien"] != null)
-                {
-                    DateTime d = (DateTime)dr["ngaydukien"];
-                    dr["hieuluc"] = calcTuanRelease(d);
-                }
-                bool ngayDuKienCoTruoc = UtilsCscase.IsNgayDuKienCoTruocReleaseCST((DateTime)dr["ngaydukien"]);
-                if (ngayDuKienCoTruoc && dayTargetCanAdd >= 0 && dr["ngaydukien"].ToString() != "")
-                {
-                    var targetDate = (DateTime)dr["ngaydukien"];
-                    if (dr["mucdo"].ToString().ToLower().Contains("1"))
-                    {
-                        targetDate = targetDate.AddDays(1);
-                        while (!IsWeekDay(targetDate))
-                        {
-                            targetDate = targetDate.AddDays(1);
-                        }
-                    }
-                    else
-                    if (dr["mucdo"].ToString().ToLower().Contains("2"))
-                    {
-                        for (int i = 0; i < 2; i++)
-                        {
-                            targetDate = targetDate.AddDays(1);
-                            while (!IsWeekDay(targetDate))
-                            {
-                                targetDate = targetDate.AddDays(1);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < dayTargetCanAdd; i++)
-                        {
-                            /*if (dr["macase"].ToString() == "40818")
-                         {
-                             await Console.Out.WriteLineAsync("ss");
-                          }*/
-                            targetDate = targetDate.AddDays(1);
-                            while (!IsWeekDay(targetDate))
-                            {
-                                targetDate = targetDate.AddDays(1);
-                            }
-                        }
-                    }
-                    dr["ngaydukien"] = targetDate.ToString();
-                }
-                // FIX 4
-                if (dr["trangthai"].ToString().ToLower().Contains("đang phân tích")
-                   || dr["trangthai"].ToString().ToLower().Contains("đang chờ phân tích"))
-                {
-                    dr["dabangiao"] = "";
-                    dr["ngaydukien"] = DBNull.Value;
-                    dr["hieuluc"] = "";
-                }
-
-                if (dr["trangthai"].ToString().ToLower().Contains("đã xử lý"))
-                {
-                    dr["trangthai"] = "Đang test";
-                }
-                dt.Rows.Add(dr);
-            }
-
-            var listEduCase = JsonConvert.DeserializeObject<List<EduCase>>(JsonConvert.SerializeObject(dt));
-
-            // get list truong trong TFS (1)
-            var truongtemp = listEduCase.Select(eduCase => new
-            {
-                matruong = eduCase.matruong,
-                tentruong = "",
-            }).Distinct().OrderBy(s => s.matruong).ToList();
-
-            var listTruong = new List<DataTruong>();
-
-            if (string.IsNullOrEmpty(model.filter?.macase))
-            {
-                // list truong trong TFS (1) JOIN file data.dat logon (2) => get ten truong
-                listTruong = clients.Join(truongtemp, a => a.MaTruong, b => b.matruong,
-                (a, b) => new DataTruong
-                {
-                    matruong = a.MaTruong,
-                    tentruong = a.TenTruong
-                }).Distinct().OrderBy(s => s.matruong).ToList();
-
-            }
-            listEduCase.Where(x => !string.IsNullOrEmpty(x.thongtinkh)).ToList().ForEach(x => x.thongtinkh = EmbedHtmlContent(x.thongtinkh));
-            var datatemp = new CSCaseDataDO
-            {
-                is_tfs = true,
-                data_case = listEduCase.ToList(),
-                data_truong = listTruong.Distinct().ToList(),
-            };
-
-            return new CSCaseResult { data = datatemp, code = 200, result = true };
         }
 
         private static bool IsWeekDay(DateTime date)
@@ -1363,7 +1345,7 @@ public class ResultModel
     public object data { get; set; }
 }
 
-public class EduClient
+class EduClient
 {
     public string MaTruong { get; set; }
     public string TenTruong { get; set; }

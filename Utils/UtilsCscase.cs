@@ -10,23 +10,6 @@ namespace educlient.Utils
 {
     public class UtilsCscase
     {
-        public static List<EduClient> GetEduClients()
-        {
-            var dir = Path.Combine(AppContext.BaseDirectory, "clients.dat");
-            return JsonConvert.DeserializeObject<List<EduClient>>(File.ReadAllText(dir));
-        }
-        public static bool IsSuperAdmin(EduClient eduClient)
-        {
-            if (eduClient?.Roles?.ToLower().Equals("admin", StringComparison.OrdinalIgnoreCase) == true
-            || eduClient?.Roles?.ToLower().Equals("administrator", StringComparison.OrdinalIgnoreCase) == true)
-                return true;
-            return false;
-        }
-        public static string GetSchoolIdName(EduClient eduClient, List<EduClient> eduClients)
-        {
-            string schoolIdName = eduClients.Where(edus => edus.MaTruong == eduClient.MaTruong).FirstOrDefault().MaTruong;
-            return $"'{schoolIdName}'";
-        }
         public static DataTable GetTFSTable()
         {
             DataTable dt = new DataTable("tblTfsData");
