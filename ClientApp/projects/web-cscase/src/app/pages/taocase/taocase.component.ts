@@ -1,18 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CKEditorComponent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import { DataPhanHe, DataTruong, User } from '@mylibs';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
-import '../../../assets/ckeditor5/translations/vi';
-import { CKEditorComponent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import * as InlineEditor from '../../../assets/ckeditor5/ckeditor.js';
-import { CkeditorServer } from '../../shared/ckEditorLinkServer.module';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import '../../../assets/ckeditor5/translations/vi';
 import { MessBoxComponent } from '../../service/mess-box/mess-box.component';
-import { ChangeDetectorRef, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
+import { CkeditorServer } from '../../shared/ckEditorLinkServer.module';
 
 
 interface FileType { ext: string; type: string; }
@@ -85,6 +83,7 @@ export class TaocaseComponent {
       nguoi_yeu_cau_chucvu: [''],
       nguoi_yeu_cau_phongban: [''],
       nguoi_yeu_cau_dienthoai: [''],
+      nguoi_yeu_cau_email: [''],
     });
   }
 
@@ -105,6 +104,7 @@ export class TaocaseComponent {
       nguoi_yeu_cau_hc_chucvu: [''],
       nguoi_yeu_cau_hc_phongban: [''],
       nguoi_yeu_cau_hc_dienthoai: [''],
+      nguoi_yeu_cau_hc_email: [''],
     });
   }
 
@@ -140,7 +140,9 @@ export class TaocaseComponent {
   }
 
   private Tao_Case() {
-    this.spinner.show('spinner_tc');
+
+
+    // this.spinner.show('spinner_tc');
 
     if ((this.type_chucnang === 0 && this.f.hinh_anh.value) || (this.type_chucnang === 1 && this.f1.hinh_anh_hc.value)) {
       let filename_hinhanh = [];
@@ -178,7 +180,7 @@ export class TaocaseComponent {
       { "op": "add", "path": "/fields/AQ.EstimateTime", "from": null, "value": "1.0" },
       { "op": "add", "path": "/fields/AQ.Priority", "from": null, "value": "1 - Cần phân tích" },
       { "op": "add", "path": "/fields/AQ.Module", "from": null, "value": "PORTAL" },
-      { "op": "add", "path": "/fields/AQ.MailTo", "from": null, "value": "abc@abc.com" },
+      { "op": "add", "path": "/fields/AQ.MailTo", "from": null, "value": this.f.nguoi_yeu_cau_email.value ? this.f.nguoi_yeu_cau_email.value : this.f.nguoi_yeu_cau_hc_email.value },
       { "op": "add", "path": "/fields/AQ.CustomerTitle", "from": null, "value": "anh / chị" },
       { "op": "add", "path": "/fields/AQ.CaseType", "from": null, "value": this.type_chucnang === 0 ? "BF - Lỗi cần sửa code" : "NF - Yêu cầu mới cần sửa code" },
       { "op": "add", "path": "/fields/AQ.Customer", "from": null, "value": this.MaKhachHang },
@@ -217,8 +219,11 @@ export class TaocaseComponent {
           this.changeDetector.detectChanges();
           this.router.navigate(['/main/cscase']);
         }
-        else { this.spinner.hide('spinner_tc'); this.toastr.warning('Tạo ticket (Case) không thành công'); }
-      }, (error) => { this.spinner.hide('spinner_tc'); this.toastr.error('Tạo ticket (Case) không thành công'); });
+        else {
+          console.log("aaaa")
+          this.spinner.hide('spinner_tc'); this.toastr.warning('Tạo ticket (Case) không thành công');
+        }
+      }, (error) => { console.log(error.toString()); this.spinner.hide('spinner_tc'); this.toastr.error('Tạo ticket (Case) không thành công'); });
   }
 
   public Btn_Create_Case() {
