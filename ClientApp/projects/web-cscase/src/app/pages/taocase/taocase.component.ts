@@ -176,11 +176,18 @@ export class TaocaseComponent {
 
     let tmp = this.getdulieutrenform();
 
+    let mailTo = ""
+    try {
+      mailTo = this.f.nguoi_yeu_cau_email.value
+    } catch (error) {
+      mailTo = this.f1.nguoi_yeu_cau_hc_email.value
+    }
+
     const body = [
       { "op": "add", "path": "/fields/AQ.EstimateTime", "from": null, "value": "1.0" },
       { "op": "add", "path": "/fields/AQ.Priority", "from": null, "value": "1 - Cần phân tích" },
       { "op": "add", "path": "/fields/AQ.Module", "from": null, "value": "PORTAL" },
-      { "op": "add", "path": "/fields/AQ.MailTo", "from": null, "value": this.f.nguoi_yeu_cau_email.value ? this.f.nguoi_yeu_cau_email.value : this.f.nguoi_yeu_cau_hc_email.value },
+      { "op": "add", "path": "/fields/AQ.MailTo", "from": null, "value": mailTo },
       { "op": "add", "path": "/fields/AQ.CustomerTitle", "from": null, "value": "anh / chị" },
       { "op": "add", "path": "/fields/AQ.CaseType", "from": null, "value": this.type_chucnang === 0 ? "BF - Lỗi cần sửa code" : "NF - Yêu cầu mới cần sửa code" },
       { "op": "add", "path": "/fields/AQ.Customer", "from": null, "value": this.MaKhachHang },
