@@ -3,8 +3,8 @@ import { Component, OnInit } from "@angular/core";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
-import { EditRlcaseComponent } from "./edit-rlcase/edit-rlcase.component";
 import { MessBoxComponent } from "../../service/mess-box/mess-box.component";
+import { EditRlcaseComponent } from "./edit-rlcase/edit-rlcase.component";
 
 @Component({
   selector: "app-release-list",
@@ -15,10 +15,13 @@ export class ReleaseListComponent implements OnInit {
   public group: any;
   public Object = Object;
   public hide = [];
+  public hideChucNangMoi = []
+  public hideChinhSuaChoTungDonVi = []
   public countGroup: any;
   public indexGroup: any;
   public messError: string = "";
   public dataCsCase_Release: any;
+  public listChucNangMoi = []
   private RL_Full: any;
   public index_old: number = 0;
   public currentUser: any;
@@ -99,6 +102,11 @@ export class ReleaseListComponent implements OnInit {
         e.groupnum = 4;
       } else {
         e.groupnum = 3;
+      }
+    });
+    data.forEach(e => {
+      if (e.reviewcase == 'NEW') {
+        if (!this.listChucNangMoi.includes(e)) this.listChucNangMoi.push(e)
       }
     });
 
@@ -255,6 +263,23 @@ export class ReleaseListComponent implements OnInit {
 
     if (index != this.index_old) {
       this.hide[this.index_old] = false;
+    }
+    this.index_old = index;
+  }
+
+  public showChucNangMoi(index: number) {
+    this.hideChucNangMoi[index] = !this.hideChucNangMoi[index];
+
+    if (index != this.index_old) {
+      this.hideChucNangMoi[this.index_old] = false;
+    }
+    this.index_old = index;
+  }
+  public showChinhSuaChoTungDonVi(index: number) {
+    this.hideChinhSuaChoTungDonVi[index] = !this.hideChinhSuaChoTungDonVi[index];
+
+    if (index != this.index_old) {
+      this.hideChinhSuaChoTungDonVi[this.index_old] = false;
     }
     this.index_old = index;
   }

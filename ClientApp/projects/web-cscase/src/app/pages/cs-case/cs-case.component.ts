@@ -1,26 +1,21 @@
+import { DatePipe } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { FormControl } from "@angular/forms";
-import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
-import * as XLSX from "xlsx";
-import { DatePipe } from "@angular/common";
-import { NgxPrinterService } from "ngx-printer";
 import { Router } from "@angular/router";
-import { DataServices } from "../../service/dataservices.service";
-import { ChitietcaseComponent } from "../chitietcase/chitietcase.component";
 import {
-  ServerLinkService,
-  User,
-  DataState,
-  DataLoaiCase,
-  DataPhanHe,
-  CSCaseDataDO,
-  EduCase,
-  DataTruong,
+  CSCaseDataDO, DataLoaiCase,
+  DataPhanHe, DataState, DataTruong, EduCase, ServerLinkService,
+  User
 } from "@mylibs";
-import { NoidungcscaseComponent } from "../noidungcscase/noidungcscase.component";
+import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
+import { NgxPrinterService } from "ngx-printer";
+import { NgxSpinnerService } from "ngx-spinner";
+import * as XLSX from "xlsx";
+import { DataServices } from "../../service/dataservices.service";
 import { MessBoxComponent } from "../../service/mess-box/mess-box.component";
+import { ChitietcaseComponent } from "../chitietcase/chitietcase.component";
+import { NoidungcscaseComponent } from "../noidungcscase/noidungcscase.component";
 import { TraodoiComponent } from "../traodoi/traodoi.component";
 
 @Component({
