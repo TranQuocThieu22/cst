@@ -50,5 +50,6 @@ namespace educlient.Data
         public string chitietyc { get; set; }
         public string ngaydukien { get; set; }
         public string whatnew { get; set; }
+        public string reviewcase { get; set; }
     }
 }

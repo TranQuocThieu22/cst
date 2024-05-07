@@ -28,6 +28,8 @@ export interface EduCase {
   thongtinkh: string;
   dapungcongty: string;
   comment: string;
+
+  reviewcase: string;
 }
 
 export interface EduCase_Excel {
