@@ -47,7 +47,7 @@
                 <td style="border-right: 0; width: 100%; height: 50px;" class="align-middle text-nowrap">
                   <h6 class="text-info text-nowrap align-middle mb-0">
                     <div class="d-inline-flex">
-                      <span class="text-blue mr-1">
+                      <span class=" mr-1" style="color: red; text-transform: uppercase;">
                         <!-- Ngày chốt: {{gr.ngaychot}}</span>- {{gr.vesion}} -->
                         Các tiện ích, tính năng MỚI hiệu lực chung các đơn vị
                       </span>
@@ -55,12 +55,11 @@
                   </h6>
                 </td>
                 <td class="align-middle text-center" style="width: 50px; border-left: 0; ">
-                  <a *ngIf="!hideChucNangMoi[i]"><i class="fas fa-chevron-right"></i></a>
-                  <a *ngIf="hideChucNangMoi[i]"><i class="fas fa-chevron-down"></i></a>
+                  <a><i class="fas fa-chevron-right"></i></a>
                 </td>
               </div>
 
-              <td class="m-0 p-0" [hidden]="!hideChucNangMoi[i]">
+              <td class="m-0 p-0">
                 <table class="table table-sm table-responsive-sm table-bordered my-0 py-0">
                   <thead>
                     <tr class="text-center text-white" style="background-color: rgba(0, 0, 0, 0.734);">
@@ -90,7 +89,7 @@
                 <td style="border-right: 0; width: 100%; height: 50px;" class="align-middle text-nowrap">
                   <h6 class="text-info text-nowrap align-middle mb-0">
                     <div class="d-inline-flex">
-                      <span class="text-blue mr-1">
+                      <span style="color: red; text-transform: uppercase;" class=" mr-1">
                         <!-- Ngày chốt: {{gr.ngaychot}}</span>- {{gr.vesion}} -->
                         Các chỉnh sửa cho từng đơn vị
                       </span>
@@ -98,11 +97,10 @@
                   </h6>
                 </td>
                 <td class="align-middle text-center" style="width: 50px; border-left: 0; ">
-                  <a *ngIf="!showChinhSuaChoTungDonVi[i]"><i class="fas fa-chevron-right"></i></a>
-                  <a *ngIf="showChinhSuaChoTungDonVi[i]"><i class="fas fa-chevron-down"></i></a>
+                  <a><i class="fas fa-chevron-right"></i></a>
                 </td>
               </div>
-              <td colspan="3" [hidden]="!hideChinhSuaChoTungDonVi[i]" class="p-0">
+              <td colspan="3" class="p-0">
                 <table class="table table-sm table-responsive-sm table-bordered my-0 py-0">
                   <thead>
                     <tr class="text-center text-white" style="background-color: rgba(0, 0, 0, 0.734);">
