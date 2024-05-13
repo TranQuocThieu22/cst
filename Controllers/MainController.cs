@@ -273,7 +273,7 @@ namespace educlient.Controllers
                 foreach (var s in lst.Take(MAX_CASES).ToList())
                     sCaseList += (sCaseList.Length > 0 ? "," : "") + s.id;
 
-                string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,AQ.UserGuideRequested";
+                string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,AQ.UserGuideRequested,AQ.ReviewCase";
 
                 if (macase.Length > 0)
                 {
@@ -475,6 +475,7 @@ namespace educlient.Controllers
                 dt.Columns.Add("loaicase", typeof(string));
                 dt.Columns.Add("phanhe", typeof(string));
                 dt.Columns.Add("comment", typeof(string));
+                dt.Columns.Add("tinhnangmoi", typeof(bool));
 
                 if (!string.IsNullOrEmpty(model.filter?.macase))
                 {
@@ -491,10 +492,17 @@ namespace educlient.Controllers
                     bool fixDaBanGiao = false;
                     dr["trangthai"] = "";
 
+                    var z = r.fields;
                     foreach (KeyValuePair<string, string> kvp in r.fields)
                     {
+                        
                         if (kvp.Key.ToLower().Equals("system.id"))
                             dr["macase"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.reviewcase"))
+                        {
+                            dr["tinhnangmoi"] = true;
+                        }
+                     
                         else if (kvp.Key.ToLower().Equals("aq.customer"))
                             dr["matruong"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("system.createddate"))
@@ -861,7 +869,7 @@ namespace educlient.Controllers
                 foreach (var s in lst.Take(MAX_CASES).ToList())
                     sCaseList += (sCaseList.Length > 0 ? "," : "") + s.id;
 
-                string sTfsFieldList = "System.Id,AQ.Customer,System.CreatedDate,System.Title,AQ.TargetDate,AQ.CaseType,AQ.Module,AQ.Solution,AQ.TestState";
+                string sTfsFieldList = "System.Id,AQ.Customer,System.CreatedDate,System.Title,AQ.TargetDate,AQ.CaseType,AQ.Module,AQ.Solution,AQ.TestState,AQ.ReviewCase";
                 var tmpjson = await DoTfsQueryData(TFS_HOST
                                             , "tfs/aq/" + pProject + "/_apis/wit/workitems?ids=" + sCaseList
                                             , "&fields=" + sTfsFieldList
@@ -896,7 +904,6 @@ namespace educlient.Controllers
                                               );
 
             lstAll = lstAll0.Result;
-
             string sRet = "";
             if (lstAll != null && lstAll.Count > 0)
             {
@@ -916,12 +923,14 @@ namespace educlient.Controllers
                 dt.Columns.Add("whatnew", typeof(string));
                 dt.Columns.Add("teststate", typeof(string));
 
+                dt.Columns.Add("reviewcase", typeof(string));
+
                 foreach (var r in lstAll)
                 {
+                    Console.WriteLine(r.fields);
                     DataRow dr = dt.NewRow();
                     foreach (KeyValuePair<string, string> kvp in r.fields)
                     {
-
                         if (kvp.Key.ToLower().Equals("system.id"))
                             dr["macase"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("aq.customer"))
@@ -942,11 +951,12 @@ namespace educlient.Controllers
                             dr["phanhe"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("aq.comment"))
                             dr["comment"] = kvp.Value;
-
                         else if (kvp.Key.ToLower().Equals("aq.solution"))
                             dr["whatnew"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("aq.teststate"))
                             dr["teststate"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.reviewcase"))
+                            dr["reviewcase"] = kvp.Value;
                     } // for each fields
 
                     dt.Rows.Add(dr);
@@ -1013,6 +1023,7 @@ namespace educlient.Controllers
         public object GetSampleTable(CSCaseBindingModel data) // data web
         {
             var tb = database.Table<DataRelease>();
+            var z = data;
             var version = data.filter.version;
             var row = tb.Find(x => x.version == version);
 
@@ -1034,9 +1045,9 @@ namespace educlient.Controllers
                     phanhe = r.phanhe,
                     chitietyc = r.chitietyc,
                     //ngaydukien = r.ngaydukien,
-                    whatnew = r.whatnew
-                }
-                      );
+                    whatnew = r.whatnew,
+                    reviewcase = r.reviewcase
+                });
             }
             var ret = tb.FindAll();
             return ret;
@@ -1081,7 +1092,7 @@ namespace educlient.Controllers
             return ret;
         }
 
-
+       
         // public async Task<DataTable?> MSSQL_GetData(string pSQL)
         // {
         //     string connStr = m_connStr;
@@ -1377,6 +1388,8 @@ public class EduCase
     public string dapungcongty { get; set; }    //  microsoft.vsts.common.descriptionhtml
     public string comment { get; set; }         // Comment
 
+    public string reviewcase { get; set; }         // Comment
+
 
 }
 
@@ -1466,6 +1479,7 @@ public class CSCaseDataRelease
     public string chitietyc { get; set; }
     public string ngaydukien { get; set; }
     public string whatnew { get; set; }
+    public string reviewcase { get; set; }
 }
 
 // public class stringAdditionalDO

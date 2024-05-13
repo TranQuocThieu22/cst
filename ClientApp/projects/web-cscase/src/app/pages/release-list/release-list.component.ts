@@ -3,8 +3,8 @@ import { Component, OnInit } from "@angular/core";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
-import { EditRlcaseComponent } from "./edit-rlcase/edit-rlcase.component";
 import { MessBoxComponent } from "../../service/mess-box/mess-box.component";
+import { EditRlcaseComponent } from "./edit-rlcase/edit-rlcase.component";
 
 @Component({
   selector: "app-release-list",
@@ -15,10 +15,13 @@ export class ReleaseListComponent implements OnInit {
   public group: any;
   public Object = Object;
   public hide = [];
+  public hideChucNangMoi = []
+  public hideChinhSuaChoTungDonVi = []
   public countGroup: any;
   public indexGroup: any;
   public messError: string = "";
   public dataCsCase_Release: any;
+  public listChucNangMoi = []
   private RL_Full: any;
   public index_old: number = 0;
   public currentUser: any;
@@ -55,10 +58,9 @@ export class ReleaseListComponent implements OnInit {
         if (res && res.length > 0) {
           this.RL_Full = res.sort((a, b) => (a.version > b.version ? -1 : 1));
           this.group = this.groupArry(this.RL_Full);
+          console.log(this.group);
+
           this.dataCsCase_Release_Cache = this.RL_Full
-          // if (this.group && this.group.length > 0) {
-          //   this.dataCsCase_Release_Cache = this.group[0].ds_rl;
-          // };
         }
         this.spinner.hide("spinner_rlv");
       },
@@ -99,6 +101,11 @@ export class ReleaseListComponent implements OnInit {
         e.groupnum = 4;
       } else {
         e.groupnum = 3;
+      }
+    });
+    data.forEach(e => {
+      if (e.reviewcase == 'NEW') {
+        if (!this.listChucNangMoi.includes(e)) this.listChucNangMoi.push(e)
       }
     });
 
@@ -213,6 +220,24 @@ export class ReleaseListComponent implements OnInit {
 
     return 0; // Trả về 0 nếu tất cả các phần đều giống nhau
   }
+
+
+  private compareVersionCharacter(str1: string, str2: string): number {
+    // Lấy chữ cái
+    const char1 = str1.charAt(2);
+    const char2 = str2.charAt(2);
+
+    // Sắp xếp chữ cái theo thứ tự từ trên xuống
+    if (char1 < char2) return -1;
+    if (char1 > char2) return 1;
+
+    // So sánh 2 chữ số đầu
+    const num1 = parseInt(str1.substring(0, 2));
+    const num2 = parseInt(str2.substring(0, 2));
+
+    return num1 - num2;
+  }
+
   private groupArry(arr: any) {
     const uniqueVersions = [];
     arr.forEach(obj => {
@@ -224,21 +249,38 @@ export class ReleaseListComponent implements OnInit {
         uniqueVersions[key] = { vesion, version_rl };
       }
     });
-    let keySort = this.Object.keys(uniqueVersions).sort((a, b) => {
-      const partsA = a.split('.');
-      const partsB = b.split('.');
+    let keySort = this.Object.keys(uniqueVersions).sort((b, a) => {
+      const aParts = a.split('.');
+      const bParts = b.split('.');
 
       // So sánh năm
-      const yearComparison = parseInt(partsB[0]) - parseInt(partsA[0]);
-      if (yearComparison !== 0) return yearComparison;
+      const aYear = parseInt(aParts[0]);
+      const bYear = parseInt(bParts[0]);
+      if (aYear !== bYear) {
+        return aYear - bYear;
+      }
 
       // So sánh chữ cái
-      const letterComparison = partsB[1].replace(/[0-9]/g, '').localeCompare(partsA[1].replace(/[0-9]/g, ''));
-      if (letterComparison !== 0) return letterComparison;
+      const aChar = aParts[1];
+      const bChar = bParts[1];
+      if (aChar !== bChar) {
+        return aChar.localeCompare(bChar);
+      }
 
-      // So sánh phần cuối cùng
-      return parseInt(partsB[2]) - parseInt(partsA[2]);
+      // So sánh số chữ cái
+      const aNumChars = parseInt(aParts[2]);
+      const bNumChars = parseInt(bParts[2]);
+      if (aNumChars !== bNumChars) {
+        return aNumChars - bNumChars;
+      }
+
+      // So sánh number
+      const aNumber = parseInt(aParts[3]);
+      const bNumber = parseInt(bParts[3]);
+      return aNumber - bNumber;
     });
+    console.log(keySort);
+
 
     let newArr = []
     keySort.forEach(element => {
@@ -255,6 +297,23 @@ export class ReleaseListComponent implements OnInit {
 
     if (index != this.index_old) {
       this.hide[this.index_old] = false;
+    }
+    this.index_old = index;
+  }
+
+  public showChucNangMoi(index: number) {
+    this.hideChucNangMoi[index] = !this.hideChucNangMoi[index];
+
+    if (index != this.index_old) {
+      this.hideChucNangMoi[this.index_old] = false;
+    }
+    this.index_old = index;
+  }
+  public showChinhSuaChoTungDonVi(index: number) {
+    this.hideChinhSuaChoTungDonVi[index] = !this.hideChinhSuaChoTungDonVi[index];
+
+    if (index != this.index_old) {
+      this.hideChinhSuaChoTungDonVi[this.index_old] = false;
     }
     this.index_old = index;
   }

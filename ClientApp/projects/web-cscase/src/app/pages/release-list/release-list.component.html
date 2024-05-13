@@ -41,7 +41,65 @@
               </td>
             </tr>
 
-            <tr [hidden]="!hide[i]">
+            <tr [hidden]="!hide[i]" style="display: flex; flex-direction: column;">
+              <div class="text-nowrap clickable"
+                (click)="showChucNangMoi(i); selectNgay(gr.vesion); clearInputValues()">
+                <td style="border-right: 0; width: 100%; height: 50px;" class="align-middle text-nowrap">
+                  <h6 class="text-info text-nowrap align-middle mb-0">
+                    <div class="d-inline-flex">
+                      <span class=" mr-1" style="color: red; text-transform: uppercase;">
+                        <!-- Ngày chốt: {{gr.ngaychot}}</span>- {{gr.vesion}} -->
+                        Các tiện ích, tính năng MỚI hiệu lực chung các đơn vị
+                      </span>
+                    </div>
+                  </h6>
+                </td>
+                <td class="align-middle text-center" style="width: 50px; border-left: 0; ">
+                  <a><i class="fas fa-chevron-right"></i></a>
+                </td>
+              </div>
+
+              <td class="m-0 p-0">
+                <table class="table table-sm table-responsive-sm table-bordered my-0 py-0">
+                  <thead>
+                    <tr class="text-center text-white" style="background-color: rgba(0, 0, 0, 0.734);">
+                      <th style="width: 8%" class="align-middle text-nowrap">Phân hệ</th>
+                      <th class="custnd text-left align-middle text-nowrap">Nội dung xử lý</th>
+                    </tr>
+                  </thead>
+                </table>
+                <tbody>
+                  <tr class="text-center align-middle"
+                    *ngFor="let data of listChucNangMoi; trackBy: trackByFn; let x = index">
+
+                    <td class="align-middle text-nowrap text-center" [ngClass]="{'table-danger': data.groupnum ===1, 'table-warning': data.groupnum ===2,
+                                'table-primary': data.groupnum===3, 'table-success': data.groupnum===4 }">
+                      {{data.phanhe}}
+                    </td>
+
+                    <td class="align-middle text-left" style="width: 100%;" [ngClass]="{'table-danger': data.groupnum ===1, 'table-warning': data.groupnum ===2,
+                             'table-primary': data.groupnum===3, 'table-success': data.groupnum===4}"
+                      [innerHTML]="data.whatnew | safeHtml">
+                    </td>
+                  </tr>
+                </tbody>
+              </td>
+              <div class="text-nowrap clickable"
+                (click)="showChinhSuaChoTungDonVi(i); selectNgay(gr.vesion); clearInputValues()">
+                <td style="border-right: 0; width: 100%; height: 50px;" class="align-middle text-nowrap">
+                  <h6 class="text-info text-nowrap align-middle mb-0">
+                    <div class="d-inline-flex">
+                      <span style="color: red; text-transform: uppercase;" class=" mr-1">
+                        <!-- Ngày chốt: {{gr.ngaychot}}</span>- {{gr.vesion}} -->
+                        Các chỉnh sửa cho từng đơn vị
+                      </span>
+                    </div>
+                  </h6>
+                </td>
+                <td class="align-middle text-center" style="width: 50px; border-left: 0; ">
+                  <a><i class="fas fa-chevron-right"></i></a>
+                </td>
+              </div>
               <td colspan="3" class="p-0">
                 <table class="table table-sm table-responsive-sm table-bordered my-0 py-0">
                   <thead>
