@@ -362,7 +362,6 @@ export class CsCaseComponent implements OnInit {
           }
         } else {
           this.spinner.hide("spinner");
-          this.Disconnect(true);
         }
       },
       (error) => {
