@@ -1,9 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
 import { MessBoxComponent } from "../../service/mess-box/mess-box.component";
+import { NoidungcscaseComponent } from "../noidungcscase/noidungcscase.component";
 import { EditRlcaseComponent } from "./edit-rlcase/edit-rlcase.component";
 
 @Component({
@@ -28,6 +30,7 @@ export class ReleaseListComponent implements OnInit {
   public isadmin: boolean = false;
   public isshow: boolean = false;
   public dataCsCase_Release_Cache: any;
+  public ismess = "";
   public values = {
     loaicase: '', // Loại case
     matruong: '', // Khách hàng (Mã trường)
@@ -37,6 +40,7 @@ export class ReleaseListComponent implements OnInit {
   public filteredData = [];
 
   constructor(
+    private router: Router,
     private http: HttpClient,
     private spinner: NgxSpinnerService,
     public bsModalRef: BsModalRef,
@@ -58,8 +62,6 @@ export class ReleaseListComponent implements OnInit {
         if (res && res.length > 0) {
           this.RL_Full = res.sort((a, b) => (a.version > b.version ? -1 : 1));
           this.group = this.groupArry(this.RL_Full);
-          console.log(this.group);
-
           this.dataCsCase_Release_Cache = this.RL_Full
         }
         this.spinner.hide("spinner_rlv");
@@ -73,7 +75,7 @@ export class ReleaseListComponent implements OnInit {
   }
 
   public selectNgay(version: string) {
-
+    // this.listChucNangMoi = [] Fix list chức năng không đi theo phiên bản
     const rl_version = this.RL_Full.filter((s) => s.vesion === version);
     const tpm = rl_version.sort((a, b) => {
       if (a.loaicase > b.loaicase) {
@@ -87,7 +89,6 @@ export class ReleaseListComponent implements OnInit {
       }
       return 0;
     });
-
     this.group_filter(tpm);
   }
 
@@ -108,6 +109,18 @@ export class ReleaseListComponent implements OnInit {
         if (!this.listChucNangMoi.includes(e)) this.listChucNangMoi.push(e)
       }
     });
+    console.log(this.listChucNangMoi);
+
+
+    this.listChucNangMoi.sort((a, b) => {
+      if (a.phanhe < b.phanhe) {
+        return -1;
+      }
+      if (a.phanhe > b.phanhe) {
+        return 1;
+      }
+      return 0;
+    });
 
     const tpm_ = data.sort((a, b) => {
       if (a.groupnum > b.groupnum) {
@@ -120,6 +133,7 @@ export class ReleaseListComponent implements OnInit {
 
     this.dataCsCase_Release = tpm_;
 
+
     this.countGroup = this.dataCsCase_Release.reduce((a, b) => {
       a[b.loaicase] = (a[b.loaicase] || 0) + 1;
       return a;
@@ -129,7 +143,54 @@ export class ReleaseListComponent implements OnInit {
       return a;
     }, {});
   }
-
+  public XemChiTiet(dt: any, type: number = 0) {
+    const body = { filter: { ngaychot: "", macase: dt.macase }, dateRange: localStorage.getItem("dateRange") };
+    this.spinner.show("spinner");
+    this.http.post<any>("/api/main/cscase", body).subscribe(
+      (res: any) => {
+        if (res && res.code === 200) {
+          if (res.data && res.data.data_case) {
+            const initialState = { data: res.data.data_case, type };
+            this.modalService.show(NoidungcscaseComponent, {
+              initialState,
+              ignoreBackdropClick: true,
+              animated: false,
+              class: "model-fullscreen", // 'modal-xl',
+            });
+            this.spinner.hide("spinner");
+          } else {
+            this.spinner.hide("spinner");
+            this.ismess = "Không tìm thấy dữ liệu";
+          }
+        } else {
+          this.spinner.hide("spinner");
+          this.Disconnect(true);
+        }
+      });
+  }
+  private Disconnect(Mess: boolean = false) {
+    if (Mess) {
+      this.spinner.hide("spinner");
+      const initialState = {
+        icon: "w",
+        button: "OK",
+        message: "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại",
+      };
+      this.modalService.show(MessBoxComponent, {
+        initialState,
+        ignoreBackdropClick: true,
+        animated: false,
+        class: "modal-dialog-centered",
+      });
+      this.modalService.onHide.subscribe(() => {
+        this.spinner.hide("spinner");
+        this.router.navigate(["/"]);
+      });
+    } else {
+      this.spinner.hide("spinner");
+      this.router.navigate(["/"]);
+    }
+  }
   public Sua(gr) {
     if (this.isadmin) {
       const initialState = { version: gr.version };
@@ -206,37 +267,6 @@ export class ReleaseListComponent implements OnInit {
       });
     }
   }
-  private compareVersions(a, b) {
-    // Tách chuỗi version thành các phần
-    let partsA = a.version.split('.');
-    let partsB = b.version.split('.');
-
-    for (let i = 0; i < partsA.length; i++) {
-      if (partsA[i] !== partsB[i]) {
-        // So sánh số nếu có thể, nếu không thì so sánh như chuỗi
-        return isNaN(partsA[i]) || isNaN(partsB[i]) ? partsA[i].localeCompare(partsB[i]) : partsA[i] - partsB[i];
-      }
-    }
-
-    return 0; // Trả về 0 nếu tất cả các phần đều giống nhau
-  }
-
-
-  private compareVersionCharacter(str1: string, str2: string): number {
-    // Lấy chữ cái
-    const char1 = str1.charAt(2);
-    const char2 = str2.charAt(2);
-
-    // Sắp xếp chữ cái theo thứ tự từ trên xuống
-    if (char1 < char2) return -1;
-    if (char1 > char2) return 1;
-
-    // So sánh 2 chữ số đầu
-    const num1 = parseInt(str1.substring(0, 2));
-    const num2 = parseInt(str2.substring(0, 2));
-
-    return num1 - num2;
-  }
 
   private groupArry(arr: any) {
     const uniqueVersions = [];
@@ -279,8 +309,6 @@ export class ReleaseListComponent implements OnInit {
       const bNumber = parseInt(bParts[3]);
       return aNumber - bNumber;
     });
-    console.log(keySort);
-
 
     let newArr = []
     keySort.forEach(element => {

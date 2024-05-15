@@ -42,14 +42,13 @@
             </tr>
 
             <tr [hidden]="!hide[i]" style="display: flex; flex-direction: column;">
-              <div class="text-nowrap clickable"
-                (click)="showChucNangMoi(i); selectNgay(gr.vesion); clearInputValues()">
+              <div class="text-nowrap clickable" (click)="selectNgay(gr.vesion);showChucNangMoi(i);clearInputValues()">
                 <td style="border-right: 0; width: 100%; height: 50px;" class="align-middle text-nowrap">
                   <h6 class="text-info text-nowrap align-middle mb-0">
                     <div class="d-inline-flex">
                       <span class=" mr-1" style="color: red; text-transform: uppercase;">
                         <!-- Ngày chốt: {{gr.ngaychot}}</span>- {{gr.vesion}} -->
-                        Các tiện ích, tính năng MỚI hiệu lực chung các đơn vị
+                        Các tiện ích, tính năng mới được bổ sung cho trường
                       </span>
                     </div>
                   </h6>
@@ -63,6 +62,7 @@
                 <table class="table table-sm table-responsive-sm table-bordered my-0 py-0">
                   <thead>
                     <tr class="text-center text-white" style="background-color: rgba(0, 0, 0, 0.734);">
+                      <th style="width: 5%"></th>
                       <th style="width: 8%" class="align-middle text-nowrap">Phân hệ</th>
                       <th class="custnd text-left align-middle text-nowrap">Nội dung xử lý</th>
                     </tr>
@@ -71,7 +71,12 @@
                 <tbody>
                   <tr class="text-center align-middle"
                     *ngFor="let data of listChucNangMoi; trackBy: trackByFn; let x = index">
-
+                    <td>
+                      <button (click)="XemChiTiet(data, 0)" data-toggle="tooltip"
+                        title="Xem thông tin trả lời từ khách hàng" data-placement="top" type="button"
+                        class="btn btn-primary"><i class="fa-solid fa-eye"></i>
+                      </button>
+                    </td>
                     <td class="align-middle text-nowrap text-center" [ngClass]="{'table-danger': data.groupnum ===1, 'table-warning': data.groupnum ===2,
                                 'table-primary': data.groupnum===3, 'table-success': data.groupnum===4 }">
                       {{data.phanhe}}
@@ -91,7 +96,7 @@
                     <div class="d-inline-flex">
                       <span style="color: red; text-transform: uppercase;" class=" mr-1">
                         <!-- Ngày chốt: {{gr.ngaychot}}</span>- {{gr.vesion}} -->
-                        Các chỉnh sửa cho từng đơn vị
+                        Các tính năng được bổ sung/hiệu chỉnh theo yêu cầu
                       </span>
                     </div>
                   </h6>

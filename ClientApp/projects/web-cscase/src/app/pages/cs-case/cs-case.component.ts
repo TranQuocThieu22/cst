@@ -348,7 +348,6 @@ export class CsCaseComponent implements OnInit {
       (res: any) => {
         if (res && res.code === 200) {
           if (res.data && res.data.data_case) {
-            // console.log(res.data.data_case);
             const initialState = { data: res.data.data_case, type };
             this.modalService.show(NoidungcscaseComponent, {
               initialState,
