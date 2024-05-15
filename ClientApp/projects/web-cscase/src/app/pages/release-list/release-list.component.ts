@@ -164,7 +164,6 @@ export class ReleaseListComponent implements OnInit {
           }
         } else {
           this.spinner.hide("spinner");
-          this.Disconnect(true);
         }
       });
   }
