@@ -78,7 +78,9 @@ export class ReleaseListComponent implements OnInit {
     // this.listChucNangMoi = [] Fix list chức năng không đi theo phiên bản
     const rl_version = this.RL_Full.filter((s) => s.vesion === version);
     const tpm = rl_version.sort((a, b) => {
-      if (a.loaicase > b.loaicase) {
+      if (a.matruong < b.matruong) {
+        return -1;
+      } else if (a.loaicase > b.loaicase) {
         return 1;
       } else if (a.loaicase < b.loaicase) {
         return -1;
@@ -89,6 +91,7 @@ export class ReleaseListComponent implements OnInit {
       }
       return 0;
     });
+
     this.group_filter(tpm);
   }
 
@@ -109,8 +112,6 @@ export class ReleaseListComponent implements OnInit {
         if (!this.listChucNangMoi.includes(e)) this.listChucNangMoi.push(e)
       }
     });
-    console.log(this.listChucNangMoi);
-
 
     this.listChucNangMoi.sort((a, b) => {
       if (a.phanhe < b.phanhe) {
@@ -122,6 +123,7 @@ export class ReleaseListComponent implements OnInit {
       return 0;
     });
 
+
     const tpm_ = data.sort((a, b) => {
       if (a.groupnum > b.groupnum) {
         return 1;
@@ -132,7 +134,6 @@ export class ReleaseListComponent implements OnInit {
     });
 
     this.dataCsCase_Release = tpm_;
-
 
     this.countGroup = this.dataCsCase_Release.reduce((a, b) => {
       a[b.loaicase] = (a[b.loaicase] || 0) + 1;
