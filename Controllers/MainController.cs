@@ -1,6 +1,7 @@
 using educlient.Data;
 using educlient.Utils;
 using HtmlAgilityPack;
+using LiteDB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -1084,6 +1085,51 @@ namespace educlient.Controllers
             return ret;
         }
 
+        [HttpPost, Route("view_khao_sat")]
+        public object ViewKhaoSat()
+        {
+            var tb = database.Table<SettingModel>();
+            var ret = tb.Find(setting =>setting.name=="khaosat").FirstOrDefault();
+            if (ret == null)
+            {
+                tb.Insert(new SettingModel
+                {
+                    name = "khaosat",
+                    value = "https://example.com"
+                });
+            }
+            return ret;
+        }
+
+        [HttpPost, Route("update_khao_sat")]
+        public object UpdateKhaoSat(SettingRequest settingRequest)
+        {
+            // Lấy bảng SettingModel từ cơ sở dữ liệu
+            var tb = database.Table<SettingModel>();
+
+            // Tìm bản ghi có tên "khaosat"
+            var ret = tb.Find(setting => setting.name == settingRequest.name).FirstOrDefault();
+
+            // Nếu bản ghi không tồn tại, chèn mới
+            if (ret == null)
+            {
+                tb.Insert(new SettingModel
+                {
+                    name = settingRequest.name,
+                    value = settingRequest.value
+                });
+            }
+            // Nếu bản ghi tồn tại, cập nhật giá trị mới
+            else
+            {
+                ret.value = settingRequest.value;
+                tb.Update(ret);
+            }
+
+            // Trả về bản ghi đã được cập nhật hoặc thêm mới
+            return ret;
+        }
+
         [HttpPost, Route("ds_case_rl")]
         public object ViewCsCase_rl()
         {
@@ -1092,7 +1138,8 @@ namespace educlient.Controllers
             return ret;
         }
 
-       
+ 
+
         // public async Task<DataTable?> MSSQL_GetData(string pSQL)
         // {
         //     string connStr = m_connStr;
@@ -1300,7 +1347,24 @@ class TfsCaseDetailModel
     public List<workItem0> value { get; set; }
 
 }
+public class CSCaseBindingModel
+{
+    public CSCaseFilterDO filter { get; set; }
+    public string dateRange { get; set; }
+}
 
+public class SettingRequest
+{
+    public string name { get; set; }
+    public string value { get; set; }
+}
+class SettingModel
+{
+    [BsonId]
+    public int id { get; set; }
+    public string name { get; set; }
+    public string value { get; set; }
+}
 class TfsCaseModel
 {
     public int id { get; set; }
@@ -1434,11 +1498,6 @@ public class CSCaseDataDO
 
 }
 
-public class CSCaseBindingModel
-{
-    public CSCaseFilterDO filter { get; set; }
-    public string dateRange { get; set; }
-}
 
 public class CSCaseFilterDO
 {

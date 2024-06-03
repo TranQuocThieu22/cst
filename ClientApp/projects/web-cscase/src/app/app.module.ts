@@ -19,9 +19,10 @@ import { LoginComponent } from './pages/login/login.component';
 import { AppComponent } from './app.component';
 import { NoidungcscaseComponent } from './pages/noidungcscase/noidungcscase.component';
 import { MessBoxComponent } from './service/mess-box/mess-box.component';
+import { SettingComponent } from './pages/setting/setting.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent],
+  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent, SettingComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,

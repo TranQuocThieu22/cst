@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { DataServices } from '../../service/dataservices.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-main',
@@ -12,19 +13,35 @@ import { DataServices } from '../../service/dataservices.service';
 })
 
 export class MainComponent implements OnInit, OnDestroy {
-
+  public linkKhaoSat: string = 's'
   public islogin: boolean; public isadmin: boolean = false; public isadministrator: boolean = false;
   public tentheme: string; public showFlag: boolean; public ShowSideBar = false;
   public currentUser: any; public selectedIndex: number; public hideDiv = false;
   public hideDivTK = false; public isShowButtonScroll: boolean; private topShowing = 100;
   public IsData: boolean = false;
   selectedOption: string;
-  constructor(private serverLink: ServerLinkService, private spinner: NgxSpinnerService, public router: Router,
+  http: any;
+  constructor(private serverLink: ServerLinkService, private https: HttpClient, private spinner: NgxSpinnerService, public router: Router,
     public modalService: BsModalService, public bsModalRefEditor: BsModalRef, private dataServices: DataServices) {
 
     // serverLink.islogin.subscribe((state) => (this.islogin = state));
     // serverLink.isAdmin.subscribe((state) => (this.isadmin = state));
     // this.currentUser = this.authenticationService.currentUserValue;
+    this.https.post<any>("/api/main/view_khao_sat", "").subscribe({
+      next: (res: any) => {
+        this.linkKhaoSat = res.value
+        console.log(res);
+        // Your logic for handling the response
+        localStorage.setItem("linkhaosat", res.value)
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      }
+    });
     if (localStorage.getItem("dateRange") == null) {
       this.selectedOption = "24-25"
       localStorage.setItem("dateRange", this.selectedOption)

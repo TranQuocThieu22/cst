@@ -40,7 +40,11 @@
             <i class="fas fa-search"></i>
             Lọc case
           </button>
+
         </form>
+      </div>
+      <div class="alert alert-primary" role="alert">
+        Link khảo sát: <a href="{{ linkKhaoSat }}">{{ linkKhaoSat }}</a>
       </div>
 
       <nav class="navbar navbar-light navbar-expand-md bg-light" style="width: 100%; height: 45px;">
@@ -107,6 +111,12 @@
                   </li>
                 </ul>
               </li>
+              <ng-container *ngIf="isadmin">
+                <li class="nav-item">
+                  <a class="nav-link clickable" [routerLink]="['setting']">
+                    <i class="fa-solid fa-circle-info pr-1"></i>Cài đặt</a>
+                </li>
+              </ng-container>
             </ul>
 
             <div class="col text-nowrap text-lg-right px-1">

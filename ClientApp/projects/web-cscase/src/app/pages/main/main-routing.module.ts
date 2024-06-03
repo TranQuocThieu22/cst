@@ -9,6 +9,7 @@ import { UploadComponent } from '../../pages/upload/upload.component';
 import { Error404Component } from '../../pages/error404/error404.component';
 import { ReleaseComponent } from '../release/release.component';
 import { ReleaseListComponent } from '../release-list/release-list.component';
+import { SettingComponent } from '../setting/setting.component';
 
 const routes: Routes = [
   { path: 'main', pathMatch: 'full', redirectTo: 'cscase' },
@@ -21,6 +22,7 @@ const routes: Routes = [
       { path: 'upload', component: UploadComponent, canActivate: [AuthGuard], data: { roles: 'admin' } },
       { path: 'release', component: ReleaseComponent, canActivate: [AuthGuard], data: { roles: 'admin' } },
       { path: 'releasedlist', component: ReleaseListComponent, canActivate: [AuthGuard] },
+      { path: 'setting', component: SettingComponent, canActivate: [AuthGuard] },
       {
         path: 'taocase', loadChildren: () => import('../taocase/taocase.module')
           .then(m => m.TaocaseModule), canActivate: [AuthGuard],
