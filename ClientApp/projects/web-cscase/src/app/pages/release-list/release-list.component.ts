@@ -5,6 +5,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
 import { MessBoxComponent } from "../../service/mess-box/mess-box.component";
+import { NoidungcasenewComponent } from "../noidungcasenew/noidungcasenew.component";
 import { NoidungcscaseComponent } from "../noidungcscase/noidungcscase.component";
 import { EditRlcaseComponent } from "./edit-rlcase/edit-rlcase.component";
 
@@ -154,7 +155,7 @@ export class ReleaseListComponent implements OnInit {
         if (res && res.code === 200) {
           if (res.data && res.data.data_case) {
             const initialState = { data: res.data.data_case, type };
-            this.modalService.show(NoidungcscaseComponent, {
+            this.modalService.show(NoidungcasenewComponent, {
               initialState,
               ignoreBackdropClick: true,
               animated: false,

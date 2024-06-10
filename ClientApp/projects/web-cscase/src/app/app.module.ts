@@ -20,9 +20,10 @@ import { AppComponent } from './app.component';
 import { NoidungcscaseComponent } from './pages/noidungcscase/noidungcscase.component';
 import { MessBoxComponent } from './service/mess-box/mess-box.component';
 import { SettingComponent } from './pages/setting/setting.component';
+import { NoidungcasenewComponent } from './pages/noidungcasenew/noidungcasenew.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent, SettingComponent],
+  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent, SettingComponent, NoidungcasenewComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,

@@ -1,0 +1,82 @@
+<div class="modal-header">
+  <ngx-spinner name="spinner-dssv" [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+
+  <ng-container *ngIf="datacase">
+    <h6 class="modal-title text-uppercase">Nội dung chi tiết case</h6>
+  </ng-container>
+  <button type="button" class="close pull-right text-danger" aria-label="Close" (click)="bsModalRefEditor.hide()">
+    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+  </button>
+</div>
+
+<div class="modal-body py-2 px-0" style="background-color: whitesmoke">
+
+  <div class="container-fluid">
+    <ng-container *ngIf="datacase">
+
+      <div class="py-2" style="background-color: rgb(231, 230, 230)">
+        <div class="row mx-2">
+          <div class="col-lg-1 col-md-2 col-sm-12 font-weight-bold dontWrapIt">Mã Case:</div>
+          <div class="col-lg-11 col-md-10 col-sm-12 font-weight-bold">
+            <span class="text-danger">{{datacase.macase}}</span> - {{datacase.chitietyc}}
+          </div>
+        </div>
+      </div>
+
+      <!-- <ng-container *ngIf=" type===0 || type===2"> -->
+      <ng-container *ngIf="type === 0">
+        <div class="card mt-2 p-0">
+          <div class="card-header font-weight-bold text-primary">Nội dung cần tối ưu, bổ sung</div>
+          <div class="card-body m-0 p-0">
+            <div class="form-control custimg" (click)="onNoteClick($event)" [innerHTML]="datacase.thongtinkh | safeHtml"
+              style="overflow: auto; height: 68vh;">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- <ng-container *ngIf="type === 1 || type === 2"> -->
+      <ng-container *ngIf="type === 0">
+        <div class="card mt-2 p-0">
+          <div class="card-header font-weight-bold text-primary">Đáp ứng công ty</div>
+          <div class="card-body m-0 p-0">
+            <div class="form-control custimg" (click)="onNoteClick($event)"
+              [innerHTML]="datacase.dapungcongty | safeHtml" style="overflow: auto; height: 68vh;">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="type === 0">
+        <div class="card mt-2 p-0">
+          <div class="card-header font-weight-bold text-primary">AQ Comment</div>
+          <div class="card-body m-0 p-0">
+            <div class="form-control custimg" (click)="onNoteClick($event)"
+              [innerHTML]="datacase.comment !== null ? datacase.comment : '' | safeHtml"
+              style="overflow: auto; height: 10vh;">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+
+      <!-- <ng-container *ngIf="type === 0 || type === 2   <label class="font-weight-bold mt-2">Thông tin khách hàng</label>
+        <div class="form-control custimg" [innerHTML]="datacase.thongtinkh | safeHtml"
+          style="overflow: auto; height: 70vh;">
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="type === 1 || type === 2">
+        <label class="font-weight-bold mt-2">Đáp ứng công ty</label>
+        <div class="form-control custimg" [innerHTML]="datacase.dapungcongty | safeHtml"
+          style="overflow: auto; height: 70vh;">
+        </div>
+      </ng-container> -->
+
+    </ng-container>
+  </div>
+</div>
+
+<div class="modal-footer py-1">
+  <button type="button" class="btn btn-outline-danger float-right" (click)="bsModalRefEditor.hide()">Đóng</button>
+</div>
