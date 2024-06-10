@@ -8,6 +8,9 @@ import { HttpClient } from "@angular/common/http";
 })
 export class SettingComponent implements OnInit {
   public linkKhaoSat: string
+  public noiDung: string
+  public ngayBatDau = new Date();
+  public ngayKetThuc = new Date();
 
   constructor(private http: HttpClient) {
 
@@ -17,9 +20,12 @@ export class SettingComponent implements OnInit {
     this.http.post<any>("/api/main/view_khao_sat", "").subscribe({
       next: (res: any) => {
         this.linkKhaoSat = res.value
-        console.log(res);
+        this.ngayBatDau = new Date(res.ngayBatDau)
+        this.ngayKetThuc = new Date(res.ngayKetThuc)
         // Your logic for handling the response
         localStorage.setItem("linkhaosat", res.value)
+        this.linkKhaoSat = res.linkKhaoSat;
+        this.noiDung = res.noidung;
       },
       error: (error) => {
         console.log(error);
@@ -30,9 +36,15 @@ export class SettingComponent implements OnInit {
       }
     });
   }
+  onNgayBatDauChange(event: Date): void {
+    this.ngayBatDau = event;
+  }
 
+  onNgayKetThucChange(event: Date): void {
+    this.ngayKetThuc = event;
+  }
   public updateKhaoSat() {
-    this.http.post<any>("/api/main/update_khao_sat", { "name": "khaosat", "value": this.linkKhaoSat }).subscribe(
+    this.http.post<any>("/api/main/update_khao_sat", { "id": 1, "linkKhaoSat": this.linkKhaoSat, "noidung": this.noiDung, "ngayBatDau": this.ngayBatDau, "ngayKetThuc": this.ngayKetThuc }).subscribe(
       (res: any) => {
         if (res && res.code === 200) {
           localStorage.setItem("linkhaosat", res.value)

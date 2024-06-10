@@ -16,6 +16,7 @@ import { DataServices } from "../../service/dataservices.service";
 import { MessBoxComponent } from "../../service/mess-box/mess-box.component";
 import { ChitietcaseComponent } from "../chitietcase/chitietcase.component";
 import { NoidungcscaseComponent } from "../noidungcscase/noidungcscase.component";
+import { ThongbaokhaosatComponent } from "../thongbaokhaosat/thongbaokhaosat.component";
 import { TraodoiComponent } from "../traodoi/traodoi.component";
 
 @Component({
@@ -24,6 +25,9 @@ import { TraodoiComponent } from "../traodoi/traodoi.component";
   styleUrls: ["./cs-case.component.scss"],
 })
 export class CsCaseComponent implements OnInit {
+  public hienThongBao: boolean = false
+  public linkKhaoSat: string = '';
+  public noiDung: string = ''
   public cbState: DataState[];
   public cbloaicase: DataLoaiCase[];
   public cbphanhe: DataPhanHe[];
@@ -118,7 +122,9 @@ export class CsCaseComponent implements OnInit {
     } else {
       //tao case xong refesh lại case
       this.LoadCSCase();
+
     }
+
   }
 
   private LoadCSCase() {
@@ -145,6 +151,7 @@ export class CsCaseComponent implements OnInit {
         } else {
           this.spinner.hide("spinner");
           this.Disconnect();
+
         }
       },
       (error) => {
@@ -156,6 +163,7 @@ export class CsCaseComponent implements OnInit {
     setTimeout(() => {
       this.spinner.hide("spinner");
     }, 60000);
+
   }
 
   private xulycatch(data_goc) {
@@ -338,6 +346,33 @@ export class CsCaseComponent implements OnInit {
     }
 
     this.spinner.hide("spinner");
+    const initialState = { data: [], type: 0 };
+    this.http.post<any>("/api/main/view_khao_sat", "").subscribe({
+      next: (res: any) => {
+        var ngayHienTai = new Date();
+        if (ngayHienTai > new Date(res.ngayBatDau) && ngayHienTai < new Date(res.ngayKetThuc)) {
+          this.http.post<any>("/api/main/danh_sach_truong_khao_sat", "").subscribe({
+            next: (res: any) => {
+              if (res.some(item => item.tenTruong == JSON.parse(sessionStorage.getItem("current-user")).maTruong) == false) {
+                this.linkKhaoSat = res.linkKhaoSat
+                this.noiDung = res.noidung
+                this.modalService.show(ThongbaokhaosatComponent, {
+                  initialState,
+                  ignoreBackdropClick: true,
+                  animated: false,
+                  class: "modal-xl modal-dialog-centered", // 'modal-xl',
+                });
+              }
+            },
+          });
+        }
+
+
+
+
+      },
+    });
+
   }
 
   public XemChiTiet(dt: any, type: number = 0) {

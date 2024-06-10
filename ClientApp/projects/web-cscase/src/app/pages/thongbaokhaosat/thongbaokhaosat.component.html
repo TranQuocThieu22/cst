@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <ngx-spinner name="spinner-dssv" [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+
+  <ng-container *ngIf="datacase">
+    <div class="d-flex flex-column ">
+      <h6 class="modal-title text-uppercase">Khảo sát</h6>
+      <p>{{noiDung}}</p>
+    </div>
+  </ng-container>
+  <button type="button" class="close pull-right text-danger" aria-label="Close" (click)="bsModalRefEditor.hide()">
+    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+  </button>
+</div>
+<div class="modal-body px-0 d-flex justify-content-center" style="background-color: whitesmoke">
+  <!-- <div class="container-fluid">
+    <ng-container *ngIf="datacase">
+      <a href="{{ linkKhaoSat }}">{{ linkKhaoSat }}</a>
+    </ng-container>
+  </div> -->
+  <a target="_blank" href="{{linkKhaoSat}}" class="btn btn-success">Khảo sát ngay</a>
+</div>
+
+<div class="modal-footer py-1 pointer">
+  <div class="form-check">
+    <input role="button" class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+      (change)="onCheckboxChange($event)" [checked]="isChecked">
+    <label role="button" class="form-check-label" for="flexCheckDefault">
+      Quý khách hàng đã thực hiện khảo sát vui lòng tick chọn checkbox này và đóng thông báo.
+    </label>
+  </div>
+
+  <button type="button" class="btn btn-outline-danger float-right" (click)="dongThongBao()">Đóng</button>
+</div>

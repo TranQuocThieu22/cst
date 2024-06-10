@@ -1,14 +1,35 @@
 <div class="container-fluid py-4 w-75 d-flex justify-content-center">
-  <div class="input-group mb-3  d-flex justify-content-center">
-    <div class="mb-3">
+  <div class="input-group mb-3  d-flex flex-column justify-content-center">
+    <div class="mb-3 mr-3">
       <label for="basic-url" class="form-label">Nhập đường link khảo sát:</label>
       <div class="input-group">
         <input [(ngModel)]="linkKhaoSat" type="text" class="form-control" id="basic-url"
           aria-describedby="basic-addon3 basic-addon4">
-        <button (click)="updateKhaoSat()" class="btn btn-primary">Save</button>
       </div>
-      <div class="form-text" id="basic-addon4">Super admin nhập link khảo sát để hiển thị trên trang admin trường</div>
-
     </div>
+    <div class="mb-3">
+      <label for="basic-url" class="form-label">Nhập nội dung lời chào mời tham gia thực hiện khảo sát:</label>
+      <div class="input-group">
+        <input [(ngModel)]="noiDung" type="text" class="form-control" id="basic-url"
+          aria-describedby="basic-addon3 basic-addon4">
+
+      </div>
+    </div>
+    <div class="d-flex flex-row gap-3">
+      <div class="w-50">
+        <p><code>Ngày bắt đầu khảo sát</code> </p>
+        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
+          (bsValueChange)="onNgayBatDauChange($event)" [bsValue]="ngayBatDau"
+          [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY' }">
+      </div>
+      <div class="w-50">
+        <p><code>Ngày kết thúc khảo sát</code> </p>
+        <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
+          (bsValueChange)="onNgayKetThucChange($event)" [bsValue]="ngayKetThuc"
+          [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY' }">
+      </div>
+    </div>
+    <button (click)="updateKhaoSat()" class="btn btn-primary mt-2">Lưu</button>
   </div>
+
 </div>

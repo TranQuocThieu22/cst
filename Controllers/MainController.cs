@@ -1380,46 +1380,33 @@ namespace educlient.Controllers
         [HttpPost, Route("view_khao_sat")]
         public object ViewKhaoSat()
         {
-            var tb = database.Table<SettingModel>();
-            var ret = tb.Find(setting =>setting.name=="khaosat").FirstOrDefault();
-            if (ret == null)
+            var tb = database.Table<KhaoSat>();
+            var firstItem = tb.FindOne(Query.All());
+            if (firstItem == null)
             {
-                tb.Insert(new SettingModel
-                {
-                    name = "khaosat",
-                    value = "https://example.com"
-                });
+                tb.Insert(new KhaoSat{ linkKhaoSat= "https://example.com" ,noidung="Link khảo sát",ngayBatDau=DateTime.Now,ngayKetThuc=DateTime.Now.AddDays(1)});
             }
-            return ret;
+            return firstItem;
         }
 
         [HttpPost, Route("update_khao_sat")]
-        public object UpdateKhaoSat(SettingRequest settingRequest)
+        public object UpdateKhaoSat(KhaoSat khaoSatRequest)
         {
             // Lấy bảng SettingModel từ cơ sở dữ liệu
-            var tb = database.Table<SettingModel>();
+            var tb = database.Table<KhaoSat>();
 
             // Tìm bản ghi có tên "khaosat"
-            var ret = tb.Find(setting => setting.name == settingRequest.name).FirstOrDefault();
+            var firstItem = tb.FindOne(Query.All());
 
-            // Nếu bản ghi không tồn tại, chèn mới
-            if (ret == null)
-            {
-                tb.Insert(new SettingModel
-                {
-                    name = settingRequest.name,
-                    value = settingRequest.value
-                });
-            }
-            // Nếu bản ghi tồn tại, cập nhật giá trị mới
-            else
-            {
-                ret.value = settingRequest.value;
-                tb.Update(ret);
-            }
+
+            firstItem.noidung = khaoSatRequest.noidung;
+            firstItem.linkKhaoSat = khaoSatRequest.linkKhaoSat;
+            firstItem.ngayBatDau = khaoSatRequest.ngayBatDau;
+            firstItem.ngayKetThuc = khaoSatRequest.ngayKetThuc;
+            tb.Update(firstItem);
 
             // Trả về bản ghi đã được cập nhật hoặc thêm mới
-            return ret;
+            return firstItem;
         }
 
         [HttpPost, Route("ds_case_rl")]
@@ -1429,8 +1416,26 @@ namespace educlient.Controllers
             var ret = tb.FindAll();
             return ret;
         }
+        [HttpPost, Route("danh_sach_truong_khao_sat")]
+        public object ViewDanhSachTruongKhaoSat()   
+        {
+            var tb = database.Table<DanhSachTruongKhaoSat>();
+            var ret = tb.FindAll();
+            return ret;
+        }
+        [HttpPost, Route("them_truong_da_khao_sat")]
+        public object ThemTruongKhaoSat(DanhSachTruongKhaoSat danhSachTruongKhaoSat)
+        {
+            var tb = database.Table<DanhSachTruongKhaoSat>();
+            tb.Insert(new DanhSachTruongKhaoSat
+            {
+                tenTruong = danhSachTruongKhaoSat.tenTruong
+            });
+            var ret = tb.FindAll();
+            return ret;
+        }
 
- 
+
 
         // public async Task<DataTable?> MSSQL_GetData(string pSQL)
         // {
@@ -1657,6 +1662,23 @@ class SettingModel
     public string name { get; set; }
     public string value { get; set; }
 }
+
+public class KhaoSat
+{
+    [BsonId]
+    public int id { get; set; }
+    public string noidung { get; set; }
+    public string linkKhaoSat { get; set; }
+    public DateTime ngayBatDau { get; set; }
+    public DateTime ngayKetThuc { get; set; }
+}
+public class DanhSachTruongKhaoSat
+{
+    [BsonId]
+    public int id { get; set; }
+    public string tenTruong { get; set; }
+}
+
 class TfsCaseModel
 {
     public int id { get; set; }
