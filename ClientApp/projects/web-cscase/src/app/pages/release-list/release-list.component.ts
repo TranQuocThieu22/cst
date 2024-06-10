@@ -147,8 +147,10 @@ export class ReleaseListComponent implements OnInit {
   public XemChiTiet(dt: any, type: number = 0) {
     const body = { filter: { ngaychot: "", macase: dt.macase }, dateRange: localStorage.getItem("dateRange") };
     this.spinner.show("spinner");
-    this.http.post<any>("/api/main/cscase", body).subscribe(
+    this.http.post<any>("/api/main/viewcscasenew", body).subscribe(
       (res: any) => {
+        console.log(res);
+
         if (res && res.code === 200) {
           if (res.data && res.data.data_case) {
             const initialState = { data: res.data.data_case, type };
