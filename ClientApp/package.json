@@ -35,6 +35,7 @@
     "ng-apexcharts": "^1.7.1",
     "ng-packagr": "^14.1.0",
     "ngx-bootstrap": "^10.3.0",
+    "ngx-editor": "^12.3.0",
     "ngx-order-pipe": "^2.2.0",
     "ngx-printer": "^1.3.0",
     "ngx-spinner": "^14.0.0",

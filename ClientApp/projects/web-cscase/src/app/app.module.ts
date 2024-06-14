@@ -22,10 +22,11 @@ import { MessBoxComponent } from './service/mess-box/mess-box.component';
 import { SettingComponent } from './pages/setting/setting.component';
 import { NoidungcasenewComponent } from './pages/noidungcasenew/noidungcasenew.component';
 import { ThongbaokhaosatComponent } from './pages/thongbaokhaosat/thongbaokhaosat.component';
-
+import { NgxEditorModule } from 'ngx-editor';
 @NgModule({
   declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent, SettingComponent, NoidungcasenewComponent, ThongbaokhaosatComponent],
   imports: [
+    NgxEditorModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
