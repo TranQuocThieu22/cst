@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build-cscase": "ng build web-cscase",
     "cscase": "ng serve web-cscase --port 4202 --proxy-config projects/web-cscase/proxy.conf.js",
-    "build": "ng build",
+    "build": "ng build web-cscase",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
