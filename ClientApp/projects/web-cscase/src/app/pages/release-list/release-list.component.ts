@@ -78,19 +78,16 @@ export class ReleaseListComponent implements OnInit {
   public selectNgay(version: string) {
     // this.listChucNangMoi = [] Fix list chức năng không đi theo phiên bản
     const rl_version = this.RL_Full.filter((s) => s.vesion === version);
+
     const tpm = rl_version.sort((a, b) => {
-      if (a.matruong < b.matruong) {
-        return -1;
-      } else if (a.loaicase > b.loaicase) {
-        return 1;
-      } else if (a.loaicase < b.loaicase) {
-        return -1;
-      } else if (a.macase > b.macase) {
-        return 1;
-      } else if (a.macase < b.macase) {
-        return -1;
-      }
-      return 0;
+      if (a.matruong > b.matruong) return 1
+      if (a.matruong < b.matruong) return -1
+
+      if (a.phanhe > b.phanhe) return 1
+      if (a.phanhe < b.phanhe) return -1
+
+      if (a.loaicase > b.loaicase) return 1
+      if (a.loaicase < b.loaicase) return -1
     });
 
     this.group_filter(tpm);
