@@ -662,6 +662,7 @@ namespace educlient.Controllers
 
                 }
                 list1.Where(x => !string.IsNullOrEmpty(x.thongtinkh)).ToList().ForEach(x => x.thongtinkh = EmbedHtmlContent(x.thongtinkh));
+                list1.Where(x => !string.IsNullOrEmpty(x.dapungcongty)).ToList().ForEach(x => x.dapungcongty = EmbedHtmlContent(x.dapungcongty));
                 var datatemp = new CSCaseDataDO
                 {
                     is_tfs = true,
@@ -845,7 +846,7 @@ namespace educlient.Controllers
                                 fixTrangThai2 = true;
                         }
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("system.description"))
-                            dr["thongtinkh"] = kvp.Value;
+                             dr["thongtinkh"] = kvp.Value;
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
                             dr["dapungcongty"] = kvp.Value;
 
@@ -954,6 +955,7 @@ namespace educlient.Controllers
 
                 }
                 list1.Where(x => !string.IsNullOrEmpty(x.thongtinkh)).ToList().ForEach(x => x.thongtinkh = EmbedHtmlContent(x.thongtinkh));
+                list1.Where(x => !string.IsNullOrEmpty(x.dapungcongty)).ToList().ForEach(x => x.dapungcongty = EmbedHtmlContent(x.dapungcongty));
                 var datatemp = new CSCaseDataDO
                 {
                     is_tfs = true,
