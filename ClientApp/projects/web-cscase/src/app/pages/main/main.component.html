@@ -47,16 +47,16 @@
         Link khảo sát: <a href="{{ linkKhaoSat }}">{{ linkKhaoSat }}</a>
       </div> -->
 
-      <nav class="navbar navbar-light navbar-expand-md bg-light" style="width: 100%; height: 45px;">
+      <nav class="navbar navbar-light navbar-expand-xl bg-light" style="width: 100%; height: 50px;">
         <div class="container-fluid">
           <a class="navbar-brand clickable" [routerLink]="['cscase']">
             <i class="fa-solid fa-house pr-1"></i>Trang chủ</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            data-bs-target="#navbarSupportedContent"  aria-controls="navbarSupportedContent" aria-expanded="false"
             aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="collapse navbar-collapse bg-light" id="navbarSupportedContent" style="z-index: 500;" >
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
               <li class="nav-item dropdown">
@@ -98,7 +98,7 @@
 
 
 
-              <li class="nav-item dropdown" *ngIf="IsData">
+              <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fa-solid fa-envelope fa-beat pr-1"></i>Gửi thông tin
                 </a>
@@ -140,7 +140,7 @@
       <div class="container-fluid">
         <div [hidden]="!hideDiv" class="row">
           <div class="col-12">
-            <div class="w-100" style="float:left; position: relative;">
+            <div class="w-20" style="float:left; position: relative;">
               <div class="pr-2" style="z-index: 2; position:absolute; right: 0;">
                 <button type="button" class="close pull-right text-danger pr-2" title="Đóng" aria-label="Close"
                   (click)="closetrangthai()">
