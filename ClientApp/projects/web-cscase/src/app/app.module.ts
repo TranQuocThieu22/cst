@@ -23,8 +23,9 @@ import { SettingComponent } from './pages/setting/setting.component';
 import { NoidungcasenewComponent } from './pages/noidungcasenew/noidungcasenew.component';
 import { ThongbaokhaosatComponent } from './pages/thongbaokhaosat/thongbaokhaosat.component';
 import { NgxEditorModule } from 'ngx-editor';
+import { AqReportComponent } from './pages/aq-report/aq-report.component';
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent, SettingComponent, NoidungcasenewComponent, ThongbaokhaosatComponent],
+  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent, SettingComponent, NoidungcasenewComponent, ThongbaokhaosatComponent, AqReportComponent],
   imports: [
     NgxEditorModule,
     BrowserAnimationsModule,

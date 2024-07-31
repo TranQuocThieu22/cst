@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson.IO;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,10 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Mail;
-using System.Net.WebSockets;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BigID = System.Int64;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
@@ -111,7 +106,7 @@ namespace educlient.Controllers
         // AQ\tfsuser:2lvmoc5arhu2pshlcmh6kywgzgf3evpxgydjmefyjbf5jtvcw6za
         // Expired: 3/10/2022 3:16:51 PM
 
-        static string TFS_HOST = Startup.tfsUrl;
+        public static string TFS_HOST = Startup.tfsUrl;
 
         const string TFS_TOKEN_BASE64 = "QVFcdGZzdXNlcjpyY3phdmVsczJ6ZGw2bDZqdDZ6cXRxdGp0YW1wMzQ1NDQyYm9ycXk3cGNyd2doem1icHFx";
 
@@ -234,7 +229,7 @@ namespace educlient.Controllers
             }
         }
 
-        async Task<List<workItem0>> DoTfsFetchData(string pProject, string pProjectTeam, string pWIType, string pAQCustomer, string pFieldList, string pStateList, string pAppendWHERE, string macase)
+        public async Task<List<workItem0>> DoTfsFetchData(string pProject, string pProjectTeam, string pWIType, string pAQCustomer, string pFieldList, string pStateList, string pAppendWHERE, string macase)
         {
             //SELECT [System.Id] FROM WorkItems
             //macase = "36811";
@@ -496,14 +491,14 @@ namespace educlient.Controllers
                     var z = r.fields;
                     foreach (KeyValuePair<string, string> kvp in r.fields)
                     {
-                        
+
                         if (kvp.Key.ToLower().Equals("system.id"))
                             dr["macase"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("aq.reviewcase"))
                         {
                             dr["tinhnangmoi"] = true;
                         }
-                     
+
                         else if (kvp.Key.ToLower().Equals("aq.customer"))
                             dr["matruong"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("system.createddate"))
@@ -733,21 +728,21 @@ namespace educlient.Controllers
 
             List<workItem0> lstAll;
 
-                var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
-                                               , "Edusoft.Net-CS%20Team"
-                                               , "'CS Case', 'CS CASE'"
-                                               , ""
-                                               , ""
-                                               , list_trangthai
-                                               , " ([System.CreatedDate] >=" + ngayBatDau + ")"
-                                                 + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
-                                                 + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
-                                                 + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
-                                                 + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
-                                                 , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
-                                               //, "38696"
-                                               );
-                lstAll = lstAll0;
+            var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
+                                           , "Edusoft.Net-CS%20Team"
+                                           , "'CS Case', 'CS CASE'"
+                                           , ""
+                                           , ""
+                                           , list_trangthai
+                                           , " ([System.CreatedDate] >=" + ngayBatDau + ")"
+                                             + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
+                                             + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
+                                             + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
+                                             + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
+                                             , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
+                                           //, "38696"
+                                           );
+            lstAll = lstAll0;
             var dayTargetCanAdd = double.Parse(config["targetDateAddDay"]);
             string sRet = "";
             if (lstAll != null && lstAll.Count > 0)
@@ -846,7 +841,7 @@ namespace educlient.Controllers
                                 fixTrangThai2 = true;
                         }
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("system.description"))
-                             dr["thongtinkh"] = kvp.Value;
+                            dr["thongtinkh"] = kvp.Value;
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
                             dr["dapungcongty"] = kvp.Value;
 
@@ -1386,7 +1381,7 @@ namespace educlient.Controllers
             var firstItem = tb.FindOne(Query.All());
             if (firstItem == null)
             {
-                tb.Insert(new KhaoSat{ linkKhaoSat= "https://example.com" ,noidung="Link khảo sát",ngayBatDau=DateTime.Now,ngayKetThuc=DateTime.Now.AddDays(1)});
+                tb.Insert(new KhaoSat { linkKhaoSat = "https://example.com", noidung = "Link khảo sát", ngayBatDau = DateTime.Now, ngayKetThuc = DateTime.Now.AddDays(1) });
             }
             return firstItem;
         }
@@ -1419,7 +1414,7 @@ namespace educlient.Controllers
             return ret;
         }
         [HttpPost, Route("danh_sach_truong_khao_sat")]
-        public object ViewDanhSachTruongKhaoSat()   
+        public object ViewDanhSachTruongKhaoSat()
         {
             var tb = database.Table<DanhSachTruongKhaoSat>();
             var ret = tb.FindAll();
@@ -1640,7 +1635,7 @@ namespace educlient.Controllers
 
 }
 
-class TfsCaseDetailModel
+public class TfsCaseDetailModel
 {
     public int count { get; set; }
     public List<workItem0> value { get; set; }
@@ -1767,10 +1762,8 @@ public class EduCase
     public string thongtinkh { get; set; }      //  System.Description
     public string dapungcongty { get; set; }    //  microsoft.vsts.common.descriptionhtml
     public string comment { get; set; }         // Comment
-
-    public string reviewcase { get; set; }         // Comment
-
-
+    public string assignedto { get; set; }
+    public string reviewcase { get; set; }         // Comment       // Comment
 }
 
 public class DataTruong

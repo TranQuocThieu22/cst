@@ -1,0 +1,168 @@
+<div class="container-fluid chart-container my-4">
+  <div class="text-center mb-4">
+    <ngx-spinner name="spinner" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+  </div>
+  <div class="row row-cols-1 row-cols-md-2 g-4" *ngIf="charts">
+    <ng-container *ngFor="let chart of charts | keyvalue: originalOrder; let i = index">
+      <div class="col" *ngIf="!([4, 5, 6, 7, 8].includes(chart.value.id))">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h2 class="card-title h4 mb-3">{{chart.value.title}}</h2>
+            <div id="chart-{{chart.key}}" class="chart-wrapper">
+              <apx-chart [series]="chart.value.chartOptions.series" [chart]="chart.value.chartOptions.chart"
+                [dataLabels]="chart.value.chartOptions.dataLabels" [plotOptions]="chart.value.chartOptions.plotOptions"
+                [yaxis]="chart.value.chartOptions.yaxis" [legend]="chart.value.chartOptions.legend"
+                [fill]="chart.value.chartOptions.fill" [stroke]="chart.value.chartOptions.stroke"
+                [tooltip]="chart.value.chartOptions.tooltip" [xaxis]="chart.value.chartOptions.xaxis"
+                [labels]="chart.value.chartOptions.labels">
+              </apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+<div class="chart-container">
+  <div class="text-center mb-4">
+    <ngx-spinner name="spinner" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
+  </div>
+  <div class="d-flex flex-wrap">
+    <!-- Chart 1 -->
+    <div class="col-12 col-md-6 d-flex align-items-stretch" *ngIf="charts['BieuDoPhanBoSoCaseTheoThoiGianCho']">
+      <div class="card w-100">
+        <div class="card-body">
+          <h2 class="card-title h4 mb-3">{{charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].title}}</h2>
+          <div class="chart-wrapper">
+            <apx-chart [series]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.series"
+              [chart]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.chart"
+              [dataLabels]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.dataLabels"
+              [plotOptions]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.plotOptions"
+              [yaxis]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.yaxis"
+              [legend]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.legend"
+              [fill]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.fill"
+              [stroke]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.stroke"
+              [xaxis]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.xaxis"
+              [labels]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho'].chartOptions.labels"
+              style="width: 100%; height: 300px;">
+            </apx-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 2 -->
+    <div class="col-12 col-md-6 d-flex align-items-stretch" *ngIf="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2']">
+      <div class="card w-100">
+        <div class="card-body">
+          <h2 class="card-title h4 mb-3">{{charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].title}}</h2>
+          <div class="chart-wrapper">
+            <apx-chart [series]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.series"
+              [chart]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.chart"
+              [dataLabels]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.dataLabels"
+              [plotOptions]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.plotOptions"
+              [yaxis]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.yaxis"
+              [legend]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.legend"
+              [fill]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.fill"
+              [stroke]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.stroke"
+              [xaxis]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.xaxis"
+              [labels]="charts['BieuDoPhanBoSoCaseTheoThoiGianCho2'].chartOptions.labels" style="width: 100%; ">
+            </apx-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Cases -->
+    <div class="col-12 d-flex align-items-center justify-content-center">
+      <div class="card w-100">
+        <div class="card-body text-center">
+          <div class="card bg-gradient-primary text-white shadow-lg rounded-lg">
+            <div class="card-body text-center py-4">
+              <h3 class="card-title h4 mb-3">Tổng số case chờ xử lý</h3>
+              <h1 class="display-3 fw-bold">{{BieuDoPhanBoSoCaseTheoThoiGianCho_count}}</h1>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="w-100">
+  <div class="row d-flex flex-wrap text-center mb-4">
+    <!-- First column (spanning two rows) -->
+    <div class="col-md-6 d-flex flex-column">
+      <div class="row flex-grow-1">
+        <div class="col-12 d-flex align-items-center justify-content-center card">
+          <div *ngIf="charts['BieuDoTongHopAQReport']" class="chart-wrapper text-left">
+            <h2>{{charts['BieuDoTongHopAQReport'].title}}</h2>
+            <apx-chart [series]="charts['BieuDoTongHopAQReport'].chartOptions.series"
+              [chart]="charts['BieuDoTongHopAQReport'].chartOptions.chart"
+              [dataLabels]="charts['BieuDoTongHopAQReport'].chartOptions.dataLabels"
+              [plotOptions]="charts['BieuDoTongHopAQReport'].chartOptions.plotOptions"
+              [yaxis]="charts['BieuDoTongHopAQReport'].chartOptions.yaxis"
+              [legend]="charts['BieuDoTongHopAQReport'].chartOptions.legend"
+              [fill]="charts['BieuDoTongHopAQReport'].chartOptions.fill"
+              [stroke]="charts['BieuDoTongHopAQReport'].chartOptions.stroke"
+              [xaxis]="charts['BieuDoTongHopAQReport'].chartOptions.xaxis"
+              [labels]="charts['BieuDoTongHopAQReport'].chartOptions.labels" style="width: 100%; height: 300px;">
+            </apx-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column with two new columns stacked vertically -->
+    <div class="col-md-6 d-flex flex-column">
+      <!-- Top column in the right side -->
+      <div class="row flex-grow-1 mb-3">
+        <div class="col-12 d-flex align-items-stretch">
+          <div class="card w-100">
+            <div class="card-body">
+              <h2 class="card-title h4 mb-3 text-left">{{charts['BieuDoDEVReport'].title}}</h2>
+              <div class="chart-wrapper">
+                <apx-chart [series]="charts['BieuDoDEVReport'].chartOptions.series"
+                  [chart]="charts['BieuDoDEVReport'].chartOptions.chart"
+                  [dataLabels]="charts['BieuDoDEVReport'].chartOptions.dataLabels"
+                  [plotOptions]="charts['BieuDoDEVReport'].chartOptions.plotOptions"
+                  [yaxis]="charts['BieuDoDEVReport'].chartOptions.yaxis"
+                  [legend]="charts['BieuDoDEVReport'].chartOptions.legend"
+                  [fill]="charts['BieuDoDEVReport'].chartOptions.fill"
+                  [stroke]="charts['BieuDoDEVReport'].chartOptions.stroke"
+                  [xaxis]="charts['BieuDoDEVReport'].chartOptions.xaxis"
+                  [labels]="charts['BieuDoDEVReport'].chartOptions.labels" style="width: 100%; height: 300px;">
+                </apx-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom column in the right side -->
+      <div class="row flex-grow-1">
+        <div class="col-12 d-flex align-items-stretch">
+          <div class="card w-100">
+            <div class="card-body">
+              <h2 class="card-title h4 mb-3 text-left">{{charts['BieuDoSUPReport'].title}}</h2>
+              <div class="chart-wrapper">
+                <apx-chart [series]="charts['BieuDoSUPReport'].chartOptions.series"
+                  [chart]="charts['BieuDoSUPReport'].chartOptions.chart"
+                  [dataLabels]="charts['BieuDoSUPReport'].chartOptions.dataLabels"
+                  [plotOptions]="charts['BieuDoSUPReport'].chartOptions.plotOptions"
+                  [yaxis]="charts['BieuDoSUPReport'].chartOptions.yaxis"
+                  [legend]="charts['BieuDoSUPReport'].chartOptions.legend"
+                  [fill]="charts['BieuDoSUPReport'].chartOptions.fill"
+                  [stroke]="charts['BieuDoSUPReport'].chartOptions.stroke"
+                  [xaxis]="charts['BieuDoSUPReport'].chartOptions.xaxis"
+                  [labels]="charts['BieuDoSUPReport'].chartOptions.labels" style="width: 100%; height: 300px;">
+                </apx-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

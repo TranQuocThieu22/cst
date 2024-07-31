@@ -1,0 +1,19 @@
+.chart-container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.chart-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 0.5rem;
+  }
+}
