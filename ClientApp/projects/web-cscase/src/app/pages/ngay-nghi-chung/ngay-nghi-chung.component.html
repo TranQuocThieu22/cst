@@ -1,0 +1,65 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="card mb-4">
+
+      <div class="card-body">
+        <h2 class="card-title">
+          <i class="fas fa-calendar-alt me-2" aria-hidden="true"></i>
+          Ngày nghỉ chung
+        </h2>
+        <div class="table-responsive">
+          <!-- <table class="table table-hover table-striped table-bordered table-responsive">
+            <thead class="table-dark">
+              <tr class="align-middle text-center align-items-center">
+                <th class="py-3 align-middle">ID</th>
+                <th class="py-3 align-middle">TFSName</th>
+                <th style="width: 15%;" class="py-3 align-middle">Full Name</th>
+                <th style="width: 10%;" class="py-3 align-middle">Email</th>
+                <th style="width: 5%;" class="py-3 align-middle">Phone</th>
+                <th style="width: 7%;" class="py-3 align-middle text-center align-middle">Birth Date</th>
+                <th style="width: 7%;" class="py-3 align-middle">Start Date</th>
+                <th class="py-3 align-middle">Nick Name</th>
+                <th class="py-3 align-middle">Role</th>
+                <th style="width: 1%;" class="py-3 align-middle">Is Leader</th>
+                <th style="width: 1%;" class="py-3 align-middle">Is Lunch</th>
+                <th style="width: 1%;" class="py-3 align-middle">WFH Quota</th>
+                <th style="width: 1%;" class="py-3 align-middle">Absence Quota</th>
+                <th style="width: 1%;" class="py-3 align-middle">Is Active</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of nhanSuAq" class="align-middle align-items-center">
+                <td class="py-2 align-middle text-center">{{ data.id }}</td>
+                <td class="py-2 align-middle">{{ data.TFSName }}</td>
+                <td class="py-2 align-middle">{{ data.fullName }}</td>
+                <td class="py-2 align-middle">{{ data.email }}</td>
+                <td class="py-2 align-middle">{{ data.phone }}</td>
+                <td class="py-2 align-middle text-center">{{ data.birthDate | date:'dd/MM/yyyy' }}</td>
+                <td class="py-2 align-middle text-center">{{ data.startDate | date:'dd/MM/yyyy' }}</td>
+                <td class="py-2 align-middle">{{ data.nickName }}</td>
+                <td class="py-2 align-middle">{{ data.role }}</td>
+                <td class="py-2 align-middle text-center">
+                  <span class="badge rounded-pill" [ngClass]="data.isLeader ? 'bg-success' : 'text-dark'">
+                    {{ data.isLeader ? 'Yes' : 'No' }}
+                  </span>
+                </td>
+                <td class="py-2 align-middle text-center">
+                  <span class="badge rounded-pill" [ngClass]="data.isLunch ? 'bg-success' : 'text-dark'">
+                    {{ data.isLunch ? 'Yes' : 'No' }}
+                  </span>
+                </td>
+                <td class="py-2 align-middle text-center">{{ data.WFHQuota }}</td>
+                <td class="py-2 align-middle text-center">{{ data.absenceQuota }}</td>
+                <td class="py-2 align-middle text-center">
+                  <span class="badge rounded-pill" [ngClass]="data.isActive ? 'bg-success' : 'bg-danger'">
+                    {{ data.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table> -->
+
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+      <div class="position-sticky pt-3">
+        <h1 routerLink="aq">
+          <a class="nav-link active" role="button">Dashboard</a>
+        </h1>
+        <ul class="nav flex-column">
+          <li class="nav-item" routerLink="nhansuaq">
+            <a class="nav-link active" role="button">
+              <i class="fas fa-users me-2"></i>
+              Nhân sự AQ
+            </a>
+          </li>
+          <li class="nav-item" routerLink="ngaynghichungaq">
+            <a class="nav-link" role="button">
+              <i class="fas fa-calendar-alt me-2"></i>
+              Ngày nghỉ chung
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-briefcase me-2"></i>
+              Ngày công tác
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-umbrella-beach me-2"></i>
+              Ngày nghỉ phép
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-laptop-house me-2"></i>
+              Làm việc online
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

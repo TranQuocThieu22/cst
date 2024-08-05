@@ -1,41 +1,39 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MainRoutingModule } from './main-routing.module';
-import { MainComponent } from './main.component';
-import { NgxSpinnerModule } from 'ngx-spinner';
 import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { UploadComponent } from '../upload/upload.component';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { NgxPrinterModule } from 'ngx-printer';
+
+import { AqMainRoutingModule } from './aq-main-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { JwtInterceptor, LibsModule } from '@mylibs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LibsModule, JwtInterceptor } from '@mylibs';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { CsCaseComponent } from '../cs-case/cs-case.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { NgxPrinterModule } from 'ngx-printer';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { SharedModule } from 'primeng/api';
 import { DataServices } from '../../service/dataservices.service';
 import { TransTextService } from '../../service/trans-text.service';
 import { UploadFilesService } from '../../service/upload-files.service';
+import { ChitietcaseComponent } from '../chitietcase/chitietcase.component';
+import { CsCaseComponent } from '../cs-case/cs-case.component';
 import { Error404Component } from '../error404/error404.component';
+import { MainRoutingModule } from '../main/main-routing.module';
+import { MainComponent } from '../main/main.component';
+import { EditRlcaseComponent } from '../release-list/edit-rlcase/edit-rlcase.component';
+import { ReleaseListComponent } from '../release-list/release-list.component';
 import { ReleaseComponent } from '../release/release.component';
 import { ThongkeComponent } from '../thongke/thongke.component';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { ReleaseListComponent } from '../release-list/release-list.component';
-import { EditRlcaseComponent } from '../release-list/edit-rlcase/edit-rlcase.component';
 import { TraodoiComponent } from '../traodoi/traodoi.component';
-import { ChitietcaseComponent } from '../chitietcase/chitietcase.component';
-import { AqMainModule } from '../aq-main/aq-main.module';
+import { UploadComponent } from '../upload/upload.component';
+import { AqMainComponent } from './aq-main.component';
+import { ReportCaNhanComponent } from '../report-ca-nhan/report-ca-nhan.component';
+import { NhanSuAqComponent } from '../nhan-su-aq/nhan-su-aq.component';
+
 
 @NgModule({
-  declarations: [MainComponent, CsCaseComponent, ThongkeComponent,
-    UploadComponent, ReleaseComponent, ReleaseListComponent, ChitietcaseComponent,
-    EditRlcaseComponent, TraodoiComponent, Error404Component,],
+  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent],
   imports: [
-    AqMainModule,
     FormsModule,
-    CommonModule,
     ReactiveFormsModule,
     MainRoutingModule,
     SharedModule,
@@ -46,9 +44,8 @@ import { AqMainModule } from '../aq-main/aq-main.module';
     NgSelectModule,
     BsDatepickerModule.forRoot(),
     NgxPrinterModule.forRoot({ timeToWaitRender: 500 }),
-    ModalModule.forRoot(),
-    PaginationModule.forRoot(),
-    TooltipModule.forRoot(),
+    CommonModule,
+    AqMainRoutingModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
@@ -60,4 +57,4 @@ import { AqMainModule } from '../aq-main/aq-main.module';
     UploadComponent, ReleaseComponent, ReleaseListComponent,
     EditRlcaseComponent, TraodoiComponent, Error404Component]
 })
-export class MainModule { }
+export class AqMainModule { }
