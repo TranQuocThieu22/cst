@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-aq-main',
@@ -7,10 +8,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./aq-main.component.scss']
 })
 export class AqMainComponent implements OnInit {
-
-  constructor(private router: Router) { }
+  visibleSidebar1;
+  constructor(private router: Router,
+    private primengConfig: PrimeNGConfig
+  ) { }
 
   ngOnInit(): void {
+    this.primengConfig.ripple = true;
   }
   public NavigateNhanSuAq() {
     this.router.navigate(['main/aq-main/nhansuaq']);

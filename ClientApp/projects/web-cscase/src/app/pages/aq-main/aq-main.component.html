@@ -1,11 +1,13 @@
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
-    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-      <div class="position-sticky pt-3">
-        <h1 routerLink="aq">
-          <a class="nav-link active" role="button">Dashboard</a>
-        </h1>
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse css_box_3">
+      <div class="position-sticky pt-3 css_box_2">
+
+        <div class="text-start css_box_1">
+          <a routerLink="aq" class="nav-link active fw-bold fs-4">Danh mục</a>
+        </div>
+
         <ul class="nav flex-column">
           <li class="nav-item" routerLink="nhansuaq">
             <a class="nav-link active" role="button">
@@ -40,7 +42,54 @@
         </ul>
       </div>
     </nav>
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+
+    <!-- <p-sidebar [(visible)]="visibleSidebar1" [baseZIndex]="10000" [style]="{width: '250px'}">
+      <div class="text-start css_box_1">
+        <a routerLink="aq" class="nav-link active fw-bold fs-4">Dashboard</a>
+      </div>
+
+      <ul class="nav flex-column">
+        <li class="nav-item" routerLink="nhansuaq">
+          <a class="nav-link active" role="button">
+            <i class="fas fa-users me-2"></i>
+            Nhân sự AQ
+          </a>
+        </li>
+        <li class="nav-item" routerLink="ngaynghichungaq">
+          <a class="nav-link" role="button">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Ngày nghỉ chung
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="fas fa-briefcase me-2"></i>
+            Ngày công tác
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="fas fa-umbrella-beach me-2"></i>
+            Ngày nghỉ phép
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="fas fa-laptop-house me-2"></i>
+            Làm việc online
+          </a>
+        </li>
+      </ul>
+
+      <p-button type="button" (click)="visibleSidebar1 = false" label="Close"
+        styleClass="p-button-secondary mt-3"></p-button>
+    </p-sidebar> -->
+
+
+    <main class="col-md-{{visibleSidebar1 ? '12' : '9'}} ms-sm-auto col-lg-10 px-md-4 main-content">
+      <!-- <main class=""> -->
+      <!-- <p-button type="button" (click)="visibleSidebar1 = true" icon="pi pi-arrow-right"></p-button> -->
+
       <router-outlet></router-outlet>
     </main>
   </div>

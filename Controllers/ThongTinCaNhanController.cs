@@ -42,14 +42,21 @@ namespace educlient.Controllers
         {
             var insertData = inputData.Select(input => new DsThongTinCaNhanDataDO
             {
-                NgayBatDauLamViec = input.NgayBatDauLamViec,
+                TFSName = input.TFSName,
+                fullName = input.fullName,
                 email = input.email,
-                ngaySinh = input.ngaySinh,
-                SoLuongBuoi = input.SoLuongBuoi,
-                HoTen = input.HoTen,
-                PhongBan = input.PhongBan,
-                AqUser = input.AqUser,
-                TrangThai = input.TrangThai,
+                phone = input.phone,
+                avatar = input.avatar,
+                birthDate = input.birthDate,
+                startDate = input.startDate,
+                nickName = input.nickName,
+                role = input.role,
+                isLeader = input.isLeader,
+                isLunch = input.isLunch,
+                WFHQuota = input.WFHQuota,
+                absenceQuota = input.absenceQuota,
+                isActive = input.isActive
+
             }).ToList();
             var tb = database.Table<DsThongTinCaNhanDataDO>();
             tb.Insert(insertData);
@@ -59,39 +66,41 @@ namespace educlient.Controllers
                 data = insertData.ToArray(),
             };
         }
-        [HttpPut, Route("{id}")]
-        public DsThongTinCaNhanResult update(Guid id, [FromBody] DsThongTinCaNhanInput inputData)
-        {
-            var tb = database.Table<DsThongTinCaNhanDataDO>();
+        //[HttpPut, Route("{id}")]
+        //public DsThongTinCaNhanResult update(Guid id, [FromBody] DsThongTinCaNhanInput inputData)
+        //{
+        //    var tb = database.Table<DsThongTinCaNhanDataDO>();
 
-            var existingRecord = tb.FindById(id);
-            if (existingRecord == null)
-            {
-                return new DsThongTinCaNhanResult
-                {
-                    code = 404,
-                    message = "Data not found"
-                };
-            }
-            // Update the existing record with new values
-            existingRecord.NgayBatDauLamViec = DateTime.Today;
-            existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
-            existingRecord.HoTen = inputData.HoTen;
-            existingRecord.PhongBan = inputData.PhongBan;
-            existingRecord.AqUser = inputData.AqUser;
-            existingRecord.TrangThai = inputData.TrangThai;
-            existingRecord.email = inputData.email;
-            existingRecord.ngaySinh = inputData.ngaySinh;
-            existingRecord.IsLeader = inputData.IsLeader;
+        //    var existingRecord = tb.FindById(id);
+        //    if (existingRecord == null)
+        //    {
+        //        return new DsThongTinCaNhanResult
+        //        {
+        //            code = 404,
+        //            message = "Data not found"
+        //        };
+        //    }
+        //    // Update the existing record with new values
+        //    existingRecord.NgayBatDauLamViec = DateTime.Today;
+        //    existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
+        //    existingRecord.HoTen = inputData.HoTen;
+        //    existingRecord.PhongBan = inputData.PhongBan;
+        //    existingRecord.AqUser = inputData.AqUser;
+        //    existingRecord.TrangThai = inputData.TrangThai;
+        //    existingRecord.email = inputData.email;
+        //    existingRecord.ngaySinh = inputData.ngaySinh;
+        //    existingRecord.IsLeader = inputData.IsLeader;
 
-            // Update the record in the collection
-            tb.Update(existingRecord);
+        //    // Update the record in the collection
+        //    tb.Update(existingRecord);
 
-            return new DsThongTinCaNhanResult
-            {
-                data = new DsThongTinCaNhanDataDO[] { existingRecord }
-            };
-        }
+        //    return new DsThongTinCaNhanResult
+        //    {
+        //        data = new DsThongTinCaNhanDataDO[] { existingRecord }
+        //    };
+        //}
+
+
         [HttpDelete, Route("{id}")]
         public DsThongTinCaNhanResult delete(Guid id)
         {

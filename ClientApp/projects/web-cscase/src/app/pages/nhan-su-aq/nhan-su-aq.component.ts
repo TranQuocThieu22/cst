@@ -1,87 +1,128 @@
 import { Component, OnInit } from '@angular/core';
+import { AQMember } from './AQMember';
+import { AQRole } from './AQMember';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-nhan-su-aq',
   templateUrl: './nhan-su-aq.component.html',
   styleUrls: ['./nhan-su-aq.component.scss']
 })
+
+
 export class NhanSuAqComponent implements OnInit {
-  public TFSName: string;
-  public fullName: string;
-  public email: string;
-  public phone: string;
-  public avatar: string;
-  public birthDate: string;
-  public startDate: string;
-  public nickName: string;
-  public role: string;
-  public isLeader: boolean;
-  public isLunch: boolean;
-  public WFHQuota: number;
-  public absenceQuota: number;
-  public isActive: boolean;
-  public nhanSuAq: object[];
 
-  constructor() {
-    this.nhanSuAq = [
-      {
-        id: 1,
-        TFSName: "minhlam",
-        fullName: "Phạm Minh Lâm",
-        email: "lamworkspace74@gmail.com",
-        phone: "0901366905",
-        avatar: "", // Add avatar URL or base64 string
-        birthDate: "01/11/2002",
-        startDate: "01/01/2023", // Example start date
-        nickName: "Lâm", // Example nickname
-        role: "Developer", // Example role
-        isLeader: false,
-        isLunch: true, // Example value, change as needed
-        WFHQuota: 10, // Example quota, change as needed
-        absenceQuota: 5, // Example quota, change as needed
-        isActive: true
-      },
-      {
-        id: 2,
-        TFSName: "quocthieu",
-        fullName: "Trần Quốc Thiệu",
-        email: "quocthieu@example.com",
-        phone: "0901123456",
-        avatar: "", // Add avatar URL or base64 string
-        birthDate: "02/12/1995", // Example birth date
-        startDate: "01/02/2023", // Example start date
-        nickName: "Thiệu", // Example nickname
-        role: "Tester", // Example role
-        isLeader: false,
-        isLunch: false, // Example value, change as needed
-        WFHQuota: 8, // Example quota, change as needed
-        absenceQuota: 4, // Example quota, change as needed
-        isActive: true
-      },
-      {
-        id: 3,
-        TFSName: "huuluan",
-        fullName: "Nguyễn Hữu Luân",
-        email: "huuluan@example.com",
-        phone: "0902233445",
-        avatar: "", // Add avatar URL or base64 string
-        birthDate: "03/05/1993", // Example birth date
-        startDate: "01/03/2023", // Example start date
-        nickName: "Luân", // Example nickname
-        role: "PM", // Example role
-        isLeader: true,
-        isLunch: true, // Example value, change as needed
-        WFHQuota: 12, // Example quota, change as needed
-        absenceQuota: 6, // Example quota, change as needed
-        isActive: true
-      }
+  AQmembers: AQMember[];
+  aqmember: AQMember;
+  submitted: boolean;
+  addNewMemberDialog: boolean;
+
+  dt_filter: any;
+  AQRoles: AQRole[];
+
+  constructor(private https: HttpClient) {
+    this.AQRoles = [
+      { role: 'Dev', code: '1' },
+      { role: 'Support', code: '2' },
+      { role: 'Sale', code: '3' },
+      { role: 'HR', code: '4' },
+      { role: 'BM', code: '5' },
     ];
-
-
-
   }
 
   ngOnInit(): void {
+    this.constructor;
+
+    this.https.get<any>("/api/ThongTinCaNhan").subscribe({
+      next: (res: any) => {
+        this.AQmembers = res.data
+        console.log(this.AQmembers);
+
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      }
+    });
+
   }
 
+  editMember(data: any) {
+    // this.product = {...product};
+    // this.productDialog = true;
+    console.log("edit");
+  }
+  deleteMember(data: any) {
+    // this.confirmationService.confirm({
+    //     message: 'Are you sure you want to delete ' + product.name + '?',
+    //     header: 'Confirm',
+    //     icon: 'pi pi-exclamation-triangle',
+    //     accept: () => {
+    //         this.products = this.products.filter(val => val.id !== product.id);
+    //         this.product = {};
+    //         this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Deleted', life: 3000});
+    //     }
+    // });
+    console.log("delete");
+  }
+
+  openNew() {
+    this.aqmember = {};
+    this.submitted = false;
+    this.addNewMemberDialog = true;
+  }
+
+  hideDialog() {
+    this.addNewMemberDialog = false;
+    this.submitted = false;
+  }
+
+  saveMember() {
+
+    this.submitted = true;
+
+    this.aqmember.avatar = "avatar content";
+    let aqmemberArray: AQMember[] = [this.aqmember];
+
+    console.log(aqmemberArray[0]);
+
+
+    this.https.post<any>("/api/ThongTinCaNhan/Insert", aqmemberArray).subscribe({
+      next: (res: any) => {
+        // console.log(res);
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      }
+    });
+
+
+    this.AQmembers = [...this.AQmembers];
+    this.addNewMemberDialog = false;
+    this.aqmember = {};
+
+    this.https.get<any>("/api/ThongTinCaNhan").subscribe({
+      next: (res: any) => {
+        this.AQmembers = res.data
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      }
+    });
+  }
 }
+
+
+
+

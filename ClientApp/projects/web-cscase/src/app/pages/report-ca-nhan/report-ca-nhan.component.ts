@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TableModule } from 'primeng/table';
 import { Car } from './report-ca-nhan.interface';
 import { Router } from '@angular/router';
 
