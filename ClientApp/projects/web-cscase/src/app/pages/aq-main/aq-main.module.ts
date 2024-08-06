@@ -44,14 +44,13 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { RatingModule } from 'primeng/rating';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DividerModule } from 'primeng/divider';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
-import { MenuItem } from 'primeng/api';
-
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService, MessageService } from "primeng/api";
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent],
@@ -90,17 +89,18 @@ import { MenuItem } from 'primeng/api';
     FormsModule,
     RadioButtonModule,
     InputNumberModule,
-    ConfirmDialogModule,
     InputTextareaModule,
     DividerModule,
     SidebarModule,
-    PanelMenuModule
+    PanelMenuModule,
+    ConfirmPopupModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
-    DataServices, TransTextService, UploadFilesService
+    DataServices, TransTextService, UploadFilesService, ConfirmationService,
+    MessageService
   ],
   entryComponents: [MainComponent, CsCaseComponent, ThongkeComponent,
     UploadComponent, ReleaseComponent, ReleaseListComponent,
