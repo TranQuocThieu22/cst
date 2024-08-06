@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Car } from './report-ca-nhan.interface';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { User } from '@mylibs';
 
 @Component({
   selector: 'app-report-ca-nhan',
@@ -17,24 +19,21 @@ export class ReportCaNhanComponent implements OnInit {
   public tongSoNgayNghiPhep: number;
   public ThongTinNghiPhep: object[];
   public Cars: Car[];
-
+  public currentSession: any;
+  public currentUser: any;
   constructor(private router: Router) {
-    this.Cars = [
-      {
-        vin: 'er',
-        year: '1223',
-        brand: '123',
-        color: "1231231",
-      },
-      {
-        vin: 'er',
-        year: '1223',
-        brand: '123',
-        color: "1231231",
-      }
-    ]
-    this.user = 'minhlam';
-    this.phongBan = 'Dev';
+    this.currentSession = new BehaviorSubject<User>(JSON.parse(sessionStorage.getItem('current-user')));
+    this.currentUser = this.currentSession._value
+    console.log(this.currentUser);
+
+    this.user = this.currentUser.user;
+    // this.user = 'minhlam';
+    this.phongBan = this.currentUser.group
+      .filter(item => item !== 'users')
+      .join(', ');
+
+    console.log(this.phongBan);
+
     this.NgayBatDau = '1/7/2023';
     this.tongSoGioPhaiLamViecTrongNgay = 7
     this.tongSoNgayLamViecTrongTuan = 5

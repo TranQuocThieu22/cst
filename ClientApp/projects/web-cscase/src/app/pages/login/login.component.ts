@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     else {
       this.spinner.show();
       this.submitted = true;
-      this.authenticationService.login(this.f.username.value.trim().toUpperCase(), this.f.password.value.trim().toUpperCase())
+      this.authenticationService.login(this.f.username.value.trim().toUpperCase(), this.f.password.value.trim())
         .subscribe((data: User) => {
           if (data) {
             if (data.maTruong) {
@@ -62,6 +62,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.serverLink.setLogin(true);
               this.islogin = true;
               this.router.navigate(['/main/cscase']);
+              if (data.roles === "TFS") {
+                this.router.navigate(['/main/aq-main']);
+              }
+
             }
             else {
               this.messError = 'Đăng nhập không thành công';

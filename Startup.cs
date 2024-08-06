@@ -35,6 +35,7 @@ namespace educlient
                 options.Cookie.IsEssential = true;
             });
             services.AddControllersWithViews();
+            services.AddHttpClient();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -45,6 +46,7 @@ namespace educlient
             services.AddSingleton<IThongKeDevService, ThongKeDevService>();
             services.AddSingleton<IThongKeSupService, ThongKeSupService>();
             services.AddSingleton<IThongKeAqTechService, ThongKeAqTechService>();
+            services.AddSingleton<ITFSAccountService, TFSAccountService>();
         }
 
 

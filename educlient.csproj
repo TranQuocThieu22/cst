@@ -45,6 +45,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="AQFramework">
+      <HintPath>bin\Debug\net6.0\AQFramework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="clients.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
