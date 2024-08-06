@@ -26,6 +26,8 @@ export class AuthService {
     // };
     return this.http.post<any>('api/main/login', { username, password })
       .pipe(map((response: User) => {
+        console.log(response);
+
         if (response) {
           // response[0].pass = '';
           sessionStorage.setItem('current-user', JSON.stringify(response));

@@ -1,4 +1,5 @@
 using educlient.Data;
+using educlient.Services;
 using educlient.Utils;
 using HtmlAgilityPack;
 using LiteDB;
@@ -27,7 +28,7 @@ namespace educlient.Controllers
     public class MainController : ControllerBase
     {
         private readonly IDbLiteContext database;
-
+        private readonly ITFSAccountService _tFSAccountService;
         ISession Session
         {
             get { return HttpContext.Session; }
@@ -45,23 +46,33 @@ namespace educlient.Controllers
         }
 
         [HttpPost, Route("login")]
-        public object Login(LoginModel log)
+        public async Task<object> Login(LoginModel log)
         {
             var dir = Path.Combine(AppContext.BaseDirectory, "clients.dat");
             var clients = JsonConvert.DeserializeObject<List<EduClient>>(System.IO.File.ReadAllText(dir));
-            var user = clients.FirstOrDefault(r => r.MaTruong?.ToLower() == log?.username?.ToLower() && r.Pass == log.password);
-
+            EduClient user = clients.FirstOrDefault(r => r.MaTruong?.ToLower() == log?.username?.ToLower() && r.Pass == log.password);
+            EduClient TFSUser = await _tFSAccountService.LoginAsync(log);
             if (user != null)
             {
+                user.User = null;
+                user.Group = null;
                 _logger.LogInformation("Login Success: " + log.username);
                 Session.SetString("current-user", JsonConvert.SerializeObject(user));
+                return user;
+            }
+            else if (TFSUser != null)
+            {
+                _logger.LogInformation("Login Success: " + log.username);
+                Session.SetString("current-user", JsonConvert.SerializeObject(TFSUser));
+                return TFSUser;
             }
             else
             {
                 user = new EduClient { TenTruong = "Username or password is incorrect!" };
                 _logger.LogInformation("Login Fail: " + log.username);
+                return user;
             }
-            return user;
+
         }
 
         [HttpGet, Route("logout")]
@@ -94,11 +105,12 @@ namespace educlient.Controllers
         private readonly ILogger<MainController> _logger;
         private readonly IConfiguration config;
 
-        public MainController(ILogger<MainController> logger, IConfiguration cf, IDbLiteContext dataContext)
+        public MainController(ILogger<MainController> logger, IConfiguration cf, IDbLiteContext dataContext, ITFSAccountService tFSAccountService)
         {
             _logger = logger;
             config = cf;
             database = dataContext;
+            _tFSAccountService = tFSAccountService;
             // connStr = Configuration.GetConnectionString("ProdConnection");
             // m_connStr = @"Server=192.168.1.204;Database=AQTech.KB;User Id=dev;Pwd=dev@edusoft;Connect Timeout=1800";
         }
@@ -1731,12 +1743,14 @@ public class ResultModel
     public object data { get; set; }
 }
 
-class EduClient
+public class EduClient
 {
     public string MaTruong { get; set; }
     public string TenTruong { get; set; }
     public string Pass { get; set; }
     public string Roles { get; set; }
+    public List<string> Group { get; set; } = new List<string>();
+    public string User { get; set; }
 }
 
 public class EduCase
