@@ -29,3 +29,18 @@
 .table th {
   background-color: #f8f9fa;
 }
+
+.list-group-item {
+  border: none;
+  padding: 0.5rem 1.25rem;
+}
+.badge {
+  font-size: 0.9em;
+}
+.equal-height {
+  display: flex;
+  flex-direction: column;
+}
+.equal-height .card {
+  flex: 1;
+}

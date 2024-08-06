@@ -2,6 +2,7 @@
 using educlient.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace educlient.Controllers
@@ -20,20 +21,32 @@ namespace educlient.Controllers
         public DsThongTinCaNhanResult GetAll()
         {
             var tb = database.Table<DsThongTinCaNhanDataDO>();
+
             return new DsThongTinCaNhanResult
             {
-                data = tb.FindAll().ToArray(),
+                data = tb.FindAll().ToList(),
             };
         }
         [HttpGet, Route("{id}")]
         public DsThongTinCaNhanResult GetById(Guid id)
         {
-            DsThongTinCaNhanResult returnData = new DsThongTinCaNhanResult();
+            List<DsThongTinCaNhanDataDO> returnData = new List<DsThongTinCaNhanDataDO>();
             var tb = database.Table<DsThongTinCaNhanDataDO>();
-            returnData.data.Append(tb.FindById(id));
+            var data = tb.FindById(id);
+            if (data == null)
+            {
+                return new DsThongTinCaNhanResult
+                {
+                    code = 404,
+                    message = "Data not found"
+                };
+            }
+            returnData.Add(data);
             return new DsThongTinCaNhanResult
             {
-                data = returnData.data,
+                code = 200,
+                result = true,
+                data = returnData,
             };
         }
         // GET: NgayPhepChungController
@@ -63,42 +76,49 @@ namespace educlient.Controllers
 
             return new DsThongTinCaNhanResult
             {
-                data = insertData.ToArray(),
+                data = insertData.ToList(),
             };
         }
-        //[HttpPut, Route("{id}")]
-        //public DsThongTinCaNhanResult update(Guid id, [FromBody] DsThongTinCaNhanInput inputData)
-        //{
-        //    var tb = database.Table<DsThongTinCaNhanDataDO>();
+        [HttpPut, Route("{id}")]
+        public DsThongTinCaNhanResult update(Guid id, [FromBody] DsThongTinCaNhanInput inputData)
+        {
+            var tb = database.Table<DsThongTinCaNhanDataDO>();
 
-        //    var existingRecord = tb.FindById(id);
-        //    if (existingRecord == null)
-        //    {
-        //        return new DsThongTinCaNhanResult
-        //        {
-        //            code = 404,
-        //            message = "Data not found"
-        //        };
-        //    }
-        //    // Update the existing record with new values
-        //    existingRecord.NgayBatDauLamViec = DateTime.Today;
-        //    existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
-        //    existingRecord.HoTen = inputData.HoTen;
-        //    existingRecord.PhongBan = inputData.PhongBan;
-        //    existingRecord.AqUser = inputData.AqUser;
-        //    existingRecord.TrangThai = inputData.TrangThai;
-        //    existingRecord.email = inputData.email;
-        //    existingRecord.ngaySinh = inputData.ngaySinh;
-        //    existingRecord.IsLeader = inputData.IsLeader;
+            var existingRecord = tb.FindById(id);
+            if (existingRecord == null)
+            {
+                return new DsThongTinCaNhanResult
+                {
+                    code = 404,
+                    message = "Data not found"
+                };
+            }
+            // Update the existing record with new values
+            // Update the existing record with new values
+            existingRecord.TFSName = inputData.TFSName;
+            existingRecord.fullName = inputData.fullName;
+            existingRecord.email = inputData.email;
+            existingRecord.phone = inputData.phone;
+            existingRecord.avatar = inputData.avatar;
+            existingRecord.birthDate = inputData.birthDate;
+            existingRecord.startDate = inputData.startDate;
+            existingRecord.nickName = inputData.nickName;
+            existingRecord.role = inputData.role;
+            existingRecord.isLeader = inputData.isLeader;
+            existingRecord.isLunch = inputData.isLunch;
+            existingRecord.WFHQuota = inputData.WFHQuota;
+            existingRecord.absenceQuota = inputData.absenceQuota;
+            existingRecord.isActive = inputData.isActive;
 
-        //    // Update the record in the collection
-        //    tb.Update(existingRecord);
 
-        //    return new DsThongTinCaNhanResult
-        //    {
-        //        data = new DsThongTinCaNhanDataDO[] { existingRecord }
-        //    };
-        //}
+            // Update the record in the collection
+            tb.Update(existingRecord);
+
+            return new DsThongTinCaNhanResult
+            {
+                data = new List<DsThongTinCaNhanDataDO> { existingRecord }
+            };
+        }
 
 
         [HttpDelete, Route("{id}")]
@@ -119,7 +139,7 @@ namespace educlient.Controllers
 
             return new DsThongTinCaNhanResult
             {
-                data = new DsThongTinCaNhanDataDO[] { existingRecord }
+                data = new List<DsThongTinCaNhanDataDO> { existingRecord }
             };
         }
     }

@@ -1,5 +1,6 @@
 ﻿using educlient.Models;
 using System;
+using System.Collections.Generic;
 
 namespace educlient.Models
 {
@@ -27,7 +28,7 @@ namespace educlient.Models
     }
     public class DsThongTinCaNhanResult : ApiResultBaseDO
     {
-        public DsThongTinCaNhanDataDO[] data { get; set; }
+        public List<DsThongTinCaNhanDataDO> data { get; set; }
     }
     public class DsThongTinCaNhanDataDO
     {

@@ -3,6 +3,7 @@ import { Car } from './report-ca-nhan.interface';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '@mylibs';
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: 'app-report-ca-nhan',
@@ -11,9 +12,13 @@ import { User } from '@mylibs';
 })
 export class ReportCaNhanComponent implements OnInit {
   public user: string;
-  public hoVoTen: string;
+  public hoTen: string;
   public phongBan: string;
   public NgayBatDau: string;
+  public birthDate: string;
+  public email: string;
+  public phone: string;
+  public nickname: string;
   public tongSoNgayLamViecTrongTuan: number;
   public tongSoGioPhaiLamViecTrongNgay: number;
   public tongSoNgayNghiPhep: number;
@@ -21,20 +26,25 @@ export class ReportCaNhanComponent implements OnInit {
   public Cars: Car[];
   public currentSession: any;
   public currentUser: any;
-  constructor(private router: Router) {
+  public userData: any;
+  constructor(private router: Router,) {
     this.currentSession = new BehaviorSubject<User>(JSON.parse(sessionStorage.getItem('current-user')));
     this.currentUser = this.currentSession._value
     console.log(this.currentUser);
 
     this.user = this.currentUser.user;
+    this.userData = this.currentUser.userData
+    this.hoTen = this.userData.fullName
     // this.user = 'minhlam';
     this.phongBan = this.currentUser.group
       .filter(item => item !== 'users')
       .join(', ');
 
-    console.log(this.phongBan);
-
-    this.NgayBatDau = '1/7/2023';
+    this.NgayBatDau = new DatePipe("en-US").transform(this.userData.startDate, 'dd/MM/yyyy')
+    this.birthDate = new DatePipe("en-US").transform(this.userData.birthDate, 'dd/MM/yyyy')
+    this.email = this.userData.email
+    this.phone = this.userData.phone
+    this.nickname = this.userData.nickname
     this.tongSoGioPhaiLamViecTrongNgay = 7
     this.tongSoNgayLamViecTrongTuan = 5
     this.tongSoNgayNghiPhep = 3

@@ -1,4 +1,5 @@
 using educlient.Data;
+using educlient.Models;
 using educlient.Services;
 using educlient.Utils;
 using HtmlAgilityPack;
@@ -56,12 +57,18 @@ namespace educlient.Controllers
             {
                 user.User = null;
                 user.Group = null;
+                user.userData = null;
                 _logger.LogInformation("Login Success: " + log.username);
                 Session.SetString("current-user", JsonConvert.SerializeObject(user));
                 return user;
             }
             else if (TFSUser != null)
             {
+                var tb = database.Table<DsThongTinCaNhanDataDO>();
+                TFSUser.userData = tb.Query()
+                .Where(x => x.TFSName == TFSUser.User.ToLower())
+                .FirstOrDefault();
+
                 _logger.LogInformation("Login Success: " + log.username);
                 Session.SetString("current-user", JsonConvert.SerializeObject(TFSUser));
                 return TFSUser;
@@ -1751,6 +1758,7 @@ public class EduClient
     public string Roles { get; set; }
     public List<string> Group { get; set; } = new List<string>();
     public string User { get; set; }
+    public object userData { get; set; }
 }
 
 public class EduCase
