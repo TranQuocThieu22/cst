@@ -66,39 +66,45 @@ namespace educlient.Controllers
                 data = insertData.ToArray(),
             };
         }
-        //[HttpPut, Route("{id}")]
-        //public DsThongTinCaNhanResult update(Guid id, [FromBody] DsThongTinCaNhanInput inputData)
-        //{
-        //    var tb = database.Table<DsThongTinCaNhanDataDO>();
 
-        //    var existingRecord = tb.FindById(id);
-        //    if (existingRecord == null)
-        //    {
-        //        return new DsThongTinCaNhanResult
-        //        {
-        //            code = 404,
-        //            message = "Data not found"
-        //        };
-        //    }
-        //    // Update the existing record with new values
-        //    existingRecord.NgayBatDauLamViec = DateTime.Today;
-        //    existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
-        //    existingRecord.HoTen = inputData.HoTen;
-        //    existingRecord.PhongBan = inputData.PhongBan;
-        //    existingRecord.AqUser = inputData.AqUser;
-        //    existingRecord.TrangThai = inputData.TrangThai;
-        //    existingRecord.email = inputData.email;
-        //    existingRecord.ngaySinh = inputData.ngaySinh;
-        //    existingRecord.IsLeader = inputData.IsLeader;
+        [HttpPut, Route("{id}")]
+        public DsThongTinCaNhanResult update(Guid id, [FromBody] DsThongTinCaNhanInput inputData)
+        {
+            var tb = database.Table<DsThongTinCaNhanDataDO>();
 
-        //    // Update the record in the collection
-        //    tb.Update(existingRecord);
+            var existingRecord = tb.FindById(id);
+            if (existingRecord == null)
+            {
+                return new DsThongTinCaNhanResult
+                {
+                    code = 404,
+                    message = "Data not found"
+                };
+            }
+            // Update the existing record with new values
+            existingRecord.TFSName = inputData.TFSName;
+            existingRecord.fullName = inputData.fullName;
+            existingRecord.email = inputData.email;
+            existingRecord.phone = inputData.phone;
+            existingRecord.avatar = inputData.avatar;
+            existingRecord.birthDate = inputData.birthDate;
+            existingRecord.startDate = inputData.startDate;
+            existingRecord.nickName = inputData.nickName;
+            existingRecord.role = inputData.role;
+            existingRecord.isLeader = inputData.isLeader;
+            existingRecord.isLunch = inputData.isLunch;
+            existingRecord.WFHQuota = inputData.WFHQuota;
+            existingRecord.absenceQuota = inputData.absenceQuota;
+            existingRecord.isActive = inputData.isActive;
 
-        //    return new DsThongTinCaNhanResult
-        //    {
-        //        data = new DsThongTinCaNhanDataDO[] { existingRecord }
-        //    };
-        //}
+            // Update the record in the collection
+            tb.Update(existingRecord);
+
+            return new DsThongTinCaNhanResult
+            {
+                data = new DsThongTinCaNhanDataDO[] { existingRecord }
+            };
+        }
 
 
         [HttpDelete, Route("{id}")]

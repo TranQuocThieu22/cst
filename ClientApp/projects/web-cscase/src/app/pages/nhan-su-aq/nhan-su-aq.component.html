@@ -8,10 +8,10 @@
         </p-card>
         <ng-template pTemplate="left">
           <button pButton pRipple
-            label="Thêm member"
+            label="Thêm đồng bọn"
             icon="pi pi-user-plus mb-1"
             class="p-button-success py-2"
-            (click)="openNew()">
+            (click)="openAddDialog()">
           </button>
         </ng-template>
       </p-toolbar>
@@ -29,9 +29,9 @@
               ID
               <p-sortIcon field="id"></p-sortIcon>
             </th>
-            <th pSortableColumn="TFSName" style="white-space: nowrap;">
+            <th pSortableColumn="tfsName" style="white-space: nowrap;">
               TFSName
-              <p-sortIcon field="TFSName"></p-sortIcon>
+              <p-sortIcon field="tfsName"></p-sortIcon>
             </th>
             <th pSortableColumn="fullName" style="white-space: nowrap;">
               Full Name
@@ -69,9 +69,9 @@
               Is Lunch
               <p-sortIcon field="isLunch"></p-sortIcon>
             </th>
-            <th pSortableColumn="WFHQuota" style="white-space: nowrap;">
+            <th pSortableColumn="wfhQuota" style="white-space: nowrap;">
               WFH Quota
-              <p-sortIcon field="WFHQuota"></p-sortIcon>
+              <p-sortIcon field="wfhQuota"></p-sortIcon>
             </th>
             <th pSortableColumn="absenceQuota" style="white-space: nowrap;">
               Absence Quota
@@ -89,11 +89,11 @@
               <button
                 pButton pRipple icon="pi pi-pencil"
                 class="p-button-rounded p-button-warning p-button-text p-0"
-                (click)="editMember(AQmember)"></button>
+                (click)="openEditDialog(AQmember)"></button>
               <button
                 pButton pRipple icon="pi pi-trash"
                 class="p-button-rounded p-button-danger p-button-text p-0"
-                (click)="deleteMember(AQmember)"></button>
+                (click)="confirm($event, AQmember)"></button>
             </td>
             <td style="white-space: nowrap; text-align: left;">{{AQmember.id}}</td>
             <td style="white-space: nowrap; text-align: left;">{{AQmember.tfsName}}</td>
@@ -116,16 +116,17 @@
     </div>
   </div>
 
-  <p-dialog [(visible)]="addNewMemberDialog" [style]="{width: '100%', maxWidth: '1200px'}" header="Member Details"
+  <p-dialog [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '1200px'}"
+    header="Member Details"
     [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
       <div class="formgrid grid">
         <!-- First column -->
         <div class="field col-12 md:col-6">
           <div class="p-field">
-            <label for="TFSName">TFS Name</label>
-            <input type="text" pInputText id="TFSName" [(ngModel)]="aqmember.TFSName" required autofocus />
-            <small class="p-invalid" *ngIf="submitted && !aqmember.TFSName">TFS Name is required.</small>
+            <label for="tfsName">TFS Name</label>
+            <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !aqmember.tfsName">TFS Name is required.</small>
           </div>
           <div class="p-field">
             <label for="fullName">Full Name</label>
@@ -161,8 +162,8 @@
             <input type="date" pInputText id="startDate" [(ngModel)]="aqmember.startDate" required />
           </div>
           <div class="p-field">
-            <label for="WFHQuota">WFH Quota</label>
-            <input type="number" pInputText id="WFHQuota" [(ngModel)]="aqmember.WFHQuota" required />
+            <label for="wfhQuota">WFH Quota</label>
+            <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmember.wfhQuota" required />
           </div>
           <div class="p-field">
             <label for="absenceQuota">Absence Quota</label>
@@ -184,8 +185,16 @@
       </div>
     </ng-template>
 
+
+    <!-- edit member -->
     <ng-template pTemplate="footer">
-      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveMember()"></button>
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+        (click)="hideDialog()"></button>
+      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+        (click)="editMemberDialog ? updateMember() : addNewMember()"></button>
     </ng-template>
   </p-dialog>
+
+  <!-- delete member popup -->
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>

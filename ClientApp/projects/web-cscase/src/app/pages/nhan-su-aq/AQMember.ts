@@ -1,6 +1,6 @@
 export interface AQMember {
     id?: number;
-    TFSName?: string;
+    tfsName?: string;
     fullName?: string;
     email?: string;
     phone?: string;
@@ -11,7 +11,7 @@ export interface AQMember {
     role?: string;
     isLeader?: boolean;
     isLunch?: boolean;
-    WFHQuota?: number;
+    wfhQuota?: number;
     absenceQuota?: number;
     isActive?: boolean;
 }
