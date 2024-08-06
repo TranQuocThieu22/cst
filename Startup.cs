@@ -24,6 +24,8 @@ namespace educlient
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
             services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
@@ -33,6 +35,7 @@ namespace educlient
                 options.Cookie.IsEssential = true;
             });
             services.AddControllersWithViews();
+            services.AddHttpClient();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -43,7 +46,10 @@ namespace educlient
             services.AddSingleton<IThongKeDevService, ThongKeDevService>();
             services.AddSingleton<IThongKeSupService, ThongKeSupService>();
             services.AddSingleton<IThongKeAqTechService, ThongKeAqTechService>();
+            services.AddSingleton<ITFSAccountService, TFSAccountService>();
         }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

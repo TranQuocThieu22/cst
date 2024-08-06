@@ -3,4 +3,7 @@
     pass?: string;
     tenTruong?: string;
     roles?: string;
+    user?: string;
+    group?: string[];
+    userData?: object;
 }

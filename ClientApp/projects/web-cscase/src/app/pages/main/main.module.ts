@@ -26,12 +26,14 @@ import { ReleaseListComponent } from '../release-list/release-list.component';
 import { EditRlcaseComponent } from '../release-list/edit-rlcase/edit-rlcase.component';
 import { TraodoiComponent } from '../traodoi/traodoi.component';
 import { ChitietcaseComponent } from '../chitietcase/chitietcase.component';
+import { AqMainModule } from '../aq-main/aq-main.module';
 
 @NgModule({
   declarations: [MainComponent, CsCaseComponent, ThongkeComponent,
     UploadComponent, ReleaseComponent, ReleaseListComponent, ChitietcaseComponent,
     EditRlcaseComponent, TraodoiComponent, Error404Component,],
   imports: [
+    AqMainModule,
     FormsModule,
     CommonModule,
     ReactiveFormsModule,

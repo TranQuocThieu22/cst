@@ -1,0 +1,46 @@
+.sidebar {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+.sidebar .nav-link {
+  color: #333;
+  transition: all 0.3s;
+}
+.sidebar .nav-link:hover {
+  background-color: #e9ecef;
+}
+.main-content {
+  padding: 2rem;
+}
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.list-group-item {
+  border-left: 4px solid transparent;
+}
+.list-group-item:hover {
+  border-left-color: #007bff;
+}
+.table th {
+  background-color: #f8f9fa;
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.5rem 1.25rem;
+}
+.badge {
+  font-size: 0.9em;
+}
+.equal-height {
+  display: flex;
+  flex-direction: column;
+}
+.equal-height .card {
+  flex: 1;
+}
