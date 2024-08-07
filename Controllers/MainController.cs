@@ -4,11 +4,13 @@ using HtmlAgilityPack;
 using LiteDB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson.IO;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -23,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BigID = System.Int64;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
+using System.Data.SqlClient;
 
 
 namespace educlient.Controllers
@@ -32,6 +35,7 @@ namespace educlient.Controllers
     public class MainController : ControllerBase
     {
         private readonly IDbLiteContext database;
+        private readonly MsslqDbContext mssql_database;
 
         ISession Session
         {
@@ -99,13 +103,14 @@ namespace educlient.Controllers
         private readonly ILogger<MainController> _logger;
         private readonly IConfiguration config;
 
-        public MainController(ILogger<MainController> logger, IConfiguration cf, IDbLiteContext dataContext)
+        public MainController(ILogger<MainController> logger, IConfiguration cf, IDbLiteContext dataContext, MsslqDbContext mssql_context)
         {
             _logger = logger;
             config = cf;
             database = dataContext;
             // connStr = Configuration.GetConnectionString("ProdConnection");
             // m_connStr = @"Server=192.168.1.204;Database=AQTech.KB;User Id=dev;Pwd=dev@edusoft;Connect Timeout=1800";
+            mssql_database = mssql_context;
         }
 
         // AQ\tfsuser:2lvmoc5arhu2pshlcmh6kywgzgf3evpxgydjmefyjbf5jtvcw6za
@@ -302,6 +307,84 @@ namespace educlient.Controllers
             return lstReturn;
         }
 
+        async Task<List<workItem0>> DoTfsFetchData_all(string pProject, string pProjectTeam, string pWIType, string pAQCustomer, string pFieldList, string pStateList, string pAppendWHERE, string macase)
+        {
+            //SELECT [System.Id] FROM WorkItems
+            //macase = "36811";
+            //string sWIQL = "{\"query\": \"SELECT [System.Id] FROM WorkItems"
+            //                            + " WHERE ([System.TeamProject]='" + pProject + "')"
+            //                                + (pWIType.Length > 0 ? " AND ([System.WorkItemType] IN (" + pWIType + "))" : "")
+            //                                + (pAQCustomer.Length > 0 ? " AND ([AQ.Customer] IN (" + pAQCustomer + "))" : "")
+            //                                + " AND ([System.State] NOT IN ('Removed', 'Rejected','Hủy'))" //,'Done','Đóng case','Đã xử lý','Đã gửi mail'
+            //                                + (pStateList.Length > 0 ? " AND ([System.State] IN (" + pStateList + "))" : "")
+            //                                + (pAppendWHERE.Length > 0 ? " AND (" + pAppendWHERE + ")" : "")
+            //                                + (macase.Length > 0 ? " AND ([System.Id] IN (" + macase + "))" : "")
+            //                                ;
+
+            string sWIQL = "{\"query\": \"SELECT [System.Id] FROM WorkItems"
+                                        + " WHERE ([System.TeamProject]='" + pProject + "')"
+                                            + (pWIType.Length > 0 ? " AND ([System.WorkItemType] IN (" + pWIType + "))" : "")
+                                            + (pAppendWHERE.Length > 0 ? " AND (" + pAppendWHERE + ")" : "")
+                                            + (macase.Length > 0 ? " AND ([System.Id] IN (" + macase + "))" : "")
+                                            ;
+            //string sWIQL = "{\"query\": \"SELECT [System.Id] FROM WorkItems ";
+
+            sWIQL += " ORDER BY [System.CreatedDate] " + "\"}";
+
+            var jsonCasesId = await DoTfsQueryData(TFS_HOST
+                                            , "tfs/aq/" + pProject + "/" + pProjectTeam + "/_apis/wit/wiql?api-version=4.1"
+                                            , "", sWIQL, TFS_TOKEN_BASE64);
+
+            if (string.IsNullOrEmpty(jsonCasesId))
+                return new List<workItem0>();
+
+            var lstCasesId = JsonConvert.DeserializeObject<TfsCaseListModel>(jsonCasesId);
+            if (lstCasesId.workItems.Count == 0)
+                return new List<workItem0>();
+
+            int MAX_CASES = 100;
+            int i = 0;
+
+            List<workItem0> lstReturn = new List<workItem0>();
+
+            var lst = lstCasesId.workItems;
+            while (lst.Any())
+            {
+                i++;
+                string sCaseList = "";
+                foreach (var s in lst.Take(MAX_CASES).ToList())
+                    sCaseList += (sCaseList.Length > 0 ? "," : "") + s.id;
+
+                string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,AQ.UserGuideRequested,AQ.ReviewCase";
+
+                //if (macase.Length > 0)
+                //{
+                //    sTfsFieldList = (pFieldList?.Length == 0 ? sTfsFieldList + ",System.Description,Microsoft.VSTS.Common.DescriptionHtml" : pFieldList);
+                //}
+                //else
+                //{
+                //    sTfsFieldList = (pFieldList?.Length == 0 ? sTfsFieldList : pFieldList);
+                //}
+                sTfsFieldList = (pFieldList?.Length == 0 ? sTfsFieldList + ",System.Description,Microsoft.VSTS.Common.DescriptionHtml" : pFieldList);
+
+
+                var tmpjson = await DoTfsQueryData(TFS_HOST
+                                            , "tfs/aq/" + pProject + "/_apis/wit/workitems?ids=" + sCaseList
+                                            , "&fields=" + sTfsFieldList
+                                            , ""
+                                            , TFS_TOKEN_BASE64);
+
+                var tmp = JsonConvert.DeserializeObject<TfsCaseDetailModel>(tmpjson);
+
+                if (tmp != null)
+                    lstReturn.AddRange(tmp.value);
+
+                lst = lst.Skip(MAX_CASES).ToList();
+            }
+
+            return lstReturn;
+        }
+
         async Task<List<workItem0>> DoTfsFetchData_CreateCase(dynamic body)
         {
             var jsonCases = await DoTfsQueryData_CreateCase(TFS_HOST
@@ -369,6 +452,456 @@ namespace educlient.Controllers
                 return new CSCaseResult { data = null, code = 400, result = false };
             }
 
+        }
+
+        [HttpGet, Route("cscase_mssqldb")]
+        public async Task<ActionResult<CstCase>> GetCstCasesDb()
+        {
+            var cstCase = await mssql_database.CstCases.FindAsync(1);
+
+            if (cstCase == null)
+            {
+                return NotFound();
+            }
+
+            return cstCase;
+        }
+
+        public static T ConvertFromDBVal<T>(object obj)
+        {
+            if (obj == null || obj == DBNull.Value)
+            {
+                return default(T); // returns the default value for the type
+            }
+            else
+            {
+                return (T)obj;
+            }
+        }
+
+        [HttpPost, Route("cscase_all")]
+        public async Task<CSCaseResult> ViewCsCase_all(CSCaseBindingModel model)
+        {
+            //if (currentUser == null)
+            //{
+            //    return new CSCaseResult { code = 500, result = false, message = "Not Login" };
+            //}
+
+            //get data thong tin ma truong ten truong trong file .dat
+            var dir = Path.Combine(AppContext.BaseDirectory, "clients.dat");
+            var clients = JsonConvert.DeserializeObject<List<EduClient>>(System.IO.File.ReadAllText(dir));
+
+            string list_matruong = "";
+
+            //if (currentUser?.Roles?.ToLower().Equals("admin", StringComparison.OrdinalIgnoreCase) == true
+            //|| currentUser?.Roles?.ToLower().Equals("administrator", StringComparison.OrdinalIgnoreCase) == true)
+            //{
+            //    list_matruong = "";
+            //}
+            //else
+            //{
+            //    var temp = clients.Where(s => s.MaTruong.StartsWith(currentUser.MaTruong)).ToList();
+            //    List<string> empnames = (from e in temp select e.MaTruong).ToList();
+            //    string StringMaTruong = string.Join("','", empnames);
+            //    list_matruong = "'" + StringMaTruong + "'";
+            //}
+
+            string ngayBatDau = "'01/01/2022'";
+            string ngayKetThuc = "'29/12/2024'";
+
+            if (model.dateRange.Contains("-"))
+            {
+                var dates = model.dateRange.Split('-');
+                if (dates.Length == 2)
+                {
+                    ngayBatDau = $"'{dates[0].Trim()}'";
+                    ngayKetThuc = $"'{dates[1].Trim()}'";
+                }
+            }
+            else if (model.dateRange == "test")
+            {
+                ngayBatDau = "'02/01/2015'";
+                ngayKetThuc = "'04/01/2015'";
+            }
+            string list_trangthai = ""; // "'Mở case', 'Đang xử lý', 'Đã xử lý', 'Đã gửi mail', 'Đóng case'";
+
+            List<workItem0> lstAll;
+
+            //if (currentUser?.Roles?.ToLower() == "administrator")
+            //{
+            //    var lstAll0 = await DoTfsFetchData_all("Edusoft.Net-CS"
+            //                                    , "Edusoft.Net-CS%20Team"
+            //                                    , "'CS Case', 'CS CASE'"
+            //                                    , "" // matruong
+            //                                    , ""
+            //                                    , list_trangthai
+            //                                    , " ([System.CreatedDate] >=" + ngayBatDau + ")"
+            //                                      + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
+            //                                     , "");
+            //    lstAll = lstAll0;
+            //}
+            //else
+            //{
+
+            //var lstAll0 = await DoTfsFetchData_all("Edusoft.Net-CS"
+            //                               , "Edusoft.Net-CS%20Team"
+            //                               , "'CS Case', 'CS CASE'"
+            //                               , list_matruong
+            //                               , ""
+            //                               , list_trangthai
+            //                               , " ([System.CreatedDate] >=" + ngayBatDau + ")"
+            //                                 + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
+            //                                 + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
+            //                                 + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
+            //                                 + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
+            //                                 , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
+            //                               //, "38696"
+            //                               );
+            //lstAll = lstAll0;
+            //}
+
+            var lstAll0 = await DoTfsFetchData_all("Edusoft.Net-CS"
+                                                , "Edusoft.Net-CS%20Team"
+                                                , "'CS Case', 'CS CASE'"
+                                                , "" // matruong
+                                                , ""
+                                                , list_trangthai
+                                                , " ([System.CreatedDate] >=" + ngayBatDau + ")"
+                                                  + " AND ([System.CreatedDate] < " + ngayKetThuc + ")"
+                                                 , "");
+            lstAll = lstAll0;
+
+            var dayTargetCanAdd = double.Parse(config["targetDateAddDay"]);
+            string sRet = "";
+            if (lstAll != null && lstAll.Count > 0)
+            {
+                DataTable dt = new DataTable("tblTfsData");
+                dt.Clear();
+                dt.Columns.Add("macase", typeof(int));
+                dt.Columns.Add("matruong", typeof(string));
+                dt.Columns.Add("ngaynhan", typeof(DateTime));
+                dt.Columns.Add("chitietyc", typeof(string));
+                dt.Columns.Add("trangthai", typeof(string));
+                dt.Columns.Add("ngaydukien", typeof(DateTime));
+                dt.Columns.Add("loaihopdong", typeof(string));
+                dt.Columns.Add("mucdo", typeof(string));
+                dt.Columns.Add("hieuluc", typeof(string));
+                dt.Columns.Add("dabangiao", typeof(string));
+                dt.Columns.Add("ngayemail", typeof(DateTime));
+                dt.Columns.Add("mailto", typeof(string));
+                dt.Columns.Add("loaicase", typeof(string));
+                dt.Columns.Add("phanhe", typeof(string));
+                dt.Columns.Add("comment", typeof(string));
+                dt.Columns.Add("tinhnangmoi", typeof(bool));
+
+                //if (!string.IsNullOrEmpty(model.filter?.macase))
+                //{
+                //    dt.Columns.Add("thongtinkh", typeof(string));
+                //    dt.Columns.Add("dapungcongty", typeof(string));
+                //}
+                dt.Columns.Add("thongtinkh", typeof(string));
+                dt.Columns.Add("dapungcongty", typeof(string));
+
+                foreach (var r in lstAll)
+                {
+                    DataRow dr = dt.NewRow();
+                    bool isMoCase = false;
+                    bool fixTrangThai = false;
+                    bool fixTrangThai2 = false;
+                    bool fixDaBanGiao = false;
+                    dr["trangthai"] = "";
+
+                    var z = r.fields;
+                    foreach (KeyValuePair<string, string> kvp in r.fields)
+                    {
+
+                        if (kvp.Key.ToLower().Equals("system.id"))
+                            dr["macase"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.reviewcase"))
+                        {
+                            dr["tinhnangmoi"] = true;
+                        }
+
+                        else if (kvp.Key.ToLower().Equals("aq.customer"))
+                            dr["matruong"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("system.createddate"))
+                            dr["ngaynhan"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("system.title"))
+                            dr["chitietyc"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.priority"))
+                        {
+                            if (kvp.Value.ToLower().Contains("cần phân tích"))
+                                fixTrangThai = true;
+                        }
+                        else if (kvp.Key.ToLower().Equals("system.state"))
+                        {
+                            if (kvp.Value.ToLower().Contains("mở case") || kvp.Value.ToLower().Contains("đang xử lý"))
+                                isMoCase = true;
+
+                            if (kvp.Value.ToLower().Contains("đóng case"))
+                                fixDaBanGiao = true;
+
+                            dr["trangthai"] = kvp.Value;
+                        }
+                        else if (kvp.Key.ToLower().Equals("aq.targetdate"))
+                            dr["ngaydukien"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.contracttype"))
+                            dr["loaihopdong"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.prioritytype"))
+                            dr["mucdo"] = kvp.Value;
+
+                        else if (kvp.Key.ToLower().Equals("aq.releasedate"))
+                            dr["hieuluc"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("microsoft.vsts.common.statechangedate") && fixDaBanGiao == true)
+                            dr["ngayemail"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.mailto"))
+                            dr["mailto"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.casetype"))
+                            dr["loaicase"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.module"))
+                            dr["phanhe"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.comment"))
+                            dr["comment"] = (string.IsNullOrEmpty(kvp.Value) || kvp.Value == "0" || kvp.Value == "1") ? "" : kvp.Value;
+
+                        else if (kvp.Key.ToLower().Equals("system.assignedto"))
+                        {
+                            if (kvp.Value.ToLower().Contains("tiepnhan"))
+                                fixTrangThai = true;
+                            else if (kvp.Value.ToLower().Contains("root"))
+                                fixTrangThai2 = true;
+                        }
+                        //else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("system.description"))
+                        //    dr["thongtinkh"] = kvp.Value;
+                        //else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
+                        //    dr["dapungcongty"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("system.description"))
+                            dr["thongtinkh"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
+                            dr["dapungcongty"] = kvp.Value;
+
+                    } // for each fields
+
+                    dr["dabangiao"] = ""; dr["hieuluc"] = "";
+
+                    // FIX 1
+                    if (isMoCase)
+                    {
+                        if (fixTrangThai)
+                            dr["trangthai"] = "Đang phân tích";
+                        else if (fixTrangThai2)
+                            dr["trangthai"] = "Đang chờ phân tích nghiệp vụ phức tạp";
+                    }
+
+                    // FIX 2
+                    if (fixDaBanGiao) dr["dabangiao"] = "X";
+
+
+                    // Kiểm tra thời gian ngày dữ kiến đôi với releaseCStTime nếu ngày dự kiến trước releaseCST time thì không thêm ngày
+                    //if (dr["ngaydukien"] == System.DBNull)
+                    //{
+                    //    dr["hieuluc"] = null;
+                    //}
+                    //else
+                    if (dr["ngaydukien"] != null)
+                    {
+                        DateTime d = ConvertFromDBVal<DateTime>(dr["ngaydukien"]);
+                        dr["hieuluc"] = calcTuanRelease(d);
+                    }
+
+                    bool ngayDuKienCoTruoc = UtilsCscase.IsNgayDuKienCoTruocReleaseCST(ConvertFromDBVal<DateTime>(dr["ngaydukien"]));
+                    if (ngayDuKienCoTruoc && dayTargetCanAdd >= 0 && dr["ngaydukien"].ToString() != "")
+                    {
+                        var targetDate = (DateTime)dr["ngaydukien"];
+                        if (dr["mucdo"].ToString().ToLower().Contains("1"))
+                        {
+                            targetDate = targetDate.AddDays(1);
+                            while (!IsWeekDay(targetDate))
+                            {
+                                targetDate = targetDate.AddDays(1);
+                            }
+                        }
+                        else
+                        if (dr["mucdo"].ToString().ToLower().Contains("2"))
+                        {
+                            for (int i = 0; i < 2; i++)
+                            {
+                                targetDate = targetDate.AddDays(1);
+                                while (!IsWeekDay(targetDate))
+                                {
+                                    targetDate = targetDate.AddDays(1);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < dayTargetCanAdd; i++)
+                            {
+                                /*if (dr["macase"].ToString() == "40818")
+                             {
+                                 await Console.Out.WriteLineAsync("ss");
+                              }*/
+                                targetDate = targetDate.AddDays(1);
+                                while (!IsWeekDay(targetDate))
+                                {
+                                    targetDate = targetDate.AddDays(1);
+                                }
+                            }
+                        }
+                        dr["ngaydukien"] = targetDate.ToString();
+                    }
+                    // FIX 4
+                    if (dr["trangthai"].ToString().ToLower().Contains("đang phân tích")
+                       || dr["trangthai"].ToString().ToLower().Contains("đang chờ phân tích"))
+                    {
+                        dr["dabangiao"] = "";
+                        dr["ngaydukien"] = DBNull.Value;
+                        dr["hieuluc"] = "";
+                    }
+
+                    if (dr["trangthai"].ToString().ToLower().Contains("đã xử lý"))
+                    {
+                        dr["trangthai"] = "Đang test";
+                    }
+
+                    dt.Rows.Add(dr);
+                } // each record
+
+                sRet = JsonConvert.SerializeObject(dt);
+                var list1 = JsonConvert.DeserializeObject<List<EduCase>>(sRet);
+
+                // get list truong trong TFS (1)
+                var truongtemp = list1.Select(o => new
+                {
+                    matruong = o.matruong,
+                    tentruong = "",
+                }).Distinct().OrderBy(s => s.matruong).ToList();
+
+                var listTruong = new List<DataTruong>();
+
+                if (string.IsNullOrEmpty(model.filter?.macase))
+                {
+                    // list truong trong TFS (1) JOIN file data.dat logon (2) => get ten truong
+                    listTruong = clients.Join(truongtemp, a => a.MaTruong, b => b.matruong,
+                    (a, b) => new DataTruong
+                    {
+                        matruong = a.MaTruong,
+                        tentruong = a.TenTruong
+                    }).Distinct().OrderBy(s => s.matruong).ToList();
+
+                }
+                list1.Where(x => !string.IsNullOrEmpty(x.thongtinkh)).ToList().ForEach(x => x.thongtinkh = EmbedHtmlContent(x.thongtinkh));
+                list1.Where(x => !string.IsNullOrEmpty(x.dapungcongty)).ToList().ForEach(x => x.dapungcongty = EmbedHtmlContent(x.dapungcongty));
+
+                //var datatemp = new CSCaseDataDO
+                //{
+                //    is_tfs = true,
+                //    data_case = list1.ToList(),
+                //    data_truong = listTruong.Distinct().ToList(),
+                //};
+
+                // Create a DataTable from your list
+                DataTable dataTable = new DataTable("cst_case");
+
+                // Add columns to the DataTable that match your cst_case table schema
+                dataTable.Columns.Add("macase", typeof(string));
+                dataTable.Columns.Add("matruong", typeof(string));
+                dataTable.Columns.Add("ngaynhan", typeof(string));
+                dataTable.Columns.Add("chitietyc", typeof(string));
+                dataTable.Columns.Add("trangthai", typeof(string));
+                dataTable.Columns.Add("ngaydukien", typeof(string));
+                dataTable.Columns.Add("loaihopdong", typeof(string));
+                dataTable.Columns.Add("mucdo", typeof(string));
+                dataTable.Columns.Add("version", typeof(string));
+                dataTable.Columns.Add("hieuluc", typeof(string));
+                dataTable.Columns.Add("dabangiao", typeof(string));
+                dataTable.Columns.Add("ngayemail", typeof(string));
+                dataTable.Columns.Add("mailto", typeof(string));
+                dataTable.Columns.Add("loaicase", typeof(string));
+                dataTable.Columns.Add("phanhe", typeof(string));
+                dataTable.Columns.Add("whatnew", typeof(string));
+                dataTable.Columns.Add("teststate", typeof(string));
+                dataTable.Columns.Add("thongtinkh", typeof(string));
+                dataTable.Columns.Add("dapungcongty", typeof(string));
+                dataTable.Columns.Add("comment", typeof(string));
+                dataTable.Columns.Add("reviewcase", typeof(string));
+
+                // Populate the DataTable with data from list1
+                foreach (var eduCase in list1)
+                {
+                    dataTable.Rows.Add(
+                        eduCase.macase,
+                        eduCase.matruong,
+                        eduCase.ngaynhan,
+                        eduCase.chitietyc,
+                        eduCase.trangthai,
+                        eduCase.ngaydukien,
+                        eduCase.loaihopdong,
+                        eduCase.mucdo,
+                        eduCase.version,
+                        eduCase.hieuluc,
+                        eduCase.dabangiao,
+                        eduCase.ngayemail,
+                        eduCase.mailto,
+                        eduCase.loaicase,
+                        eduCase.phanhe,
+                        eduCase.whatnew,
+                        eduCase.teststate,
+                        eduCase.thongtinkh,
+                        eduCase.dapungcongty,
+                        eduCase.comment,
+                        eduCase.reviewcase
+                    );
+                }
+
+                string connectionString = config.GetConnectionString("DefaultConnection");
+
+                // Perform the bulk insert
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                    {
+                        bulkCopy.DestinationTableName = "cst_case";
+
+                        // Map the columns (assuming the database column names match the property names)
+                        foreach (DataColumn column in dataTable.Columns)
+                        {
+                            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                        }
+
+                        try
+                        {
+                            bulkCopy.WriteToServer(dataTable);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle the exception
+                            Console.WriteLine($"An error occurred: {ex.Message}");
+                            return new CSCaseResult { data = null, code = 500, result = false, errMessage = ex.Data.ToString() };
+                        }
+                    }
+                }
+                var datatemp = new CSCaseDataDO
+                {
+                    is_tfs = true,
+                    data_case = new List<EduCase>(),
+                    data_truong = new List<DataTruong>(),
+                };
+
+                return new CSCaseResult { data = datatemp, code = 200, result = true };
+            }
+            else
+            {
+                var datatemp = new CSCaseDataDO
+                {
+                    is_tfs = true,
+                    data_case = new List<EduCase>(),
+                    data_truong = new List<DataTruong>(),
+                };
+
+                return new CSCaseResult { data = datatemp, code = 200, result = true, message = list_matruong };
+
+            }
         }
 
         [HttpPost, Route("cscase")]
@@ -496,14 +1029,14 @@ namespace educlient.Controllers
                     var z = r.fields;
                     foreach (KeyValuePair<string, string> kvp in r.fields)
                     {
-                        
+
                         if (kvp.Key.ToLower().Equals("system.id"))
                             dr["macase"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("aq.reviewcase"))
                         {
                             dr["tinhnangmoi"] = true;
                         }
-                     
+
                         else if (kvp.Key.ToLower().Equals("aq.customer"))
                             dr["matruong"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("system.createddate"))
@@ -733,21 +1266,21 @@ namespace educlient.Controllers
 
             List<workItem0> lstAll;
 
-                var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
-                                               , "Edusoft.Net-CS%20Team"
-                                               , "'CS Case', 'CS CASE'"
-                                               , ""
-                                               , ""
-                                               , list_trangthai
-                                               , " ([System.CreatedDate] >=" + ngayBatDau + ")"
-                                                 + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
-                                                 + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
-                                                 + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
-                                                 + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
-                                                 , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
-                                               //, "38696"
-                                               );
-                lstAll = lstAll0;
+            var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
+                                           , "Edusoft.Net-CS%20Team"
+                                           , "'CS Case', 'CS CASE'"
+                                           , ""
+                                           , ""
+                                           , list_trangthai
+                                           , " ([System.CreatedDate] >=" + ngayBatDau + ")"
+                                             + " AND ([System.CreatedDate] <= " + ngayKetThuc + ")"
+                                             + " AND ([AQ.Customer] NOT IN ('RELEASE', 'CST', 'AQ', 'SEMINAR'))"
+                                             + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
+                                             + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
+                                             , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
+                                           //, "38696"
+                                           );
+            lstAll = lstAll0;
             var dayTargetCanAdd = double.Parse(config["targetDateAddDay"]);
             string sRet = "";
             if (lstAll != null && lstAll.Count > 0)
@@ -846,7 +1379,7 @@ namespace educlient.Controllers
                                 fixTrangThai2 = true;
                         }
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("system.description"))
-                             dr["thongtinkh"] = kvp.Value;
+                            dr["thongtinkh"] = kvp.Value;
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
                             dr["dapungcongty"] = kvp.Value;
 
@@ -1386,7 +1919,7 @@ namespace educlient.Controllers
             var firstItem = tb.FindOne(Query.All());
             if (firstItem == null)
             {
-                tb.Insert(new KhaoSat{ linkKhaoSat= "https://example.com" ,noidung="Link khảo sát",ngayBatDau=DateTime.Now,ngayKetThuc=DateTime.Now.AddDays(1)});
+                tb.Insert(new KhaoSat { linkKhaoSat = "https://example.com", noidung = "Link khảo sát", ngayBatDau = DateTime.Now, ngayKetThuc = DateTime.Now.AddDays(1) });
             }
             return firstItem;
         }
@@ -1419,7 +1952,7 @@ namespace educlient.Controllers
             return ret;
         }
         [HttpPost, Route("danh_sach_truong_khao_sat")]
-        public object ViewDanhSachTruongKhaoSat()   
+        public object ViewDanhSachTruongKhaoSat()
         {
             var tb = database.Table<DanhSachTruongKhaoSat>();
             var ret = tb.FindAll();
@@ -1799,6 +2332,8 @@ public class ApiResultBaseDO
 
 public class CSCaseResult : ApiResultBaseDO
 {
+    public string errMessage;
+
     public CSCaseDataDO data { get; set; }
 }
 

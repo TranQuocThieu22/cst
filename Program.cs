@@ -22,5 +22,7 @@ namespace educlient
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+
     }
 }
