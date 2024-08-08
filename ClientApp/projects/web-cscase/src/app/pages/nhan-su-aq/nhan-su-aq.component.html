@@ -1,200 +1,254 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="card p-4">
+<div class="block">
+  <div class="card p-4">
 
-      <p-toolbar styleClass="mb-4 p-3">
-        <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-          Nhân Sự AQ
-        </p-card>
-        <ng-template pTemplate="left">
-          <button pButton pRipple
-            label="Thêm đồng bọn"
-            icon="pi pi-user-plus mb-1"
-            class="p-button-success py-2"
-            (click)="openAddDialog()">
-          </button>
-        </ng-template>
-      </p-toolbar>
+    <p-toolbar styleClass="mb-4 p-3">
+      <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
+        Nhân Sự AQ
+      </p-card>
+      <ng-template pTemplate="left">
+        <button pButton pRipple
+          label="Thêm member"
+          icon="pi pi-user-plus mb-1"
+          class="p-button-success py-2"
+          (click)="openAddDialog()">
+        </button>
+      </ng-template>
+    </p-toolbar>
 
-      <p-table
-        [value]="AQmembers"
-        [paginator]="true" [rows]="10"
-        [rowsPerPageOptions]="[5, 10, 20]"
-        styleClass="p-datatable-gridlines"
-        responsiveLayout="scroll">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Actions</th>
-            <th pSortableColumn="id" style="white-space: nowrap;">
+    <p-table
+      #dt1
+      [value]="AQmembers"
+      [paginator]="true" [rows]="10"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      styleClass="p-datatable-gridlines p-datatable-sm"
+      responsiveLayout="scroll"
+      [globalFilterFields]="['tfsName','fullName','email','phone',
+        'birthDate','startDate','nickName','role',
+        'isLeader','isLunch','isActive','wfhQuota',
+        'absenceQuota'
+        ]">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between flex-wrap">
+          <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+            (click)="clear(dt1)"></button>
+          <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+              placeholder="Search keyword" />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th></th>
+          <!-- <th pSortableColumn="id" style="white-space: nowrap;">
               ID
               <p-sortIcon field="id"></p-sortIcon>
-            </th>
-            <th pSortableColumn="tfsName" style="white-space: nowrap;">
-              TFSName
-              <p-sortIcon field="tfsName"></p-sortIcon>
-            </th>
-            <th pSortableColumn="fullName" style="white-space: nowrap;">
-              Full Name
-              <p-sortIcon field="fullName"></p-sortIcon>
-            </th>
-            <th pSortableColumn="email" style="white-space: nowrap;">
-              Email
-              <p-sortIcon field="email"></p-sortIcon>
-            </th>
-            <th pSortableColumn="phone" style="white-space: nowrap;">
-              Phone
-              <p-sortIcon field="phone"></p-sortIcon>
-            </th>
-            <th pSortableColumn="birthDate" style="white-space: nowrap;">
-              Birth Date
-              <p-sortIcon field="birthDate"></p-sortIcon>
-            </th>
-            <th pSortableColumn="startDate" style="white-space: nowrap;">
-              Start Date
-              <p-sortIcon field="startDate"></p-sortIcon>
-            </th>
-            <th pSortableColumn="nickName" style="white-space: nowrap;">
-              Nick Name
-              <p-sortIcon field="nickName"></p-sortIcon>
-            </th>
-            <th pSortableColumn="role" style="white-space: nowrap;">
-              Role
-              <p-sortIcon field="role"></p-sortIcon>
-            </th>
-            <th pSortableColumn="isLeader" style="white-space: nowrap;">
-              Is Leader
-              <p-sortIcon field="isLeader"></p-sortIcon>
-            </th>
-            <th pSortableColumn="isLunch" style="white-space: nowrap;">
-              Is Lunch
-              <p-sortIcon field="isLunch"></p-sortIcon>
-            </th>
-            <th pSortableColumn="wfhQuota" style="white-space: nowrap;">
-              WFH Quota
-              <p-sortIcon field="wfhQuota"></p-sortIcon>
-            </th>
-            <th pSortableColumn="absenceQuota" style="white-space: nowrap;">
-              Absence Quota
-              <p-sortIcon field="absenceQuota"></p-sortIcon>
-            </th>
-            <th pSortableColumn="isActive" style="white-space: nowrap;">
-              Is Active
-              <p-sortIcon field="isActive"></p-sortIcon>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-AQmember>
-          <tr>
-            <td style="display: flex; align-items: center">
-              <button
-                pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-warning p-button-text p-0"
-                (click)="openEditDialog(AQmember)"></button>
-              <button
-                pButton pRipple icon="pi pi-trash"
-                class="p-button-rounded p-button-danger p-button-text p-0"
-                (click)="confirm($event, AQmember)"></button>
-            </td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.id}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.tfsName}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.fullName}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.email}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.phone}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.birthDate}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.startDate}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.nickName}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.role}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.isLeader ? 'Yes' : 'No'}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.isLunch ? 'Yes' : 'No'}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.wfhQuota}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.absenceQuota}}</td>
-            <td style="white-space: nowrap; text-align: left;">{{AQmember.isActive ? 'Active' : 'Inactive'}}</td>
-          </tr>
-        </ng-template>
-      </p-table>
+            </th> -->
+          <th style="white-space: nowrap; text-align: center;">
+            Tên TFS
+            <p-sortIcon field="tfsName"></p-sortIcon>
+            <p-columnFilter type="text" field="tfsName" display="menu" class="ml-auto"></p-columnFilter>
+          </th>
+          <th pSortableColumn="fullName" style="white-space: nowrap;">
+            Tên đầy đủ
+            <p-sortIcon field="fullName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="email" style="white-space: nowrap;">
+            Email
+            <p-sortIcon field="email"></p-sortIcon>
+          </th>
+          <th pSortableColumn="phone" style="white-space: nowrap;">
+            Điện thoại
+            <p-sortIcon field="phone"></p-sortIcon>
+          </th>
+          <th style="white-space: nowrap;">
+            Avatar
+          </th>
+          <th pSortableColumn="birthDate" style="white-space: nowrap;">
+            Ngày sinh
+            <p-sortIcon field="birthDate"></p-sortIcon>
+          </th>
+          <th pSortableColumn="startDate" style="white-space: nowrap;">
+            Ngày gia nhập
+            <p-sortIcon field="startDate"></p-sortIcon>
+          </th>
+          <th pSortableColumn="nickName" style="white-space: nowrap;">
+            Nick Name
+            <p-sortIcon field="nickName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="role" style="white-space: nowrap;">
+            Phòng ban
+            <p-sortIcon field="role"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isLeader" style="white-space: nowrap;">
+            Leader
+            <p-sortIcon field="isLeader"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isLunch" style="white-space: nowrap;">
+            Trợ cấp ăn trưa
+            <p-sortIcon field="isLunch"></p-sortIcon>
+          </th>
+          <th pSortableColumn="wfhQuota" style="white-space: nowrap;">
+            Hạn mức % làm việc online/năm
+            <p-sortIcon field="wfhQuota"></p-sortIcon>
+          </th>
+          <th pSortableColumn="absenceQuota" style="white-space: nowrap;">
+            Hạn mức nghỉ phép/năm
+            <p-sortIcon field="absenceQuota"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isActive" style="white-space: nowrap;">
+            Trạng thái làm việc
+            <p-sortIcon field="isActive"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-AQmember>
+        <tr>
+          <td style="white-space: nowrap; text-align: center;">
+            <button pButton pRipple icon="pi pi-pencil"
+              class="p-button-rounded p-button-warning p-button-text p-0"
+              (click)="openEditDialog(AQmember)"></button>
+            <button pButton pRipple icon="pi pi-trash"
+              class="p-button-rounded p-button-danger p-button-text p-0"
+              (click)="deleteMember($event, AQmember)"></button>
+          </td>
+          <!-- <td style="white-space: nowrap; text-align: left;">{{AQmember.id}}</td> -->
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.tfsName}}</td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.fullName}}</td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.email}}</td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.phone}}</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            <p-avatar
+              label="A"
+              styleClass="p-mr-2"
+              size="large"
+              [style]="{'background-color':'#2196F3', 'color': '#ffffff'}"
+              shape="circle"></p-avatar>
+          </td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.birthDate}}</td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.startDate}}</td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.nickName}}</td>
+          <!-- <td style="white-space: nowrap; text-align: left;">{{getRoleName(AQmember.role)}}</td> -->
+          <td style="white-space: nowrap; text-align: left;">
+            <span [class]="'role-' + getRoleName(AQmember.role)">{{getRoleName(AQmember.role)}}</span>
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            <i *ngIf="AQmember.isLeader" class="pi pi-star-fill icon-border"
+              style="color: rgb(212, 191, 1); font-size: 1.2rem;"></i>
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            <i *ngIf="AQmember.isLunch" class="pi pi-check" style="color: green; font-size: 1.5rem;"></i>
+            <i *ngIf="!AQmember.isLunch" class="pi pi-times" style="color: red; font-size: 1.5rem;"></i>
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{AQmember.wfhQuota}}%</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{AQmember.absenceQuota}}</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            <span [class]="AQmember.isActive ? 'member-active' : 'member-inactive'">
+              {{AQmember.isActive ? 'Hoạt động' : 'Không hoạt động'}}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
 
+<div class="sm:flex gap-4 mt-4 w-full lg:w-6">
+  <!-- <div class="card flex-1 p-4">
+    Pie Chart 1
+    <p-chart
+      type="pie"
+      [data]="data_RolePieChart"
+      [options]="role_chartOptions"
+      [style]="{'width': '40%'}">
+    </p-chart>
+  </div> -->
+  <div class="card mt-4 sm:mt-0 flex-1 p-4">
+    <div echarts [options]="pc2_echartsOptions" [extentions]="pc2_echartsExtentions">
     </div>
   </div>
+</div>
 
-  <p-dialog [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '1200px'}"
-    header="Member Details"
-    [modal]="true" styleClass="p-fluid">
-    <ng-template pTemplate="content">
-      <div class="formgrid grid">
-        <!-- First column -->
-        <div class="field col-12 md:col-6">
-          <div class="p-field">
-            <label for="tfsName">TFS Name</label>
-            <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
-            <small class="p-invalid" *ngIf="submitted && !aqmember.tfsName">TFS Name is required.</small>
-          </div>
-          <div class="p-field">
-            <label for="fullName">Full Name</label>
-            <input type="text" pInputText id="fullName" [(ngModel)]="aqmember.fullName" required />
-          </div>
-          <div class="p-field">
-            <label for="nickName">Nick Name</label>
-            <input type="text" pInputText id="nickName" [(ngModel)]="aqmember.nickName" required />
-          </div>
-          <div class="p-field">
-            <label for="birthDate">Birth Date</label>
-            <input type="date" pInputText id="birthDate" [(ngModel)]="aqmember.birthDate" required />
-          </div>
-          <div class="p-field">
-            <label for="email">Email</label>
-            <input type="email" pInputText id="email" [(ngModel)]="aqmember.email" required />
-          </div>
-          <div class="p-field">
-            <label for="phone">Phone</label>
-            <input type="text" pInputText id="phone" [(ngModel)]="aqmember.phone" required />
-          </div>
+<p-dialog [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '1200px'}"
+  header="Thông tin nhân sự"
+  [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="formgrid grid">
+      <!-- First column -->
+      <div class="field col-12 md:col-6">
+        <div class="p-field">
+          <label for="tfsName">Tên TFS</label>
+          <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !aqmember.tfsName">TFS Name is required.</small>
         </div>
-
-        <!-- Second column -->
-        <div class="field col-12 md:col-6">
-          <div class="p-field">
-            <label for="role">Role</label>
-            <p-dropdown [options]="AQRoles" [(ngModel)]="aqmember.role" optionLabel="role"
-              optionValue="code"></p-dropdown>
-          </div>
-          <div class="p-field">
-            <label for="startDate">Start Date</label>
-            <input type="date" pInputText id="startDate" [(ngModel)]="aqmember.startDate" required />
-          </div>
-          <div class="p-field">
-            <label for="wfhQuota">WFH Quota</label>
-            <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmember.wfhQuota" required />
-          </div>
-          <div class="p-field">
-            <label for="absenceQuota">Absence Quota</label>
-            <input type="number" pInputText id="absenceQuota" [(ngModel)]="aqmember.absenceQuota" required />
-          </div>
-          <div class="p-field-checkbox mt-4">
-            <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isLeader" binary="true" inputId="isLeader"></p-checkbox>
-            <label for="isLeader">Is Leader</label>
-          </div>
-          <div class="p-field-checkbox mt-2">
-            <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isLunch" binary="true" inputId="isLunch"></p-checkbox>
-            <label for="isLunch">Is Lunch</label>
-          </div>
-          <div class="p-field-checkbox mt-2">
-            <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isActive" binary="true" inputId="isActive"></p-checkbox>
-            <label for="isActive">Is Active</label>
-          </div>
+        <div class="p-field">
+          <label for="fullName">Họ tên</label>
+          <input type="text" pInputText id="fullName" [(ngModel)]="aqmember.fullName" required />
+        </div>
+        <div class="p-field">
+          <label for="nickName">Nick Name</label>
+          <input type="text" pInputText id="nickName" [(ngModel)]="aqmember.nickName" required />
+        </div>
+        <div class="p-field">
+          <label for="birthDate">Ngày sinh</label>
+          <input type="date" pInputText id="birthDate" [(ngModel)]="aqmember.birthDate" required />
+        </div>
+        <div class="p-field">
+          <label for="email">Email</label>
+          <input type="email" pInputText id="email" [(ngModel)]="aqmember.email" required />
+        </div>
+        <div class="p-field">
+          <label for="phone">Điện thoại</label>
+          <input type="text" pInputText id="phone" [(ngModel)]="aqmember.phone" required />
         </div>
       </div>
-    </ng-template>
+
+      <!-- Second column -->
+      <div class="field col-12 md:col-6">
+        <div class="p-field">
+          <label for="role">Phòng ban</label>
+          <p-dropdown [options]="AQRoles" [(ngModel)]="aqmember.role" optionLabel="role"
+            optionValue="code"></p-dropdown>
+        </div>
+        <div class="p-field">
+          <label for="startDate">Ngày gia nhập</label>
+          <input type="date" pInputText id="startDate" [(ngModel)]="aqmember.startDate" required />
+        </div>
+        <div class="p-field">
+          <label for="wfhQuota">Hạn mức % làm việc online</label>
+          <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmember.wfhQuota" required />
+        </div>
+        <div class="p-field">
+          <label for="absenceQuota">Hạn mưc nghỉ phép/năm</label>
+          <input type="number" pInputText id="absenceQuota" [(ngModel)]="aqmember.absenceQuota" required />
+        </div>
+        <div class="p-field-checkbox mt-4">
+          <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isLeader" binary="true" inputId="isLeader"></p-checkbox>
+          <label for="isLeader">Là Leader</label>
+        </div>
+        <div class="p-field-checkbox mt-2">
+          <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isLunch" binary="true" inputId="isLunch"></p-checkbox>
+          <label for="isLunch">Trợ cấp ăn trưa</label>
+        </div>
+        <div class="p-field-checkbox mt-2">
+          <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isActive" binary="true" inputId="isActive"></p-checkbox>
+          <label for="isActive">Trạng thái hoạt động</label>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 
 
-    <!-- edit member -->
-    <ng-template pTemplate="footer">
-      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-        (click)="hideDialog()"></button>
-      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-        (click)="editMemberDialog ? updateMember() : addNewMember()"></button>
-    </ng-template>
-  </p-dialog>
+  <!-- edit member -->
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></button>
+    <button pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
+      (click)="editMemberDialog ? updateMember() : addNewMember()"></button>
+  </ng-template>
+</p-dialog>
 
-  <!-- delete member popup -->
-  <p-toast></p-toast>
-  <p-confirmPopup></p-confirmPopup>
+<!-- delete member popup -->
+<p-toast></p-toast>
+<p-confirmPopup></p-confirmPopup>

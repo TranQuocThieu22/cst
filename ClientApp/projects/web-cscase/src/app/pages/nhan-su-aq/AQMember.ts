@@ -18,5 +18,6 @@ export interface AQMember {
 
 export interface AQRole {
     role: string,
-    code: string
+    code: string,
+    total: number
 }

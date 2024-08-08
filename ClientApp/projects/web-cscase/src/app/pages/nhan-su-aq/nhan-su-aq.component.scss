@@ -12,3 +12,66 @@
         background: green;
     }
 }
+
+.role-Developer {
+    background    : #b3e5fc;
+    color         : #23547b;
+    border-radius : 2px;
+    padding       : .25em .5rem;
+    text-transform: uppercase;
+    font-weight   : 700;
+    font-size     : 14px;
+    letter-spacing: .3px;
+}
+
+.role-Support {
+    background    : #ffd8b2;
+    color         : #805b36;
+    border-radius : 2px;
+    padding       : .25em .5rem;
+    text-transform: uppercase;
+    font-weight   : 700;
+    font-size     : 14px;
+    letter-spacing: .3px;
+}
+
+.role-Sale {
+    background    : #8dbca1;
+    color         : #1a5533;
+    border-radius : 2px;
+    padding       : .25em .5rem;
+    text-transform: uppercase;
+    font-weight   : 700;
+    font-size     : 14px;
+    letter-spacing: .3px;
+}
+
+.role-HR {
+    background    : #f1e1d4;
+    color         : #fe1155;
+    border-radius : 2px;
+    padding       : .25em .5rem;
+    text-transform: uppercase;
+    font-weight   : 700;
+    font-size     : 14px;
+    letter-spacing: .3px;
+}
+
+.role-BM {
+    background    : #f5f5dc;
+    color         : #0a3d62;
+    border-radius : 2px;
+    padding       : .25em .5rem;
+    text-transform: uppercase;
+    font-weight   : 700;
+    font-size     : 14px;
+    letter-spacing: .3px;
+}
+
+.member-active {
+    color: green;
+}
+
+.member-inactive {
+    color: red;
+}

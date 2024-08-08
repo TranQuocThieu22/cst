@@ -51,6 +51,9 @@ import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService, MessageService } from "primeng/api";
+import { AvatarModule } from "primeng/avatar";
+import { ChartModule } from 'primeng/chart';
+import { EchartsxModule } from 'echarts-for-angular';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent],
@@ -93,7 +96,10 @@ import { ConfirmationService, MessageService } from "primeng/api";
     DividerModule,
     SidebarModule,
     PanelMenuModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    AvatarModule,
+    ChartModule,
+    EchartsxModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
