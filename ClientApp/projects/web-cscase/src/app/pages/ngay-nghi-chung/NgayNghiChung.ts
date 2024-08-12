@@ -1,8 +1,8 @@
 export interface DayOff {
     id?: number;
-    datefrom?: Date | string;
-    dateto?: Date | string;
-    sumday?: number;
+    dateFrom?: Date | string;
+    dateTo?: Date | string;
+    sumDay?: number;
     reason?: string;
     note?: string;
 }

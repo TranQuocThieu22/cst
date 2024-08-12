@@ -6,6 +6,10 @@ import {
   MessageService,
   PrimeNGConfig
 } from "primeng/api";
+import { Table } from 'primeng/table';
+// import { Calendar } from 'primeng/calendar';
+// Calendar.prototype.getDateFormat = () => 'dd/mm/yy';
+
 
 @Component({
   selector: 'app-ngay-nghi-chung',
@@ -17,12 +21,13 @@ export class NgayNghiChungComponent implements OnInit {
 
   DayOffs: DayOff[];
   DayOff: DayOff = {
-    datefrom: '',
-    dateto: '',
-    sumday: 0,
+    dateFrom: '',
+    dateTo: '',
+    sumDay: 0,
     reason: '',
     note: ''
   };
+
 
   // filter_datefrom: string = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
   // filter_dateto: string = new Date().toLocaleDateString('en-GB');
@@ -35,12 +40,12 @@ export class NgayNghiChungComponent implements OnInit {
   addNewDayOffDialog: boolean;
 
   sumDay() {
-    const date1 = new Date(this.DayOff.datefrom);
-    const date2 = new Date(this.DayOff.dateto);
+    const date1 = new Date(this.DayOff.dateFrom);
+    const date2 = new Date(this.DayOff.dateTo);
     let diffDays = 0;
 
     if (date1 > date2) {
-      this.DayOff.sumday = 0;
+      this.DayOff.sumDay = 0;
       return;
     }
     else {
@@ -51,11 +56,24 @@ export class NgayNghiChungComponent implements OnInit {
         date1.setDate(date1.getDate() + 1);
       }
     }
-    this.DayOff.sumday = diffDays;
+    this.DayOff.sumDay = diffDays;
   }
 
   fetchDataFiltered() {
-    console.log(this.filter_datefrom, this.filter_dateto);
+    let dateFrom = null;
+    let dateTo = null;
+    if (this.filter_datefrom) {
+      dateFrom = this.convertDateFormat(this.filter_datefrom);
+    }
+    if (this.filter_dateto) {
+      dateTo = this.convertDateFormat(this.filter_dateto);
+    }
+    this.fetchDayOffsData(dateFrom, dateTo);
+  }
+
+  convertDateFormat(date: string): string {
+    const [day, month, year] = date.split('/');
+    return `${month}/${day}/${year}`;
   }
 
   constructor(
@@ -78,6 +96,7 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   openAddDialog() {
+    console.log("dayoff:", this.DayOff);
     // this.aqmember = {};
     // this.editMemberDialog = false;
     // this.addNewMemberDialog = true;
@@ -88,53 +107,36 @@ export class NgayNghiChungComponent implements OnInit {
   openEditDialog(data: any) {
     this.DayOff = {};
     this.DayOff = { ...data };
+    this.DayOff.dateFrom = new Date(data.dateFrom);
+    this.DayOff.dateTo = new Date(data.dateTo);
     this.addNewDayOffDialog = false;
     this.editDayOffDialog = true;
     this.openDialog = true;
-    console.log(this.DayOff);
   }
 
-  fetchDayOffsData() {
-    // this.https.get<any>("/api/ThongTinCaNhan").subscribe({
-    //   next: (res: any) => {
-    //     this.dayoffs = res.data
-    //   },
-    //   error: (error) => {
-    //     console.log(error);
-    //     // Your logic for handling errors
-    //   },
-    //   complete: () => {
-    //     // Your logic for handling the completion event (optional)
-    //   }
-    // });
-    this.DayOffs = [
-      {
-        id: 1,
-        datefrom: new Date('2022-01-01 00:00:00'),
-        dateto: new Date('2022-01-03 00:00:00'),
-        sumday: 3,
-        reason: 'Vacation',
-        note: 'Enjoying some time off'
-      },
-      {
-        id: 2,
+  fetchDayOffsData(dateFrom?: string, dateTo?: string) {
+    let params: any = {};
+    if (dateFrom) {
+      params.dateFrom = dateFrom + ' 00:00:00';
+    }
+    if (dateTo) {
+      params.dateTo = dateTo + ' 00:00:00';
+    }
 
-        datefrom: new Date('2022-02-10 00:00:00'),
-        dateto: new Date('2022-02-12 00:00:00'),
-        sumday: 3,
-        reason: 'Sick leave',
-        note: 'Recovering from a flu'
+    this.https.get<any>("/api/NgayPhepChung", { params: params }).subscribe({
+      next: (res: any) => {
+        this.DayOffs = res.data;
+
       },
-      {
-        id: 3,
-        datefrom: new Date('2022-03-20 00:00:00'),
-        dateto: new Date('2022-03-21 00:00:00'),
-        sumday: 2,
-        reason: 'Personal day',
-        note: 'Attending a family event'
+      error: (error) => {
+        console.log(error);
+
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
       }
-    ];
-
+    });
   }
 
   hideDialog() {
@@ -146,61 +148,58 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   resetCalendarSelection() {
-    this.DayOff.datefrom = new Date();
-    this.DayOff.datefrom.setHours(0, 0, 0, 0);
-    this.DayOff.dateto = new Date();
-    this.DayOff.dateto.setHours(0, 0, 0, 0);
+    this.DayOff.dateFrom = new Date();
+    this.DayOff.dateFrom.setHours(0, 0, 0, 0);
+    this.DayOff.dateTo = new Date();
+    this.DayOff.dateTo.setHours(0, 0, 0, 0);
   }
 
   addNewDayOff() {
-    console.log(this.DayOff);
 
-    // let aqmemberArray: AQMember[] = [this.aqmember];
+    let dayOffArray: DayOff[] = [this.DayOff];
 
-    // this.https.post<any>("/api/ThongTinCaNhan/Insert", aqmemberArray).subscribe({
-    //   next: (res: any) => {
-    //     // console.log(res);
-    //   },
-    //   error: (error) => {
-    //     console.log(error);
-    //     // Your logic for handling errors
-    //   },
-    //   complete: () => {
-    //     // Your logic for handling the completion event (optional)
-    //     this.fetchAQMemberData();
-    //   }
-    // });
+    this.https.post<any>("/api/NgayPhepChung/Insert", dayOffArray).subscribe({
+      next: (res: any) => {
+        this.DayOffs = res.data
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.resetCalendarSelection();
+      }
+    });
     // this.AQmembers = [...this.AQmembers];
     this.addNewDayOffDialog = false;
     this.DayOff = {};
-    this.resetCalendarSelection();
     this.hideDialog();
   }
 
   updateDayOff() {
-    // this.https.put<any>("/api/ThongTinCaNhan/" + this.aqmember.id, this.aqmember).subscribe({
-    //   next: (res: any) => {
-    //     // console.log(res);
-    //   },
-    //   error: (error) => {
-    //     console.log(error);
-    //     // Your logic for handling errors
-    //   },
-    //   complete: () => {
-    //     // Your logic for handling the completion event (optional)
-    //     // this.fetchAQMemberData();
-    //   }
-    // });
+    this.https.put<any>("/api/NgayPhepChung/" + this.DayOff.id, this.DayOff).subscribe({
+      next: (res: any) => {
+        this.DayOffs = res.data
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        // this.fetchAQMemberData();
+      }
+    });
     this.hideDialog();
   }
 
   deleteDayOff(event: Event, data: any) {
-    console.log(data);
 
     this.confirmationService.confirm({
       target: event.target,
-      message: "Hủy đợt nghỉ phép chung này?",
-      acceptLabel: 'Hủy',
+      message: "Xóa đợt nghỉ phép chung này?",
+      acceptLabel: 'Xóa',
       rejectLabel: 'Quay lại',
       icon: "pi pi-exclamation-triangle",
       accept: () => {
@@ -210,19 +209,19 @@ export class NgayNghiChungComponent implements OnInit {
           detail: "Đã hủy dữ liệu khỏi hệ thống"
         });
 
-        // this.https.delete<any>("/api/ThongTinCaNhan/" + data.id, data).subscribe({
-        //   next: (res: any) => {
-        //     // console.log(res);
-        //   },
-        //   error: (error) => {
-        //     console.log(error);
-        //     // Your logic for handling errors
-        //   },
-        //   complete: () => {
-        //     // Your logic for handling the completion event (optional)
-        //     // this.fetchAQMemberData();
-        //   }
-        // });
+        this.https.delete<any>("/api/NgayPhepChung/" + data.id, data).subscribe({
+          next: (res: any) => {
+            this.DayOffs = res.data
+          },
+          error: (error) => {
+            console.log(error);
+            // Your logic for handling errors
+          },
+          complete: () => {
+            // Your logic for handling the completion event (optional)
+            // this.fetchAQMemberData();
+          }
+        });
       },
       reject: () => {
         this.messageService.add({
@@ -234,4 +233,10 @@ export class NgayNghiChungComponent implements OnInit {
     });
   }
 
+  clear(table: Table) {
+    table.clear();
+    this.fetchDayOffsData();
+    this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
+    this.filter_dateto = new Date().toLocaleDateString('en-GB');
+  }
 }

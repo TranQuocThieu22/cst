@@ -16,56 +16,82 @@ namespace educlient.Controllers
             database = dataContext;
         }
         // GET: NgayPhepChungController
+
         [HttpGet]
-        public DsNgayPhepCaNhanResult GetAll()
+        public DsNgayPhepChungResult GetAll([FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null)
         {
-            var tb = database.Table<DsNgayPhepCaNhanDO>();
-            return new DsNgayPhepCaNhanResult
+            var tb = database.Table<DsNgayPhepChungDO>();
+
+            DsNgayPhepChungDO[] resultData;
+
+            if (dateFrom.HasValue && dateTo.HasValue)
             {
-                data = tb.FindAll().ToArray(),
+                // Both dateFrom and dateTo are provided
+                resultData = tb.Find(x => x.dateFrom >= dateFrom.Value && x.dateTo <= dateTo.Value).ToArray();
+            }
+            else if (dateFrom.HasValue)
+            {
+                // Only dateFrom is provided
+                resultData = tb.Find(x => x.dateFrom >= dateFrom.Value).ToArray();
+            }
+            else if (dateTo.HasValue)
+            {
+                // Only dateTo is provided
+                resultData = tb.Find(x => x.dateTo <= dateTo.Value).ToArray();
+            }
+            else
+            {
+                // No date filters provided
+                resultData = tb.FindAll().ToArray();
+            }
+
+            return new DsNgayPhepChungResult
+            {
+                data = resultData,
             };
         }
+
+
         [HttpGet, Route("{id}")]
-        public DsNgayPhepCaNhanResult GetById(Guid id)
+        public DsNgayPhepChungResult GetById(Guid id)
         {
-            DsNgayPhepCaNhanResult returnData = new DsNgayPhepCaNhanResult();
-            var tb = database.Table<DsNgayPhepCaNhanDO>();
+            DsNgayPhepChungResult returnData = new DsNgayPhepChungResult();
+            var tb = database.Table<DsNgayPhepChungDO>();
             returnData.data.Append(tb.FindById(id));
-            return new DsNgayPhepCaNhanResult
+            return new DsNgayPhepChungResult
             {
                 data = returnData.data,
             };
         }
         // GET: NgayPhepChungController
         [HttpPost, Route("Insert")]
-        public DsNgayPhepCaNhanResult insert([FromBody] DsNgayPhepCaNhanInput[] inputData)
+        public DsNgayPhepChungResult insert([FromBody] DsNgayPhepChungInput[] inputData)
         {
-            var insertData = inputData.Select(input => new DsNgayPhepCaNhanDO
+            var insertData = inputData.Select(input => new DsNgayPhepChungDO
             {
-                Ngay = System.DateTime.Today,
-                SoLuongBuoi = input.SoLuongBuoi,
-                LyDoNghi = input.LyDoNghi,
-                UserNhap = input.UserNhap,
-                AqUser = input.AqUser,
-                TrangThai = input.TrangThai,
+                dateFrom = input.dateFrom,
+                dateTo = input.dateTo,
+                sumDay = input.sumDay,
+                reason = input.reason,
+                note = input.note,
             }).ToList();
-            var tb = database.Table<DsNgayPhepCaNhanDO>();
+            var tb = database.Table<DsNgayPhepChungDO>();
             tb.Insert(insertData);
             var data = tb.FindAll();
-            return new DsNgayPhepCaNhanResult
+            return new DsNgayPhepChungResult
             {
                 data = tb.FindAll().ToArray(),
             };
         }
         [HttpPut, Route("{id}")]
-        public DsNgayPhepCaNhanResult update(Guid id, [FromBody] DsNgayPhepCaNhanInput inputData)
+        public DsNgayPhepChungResult update(Guid id, [FromBody] DsNgayPhepChungInput inputData)
         {
-            var tb = database.Table<DsNgayPhepCaNhanDO>();
+            var tb = database.Table<DsNgayPhepChungDO>();
 
             var existingRecord = tb.FindById(id);
             if (existingRecord == null)
             {
-                new DsNgayPhepCaNhanResult
+                new DsNgayPhepChungResult
                 {
                     code = 400,
                     message = "data not found",
@@ -73,31 +99,30 @@ namespace educlient.Controllers
             }
 
             // Update the existing record with new values
-            existingRecord.Ngay = DateTime.Today;
-            existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
-            existingRecord.LyDoNghi = inputData.LyDoNghi;
-            existingRecord.UserNhap = inputData.UserNhap;
-            existingRecord.AqUser = inputData.AqUser;
-            existingRecord.TrangThai = inputData.TrangThai;
+            existingRecord.dateFrom = inputData.dateFrom;
+            existingRecord.dateTo = inputData.dateTo;
+            existingRecord.sumDay = inputData.sumDay;
+            existingRecord.reason = inputData.reason;
+            existingRecord.note = inputData.note;
 
 
             // Update the record in the collection
             tb.Update(existingRecord);
             var data = tb.FindAll();
-            return new DsNgayPhepCaNhanResult
+            return new DsNgayPhepChungResult
             {
                 data = tb.FindAll().ToArray(),
             };
         }
         [HttpDelete, Route("{id}")]
-        public DsNgayPhepCaNhanResult delete(Guid id)
+        public DsNgayPhepChungResult delete(Guid id)
         {
-            var tb = database.Table<DsNgayPhepCaNhanDO>();
+            var tb = database.Table<DsNgayPhepChungDO>();
 
             var existingRecord = tb.FindById(id);
             if (existingRecord == null)
             {
-                new DsNgayPhepCaNhanResult
+                new DsNgayPhepChungResult
                 {
                     code = 400,
                     message = "data not found",
@@ -105,7 +130,7 @@ namespace educlient.Controllers
             }
             tb.Delete(id);
             var data = tb.FindAll();
-            return new DsNgayPhepCaNhanResult
+            return new DsNgayPhepChungResult
             {
                 data = tb.FindAll().ToArray(),
             };

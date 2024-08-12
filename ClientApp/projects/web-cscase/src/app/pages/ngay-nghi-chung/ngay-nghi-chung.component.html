@@ -17,6 +17,9 @@
 
     <p-toolbar styleClass="mb-4 p-3">
       <div class="flex flex-row flex-wrap gap-3">
+        <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+          (click)="clear(dt1)">
+        </button>
         <span class="p-float-label mt-2">
           <input id="float-input" type="text" pInputText [(ngModel)]="filter_datefrom">
           <label for="float-input">Ngày bắt đầu</label>
@@ -49,49 +52,43 @@
       [showCurrentPageReport]="true"
       [rowsPerPageOptions]="[10,25,50]"
       [paginator]="true"
-      [globalFilterFields]="['datefrom', 'dateto', 'sumday', 'reason', 'note']"
+      [globalFilterFields]="['dateFrom', 'dateTo', 'sumDay', 'reason', 'note']"
       styleClass="p-datatable-gridlines p-datatable-sm"
+      reorderableColumns="true"
       responsiveLayout="scroll">
       <!-- dataKey="id" -->
       <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" -->
       <!-- styleClass="p-datatable-customers p-datatable-gridlines" -->
 
-
-
       <ng-template pTemplate="header">
         <tr>
           <th style="white-space: nowrap; min-width:120px;"></th>
-          <th>
-            <div class="p-d-flex p-jc-between p-ai-center">
-              Ngày bắt đầu
-              <p-columnFilter type="date" field="datefrom" display="menu">
-                <p-calendar dateFormat="dd/mm/yy"></p-calendar>
-              </p-columnFilter>
-            </div>
+          <th style="white-space: nowrap; min-width:10rem" pSortableColumn="dateFrom">
+            Ngày bắt đầu
+            <p-sortIcon field="dateFrom"></p-sortIcon>
+            <!-- <p-columnFilter type="date" field="dateFrom" display="menu">
+            </p-columnFilter> -->
+            <!-- <p-columnFilter type="date" field="dateFrom" display="menu" [showMatchModes]="true" [showOperator]="false"
+              [showAddButton]="false">
+            </p-columnFilter> -->
           </th>
-          <th>
-            <div class="p-d-flex p-jc-between p-ai-center">
-              Ngày kết thúc
-              <p-columnFilter type="date" field="dateto" display="menu"></p-columnFilter>
-            </div>
+          <th style="white-space: nowrap; min-width:10rem " pSortableColumn="dateTo">
+            Ngày kết thúc
+            <!-- <p-columnFilter type="date" field="dateTo" display="menu">
+            </p-columnFilter> -->
+            <p-sortIcon field="dateTo"></p-sortIcon>
           </th>
-          <th>
-            <div class="p-d-flex p-jc-between p-ai-center">
-              Tổng số ngày nghỉ
-              <p-columnFilter type="numeric" field="sumday" display="menu"></p-columnFilter>
-            </div>
+          <th style="white-space: nowrap; min-width:10rem" pSortableColumn="sumDay">
+            Tổng số ngày nghỉ
+            <p-sortIcon field="sumDay"></p-sortIcon>
+            <p-columnFilter type="numeric" field="sumDay" display="menu" class="mt-4"></p-columnFilter>
+          <th style="white-space: nowrap; min-width:25rem" class="text-center">
+            Lý do nghỉ
+            <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
           </th>
-          <th>
-            <div class="p-d-flex p-jc-between p-ai-center">
-              Lý do nghỉ
-              <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
-            </div>
-          </th>
-          <th>
-            <div>
-              Ghi chú thêm
-              <p-columnFilter type="text" field="note" display="menu"></p-columnFilter>
-            </div>
+          <th style="white-space: nowrap;" class="text-center">
+            Ghi chú thêm
+            <p-columnFilter type="text" field="note" display="menu"></p-columnFilter>
           </th>
         </tr>
       </ng-template>
@@ -106,13 +103,13 @@
               (click)="deleteDayOff($event, DayOff)"></button>
           </td>
           <td style="white-space: nowrap; text-align: left; width: 12%;">
-            {{DayOff.datefrom | date: 'dd/MM/yyyy'}}
+            {{DayOff.dateFrom | date: 'dd/MM/yyyy'}}
           </td>
           <td style="white-space: nowrap; text-align: left; width: 12%;">
-            {{DayOff.dateto | date: 'dd/MM/yyyy'}}
+            {{DayOff.dateTo | date: 'dd/MM/yyyy'}}
           </td>
           <td style="white-space: nowrap; text-align: center; width: 15%;">
-            {{DayOff.sumday}}
+            {{DayOff.sumDay}}
           </td>
           <td style="white-space: nowrap; text-align: left; width: 20%;">
             {{DayOff.reason}}
@@ -148,7 +145,7 @@
       <div class="field col-12 md:col-4">
         <label for="icon">Ngày bắt đầu</label>
         <p-calendar
-          [(ngModel)]="DayOff.datefrom"
+          [(ngModel)]="DayOff.dateFrom"
           [showIcon]="true"
           inputId="icon"
           dateFormat="dd/mm/yy"
@@ -158,7 +155,7 @@
       <div class="field col-12 md:col-4">
         <label for="icon">Ngày kết thúc</label>
         <p-calendar
-          [(ngModel)]="DayOff.dateto"
+          [(ngModel)]="DayOff.dateTo"
           [showIcon]="true"
           inputId="icon"
           dateFormat="dd/mm/yy"
@@ -169,7 +166,7 @@
       <div class="field col-5 md:col-4">
         <label for="sumDay">Tổng cộng ngày nghỉ</label>
         <input type="number" pInputText id="sumDay" required
-          [(ngModel)]="DayOff.sumday" />
+          [(ngModel)]="DayOff.sumDay" />
       </div>
 
       <div class="field col-12">

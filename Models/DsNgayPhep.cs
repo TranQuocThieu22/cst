@@ -6,25 +6,24 @@ namespace educlient.Models
 {
     public class DsNgayPhepChungResult : ApiResultBaseDO
     {
-        public DsNgayPhepChungDataDO[] data { get; set; }
+        public DsNgayPhepChungDO[] data { get; set; }
     }
-    public class DsNgayPhepChungDataDO
+    public class DsNgayPhepChungDO
     {
         public Guid id { get; set; }
-        public DateTime Ngay { get; set; }
-        public DateTime DenNgay { get; set; }
-        public int SoLuongBuoi { get; set; }
-        public string LyDoNghi { get; set; }
-        public string UserNhap { get; set; }
-        public string GhiChu { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float sumDay { get; set; }
+        public string reason { get; set; }
+        public string note { get; set; }
     }
     public class DsNgayPhepChungInput
     {
-        public int SoLuongBuoi { get; set; }
-        public string LyDoNghi { get; set; }
-        public string UserNhap { get; set; }
-        public string GhiChu { get; set; }
-        public DateTime DenNgay { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float sumDay { get; set; }
+        public string reason { get; set; }
+        public string note { get; set; }
     }
     public class DsThongTinCaNhanResult : ApiResultBaseDO
     {
