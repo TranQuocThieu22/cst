@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,16 +46,16 @@ namespace educlient.Services
                    </soap:Body>
                 </soap:Envelope>";
 
-            using (var httpClient = _httpClientFactory.CreateClient())
+            using (var httpClient = new HttpClient())
             {
                 var content = new StringContent(xmlRequest, Encoding.UTF8, "text/xml");
-                var response = await httpClient.PostAsync(ServerUrl, content);
+                var response =  httpClient.PostAsync(ServerUrl, content).Result;
 
-                if (response.IsSuccessStatusCode)
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var responseContent = response.Content.ReadAsStringAsync().Result;
                     var xml = new XmlDocument();
-                    xml.LoadXml(responseContent);
+                    xml.Load(new StringReader(responseContent));
                     var loginResult = xml.GetElementsByTagName("LoginResult").OfType<XmlNode>().FirstOrDefault()?.InnerText;
 
                     if (!string.IsNullOrEmpty(loginResult))
