@@ -1,4 +1,5 @@
-﻿using educlient.Data;
+﻿using AQFramework.Utilities;
+using educlient.Data;
 using educlient.Models;
 using educlient.Services;
 using Microsoft.AspNetCore.Components.Forms;
@@ -36,7 +37,31 @@ namespace educlient.Controllers
                 // Here you might generate a JWT token or set up a session
                 //return Ok(new { message = "Login successful", user = winAccount });
 
-                if (model.password != null && model.password == "1234")
+                if (model.username.ToLower() == "admin" && model.password == "12345")
+                {
+                    var data = new DsThongTinCaNhanDataDO()
+                    {
+                        id = Guid.NewGuid(),
+                        TFSName = "admin",
+                        fullName = "admin",
+                        email = "admin",
+                        phone = "admin",
+                        avatar = "admin",
+                        birthDate = new DateTime(2024, 1, 1),
+                        startDate = new DateTime(2024, 1, 1),
+                        nickName = "admin",
+                        role = "admin",
+                        isLeader = true,
+                        isLunch = true,
+                        WFHQuota = 1,
+                        absenceQuota = 1,
+                        isActive = true
+                    };
+
+                    return Ok(data);
+                }
+
+                else if (model.password != null && model.password == "1234")
                 {
                     var tb = database.Table<DsThongTinCaNhanDataDO>();
                     var data = tb.FindOne(x => x.TFSName == model.username);
