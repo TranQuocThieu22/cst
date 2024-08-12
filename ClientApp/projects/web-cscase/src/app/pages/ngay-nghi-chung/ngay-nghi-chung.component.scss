@@ -1,0 +1,19 @@
+:host ::ng-deep .p-datepicker {
+    transform: scale(0.8);
+    /* Adjust the scale to your desired value */
+}
+
+*:focus {
+    box-shadow: none !important;
+}
+
+::ng-deep {
+    .p-selectbutton .p-button.p-highlight {
+        background      : red;
+        background-color: red;
+    }
+
+    .p-selectbutton .p-button.p-highlight:hover {
+        background: green;
+    }
+}

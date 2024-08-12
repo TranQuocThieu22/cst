@@ -5,6 +5,7 @@ import { AuthGuard } from 'projects/libs/src/login/auth.guard';
 import { ReportCaNhanComponent } from '../report-ca-nhan/report-ca-nhan.component';
 import { NhanSuAqComponent } from '../nhan-su-aq/nhan-su-aq.component';
 import { NgayNghiChungComponent } from '../ngay-nghi-chung/ngay-nghi-chung.component';
+// import { NgayNghiPhepComponent } from '../ngay-nghi-phep/ngay-nghi-phep.component';
 
 const routes: Routes = [
   { path: 'aq-main', pathMatch: 'full', redirectTo: 'aq' },
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'aq', component: ReportCaNhanComponent, canActivate: [AuthGuard] },
       { path: 'nhansuaq', component: NhanSuAqComponent, canActivate: [AuthGuard] },
       { path: 'ngaynghichungaq', component: NgayNghiChungComponent, canActivate: [AuthGuard] },
+      // { path: 'ngaynghiphepaq', component: NgayNghiPhepComponent, canActivate: [AuthGuard] },
       { path: '', redirectTo: 'aq', pathMatch: 'full' }
     ]
   },

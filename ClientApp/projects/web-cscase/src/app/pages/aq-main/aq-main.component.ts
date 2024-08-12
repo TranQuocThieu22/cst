@@ -8,7 +8,6 @@ import { PrimeNGConfig } from 'primeng/api';
   styleUrls: ['./aq-main.component.scss']
 })
 export class AqMainComponent implements OnInit {
-  visibleSidebar1;
   constructor(private router: Router,
     private primengConfig: PrimeNGConfig
   ) { }

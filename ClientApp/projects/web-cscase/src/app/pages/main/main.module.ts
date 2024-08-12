@@ -31,7 +31,7 @@ import { AqMainModule } from '../aq-main/aq-main.module';
 @NgModule({
   declarations: [MainComponent, CsCaseComponent, ThongkeComponent,
     UploadComponent, ReleaseComponent, ReleaseListComponent, ChitietcaseComponent,
-    EditRlcaseComponent, TraodoiComponent, Error404Component,],
+    EditRlcaseComponent, TraodoiComponent, Error404Component],
   imports: [
     AqMainModule,
     FormsModule,

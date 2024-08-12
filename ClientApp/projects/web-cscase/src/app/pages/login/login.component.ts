@@ -62,10 +62,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.serverLink.setLogin(true);
               this.islogin = true;
               this.router.navigate(['/main/cscase']);
-              if (data.roles === "TFS") {
-                this.router.navigate(['/main/aq-main']);
-              }
 
+            }
+            else if (data.tfsName) {
+              this.spinner.hide();
+              this.serverLink.setLogin(true);
+              this.islogin = true;
+              this.router.navigate(['/main/aq-main']);
             }
             else {
               this.messError = 'Đăng nhập không thành công';

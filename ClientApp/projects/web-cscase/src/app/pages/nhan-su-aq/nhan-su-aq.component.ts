@@ -23,7 +23,6 @@ export class NhanSuAqComponent implements OnInit {
 
   AQmembers: AQMember[];
   aqmember: AQMember;
-  submitted: boolean;
   addNewMemberDialog: boolean;
   editMemberDialog: boolean;
   deleteMemberDialog: boolean;
@@ -198,7 +197,6 @@ export class NhanSuAqComponent implements OnInit {
 
   openAddDialog() {
     this.aqmember = {};
-    this.submitted = false;
     this.editMemberDialog = false;
     this.addNewMemberDialog = true;
     this.openDialog = true;
@@ -208,7 +206,6 @@ export class NhanSuAqComponent implements OnInit {
   openEditDialog(data: any) {
     this.aqmember = {};
     this.aqmember = { ...data };
-    this.submitted = false;
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
     this.openDialog = true;
@@ -223,11 +220,9 @@ export class NhanSuAqComponent implements OnInit {
     this.openDialog = false;
     this.editMemberDialog = false;
     this.addNewMemberDialog = false;
-    this.submitted = false;
   }
 
   addNewMember() {
-    this.submitted = true;
     this.aqmember.avatar = "avatar content";
     let aqmemberArray: AQMember[] = [this.aqmember];
 

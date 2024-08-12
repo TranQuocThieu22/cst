@@ -26,10 +26,11 @@ import { NgxEditorModule } from 'ngx-editor';
 import { AqReportComponent } from './pages/aq-report/aq-report.component';
 import { ReportCaNhanComponent } from './pages/report-ca-nhan/report-ca-nhan.component';
 import { NhanSuAqComponent } from './pages/nhan-su-aq/nhan-su-aq.component';
-import { AqMainComponent } from './pages/aq-main/aq-main.component';
-import { NgayNghiChungComponent } from './pages/ngay-nghi-chung/ngay-nghi-chung.component';
+import { NgayNghiPhepComponent } from './pages/ngay-nghi-phep/ngay-nghi-phep.component';
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent, MessBoxComponent, SettingComponent, NoidungcasenewComponent, ThongbaokhaosatComponent, AqReportComponent, NgayNghiChungComponent,],
+  declarations: [AppComponent, LoginComponent, NoidungcscaseComponent,
+    MessBoxComponent, SettingComponent, NoidungcasenewComponent,
+    ThongbaokhaosatComponent, AqReportComponent, NgayNghiPhepComponent],
   imports: [
     NgxEditorModule,
     BrowserAnimationsModule,

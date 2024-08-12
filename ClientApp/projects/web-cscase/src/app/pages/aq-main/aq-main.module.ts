@@ -28,6 +28,7 @@ import { UploadComponent } from '../upload/upload.component';
 import { AqMainComponent } from './aq-main.component';
 import { ReportCaNhanComponent } from '../report-ca-nhan/report-ca-nhan.component';
 import { NhanSuAqComponent } from '../nhan-su-aq/nhan-su-aq.component';
+import { NgayNghiChungComponent } from '../ngay-nghi-chung/ngay-nghi-chung.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -56,7 +57,7 @@ import { ChartModule } from 'primeng/chart';
 import { EchartsxModule } from 'echarts-for-angular';
 
 @NgModule({
-  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent],
+  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent, NgayNghiChungComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,

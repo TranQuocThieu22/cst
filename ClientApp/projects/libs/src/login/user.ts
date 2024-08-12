@@ -6,4 +6,5 @@
     user?: string;
     group?: string[];
     userData?: object;
+    tfsName?: string;
 }

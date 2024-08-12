@@ -1,65 +1,202 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="card mb-4">
+<div class="block">
 
-      <div class="card-body">
-        <h2 class="card-title">
-          <i class="fas fa-calendar-alt me-2" aria-hidden="true"></i>
-          Ngày nghỉ chung
-        </h2>
-        <div class="table-responsive">
-          <!-- <table class="table table-hover table-striped table-bordered table-responsive">
-            <thead class="table-dark">
-              <tr class="align-middle text-center align-items-center">
-                <th class="py-3 align-middle">ID</th>
-                <th class="py-3 align-middle">TFSName</th>
-                <th style="width: 15%;" class="py-3 align-middle">Full Name</th>
-                <th style="width: 10%;" class="py-3 align-middle">Email</th>
-                <th style="width: 5%;" class="py-3 align-middle">Phone</th>
-                <th style="width: 7%;" class="py-3 align-middle text-center align-middle">Birth Date</th>
-                <th style="width: 7%;" class="py-3 align-middle">Start Date</th>
-                <th class="py-3 align-middle">Nick Name</th>
-                <th class="py-3 align-middle">Role</th>
-                <th style="width: 1%;" class="py-3 align-middle">Is Leader</th>
-                <th style="width: 1%;" class="py-3 align-middle">Is Lunch</th>
-                <th style="width: 1%;" class="py-3 align-middle">WFH Quota</th>
-                <th style="width: 1%;" class="py-3 align-middle">Absence Quota</th>
-                <th style="width: 1%;" class="py-3 align-middle">Is Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of nhanSuAq" class="align-middle align-items-center">
-                <td class="py-2 align-middle text-center">{{ data.id }}</td>
-                <td class="py-2 align-middle">{{ data.TFSName }}</td>
-                <td class="py-2 align-middle">{{ data.fullName }}</td>
-                <td class="py-2 align-middle">{{ data.email }}</td>
-                <td class="py-2 align-middle">{{ data.phone }}</td>
-                <td class="py-2 align-middle text-center">{{ data.birthDate | date:'dd/MM/yyyy' }}</td>
-                <td class="py-2 align-middle text-center">{{ data.startDate | date:'dd/MM/yyyy' }}</td>
-                <td class="py-2 align-middle">{{ data.nickName }}</td>
-                <td class="py-2 align-middle">{{ data.role }}</td>
-                <td class="py-2 align-middle text-center">
-                  <span class="badge rounded-pill" [ngClass]="data.isLeader ? 'bg-success' : 'text-dark'">
-                    {{ data.isLeader ? 'Yes' : 'No' }}
-                  </span>
-                </td>
-                <td class="py-2 align-middle text-center">
-                  <span class="badge rounded-pill" [ngClass]="data.isLunch ? 'bg-success' : 'text-dark'">
-                    {{ data.isLunch ? 'Yes' : 'No' }}
-                  </span>
-                </td>
-                <td class="py-2 align-middle text-center">{{ data.WFHQuota }}</td>
-                <td class="py-2 align-middle text-center">{{ data.absenceQuota }}</td>
-                <td class="py-2 align-middle text-center">
-                  <span class="badge rounded-pill" [ngClass]="data.isActive ? 'bg-success' : 'bg-danger'">
-                    {{ data.isActive ? 'Active' : 'Inactive' }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table> -->
+  <div class="card p-4">
+    <p-toolbar styleClass="mb-4 p-3">
+      <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
+        Quản lý ngày nghỉ chung
+      </p-card>
+      <ng-template pTemplate="left">
+        <button pButton pRipple
+          label="Tạo ngày nghỉ chung"
+          icon="pi pi-calendar-plus mb-1"
+          class="p-button-success py-2"
+          (click)="openAddDialog()">
+        </button>
+      </ng-template>
+    </p-toolbar>
 
-        </div>
+    <p-toolbar styleClass="mb-4 p-3">
+      <div class="flex flex-row flex-wrap gap-3">
+        <span class="p-float-label mt-2">
+          <input id="float-input" type="text" pInputText [(ngModel)]="filter_datefrom">
+          <label for="float-input">Ngày bắt đầu</label>
+        </span>
+        <span class="p-float-label mt-2">
+          <input id="float-input" type="text" pInputText [(ngModel)]="filter_dateto">
+          <label for="float-input">Ngày kết thúc</label>
+        </span>
+        <span class="mt-2">
+          <!-- <button
+            pButton pRipple type="button"
+            label="Lọc"
+            class="p-button-rounded p-button-info  px-4">
+          </button> -->
+          <!-- <button pButton pRipple type="button" label="Lọc" class="p-button-outlined p-button-info px-4"></button> -->
+          <button
+            pButton pRipple type="button"
+            icon="pi pi-search"
+            class="p-button-rounded p-button-info"
+            (click)="fetchDataFiltered()">
+          </button>
+        </span>
       </div>
-    </div>
+    </p-toolbar>
+
+    <p-table
+      #dt1
+      [value]="DayOffs"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10,25,50]"
+      [paginator]="true"
+      [globalFilterFields]="['datefrom', 'dateto', 'sumday', 'reason', 'note']"
+      styleClass="p-datatable-gridlines p-datatable-sm"
+      responsiveLayout="scroll">
+      <!-- dataKey="id" -->
+      <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" -->
+      <!-- styleClass="p-datatable-customers p-datatable-gridlines" -->
+
+
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="white-space: nowrap; min-width:120px;"></th>
+          <th>
+            <div class="p-d-flex p-jc-between p-ai-center">
+              Ngày bắt đầu
+              <p-columnFilter type="date" field="datefrom" display="menu">
+                <p-calendar dateFormat="dd/mm/yy"></p-calendar>
+              </p-columnFilter>
+            </div>
+          </th>
+          <th>
+            <div class="p-d-flex p-jc-between p-ai-center">
+              Ngày kết thúc
+              <p-columnFilter type="date" field="dateto" display="menu"></p-columnFilter>
+            </div>
+          </th>
+          <th>
+            <div class="p-d-flex p-jc-between p-ai-center">
+              Tổng số ngày nghỉ
+              <p-columnFilter type="numeric" field="sumday" display="menu"></p-columnFilter>
+            </div>
+          </th>
+          <th>
+            <div class="p-d-flex p-jc-between p-ai-center">
+              Lý do nghỉ
+              <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+            </div>
+          </th>
+          <th>
+            <div>
+              Ghi chú thêm
+              <p-columnFilter type="text" field="note" display="menu"></p-columnFilter>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-DayOff>
+        <tr>
+          <td style="white-space: nowrap; text-align: center; width: 100px;">
+            <button pButton pRipple icon="pi pi-pencil"
+              class="p-button-rounded p-button-warning p-button-text p-0"
+              (click)="openEditDialog(DayOff)"></button>
+            <button pButton pRipple icon="pi pi-trash"
+              class="p-button-rounded p-button-danger p-button-text p-0"
+              (click)="deleteDayOff($event, DayOff)"></button>
+          </td>
+          <td style="white-space: nowrap; text-align: left; width: 12%;">
+            {{DayOff.datefrom | date: 'dd/MM/yyyy'}}
+          </td>
+          <td style="white-space: nowrap; text-align: left; width: 12%;">
+            {{DayOff.dateto | date: 'dd/MM/yyyy'}}
+          </td>
+          <td style="white-space: nowrap; text-align: center; width: 15%;">
+            {{DayOff.sumday}}
+          </td>
+          <td style="white-space: nowrap; text-align: left; width: 20%;">
+            {{DayOff.reason}}
+          </td>
+          <td style="white-space: nowrap; text-align: left;">
+            {{DayOff.note}}
+          </td>
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">Không có thông tin ngày nghỉ. Cày tiếp thôi.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
   </div>
+</div>
+
+
+<p-dialog
+  header="Thông tin ngày nghỉ chung"
+  [(visible)]="openDialog"
+  [style]="{width: '100%', maxWidth: '800px'}"
+  [contentStyle]="{minHeight: '350px'}"
+  [modal]="true"
+  styleClass="p-fluid">
+
+  <ng-template pTemplate="content">
+    <div class="formgrid grid">
+
+      <div class="field col-12 md:col-4">
+        <label for="icon">Ngày bắt đầu</label>
+        <p-calendar
+          [(ngModel)]="DayOff.datefrom"
+          [showIcon]="true"
+          inputId="icon"
+          dateFormat="dd/mm/yy"
+          (ngModelChange)="sumDay()"></p-calendar>
+      </div>
+
+      <div class="field col-12 md:col-4">
+        <label for="icon">Ngày kết thúc</label>
+        <p-calendar
+          [(ngModel)]="DayOff.dateto"
+          [showIcon]="true"
+          inputId="icon"
+          dateFormat="dd/mm/yy"
+          (ngModelChange)="sumDay()"></p-calendar>
+      </div>
+
+
+      <div class="field col-5 md:col-4">
+        <label for="sumDay">Tổng cộng ngày nghỉ</label>
+        <input type="number" pInputText id="sumDay" required
+          [(ngModel)]="DayOff.sumday" />
+      </div>
+
+      <div class="field col-12">
+        <label for="reason">Lí do</label>
+        <input type="text" pInputText id="reason" required
+          [(ngModel)]="DayOff.reason" />
+      </div>
+
+      <div class="field col-12">
+        <label>Ghi chú</label>
+        <textarea [rows]="5" [cols]="30" pInputTextarea [autoResize]="true"
+          [(ngModel)]="DayOff.note"></textarea>
+      </div>
+
+    </div>
+  </ng-template>
+
+
+  <!-- edit/addnew DayOff -->
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></button>
+    <button pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
+      (click)="editDayOffDialog ? updateDayOff() : addNewDayOff()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- delete member popup -->
+<p-toast></p-toast>
+<p-confirmPopup></p-confirmPopup>

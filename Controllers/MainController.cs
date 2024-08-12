@@ -52,7 +52,15 @@ namespace educlient.Controllers
             var dir = Path.Combine(AppContext.BaseDirectory, "clients.dat");
             var clients = JsonConvert.DeserializeObject<List<EduClient>>(System.IO.File.ReadAllText(dir));
             EduClient user = clients.FirstOrDefault(r => r.MaTruong?.ToLower() == log?.username?.ToLower() && r.Pass == log.password);
-            EduClient TFSUser = await _tFSAccountService.LoginAsync(log);
+            EduClient TFSUser;
+            try
+            {
+                TFSUser = await _tFSAccountService.LoginAsync(log);
+            }
+            catch (Exception e)
+            {
+                return "Loi roi" + e;
+            }
             if (user != null)
             {
                 user.User = null;

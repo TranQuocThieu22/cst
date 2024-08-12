@@ -24,7 +24,9 @@ export class AuthService {
     //   headers: new HttpHeaders()
     //     .set('Content-Type', 'application/x-www-form-urlencoded')
     // };
-    return this.http.post<any>('api/main/login', { username, password })
+
+    // return this.http.post<any>('api/main/login', { username, password })
+    return this.http.post<any>('api/TFSAccount/login', { username, password })
       .pipe(map((response: User) => {
         console.log(response);
 

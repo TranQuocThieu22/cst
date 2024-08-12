@@ -1,6 +1,5 @@
 <div class="block">
   <div class="card p-4">
-
     <p-toolbar styleClass="mb-4 p-3">
       <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
         Nhân Sự AQ
@@ -40,29 +39,29 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th></th>
+          <th style="white-space: nowrap; min-width:120px;"></th>
           <!-- <th pSortableColumn="id" style="white-space: nowrap;">
               ID
               <p-sortIcon field="id"></p-sortIcon>
             </th> -->
-          <th style="white-space: nowrap; text-align: center;">
+          <th pSortableColumn="tfsName" style="white-space: nowrap; min-width:10rem;">
             Tên TFS
             <p-sortIcon field="tfsName"></p-sortIcon>
             <p-columnFilter type="text" field="tfsName" display="menu" class="ml-auto"></p-columnFilter>
           </th>
-          <th pSortableColumn="fullName" style="white-space: nowrap;">
+          <th pSortableColumn="fullName" style="white-space: nowrap; min-width:12rem">
             Tên đầy đủ
             <p-sortIcon field="fullName"></p-sortIcon>
           </th>
-          <th pSortableColumn="email" style="white-space: nowrap;">
+          <th pSortableColumn="email" style="white-space: nowrap; min-width:15rem">
             Email
             <p-sortIcon field="email"></p-sortIcon>
           </th>
-          <th pSortableColumn="phone" style="white-space: nowrap;">
+          <th pSortableColumn="phone" style="white-space: nowrap; min-width:10rem">
             Điện thoại
             <p-sortIcon field="phone"></p-sortIcon>
           </th>
-          <th style="white-space: nowrap;">
+          <th style="white-space: nowrap; min-width:5rem">
             Avatar
           </th>
           <th pSortableColumn="birthDate" style="white-space: nowrap;">
@@ -105,7 +104,7 @@
       </ng-template>
       <ng-template pTemplate="body" let-AQmember>
         <tr>
-          <td style="white-space: nowrap; text-align: center;">
+          <td style="white-space: nowrap; text-align: center; width: 100px;">
             <button pButton pRipple icon="pi pi-pencil"
               class="p-button-rounded p-button-warning p-button-text p-0"
               (click)="openEditDialog(AQmember)"></button>
@@ -126,8 +125,8 @@
               [style]="{'background-color':'#2196F3', 'color': '#ffffff'}"
               shape="circle"></p-avatar>
           </td>
-          <td style="white-space: nowrap; text-align: left;">{{AQmember.birthDate}}</td>
-          <td style="white-space: nowrap; text-align: left;">{{AQmember.startDate}}</td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.birthDate | date: 'dd/MM/yyyy'}}</td>
+          <td style="white-space: nowrap; text-align: left;">{{AQmember.startDate | date: 'dd/MM/yyyy'}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.nickName}}</td>
           <!-- <td style="white-space: nowrap; text-align: left;">{{getRoleName(AQmember.role)}}</td> -->
           <td style="white-space: nowrap; text-align: left;">
@@ -180,7 +179,6 @@
         <div class="p-field">
           <label for="tfsName">Tên TFS</label>
           <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !aqmember.tfsName">TFS Name is required.</small>
         </div>
         <div class="p-field">
           <label for="fullName">Họ tên</label>
@@ -240,7 +238,7 @@
   </ng-template>
 
 
-  <!-- edit member -->
+  <!-- edit/add member button -->
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text"
       (click)="hideDialog()"></button>

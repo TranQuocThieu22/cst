@@ -1,4 +1,5 @@
 ﻿using AQFramework.Utilities;
+using educlient.Data;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace educlient.Services
         private const string pss = "76Z5N82AlUc9"; // Note: Storing secrets in code is not recommended
         private const string ServerUrl = "https://dev.aqtech.vn:1443/pw/LdapUtils.asmx?op=Login";
         private readonly IHttpClientFactory _httpClientFactory;
-
+        private readonly IDbLiteContext database;
         public TFSAccountService(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -83,6 +84,7 @@ namespace educlient.Services
 
             }
         }
+
     }
 
 }

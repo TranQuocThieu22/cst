@@ -16,24 +16,24 @@ body {
 
 
 // sort table
-thead th {
-  span {
-    visibility: hidden;
-    display   : none;
-  }
+// thead th {
+//   span {
+//     visibility: hidden;
+//     display   : none;
+//   }
 
-  &.active {
-    span {
-      visibility: visible;
-      display   : inline-flex;
-    }
-  }
-}
+//   &.active {
+//     span {
+//       visibility: visible;
+//       display   : inline-flex;
+//     }
+//   }
+// }
 
-.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
-  padding-top   : 2px;
-  padding-bottom: 2px;
-}
+// .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+//   padding-top   : 2px;
+//   padding-bottom: 2px;
+// }
 
 // Dien thoai
 @media (max-width: 768px) {
