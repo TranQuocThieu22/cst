@@ -26,6 +26,7 @@ namespace educlient.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class MainController : ControllerBase
     {
         private readonly IDbLiteContext database;
