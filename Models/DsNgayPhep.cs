@@ -1,4 +1,5 @@
-﻿using educlient.Models;
+﻿using AQFramework.Utilities;
+using educlient.Models;
 using System;
 using System.Collections.Generic;
 
@@ -98,19 +99,26 @@ public class DsNgayPhepCaNhanInput
 }
 public class DsNgayCongTacResult : ApiResultBaseDO
 {
-    public DsNgayCongTacDataDO[] data { get; set; }
+    public DsNgayCongTacDO[] data { get; set; }
 }
-public class DsNgayCongTacDataDO
+public class DsNgayCongTacDO
 {
     public Guid id { get; set; }
-    public DateTime Ngay { get; set; }
-    public DateTime DenNgay { get; set; }
-    public int SoLuongBuoi { get; set; }
-    public string NoiDungCongTac { get; set; }
-    public string PhuongTienDiChuyen { get; set; }
-    public string TruongCongTac { get; set; }
-    public string UserNhap { get; set; }
-    public string AqUser { get; set; }
+    public DateTime dateFrom { get; set; }
+    public DateTime dateTo { get; set; }
+    public int sumDay { get; set; }
+    public string comissionContent { get; set; }
+    public string transportation { get; set; }
+    public CommissionMember[] memberList { get; set; }
+    public Number commissionExpenses { get; set; }
+    public string note { get; set; }
+}
+
+public class CommissionMember
+{
+    public string fullName { get; set; }
+    public string nickName { get; set; }
+    public int memberExpenses { get; set; }
 }
 public class DsNgayCongTacInput
 {

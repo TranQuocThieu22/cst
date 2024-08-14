@@ -24,13 +24,11 @@ import { NoidungcasenewComponent } from './pages/noidungcasenew/noidungcasenew.c
 import { ThongbaokhaosatComponent } from './pages/thongbaokhaosat/thongbaokhaosat.component';
 import { NgxEditorModule } from 'ngx-editor';
 import { AqReportComponent } from './pages/aq-report/aq-report.component';
-import { ReportCaNhanComponent } from './pages/report-ca-nhan/report-ca-nhan.component';
-import { NhanSuAqComponent } from './pages/nhan-su-aq/nhan-su-aq.component';
-import { NgayNghiPhepComponent } from './pages/ngay-nghi-phep/ngay-nghi-phep.component';
+import { LamViecOnlineComponent } from './pages/lam-viec-online/lam-viec-online.component';
 @NgModule({
   declarations: [AppComponent, LoginComponent, NoidungcscaseComponent,
     MessBoxComponent, SettingComponent, NoidungcasenewComponent,
-    ThongbaokhaosatComponent, AqReportComponent, NgayNghiPhepComponent],
+    ThongbaokhaosatComponent, AqReportComponent, LamViecOnlineComponent],
   imports: [
     NgxEditorModule,
     BrowserAnimationsModule,

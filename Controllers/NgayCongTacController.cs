@@ -20,7 +20,7 @@ namespace educlient.Controllers
         [HttpGet]
         public DsNgayCongTacResult GetAll()
         {
-            var tb = database.Table<DsNgayCongTacDataDO>();
+            var tb = database.Table<DsNgayCongTacDO>();
             return new DsNgayCongTacResult
             {
                 data = tb.FindAll().ToArray(),
@@ -30,7 +30,7 @@ namespace educlient.Controllers
         public DsNgayCongTacResult GetById(Guid id)
         {
             DsNgayCongTacResult returnData = new DsNgayCongTacResult();
-            var tb = database.Table<DsNgayCongTacDataDO>();
+            var tb = database.Table<DsNgayCongTacDO>();
             returnData.data.Append(tb.FindById(id));
             return new DsNgayCongTacResult
             {
@@ -40,25 +40,25 @@ namespace educlient.Controllers
         [HttpPost, Route("Insert")]
         public DsNgayCongTacResult Insert([FromBody] DsNgayCongTacInput[] inputData)
         {
-            List<DsNgayCongTacDataDO> insertData = new List<DsNgayCongTacDataDO>();
+            List<DsNgayCongTacDO> insertData = new List<DsNgayCongTacDO>();
 
             foreach (var input in inputData)
             {
-                var newData = new DsNgayCongTacDataDO
-                {
-                    id = Guid.NewGuid(),
-                    Ngay = DateTime.Today,
-                    SoLuongBuoi = input.SoLuongBuoi,
-                    NoiDungCongTac = input.NoiDungCongTac,
-                    TruongCongTac = input.TruongCongTac,
-                    UserNhap = input.UserNhap,
-                    AqUser = input.AqUser
-                };
+                //var newData = new DsNgayCongTacDO
+                //{
+                //    id = Guid.NewGuid(),
+                //    Ngay = DateTime.Today,
+                //    SoLuongBuoi = input.SoLuongBuoi,
+                //    NoiDungCongTac = input.NoiDungCongTac,
+                //    TruongCongTac = input.TruongCongTac,
+                //    UserNhap = input.UserNhap,
+                //    AqUser = input.AqUser
+                //};
 
-                insertData.Add(newData);
+                //insertData.Add(newData);
             }
 
-            var tb = database.Table<DsNgayCongTacDataDO>();
+            var tb = database.Table<DsNgayCongTacDO>();
             tb.InsertBulk(insertData); // Assuming there's a method for bulk insert in your database library
 
             // Return the list of inserted data
@@ -71,7 +71,7 @@ namespace educlient.Controllers
         [HttpPut, Route("{id}")]
         public DsNgayCongTacResult Update(Guid id, [FromBody] DsNgayCongTacInput inputData)
         {
-            var tb = database.Table<DsNgayCongTacDataDO>();
+            var tb = database.Table<DsNgayCongTacDO>();
 
             // Find the existing record by id
             var existingRecord = tb.FindById(id);
@@ -85,12 +85,12 @@ namespace educlient.Controllers
             }
 
             // Update the existing record with new values
-            existingRecord.Ngay = DateTime.Today;
-            existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
-            existingRecord.NoiDungCongTac = inputData.NoiDungCongTac;
-            existingRecord.TruongCongTac = inputData.TruongCongTac;
-            existingRecord.UserNhap = inputData.UserNhap;
-            existingRecord.AqUser = inputData.AqUser;
+            //existingRecord.Ngay = DateTime.Today;
+            //existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
+            //existingRecord.NoiDungCongTac = inputData.NoiDungCongTac;
+            //existingRecord.TruongCongTac = inputData.TruongCongTac;
+            //existingRecord.UserNhap = inputData.UserNhap;
+            //existingRecord.AqUser = inputData.AqUser;
 
             // Update the record in the database
             tb.Update(existingRecord);
@@ -98,14 +98,14 @@ namespace educlient.Controllers
             // Return the updated record
             return new DsNgayCongTacResult
             {
-                data = new DsNgayCongTacDataDO[] { existingRecord }
+                data = new DsNgayCongTacDO[] { existingRecord }
             };
         }
 
         [HttpDelete, Route("{id}")]
         public DsNgayCongTacResult delete(Guid id)
         {
-            var tb = database.Table<DsNgayCongTacDataDO>();
+            var tb = database.Table<DsNgayCongTacDO>();
 
             var existingRecord = tb.FindById(id);
             if (existingRecord == null)
@@ -120,7 +120,7 @@ namespace educlient.Controllers
             var data = tb.FindById(id);
             return new DsNgayCongTacResult
             {
-                data = new DsNgayCongTacDataDO[] { existingRecord }
+                data = new DsNgayCongTacDO[] { existingRecord }
             };
         }
     }

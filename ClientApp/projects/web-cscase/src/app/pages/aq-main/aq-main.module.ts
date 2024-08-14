@@ -29,6 +29,7 @@ import { AqMainComponent } from './aq-main.component';
 import { ReportCaNhanComponent } from '../report-ca-nhan/report-ca-nhan.component';
 import { NhanSuAqComponent } from '../nhan-su-aq/nhan-su-aq.component';
 import { NgayNghiChungComponent } from '../ngay-nghi-chung/ngay-nghi-chung.component';
+import { NgayCongTacComponent } from '../ngay-cong-tac/ngay-cong-tac.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -55,9 +56,10 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { AvatarModule } from "primeng/avatar";
 import { ChartModule } from 'primeng/chart';
 import { EchartsxModule } from 'echarts-for-angular';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @NgModule({
-  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent, NgayNghiChungComponent],
+  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent, NgayNghiChungComponent, NgayCongTacComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -100,7 +102,8 @@ import { EchartsxModule } from 'echarts-for-angular';
     ConfirmPopupModule,
     AvatarModule,
     ChartModule,
-    EchartsxModule
+    EchartsxModule,
+    ScrollPanelModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [

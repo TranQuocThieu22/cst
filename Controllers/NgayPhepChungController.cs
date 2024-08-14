@@ -18,26 +18,30 @@ namespace educlient.Controllers
         // GET: NgayPhepChungController
 
         [HttpGet]
-        public DsNgayPhepChungResult GetAll([FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null)
+        public DsNgayPhepChungResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null)
         {
             var tb = database.Table<DsNgayPhepChungDO>();
 
             DsNgayPhepChungDO[] resultData;
 
-            if (dateFrom.HasValue && dateTo.HasValue)
+            if (query_dateFrom.HasValue && query_dateTo.HasValue)
             {
-                // Both dateFrom and dateTo are provided
-                resultData = tb.Find(x => x.dateFrom >= dateFrom.Value && x.dateTo <= dateTo.Value).ToArray();
+                resultData = tb.Find(x =>
+                (x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
+                (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
+                ).ToArray();
             }
-            else if (dateFrom.HasValue)
+            else if (query_dateFrom.HasValue)
             {
                 // Only dateFrom is provided
-                resultData = tb.Find(x => x.dateFrom >= dateFrom.Value).ToArray();
+                resultData = tb.Find(x => x.dateFrom >= query_dateFrom.Value).ToArray();
             }
-            else if (dateTo.HasValue)
+            else if (query_dateFrom.HasValue)
             {
                 // Only dateTo is provided
-                resultData = tb.Find(x => x.dateTo <= dateTo.Value).ToArray();
+                resultData = tb.Find(x => x.dateTo <= query_dateTo.Value).ToArray();
             }
             else
             {

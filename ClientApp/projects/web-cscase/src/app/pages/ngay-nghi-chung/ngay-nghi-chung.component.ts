@@ -60,15 +60,15 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   fetchDataFiltered() {
-    let dateFrom = null;
-    let dateTo = null;
+    let input_filter_datefrom = null;
+    let input_filter_dateto = null;
     if (this.filter_datefrom) {
-      dateFrom = this.convertDateFormat(this.filter_datefrom);
+      input_filter_datefrom = this.convertDateFormat(this.filter_datefrom);
     }
     if (this.filter_dateto) {
-      dateTo = this.convertDateFormat(this.filter_dateto);
+      input_filter_dateto = this.convertDateFormat(this.filter_dateto);
     }
-    this.fetchDayOffsData(dateFrom, dateTo);
+    this.fetchDayOffsData(input_filter_datefrom, input_filter_dateto);
   }
 
   convertDateFormat(date: string): string {
@@ -101,7 +101,6 @@ export class NgayNghiChungComponent implements OnInit {
     // this.editMemberDialog = false;
     // this.addNewMemberDialog = true;
     this.openDialog = true;
-    // console.log(this.aqmember);
   }
 
   openEditDialog(data: any) {
@@ -114,13 +113,13 @@ export class NgayNghiChungComponent implements OnInit {
     this.openDialog = true;
   }
 
-  fetchDayOffsData(dateFrom?: string, dateTo?: string) {
+  fetchDayOffsData(input_filter_datefrom?: string, input_filter_dateto?: string) {
     let params: any = {};
-    if (dateFrom) {
-      params.dateFrom = dateFrom + ' 00:00:00';
+    if (input_filter_datefrom) {
+      params.query_dateFrom = input_filter_datefrom + ' 00:00:00';
     }
-    if (dateTo) {
-      params.dateTo = dateTo + ' 00:00:00';
+    if (input_filter_dateto) {
+      params.query_dateTo = input_filter_dateto + ' 00:00:00';
     }
 
     this.https.get<any>("/api/NgayPhepChung", { params: params }).subscribe({
@@ -188,7 +187,6 @@ export class NgayNghiChungComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        // this.fetchAQMemberData();
       }
     });
     this.hideDialog();
@@ -219,7 +217,6 @@ export class NgayNghiChungComponent implements OnInit {
           },
           complete: () => {
             // Your logic for handling the completion event (optional)
-            // this.fetchAQMemberData();
           }
         });
       },
