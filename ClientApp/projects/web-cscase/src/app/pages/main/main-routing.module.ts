@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: 'release', component: ReleaseComponent, canActivate: [AuthGuard], data: { roles: 'admin' } },
       { path: 'releasedlist', component: ReleaseListComponent, canActivate: [AuthGuard] },
       { path: 'setting', component: SettingComponent, canActivate: [AuthGuard] },
-      { path: 'report', component: AqReportComponent, canActivate: [AuthGuard] },
+
       { path: 'aq-main', component: AqMainComponent, canActivate: [AuthGuard] },
       {
         path: 'taocase', loadChildren: () => import('../taocase/taocase.module')

@@ -68,8 +68,6 @@ namespace educlient.Models
             public float? detailactualtime8 { get; set; }
             public float? detailactualtime9 { get; set; }
             public float? detailactualtime10 { get; set; }
-
-
         }
 
         public class ThongTinCaseSup
@@ -162,6 +160,11 @@ namespace educlient.Models
         {
             public int count { get; set; }
             public List<CaseTheoThoiGianChoDataDO> data { get; set; }
+        }
+        public class DateInput
+        {
+            public string data { get; set; }
+            public string tmp { get; set; }
         }
     }
 }

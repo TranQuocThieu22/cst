@@ -26,9 +26,9 @@ namespace educlient.Controllers
         }
 
         [HttpPost, Route("w-coderCaseReport")]
-        public Task<XuLyCaseDataResult> CoderCaseReport()
+        public Task<XuLyCaseDataResult> CoderCaseReport([FromBody] DateInput Date)
         {
-            return _thongKeDevService.CoderCaseReport();
+            return _thongKeDevService.CoderCaseReport(Date);
         }
 
         [HttpPost, Route("w-supCaseReport")]
@@ -37,9 +37,9 @@ namespace educlient.Controllers
             return _thongKeSupService.SupportCaseReport();
         }
         [HttpPost, Route("w-AqCaseReport")]
-        public Task<AQReportResult> AqCaseData()
+        public Task<AQReportResult> AqCaseData(DateInput Date)
         {
-            return _thongKeAqTechService.AqReport();
+            return _thongKeAqTechService.AqReport(Date);
         }
         [HttpPost, Route("w-PhanBoSoCaseTheoThoiGianChoCoder")]
         public Task<CaseTheoThoiGianChoResult> PhanBoSoCaseTheoThoiGianChoCoder()

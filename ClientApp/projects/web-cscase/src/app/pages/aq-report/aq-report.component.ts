@@ -50,6 +50,9 @@ interface ChartData {
   styleUrls: ['./aq-report.component.scss']
 })
 export class AqReportComponent implements OnInit {
+
+  datePickerValue: string = new Date().toISOString().split('T')[0];  // Initialize with current date
+  formattedDate: string = this.formatDate(this.datePickerValue);
   public yAxisBieuDoTienDoXuLyCasesDev: string = 'Cases';
   public yAxisBieuDoPhanBoThoiGianDev: string = 'Giờ'
   public generalColor = ["#5087f3", "#e79434", "#c44d49", "#47b7df", "#7c50cc", "#e5b515"];
@@ -82,6 +85,28 @@ export class AqReportComponent implements OnInit {
   ngOnInit(): void {
     this.fetchAllData();
   }
+
+  onDateChange(newDate: string) {
+    this.formattedDate = this.formatDate(newDate);
+    console.log(newDate);
+    this.fetchAllData();
+    console.log("Formatted Date:", this.formattedDate);
+  }
+
+
+
+  private formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+
+    // Get the components of the date
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    // Format the date to the desired string format
+    return `${year}-${month}-${day}T00:00:00.0000000`;
+  }
+
 
   initializeCharts() {
     this.charts = {
@@ -255,7 +280,7 @@ export class AqReportComponent implements OnInit {
     this.spinner.show("spinner");
 
     forkJoin({
-      coderData: this.http.post('/api/thongke/w-coderCaseReport', {}),
+      coderData: this.http.post('/api/thongke/w-coderCaseReport', { data: this.formattedDate }),
       supData: this.http.post('/api/thongke/w-supCaseReport', {}),
       aqData: this.http.post('/api/thongke/w-AqCaseReport', {}),
       phanBoData: this.http.post('/api/thongke/w-PhanBoSoCaseTheoThoiGianChoCoder', {})

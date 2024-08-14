@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -47,6 +48,7 @@ namespace educlient.Services
         }
         public async Task<XuLyCaseSupDataResult> SupportCaseReport()
         {
+
             var wiqlQuery = BuildWiqlQuery();
             var CanTestwiqlQuery = BuildWiqlCanTestQuery();
             var CanGanTagwiqlQuery = BuildWiqlGanTagQuery();
@@ -71,7 +73,27 @@ namespace educlient.Services
             var caseGanTagDetails = await GetCaseDetails(caseGanTagIds);
             var caseTestTreDetails = await GetCaseDetails(caseTestTreIds);
             var casePhanTichTreDetails = await GetCaseDetails(casePhanTichTreIds);
+            foreach (var item in caseDetails.value)
+            {
+                Debug.WriteLine($"caseDetails:{item.id}");
+            }
 
+            foreach (var item in caseTestDetails.value)
+            {
+                Debug.WriteLine($"caseTestDetails:{item.id}");
+            }
+            foreach (var item in caseGanTagDetails.value)
+            {
+                Debug.WriteLine($"caseGanTagDetails:{item.id}");
+            }
+            //foreach (var item in caseTestTreDetails.value)
+            //{
+            //    Debug.WriteLine($"caseTestTreDetails:{item.id}");
+            //}
+            foreach (var item in casePhanTichTreDetails.value)
+            {
+                Debug.WriteLine($"casePhanTichTreDetails:{item.id}");
+            }
             var thongTinCases = ProcessCaseDetails(caseDetails);
             var thongTinCasesTest = ProcessCaseDetails(caseTestDetails);
             var thongTinCasesGanTag = ProcessCaseDetails(caseGanTagDetails);
@@ -152,6 +174,7 @@ namespace educlient.Services
                     AND [System.State] IN (
                                 'Đang xử lý', 'Mở Case'
                             )
+                    AND [AQ.CaseType] <> 'CV - Trao đổi hoặc chưa phân loại'
                 AND [System.AssignedTo] IN (
                         'thanh <AQ\\thanh>',
                         'havt <AQ\\havt>',
@@ -160,6 +183,7 @@ namespace educlient.Services
                         'thuannam <AQ\\thuannam>',
                         'mtien <AQ\\mtien>'
                     )
+
                 ORDER BY [System.AssignedTo]""}}";
         }
 
@@ -178,10 +202,13 @@ namespace educlient.Services
         'thuyduong <AQ\\thuyduong>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>'
     )
     AND [System.State] = 'Mở Case'
+    AND ([AQ.ReqState] = '' OR [AQ.ReqState] = '02 – Chưa phân tích xong')        
     AND 
         (
         ([System.AssignedTo] = 'tiepnhansup <AQ\\tiepnhansup>'
-        AND ([AQ.ReqState] = '' OR [AQ.ReqState] = '02 – Chưa phân tích xong')
+        AND ([AQ.ReqState] = '' OR [AQ.ReqState] = '02 – Chưa phân tích xong')        
+        
+
         )
     OR 
         (
@@ -429,9 +456,44 @@ namespace educlient.Services
         public List<XuLyCaseSupdataDO> SummarizeCanXuLyData(List<ThongTinCaseSup> thongTinCases, List<ThongTinCaseSup> thongTinCasesTest, List<ThongTinCaseSup> thongTinCasesGanTag)
         {
             var canPhanTich = GetSoLuongCanPhanTich(thongTinCases);
-            //var canTest = GetSoLuongCanTest(thongTinCasesTest);
-            //var duocGan = GetSoLuongGanTag(thongTinCasesGanTag);
+            var canTest = GetSoLuongCanTest(thongTinCasesTest);
+            var duocGan = GetSoLuongGanTag(thongTinCasesGanTag);
+            foreach (var item in canPhanTich)
+            {
+                if (item.assignedto == "havt <AQ\\havt>")
+                {
 
+                    foreach (var item1 in item.caseList)
+
+                    {
+                        Debug.WriteLine($"canPhanTich: {item.assignedto}: caseList: {item1} ");
+                    }
+                }
+            }
+            foreach (var item in canTest)
+            {
+                if (item.assignedto == "havt <AQ\\havt>")
+                {
+
+                    foreach (var item1 in item.caseList)
+
+                    {
+                        Debug.WriteLine($"canTest: {item.assignedto}: caseList: {item1} ");
+                    }
+                }
+            }
+            foreach (var item in duocGan)
+            {
+                if (item.assignedto == "havt <AQ\\havt>")
+                {
+
+                    foreach (var item1 in item.caseList)
+
+                    {
+                        Debug.WriteLine($"duocGan: {item.assignedto}: caseList: {item1} ");
+                    }
+                }
+            }
             var allowedAssignedTo = new List<string>
                 {
                     "thanh <AQ\\thanh>",
@@ -443,14 +505,14 @@ namespace educlient.Services
                 };
 
             var combinedData = canPhanTich
-                //.Concat(canTest)
-                //.Concat(duocGan)
+                .Concat(canTest)
+                .Concat(duocGan)
                 .Where(x => allowedAssignedTo.Contains(x.assignedto))
                 .GroupBy(x => x.assignedto)
                 .Select(g => new XuLyCaseSupdataDO
                 {
                     assignedto = g.Key,
-                    canXuLy = g.Sum(x => x.CanPhanTich),
+                    canXuLy = g.SelectMany(x => x.caseList).Distinct().Count(),
                     XuLyTre = 0, // Set default values for these fields
                     PhanTichTre = 0,
                     TestTre = 0

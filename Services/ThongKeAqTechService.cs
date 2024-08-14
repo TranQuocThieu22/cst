@@ -9,7 +9,7 @@ namespace educlient.Services
 {
     public interface IThongKeAqTechService
     {
-        Task<AQReportResult> AqReport();
+        Task<AQReportResult> AqReport(DateInput Date);
     }
     public class ThongKeAqTechService : IThongKeAqTechService
     {
@@ -24,17 +24,17 @@ namespace educlient.Services
             _thongKeDevService = ThongKeService;
             _thongKeSupService = thongKeSupService;
         }
-        public async Task<AQReportResult> AqReport()
+        public async Task<AQReportResult> AqReport(DateInput Date)
         {
-            List<XuLyCasedataDO> dev = await DevFunct();
+            List<XuLyCasedataDO> dev = await DevFunct(Date);
             List<XuLyCaseSupdataDO> sup = await SupFunct();
             List<AQReportDataDO> aqReport = CalAqReport(sup, dev);
             return new AQReportResult { code = 200, message = "success", result = true, data = aqReport };
         }
-        public async Task<List<XuLyCasedataDO>> DevFunct()
+        public async Task<List<XuLyCasedataDO>> DevFunct(DateInput Date)
         {
             var wiqlQuery = _thongKeDevService.BuildWiqlQuery();
-            var wiqlCaseTodayQuery = _thongKeDevService.BuildWiqlCaseInDayQuery();
+            var wiqlCaseTodayQuery = _thongKeDevService.BuildWiqlCaseInDayQuery(Date.data);
 
             var caseIds = await _thongKeDevService.GetCaseIds(wiqlQuery);
             var caseIdsByTodayCase = await _thongKeDevService.GetCaseIds(wiqlCaseTodayQuery);
@@ -50,7 +50,7 @@ namespace educlient.Services
 
             var soNgayBaoTri = await _thongKeDevService.tinhSoNgayTreBaoTri(thongTinCases);
             var dataCaseTreVaCanXuLy = _thongKeDevService.tinhdataXuLyCase(soNgayBaoTri);
-            var dataTienDoCongViec = _thongKeDevService.TinhSoLuongCaseTodayTheoUser(dataCaseTreVaCanXuLy, thongTinCasesToday);
+            var dataTienDoCongViec = _thongKeDevService.TinhSoLuongCaseTodayTheoUser(dataCaseTreVaCanXuLy, thongTinCasesToday, Date.data);
             Console.Write(dataTienDoCongViec);
 
             return dataTienDoCongViec;

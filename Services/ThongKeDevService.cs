@@ -14,16 +14,16 @@ namespace educlient.Services
 {
     public interface IThongKeDevService
     {
-        Task<XuLyCaseDataResult> CoderCaseReport();
+        Task<XuLyCaseDataResult> CoderCaseReport(DateInput Date);
         string BuildWiqlQuery();
-        string BuildWiqlCaseInDayQuery();
+        string BuildWiqlCaseInDayQuery(string Date);
         Task<List<workItemBase>> GetCaseIds(string wiqlQuery);
         Task<TfsCaseDetailModel> GetCaseDetails(List<workItemBase> caseIds);
         List<ThongTinCase> ProcessCaseDetails(TfsCaseDetailModel caseDetails);
         Task<string> DoTfsQueryData(string pTfsHost, string pbaseUrl, string pQueryAppend, string pPOSTBody, string pBasicToken);
         Task<XuLyCasedataDO> dataXuLyCase();
         Task<List<dataTreBaoTri>> tinhSoNgayTreBaoTri(List<ThongTinCase> data);
-        List<XuLyCasedataDO> TinhSoLuongCaseTodayTheoUser(List<XuLyCasedataDO> data, List<ThongTinCase> thongTinCaseToday);
+        List<XuLyCasedataDO> TinhSoLuongCaseTodayTheoUser(List<XuLyCasedataDO> data, List<ThongTinCase> thongTinCaseToday, string date);
         List<XuLyCasedataDO> tinhdataXuLyCase(List<dataTreBaoTri> data);
         Task<CaseTheoThoiGianChoResult> PhanBoSoCaseTheoThoiGianCoder();
     }
@@ -37,10 +37,10 @@ namespace educlient.Services
             config = cf;
         }
 
-        public async Task<XuLyCaseDataResult> CoderCaseReport()
+        public async Task<XuLyCaseDataResult> CoderCaseReport(DateInput Date)
         {
             var wiqlQuery = BuildWiqlQuery();
-            var wiqlCaseTodayQuery = BuildWiqlCaseInDayQuery();
+            var wiqlCaseTodayQuery = BuildWiqlCaseInDayQuery(Date.data);
 
             var caseIds = await GetCaseIds(wiqlQuery);
             var caseIdsByTodayCase = await GetCaseIds(wiqlCaseTodayQuery);
@@ -57,7 +57,7 @@ namespace educlient.Services
             var test = await PhanBoCaseTheoThoiGianCho(thongTinCases);
             var soNgayBaoTri = await tinhSoNgayTreBaoTri(thongTinCases);
             var dataCaseTreVaCanXuLy = tinhdataXuLyCase(soNgayBaoTri);
-            var dataTienDoCongViec = TinhSoLuongCaseTodayTheoUser(dataCaseTreVaCanXuLy, thongTinCasesToday);
+            var dataTienDoCongViec = TinhSoLuongCaseTodayTheoUser(dataCaseTreVaCanXuLy, thongTinCasesToday, Date.data);
             Console.Write(dataTienDoCongViec);
 
             return new XuLyCaseDataResult { count = dataTienDoCongViec.Count, code = 200, message = "success", result = true, data = dataTienDoCongViec, };
@@ -108,7 +108,7 @@ namespace educlient.Services
                 )
             ORDER BY [System.AssignedTo]""}}";
         }
-        public string BuildWiqlCaseInDayQuery()
+        public string BuildWiqlCaseInDayQuery(string Date)
         {
             return $@"{{
                 ""query"": ""SELECT [System.Id]
@@ -116,16 +116,16 @@ namespace educlient.Services
                 WHERE [System.TeamProject] = 'Edusoft.Net-CS'
                 AND [System.WorkItemType] <> ''
                 AND (
-                    [AQ.DetailDate1] = @today
-                    OR [AQ.DetailDate2] = @today
-                    OR [AQ.DetailDate3] = @today
-                    OR [AQ.DetailDate4] = @today
-                    OR [AQ.DetailDate5] = @today
-                    OR [AQ.DetailDate6] = @today
-                    OR [AQ.DetailDate7] = @today
-                    OR [AQ.DetailDate8] = @today
-                    OR [AQ.DetailDate9] = @today
-                    OR [AQ.DetailDate10] = @today
+                    [AQ.DetailDate1] = '{Date}'
+                    OR [AQ.DetailDate2] =  '{Date}'
+                    OR [AQ.DetailDate3] =  '{Date}'
+                    OR [AQ.DetailDate4] =  '{Date}'
+                    OR [AQ.DetailDate5] =  '{Date}'
+                    OR [AQ.DetailDate6] =  '{Date}'
+                    OR [AQ.DetailDate7] =  '{Date}'
+                    OR [AQ.DetailDate8] =  '{Date}'
+                    OR [AQ.DetailDate9] =  '{Date}'
+                    OR [AQ.DetailDate10] =  '{Date}'
                 )
                  AND [System.AssignedTo] NOT IN (
                     'tiepnhansup <AQ\\tiepnhansup>',
@@ -502,7 +502,7 @@ namespace educlient.Services
             return await Task.FromResult(result); // Simulating async operation
         }
 
-        public List<XuLyCasedataDO> TinhSoLuongCaseTodayTheoUser(List<XuLyCasedataDO> data, List<ThongTinCase> thongTinCaseToday)
+        public List<XuLyCasedataDO> TinhSoLuongCaseTodayTheoUser(List<XuLyCasedataDO> data, List<ThongTinCase> thongTinCaseToday, string date)
         {
             var groupedData = data.GroupBy(x => x.assignedto)
                                   .ToDictionary(g => g.Key, g => g.First());
@@ -511,7 +511,7 @@ namespace educlient.Services
                                             .ToDictionary(g => g.Key, g => new
                                             {
                                                 Count = g.Count(),
-                                                TodayTimeCounter = g.Sum(item => CalculateTodayTimeCounter(item))
+                                                TodayTimeCounter = g.Sum(item => CalculateTodayTimeCounter(item, date))
                                             });
 
             foreach (var kvp in groupedData)
@@ -575,9 +575,10 @@ namespace educlient.Services
         {
             return data != "03 - HĐ bảo trì" || data != "01 - HĐ Triển khai";
         }
-        private float CalculateTodayTimeCounter(ThongTinCase thongTinCase)
+        private float CalculateTodayTimeCounter(ThongTinCase thongTinCase, string Date)
         {
-            DateTime today = DateTime.Today;
+            DateTime today = DateTime.Parse(Date);
+
 
             float todayTimeCounter = 0;
 

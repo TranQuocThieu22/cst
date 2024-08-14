@@ -2,9 +2,27 @@
   <div class="text-center mb-4">
     <ngx-spinner name="spinner" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium"></ngx-spinner>
   </div>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">AQTech report</h1>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="form-group">
+        <form>
+          <div class="form-group">
+            <label for="startDate" class="form-label">Chọn ngày</label>
+            <input id="startDate" class="form-control" type="date" [(ngModel)]="datePickerValue" name="date1"
+              (ngModelChange)="onDateChange($event)" />
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
   <div class="row row-cols-1 row-cols-md-2 g-4" *ngIf="charts">
     <ng-container *ngFor="let chart of charts | keyvalue: originalOrder; let i = index">
-      <div class="col" *ngIf="!([4, 5, 6, 7, 8].includes(chart.value.id))">
+      <div class="" *ngIf="!([4, 5, 6, 7, 8].includes(chart.value.id))">
         <div class="card h-100 shadow-sm">
           <div class="card-body">
             <h2 class="card-title h4 mb-3">{{chart.value.title}}</h2>
