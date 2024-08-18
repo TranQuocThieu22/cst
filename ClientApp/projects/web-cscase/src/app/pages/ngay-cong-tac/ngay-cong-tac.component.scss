@@ -1,0 +1,39 @@
+.p-inputswitch.p-focus .p-inputswitch-slider {
+    box-shadow: none;
+}
+
+:host ::ng-deep .p-datepicker {
+    transform: scale(0.8);
+    /* Adjust the scale to your desired value */
+}
+
+*:focus {
+    box-shadow: none !important;
+}
+
+::ng-deep {
+    .p-selectbutton .p-button.p-highlight {
+        background      : red;
+        background-color: red;
+    }
+
+    .p-selectbutton .p-button.p-highlight:hover {
+        background: green;
+    }
+}
+
+.css_box1 {
+    border: 1px solid red;
+}
+
+.css_box2 {
+    border: 1px solid blue;
+}
+
+.css_box3 {
+    border: 1px solid green;
+}
+
+.css_box4 {
+    border: 1px solid yellow;
+}

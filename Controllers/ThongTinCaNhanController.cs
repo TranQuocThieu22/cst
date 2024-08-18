@@ -1,5 +1,6 @@
 ﻿using educlient.Data;
 using educlient.Models;
+using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,44 +17,51 @@ namespace educlient.Controllers
         {
             database = dataContext;
         }
-        // GET: NgayPhepChungController
-        [HttpGet]
-        public DsThongTinCaNhanResult GetAll()
-        {
-            var tb = database.Table<DsThongTinCaNhanDataDO>();
 
-            return new DsThongTinCaNhanResult
+        [HttpGet]
+        public AQMembersResult GetAll()
+        {
+            var AQMemberTable = database.Table<AQMember>();
+
+            var NhanVienAQ = AQMemberTable.FindAll();
+
+            return new AQMembersResult
             {
-                data = tb.FindAll().ToList(),
+                data = NhanVienAQ.ToList()
             };
         }
+
         [HttpGet, Route("{id}")]
-        public DsThongTinCaNhanResult GetById(Guid id)
+        public AQMembersResult GetById(int id)
         {
-            List<DsThongTinCaNhanDataDO> returnData = new List<DsThongTinCaNhanDataDO>();
-            var tb = database.Table<DsThongTinCaNhanDataDO>();
-            var data = tb.FindById(id);
-            if (data == null)
+            List<AQMember> returnData = new List<AQMember>();
+
+            var AQMemberTable = database.Table<AQMember>();
+
+            var aqMember = AQMemberTable.FindById(id);
+            if (aqMember == null)
             {
-                return new DsThongTinCaNhanResult
+                return new AQMembersResult
                 {
                     code = 404,
                     message = "Data not found"
                 };
             }
-            returnData.Add(data);
-            return new DsThongTinCaNhanResult
+            returnData.Add(aqMember);
+
+            return new AQMembersResult
             {
                 code = 200,
                 result = true,
                 data = returnData,
             };
         }
-        // GET: NgayPhepChungController
-        [HttpPost, Route("Insert")]
-        public DsThongTinCaNhanResult insert([FromBody] DsThongTinCaNhanInput[] inputData)
+
+        [HttpPost]
+        public AQMembersResult Insert([FromBody] AQMemberInput[] inputData)
         {
-            var insertData = inputData.Select(input => new DsThongTinCaNhanDataDO
+
+            var aqMember = inputData.Select(input => new AQMember
             {
                 TFSName = input.TFSName,
                 fullName = input.fullName,
@@ -71,30 +79,32 @@ namespace educlient.Controllers
                 isActive = input.isActive
 
             }).ToList();
-            var tb = database.Table<DsThongTinCaNhanDataDO>();
-            tb.Insert(insertData);
 
-            return new DsThongTinCaNhanResult
+            var AQMemberTable = database.Table<AQMember>();
+            AQMemberTable.Insert(aqMember);
+            var NhanVienAQ = AQMemberTable.FindAll();
+
+            return new AQMembersResult
             {
-                data = insertData.ToList(),
+                data = NhanVienAQ.ToList()
             };
         }
-        [HttpPut, Route("{id}")]
-        public DsThongTinCaNhanResult update(Guid id, [FromBody] DsThongTinCaNhanInput inputData)
-        {
-            var tb = database.Table<DsThongTinCaNhanDataDO>();
 
-            var existingRecord = tb.FindById(id);
+        [HttpPut, Route("{id}")]
+        public AQMembersResult Update(int id, [FromBody] AQMemberInput inputData)
+        {
+            var AQMemberTable = database.Table<AQMember>();
+
+            var existingRecord = AQMemberTable.FindById(id);
             if (existingRecord == null)
             {
-                return new DsThongTinCaNhanResult
+                return new AQMembersResult
                 {
                     code = 404,
                     message = "Data not found"
                 };
             }
-            // Update the existing record with new values
-            // Update the existing record with new values
+
             existingRecord.TFSName = inputData.TFSName;
             existingRecord.fullName = inputData.fullName;
             existingRecord.email = inputData.email;
@@ -112,35 +122,92 @@ namespace educlient.Controllers
 
 
             // Update the record in the collection
-            tb.Update(existingRecord);
+            AQMemberTable.Update(existingRecord);
+            var NhanVienAQ = AQMemberTable.FindAll();
 
-            return new DsThongTinCaNhanResult
+            return new AQMembersResult
             {
-                data = new List<DsThongTinCaNhanDataDO> { existingRecord }
+                data = NhanVienAQ.ToList()
             };
         }
 
 
         [HttpDelete, Route("{id}")]
-        public DsThongTinCaNhanResult delete(Guid id)
+        public AQMembersResult Delete(int id)
         {
-            var tb = database.Table<DsThongTinCaNhanDataDO>();
+            var AQMemberTable = database.Table<AQMember>();
 
-            var existingRecord = tb.FindById(id);
+            var existingRecord = AQMemberTable.FindById(id);
             if (existingRecord == null)
             {
-                return new DsThongTinCaNhanResult
+                return new AQMembersResult
                 {
                     code = 404,
                     message = "Data not found"
                 };
             }
-            tb.Delete(id);
+            AQMemberTable.Delete(id);
 
-            return new DsThongTinCaNhanResult
+            return new AQMembersResult
             {
-                data = new List<DsThongTinCaNhanDataDO> { existingRecord }
+                data = new List<AQMember> { existingRecord }
             };
         }
+
+        [HttpGet, Route("NhanVienCongTac")]
+        public MemberCommissionList GetMemberCommissionList()
+        {
+            var AQMemberTable = database.Table<AQMember>();
+
+            var result = AQMemberTable.Query()
+                           .Select(x => new MemberCommission
+                           {
+                               id = x.id,
+                               fullName = x.fullName,
+                               nickName = x.nickName
+                           })
+                           .ToList();
+
+            return new MemberCommissionList
+            {
+                data = result
+            };
+        }
+    }
+
+    public class AQMembersResult : ApiResultBaseDO
+    {
+        public List<AQMember> data { get; set; }
+    }
+
+    public class MemberCommissionList : ApiResultBaseDO
+    {
+        public List<MemberCommission> data { get; set; }
+    }
+
+    public class AQMemberInput
+    {
+        public int id { get; set; }
+        public string TFSName { get; set; }
+        public string fullName { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string avatar { get; set; }
+        public DateTime birthDate { get; set; }
+        public DateTime startDate { get; set; }
+        public string nickName { get; set; }
+        public string role { get; set; }
+        public bool isLeader { get; set; }
+        public bool isLunch { get; set; }
+        public int WFHQuota { get; set; }
+        public int absenceQuota { get; set; }
+        public bool isActive { get; set; }
+    }
+
+    public class MemberCommission
+    {
+        public int id { get; set; }
+        public string fullName { get; set; }
+        public string nickName { get; set; }
     }
 }

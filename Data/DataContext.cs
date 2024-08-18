@@ -1,6 +1,7 @@
 using LiteDB;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace educlient.Data
@@ -9,6 +10,8 @@ namespace educlient.Data
     {
         ILiteCollection<T> Table<T>();
     }
+
+
 
     public class DataContext : IDbLiteContext
     {
@@ -32,6 +35,7 @@ namespace educlient.Data
         {
             return MainDB.GetCollection<T>();
         }
+
     }
 
     /// Dinh nghia table can luu trong database
@@ -52,4 +56,56 @@ namespace educlient.Data
         public string whatnew { get; set; }
         public string reviewcase { get; set; }
     }
+
+    public class AQMember
+    {
+        [BsonId]
+        public int id { get; set; }
+        public string TFSName { get; set; }
+        public string fullName { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string avatar { get; set; }
+        public DateTime birthDate { get; set; }
+        public DateTime startDate { get; set; }
+        public string nickName { get; set; }
+        public string role { get; set; }
+        public bool isLeader { get; set; }
+        public bool isLunch { get; set; }
+        public int WFHQuota { get; set; }
+        public int absenceQuota { get; set; }
+        public bool isActive { get; set; }
+    }
+
+    public class DayOff
+    {
+        [BsonId]
+        public int id { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float sumDay { get; set; }
+        public string reason { get; set; }
+        public string note { get; set; }
+    }
+
+    public class Commission
+    {
+        [BsonId]
+        public int id { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float sumDay { get; set; }
+        public string comissionContent { get; set; }
+        public string transportation { get; set; }
+        public List<CommissionMember> memberList { get; set; }
+        public int commissionExpenses { get; set; }
+        public string note { get; set; }
+    }
+
+    public class CommissionMember
+    {
+        public int id { get; set; }
+        public int memberExpenses { get; set; }
+    }
+
 }

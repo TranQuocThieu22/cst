@@ -226,7 +226,7 @@ export class NhanSuAqComponent implements OnInit {
     this.aqmember.avatar = "avatar content";
     let aqmemberArray: AQMember[] = [this.aqmember];
 
-    this.https.post<any>("/api/ThongTinCaNhan/Insert", aqmemberArray).subscribe({
+    this.https.post<any>("/api/ThongTinCaNhan", aqmemberArray).subscribe({
       next: (res: any) => {
         // console.log(res);
       },
