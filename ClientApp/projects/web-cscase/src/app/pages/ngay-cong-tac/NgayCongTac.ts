@@ -11,7 +11,12 @@ export interface CommissionDay {
 }
 
 export interface CommissionMember {
+    id?: number;
     fullName?: string;
     nickName?: string;
     memberExpenses?: number;
 }
+
+
+
+

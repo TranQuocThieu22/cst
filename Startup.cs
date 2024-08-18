@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+//using Microsoft.OpenApi.Models;
 using System;
 
 namespace educlient
@@ -48,10 +48,10 @@ namespace educlient
             services.AddSingleton<IThongKeSupService, ThongKeSupService>();
             services.AddSingleton<IThongKeAqTechService, ThongKeAqTechService>();
             services.AddSingleton<ITFSAccountService, TFSAccountService>();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
-            });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+            //});
 
         }
 
@@ -74,11 +74,11 @@ namespace educlient
             {
                 app.UseSpaStaticFiles();
             }
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
-            });
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
+            //});
 
 
 

@@ -109,16 +109,8 @@ public class DsNgayCongTacDO
     public int sumDay { get; set; }
     public string comissionContent { get; set; }
     public string transportation { get; set; }
-    public CommissionMember[] memberList { get; set; }
     public Number commissionExpenses { get; set; }
     public string note { get; set; }
-}
-
-public class CommissionMember
-{
-    public string fullName { get; set; }
-    public string nickName { get; set; }
-    public int memberExpenses { get; set; }
 }
 public class DsNgayCongTacInput
 {

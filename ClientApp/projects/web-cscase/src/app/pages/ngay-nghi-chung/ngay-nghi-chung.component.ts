@@ -157,7 +157,7 @@ export class NgayNghiChungComponent implements OnInit {
 
     let dayOffArray: DayOff[] = [this.DayOff];
 
-    this.https.post<any>("/api/NgayPhepChung/Insert", dayOffArray).subscribe({
+    this.https.post<any>("/api/NgayPhepChung", dayOffArray).subscribe({
       next: (res: any) => {
         this.DayOffs = res.data
       },

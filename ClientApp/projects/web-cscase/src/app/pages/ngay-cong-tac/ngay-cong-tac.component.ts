@@ -6,7 +6,7 @@ import {
   PrimeNGConfig
 } from "primeng/api";
 import { Table } from 'primeng/table';
-import { CommissionDay } from './NgayCongTac';
+import { CommissionDay, CommissionMember } from './NgayCongTac';
 
 @Component({
   selector: 'app-ngay-cong-tac',
@@ -17,10 +17,10 @@ export class NgayCongTacComponent implements OnInit {
 
   CommissionDays: CommissionDay[] = [];
 
-  CommissionDay: CommissionDay = {
+  CommissionDayInitState = {
     id: 0,
-    dateFrom: new Date(),
-    dateTo: new Date(),
+    dateFrom: '',
+    dateTo: '',
     sumDay: 0,
     comissionContent: '',
     transportation: '',
@@ -29,6 +29,12 @@ export class NgayCongTacComponent implements OnInit {
     note: ''
   };
 
+  CommissionDay: CommissionDay = {
+    ...this.CommissionDayInitState
+  };
+
+  CommissionMemberList: CommissionMember[] = [];
+
   filter_datefrom: string = '';
   filter_dateto: string = '';
 
@@ -36,6 +42,24 @@ export class NgayCongTacComponent implements OnInit {
   isOpenMemberDialog: boolean;
   editCommissionDayDialog: boolean;
   addNewCommissionDayDialog: boolean;
+
+  constructor(
+    private https: HttpClient,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private primengConfig: PrimeNGConfig,
+  ) { }
+
+  ngOnInit() {
+    this.fetchCommissionDaysData();
+
+    this.resetCalendarSelection();
+    this.sumDay();
+    this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
+    this.filter_dateto = new Date().toLocaleDateString('en-GB');
+
+    this.primengConfig.ripple = true;
+  }
 
   sumDay() {
     const date1 = new Date(this.CommissionDay.dateFrom);
@@ -76,10 +100,19 @@ export class NgayCongTacComponent implements OnInit {
 
   addMember() {
     this.CommissionDay.memberList.push({
+      id: 0,
       fullName: '',
       nickName: '',
       memberExpenses: 0
     });
+  }
+
+  removeMember(data: any) {
+    console.log(data);
+
+    // let processEditData = structuredClone(data);
+    const index = this.CommissionDay.memberList.indexOf(data);
+    this.CommissionDay.memberList.splice(index, 1);
   }
 
   fetchDataFiltered() {
@@ -99,107 +132,27 @@ export class NgayCongTacComponent implements OnInit {
     return `${month}/${day}/${year}`;
   }
 
-  constructor(
-    private https: HttpClient,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private primengConfig: PrimeNGConfig,
-  ) {
-
-  }
-
-  ngOnInit() {
-    // this.fetchCommissionDaysData();
-    this.CommissionDays = [
-      {
-        id: 1,
-        dateFrom: new Date(),
-        dateTo: new Date(),
-        sumDay: 5,
-        comissionContent: 'Sample comissionContent 1',
-        transportation: 'Car',
-        memberList: [
-          {
-            fullName: 'John Doe',
-            nickName: 'JD',
-            memberExpenses: 100
-          },
-          {
-            fullName: 'Jane Smith',
-            nickName: 'JS',
-            memberExpenses: 150
-          }
-        ],
-        commissionExpenses: 500000,
-        note: 'Sample note 1'
-      },
-      {
-        id: 2,
-        dateFrom: new Date(),
-        dateTo: new Date(),
-        sumDay: 3,
-        comissionContent: 'Sample comissionContent 2',
-        transportation: 'Walk',
-        memberList: [
-          {
-            fullName: 'Alice Johnson',
-            nickName: 'AJ',
-            memberExpenses: 200
-          }
-        ],
-        commissionExpenses: 300000,
-        note: 'Sample note 2'
-      },
-      {
-        id: 3,
-        dateFrom: new Date(),
-        dateTo: new Date(),
-        sumDay: 2,
-        comissionContent: 'Sample comissionContent 3',
-        transportation: 'Plane',
-        memberList: [
-          {
-            fullName: 'Bob Williams',
-            nickName: 'BW',
-            memberExpenses: 120
-          },
-          {
-            fullName: 'Emily Davis',
-            nickName: 'ED',
-            memberExpenses: 80
-          },
-          {
-            fullName: 'Michael Brown',
-            nickName: 'MB',
-            memberExpenses: 90
-          }
-        ],
-        commissionExpenses: 290000,
-        note: 'Sample note 3'
-      }
-    ];
-
-    this.resetCalendarSelection();
-    this.sumDay();
-    this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-    this.filter_dateto = new Date().toLocaleDateString('en-GB');
-
-    this.primengConfig.ripple = true;
-  }
-
   openAddDialog() {
-    console.log("CommissionDay:", this.CommissionDay);
-    // this.CommissionDay = {};
-    // this.editCommissionDayDialog = false;
-    // this.addNewCommissionDayDialog = true;
+    this.fetchMemberCommissionData();
+    this.CommissionDay = {
+      ...this.CommissionDayInitState,
+      memberList: []
+    };
+    this.resetCalendarSelection();
+    this.editCommissionDayDialog = false;
+    this.addNewCommissionDayDialog = true;
     this.openDialog = true;
   }
 
   openEditDialog(data: any) {
+    this.fetchMemberCommissionData();
     this.CommissionDay = {};
-    this.CommissionDay = { ...data };
-    this.CommissionDay.dateFrom = new Date(data.dateFrom);
-    this.CommissionDay.dateTo = new Date(data.dateTo);
+    this.CommissionDay = structuredClone(data);
+    this.CommissionDay = {
+      ...this.CommissionDay,
+      dateFrom: new Date(data.dateFrom),
+      dateTo: new Date(data.dateTo)
+    };
     this.addNewCommissionDayDialog = false;
     this.editCommissionDayDialog = true;
     this.openDialog = true;
@@ -219,25 +172,52 @@ export class NgayCongTacComponent implements OnInit {
       params.query_dateTo = input_filter_dateto + ' 00:00:00';
     }
 
-    // this.https.get<any>("/api/NgayPhepChung", { params: params }).subscribe({
-    //   next: (res: any) => {
-    //     this.CommissionDays = res.data;
+    this.https.get<any>("/api/NgayCongTac", { params: params }).subscribe({
+      next: (res: any) => {
+        this.CommissionDays = res.data;
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.fetchMemberCommissionData();
+      }
+    });
+  }
 
-    //   },
-    //   error: (error) => {
-    //     console.log(error);
+  fetchMemberCommissionData() {
+    this.https.get<any>("/api/ThongTinCaNhan/NhanVienCongTac").subscribe({
+      next: (res: any) => {
+        this.CommissionMemberList = [];
+        this.CommissionMemberList = [...res.data];
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.loadMember_From_CommissionMemberList();
+      }
+    });
+  }
 
-    //     // Your logic for handling errors
-    //   },
-    //   complete: () => {
-    //     // Your logic for handling the completion event (optional)
-    //   }
-    // });
+  loadMember_From_CommissionMemberList() {
+    this.CommissionDays.forEach((commission: CommissionDay) => {
+      commission.memberList.forEach((member: CommissionMember) => {
+        const foundMember = this.CommissionMemberList.find((m: CommissionMember) => m.id === member.id);
+        if (foundMember) {
+          member.fullName = foundMember.fullName;
+          member.nickName = foundMember.nickName;
+        }
+      });
+    });
   }
 
   hideDialog() {
     this.CommissionDay = {};
-    this.resetCalendarSelection();
     this.openDialog = false;
     this.editCommissionDayDialog = false;
     this.addNewCommissionDayDialog = false;
@@ -252,43 +232,50 @@ export class NgayCongTacComponent implements OnInit {
 
   addNewCommissionDay() {
     let CommissionDayArray: CommissionDay[] = [this.CommissionDay];
-    // this.https.post<any>("/api/NgayPhepChung/Insert", CommissionDayArray).subscribe({
-    //   next: (res: any) => {
-    //     this.CommissionDays = res.data
-    //   },
-    //   error: (error) => {
-    //     console.log(error);
-    //     // Your logic for handling errors
-    //   },
-    //   complete: () => {
-    //     // Your logic for handling the completion event (optional)
-    //     this.resetCalendarSelection();
-    //   }
-    // });
-    // this.AQmembers = [...this.AQmembers];
+    CommissionDayArray.forEach((commissionDay: CommissionDay) => {
+      commissionDay.memberList.forEach((member: CommissionMember) => {
+        delete member.nickName;
+        delete member.fullName;
+      });
+    });
+    this.https.post<any>("/api/NgayCongTac", CommissionDayArray).subscribe({
+      next: (res: any) => {
+        this.CommissionDays = res.data
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.resetCalendarSelection();
+        this.loadMember_From_CommissionMemberList();
+      }
+    });
+
     this.addNewCommissionDayDialog = false;
     this.CommissionDay = {};
     this.hideDialog();
   }
 
   updateCommissionDay() {
-    // this.https.put<any>("/api/NgayPhepChung/" + this.CommissionDay.id, this.CommissionDay).subscribe({
-    //   next: (res: any) => {
-    //     this.CommissionDays = res.data
-    //   },
-    //   error: (error) => {
-    //     console.log(error);
-    //     // Your logic for handling errors
-    //   },
-    //   complete: () => {
-    //     // Your logic for handling the completion event (optional)
-    //   }
-    // });
+    this.https.put<any>("/api/NgayCongTac/" + this.CommissionDay.id, this.CommissionDay).subscribe({
+      next: (res: any) => {
+        this.CommissionDays = res.data
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.loadMember_From_CommissionMemberList();
+      }
+    });
     this.hideDialog();
   }
 
   deleteCommissionDay(event: Event, data: any) {
-
     this.confirmationService.confirm({
       target: event.target,
       message: "Xóa ngày công tác này?",
@@ -302,19 +289,19 @@ export class NgayCongTacComponent implements OnInit {
           detail: "Đã xóa dữ liệu khỏi hệ thống"
         });
 
-        // this.https.delete<any>("/api/NgayPhepChung/" + data.id, data).subscribe({
-        //   next: (res: any) => {
-        //     this.CommissionDays = res.data
-        //   },
-        //   error: (error) => {
-        //     console.log(error);
-        //     // Your logic for handling errors
-        //   },
-        //   complete: () => {
-        //     // Your logic for handling the completion event (optional)
-        //     // this.fetchAQMemberData();
-        //   }
-        // });
+        this.https.delete<any>("/api/NgayCongTac/" + data.id, data).subscribe({
+          next: (res: any) => {
+            this.CommissionDays = res.data
+          },
+          error: (error) => {
+            console.log(error);
+            // Your logic for handling errors
+          },
+          complete: () => {
+            this.loadMember_From_CommissionMemberList();
+            // Your logic for handling the completion event (optional)
+          }
+        });
       },
       reject: () => {
         this.messageService.add({
@@ -328,7 +315,7 @@ export class NgayCongTacComponent implements OnInit {
 
   clear(table: Table) {
     table.clear();
-    // this.fetchCommissionDaysData();
+    this.fetchCommissionDaysData();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
   }

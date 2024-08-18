@@ -16,112 +16,172 @@ namespace educlient.Controllers
         {
             database = dataContext;
         }
-        // GET: NgayPhepChungController
+
         [HttpGet]
-        public DsNgayCongTacResult GetAll()
+        public CommissionsResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null)
         {
-            var tb = database.Table<DsNgayCongTacDO>();
-            return new DsNgayCongTacResult
-            {
-                data = tb.FindAll().ToArray(),
-            };
-        }
-        [HttpGet, Route("{id}")]
-        public DsNgayCongTacResult GetById(Guid id)
-        {
-            DsNgayCongTacResult returnData = new DsNgayCongTacResult();
-            var tb = database.Table<DsNgayCongTacDO>();
-            returnData.data.Append(tb.FindById(id));
-            return new DsNgayCongTacResult
-            {
-                data = returnData.data,
-            };
-        }
-        [HttpPost, Route("Insert")]
-        public DsNgayCongTacResult Insert([FromBody] DsNgayCongTacInput[] inputData)
-        {
-            List<DsNgayCongTacDO> insertData = new List<DsNgayCongTacDO>();
+            var CommissionTable = database.Table<Commission>();
 
-            foreach (var input in inputData)
-            {
-                //var newData = new DsNgayCongTacDO
-                //{
-                //    id = Guid.NewGuid(),
-                //    Ngay = DateTime.Today,
-                //    SoLuongBuoi = input.SoLuongBuoi,
-                //    NoiDungCongTac = input.NoiDungCongTac,
-                //    TruongCongTac = input.TruongCongTac,
-                //    UserNhap = input.UserNhap,
-                //    AqUser = input.AqUser
-                //};
+            List<Commission> resultData;
 
-                //insertData.Add(newData);
+            if (query_dateFrom.HasValue && query_dateTo.HasValue)
+            {
+                resultData = CommissionTable.Find(x =>
+                (x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
+                (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
+                ).ToList();
+            }
+            else if (query_dateFrom.HasValue)
+            {
+                // Only dateFrom is provided
+                resultData = CommissionTable.Find(x => x.dateFrom >= query_dateFrom.Value).ToList();
+            }
+            else if (query_dateFrom.HasValue)
+            {
+                // Only dateTo is provided
+                resultData = CommissionTable.Find(x => x.dateTo <= query_dateTo.Value).ToList();
+            }
+            else
+            {
+                // No date filters provided
+                resultData = CommissionTable.FindAll().ToList();
             }
 
-            var tb = database.Table<DsNgayCongTacDO>();
-            tb.InsertBulk(insertData); // Assuming there's a method for bulk insert in your database library
-
-            // Return the list of inserted data
-            return new DsNgayCongTacResult
+            return new CommissionsResult
             {
-                data = insertData.ToArray()
+                data = resultData
+            };
+        }
+
+        [HttpGet, Route("{id}")]
+        public CommissionsResult GetById(int id)
+        {
+            List<Commission> returnData = new List<Commission>();
+
+            var CommissionTable = database.Table<Commission>();
+            var commission = CommissionTable.FindById(id);
+
+            if (commission == null)
+            {
+                return new CommissionsResult
+                {
+                    code = 404,
+                    message = "Data not found"
+                };
+            }
+            returnData.Add(commission);
+
+            return new CommissionsResult
+            {
+                code = 200,
+                result = true,
+                data = returnData,
+            };
+        }
+
+        [HttpPost]
+        public CommissionsResult Insert([FromBody] CommissionInput[] inputData)
+        {
+            var insertData = inputData.Select(input => new Commission
+            {
+                dateFrom = input.dateFrom,
+                dateTo = input.dateTo,
+                sumDay = input.sumDay,
+                comissionContent = input.comissionContent,
+                transportation = input.transportation,
+                memberList = input.memberList,
+                commissionExpenses = input.commissionExpenses,
+                note = input.note,
+            }).ToList();
+
+            var CommissionTable = database.Table<Commission>();
+            CommissionTable.Insert(insertData);
+            var resultData = CommissionTable.FindAll();
+
+            return new CommissionsResult
+            {
+                data = resultData.ToList(),
             };
         }
 
         [HttpPut, Route("{id}")]
-        public DsNgayCongTacResult Update(Guid id, [FromBody] DsNgayCongTacInput inputData)
+        public CommissionsResult Update(int id, [FromBody] CommissionInput inputData)
         {
-            var tb = database.Table<DsNgayCongTacDO>();
+            var CommissionTable = database.Table<Commission>();
 
-            // Find the existing record by id
-            var existingRecord = tb.FindById(id);
+            var existingRecord = CommissionTable.FindById(id);
             if (existingRecord == null)
             {
-                return new DsNgayCongTacResult
+                new CommissionsResult
                 {
-                    code = 404,
-                    message = "Data not found"
+                    code = 400,
+                    message = "data not found",
                 };
             }
 
             // Update the existing record with new values
-            //existingRecord.Ngay = DateTime.Today;
-            //existingRecord.SoLuongBuoi = inputData.SoLuongBuoi;
-            //existingRecord.NoiDungCongTac = inputData.NoiDungCongTac;
-            //existingRecord.TruongCongTac = inputData.TruongCongTac;
-            //existingRecord.UserNhap = inputData.UserNhap;
-            //existingRecord.AqUser = inputData.AqUser;
+            existingRecord.dateFrom = inputData.dateFrom;
+            existingRecord.dateTo = inputData.dateTo;
+            existingRecord.sumDay = inputData.sumDay;
+            existingRecord.comissionContent = inputData.comissionContent;
+            existingRecord.transportation = inputData.transportation;
+            existingRecord.memberList = inputData.memberList;
+            existingRecord.commissionExpenses = inputData.commissionExpenses;
+            existingRecord.note = inputData.note;
 
-            // Update the record in the database
-            tb.Update(existingRecord);
 
-            // Return the updated record
-            return new DsNgayCongTacResult
+            // Update the record in the collection
+            CommissionTable.Update(existingRecord);
+            var resultData = CommissionTable.FindAll();
+
+            return new CommissionsResult
             {
-                data = new DsNgayCongTacDO[] { existingRecord }
+                data = resultData.ToList()
             };
         }
 
         [HttpDelete, Route("{id}")]
-        public DsNgayCongTacResult delete(Guid id)
+        public CommissionsResult Delete(int id)
         {
-            var tb = database.Table<DsNgayCongTacDO>();
+            var CommissionTable = database.Table<Commission>();
+            var existingRecord = CommissionTable.FindById(id);
 
-            var existingRecord = tb.FindById(id);
             if (existingRecord == null)
             {
-                return new DsNgayCongTacResult
+                return new CommissionsResult
                 {
                     code = 404,
                     message = "Data not found"
                 };
             }
-            tb.Delete(id);
-            var data = tb.FindById(id);
-            return new DsNgayCongTacResult
+
+            CommissionTable.Delete(id);
+            var resultData = CommissionTable.FindAll();
+
+            return new CommissionsResult
             {
-                data = new DsNgayCongTacDO[] { existingRecord }
+                data = resultData.ToList()
             };
         }
+    }
+
+    public class CommissionsResult : ApiResultBaseDO
+    {
+        public List<Commission> data { get; set; }
+    }
+
+    public class CommissionInput
+    {
+        public int id { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float sumDay { get; set; }
+        public string comissionContent { get; set; }
+        public string transportation { get; set; }
+        public List<CommissionMember> memberList { get; set; }
+        public int commissionExpenses { get; set; }
+        public string note { get; set; }
     }
 }

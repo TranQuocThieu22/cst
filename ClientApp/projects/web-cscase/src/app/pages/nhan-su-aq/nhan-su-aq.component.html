@@ -2,7 +2,7 @@
   <div class="card p-4">
     <p-toolbar styleClass="mb-4 p-3">
       <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-        Nhân Sự AQ
+        Danh sách nhân sự AQ
       </p-card>
       <ng-template pTemplate="left">
         <button pButton pRipple
@@ -45,7 +45,7 @@
               <p-sortIcon field="id"></p-sortIcon>
             </th> -->
           <th pSortableColumn="tfsName" style="white-space: nowrap; min-width:10rem;">
-            Tên TFS
+            Tfs name
             <p-sortIcon field="tfsName"></p-sortIcon>
             <p-columnFilter type="text" field="tfsName" display="menu" class="ml-auto"></p-columnFilter>
           </th>
@@ -69,7 +69,7 @@
             <p-sortIcon field="birthDate"></p-sortIcon>
           </th>
           <th pSortableColumn="startDate" style="white-space: nowrap;">
-            Ngày gia nhập
+            Ngày vào công ty
             <p-sortIcon field="startDate"></p-sortIcon>
           </th>
           <th pSortableColumn="nickName" style="white-space: nowrap;">
@@ -93,7 +93,7 @@
             <p-sortIcon field="wfhQuota"></p-sortIcon>
           </th>
           <th pSortableColumn="absenceQuota" style="white-space: nowrap;">
-            Hạn mức nghỉ phép/năm
+            Số ngày nghỉ phép/năm
             <p-sortIcon field="absenceQuota"></p-sortIcon>
           </th>
           <th pSortableColumn="isActive" style="white-space: nowrap;">
@@ -129,7 +129,7 @@
           <td style="white-space: nowrap; text-align: left;">{{AQmember.startDate | date: 'dd/MM/yyyy'}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.nickName}}</td>
           <!-- <td style="white-space: nowrap; text-align: left;">{{getRoleName(AQmember.role)}}</td> -->
-          <td style="white-space: nowrap; text-align: left;">
+          <td style="white-space: nowrap; text-align: center;">
             <span [class]="'role-' + getRoleName(AQmember.role)">{{getRoleName(AQmember.role)}}</span>
           </td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
@@ -177,7 +177,7 @@
       <!-- First column -->
       <div class="field col-12 md:col-6">
         <div class="p-field">
-          <label for="tfsName">Tên TFS</label>
+          <label for="tfsName">Tfs name</label>
           <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
         </div>
         <div class="p-field">
@@ -210,7 +210,7 @@
             optionValue="code"></p-dropdown>
         </div>
         <div class="p-field">
-          <label for="startDate">Ngày gia nhập</label>
+          <label for="startDate">Ngày vào công ty</label>
           <input type="date" pInputText id="startDate" [(ngModel)]="aqmember.startDate" required />
         </div>
         <div class="p-field">
@@ -218,7 +218,7 @@
           <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmember.wfhQuota" required />
         </div>
         <div class="p-field">
-          <label for="absenceQuota">Hạn mưc nghỉ phép/năm</label>
+          <label for="absenceQuota">Số ngày nghỉ phép/năm</label>
           <input type="number" pInputText id="absenceQuota" [(ngModel)]="aqmember.absenceQuota" required />
         </div>
         <div class="p-field-checkbox mt-4">
@@ -231,7 +231,7 @@
         </div>
         <div class="p-field-checkbox mt-2">
           <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isActive" binary="true" inputId="isActive"></p-checkbox>
-          <label for="isActive">Trạng thái hoạt động</label>
+          <label for="isActive">Đang hoạt động</label>
         </div>
       </div>
     </div>

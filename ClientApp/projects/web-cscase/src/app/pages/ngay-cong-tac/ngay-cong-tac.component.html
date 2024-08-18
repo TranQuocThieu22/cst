@@ -85,7 +85,7 @@
                     </th>
                     <th style="white-space: nowrap;" class="text-center">
                         Danh sách nhân viên
-                        <p-columnFilter type="text" field="comissionContent" display="menu"></p-columnFilter>
+                        <p-columnFilter type="text" field="memberList" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap;" class="text-center">
                         Công tác phí
@@ -104,13 +104,18 @@
             <ng-template pTemplate="body" let-CommissionDay>
                 <tr>
                     <td style="white-space: nowrap; text-align: center; width: 100px;">
+                        <button pButton icon="pi pi-users"
+                            class="p-button-raised p-button-success p-button-text mr-2"
+                            (click)="openMemberDialog(CommissionDay)">
+                        </button>
                         <button pButton pRipple icon="pi pi-pencil"
                             class="p-button-rounded p-button-warning p-button-text p-0"
                             (click)="openEditDialog(CommissionDay)">
                         </button>
                         <button pButton pRipple icon="pi pi-trash"
                             class="p-button-rounded p-button-danger p-button-text p-0"
-                            (click)="deleteCommissionDay($event, CommissionDay)"></button>
+                            (click)="deleteCommissionDay($event, CommissionDay)">
+                        </button>
                     </td>
                     <td style="white-space: nowrap; text-align: left; width: 12%;">
                         {{CommissionDay.dateFrom | date: 'dd/MM/yyyy'}}
@@ -129,10 +134,6 @@
                     </td>
                     <td style="white-space: nowrap; text-align: left;">
                         <div class="flex flex-row gap-2">
-                            <button pButton icon="pi pi-users"
-                                class="p-button-raised p-button-success p-button-text"
-                                (click)="openMemberDialog(CommissionDay)">
-                            </button>
                             <span class="align-content-center">
                                 {{getMemberList(CommissionDay.memberList)}}
                             </span>
@@ -212,58 +213,37 @@
             </div>
 
             <div class="field col-12">
-                <!-- <label for="reason">Danh sách đi công tác</label>
-                <input type="text" pInputText id="reason" required /> -->
                 <div>
-                    <div class="mb-2">
+                    <div class="">
                         Danh sách đi công tác
                     </div>
-                    <p-table
-                        [value]="CommissionDay.memberList"
-                        dataKey="id"
-                        styleClass="p-datatable-gridlines p-datatable-sm">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th></th>
-                                <th style="width:50%">Tên đầy đủ</th>
-                                <th style="width:50%">Xèng</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-member>
-                            <tr>
-                                <td>
-                                    <div>
-                                        <button
-                                            pButton pRipple type="button"
-                                            icon="pi pi-times"
-                                            class="p-button-rounded p-button-danger p-button-text"
-                                            (click)="removeMember()">
-                                        </button>
-                                    </div>
-                                </td>
-                                <td pEditableColumn>
-                                    <p-cellEditor>
-                                        <ng-template pTemplate="input">
-                                            <input pInputText type="text" [(ngModel)]="member.fullName" required>
-                                        </ng-template>
-                                        <ng-template pTemplate="output">
-                                            {{member.fullName}}
-                                        </ng-template>
-                                    </p-cellEditor>
-                                </td>
-                                <td pEditableColumn>
-                                    <p-cellEditor>
-                                        <ng-template pTemplate="input">
-                                            <input pInputText type="text" [(ngModel)]="member.memberExpenses">
-                                        </ng-template>
-                                        <ng-template pTemplate="output">
-                                            {{member.memberExpenses | currency: 'VND'}}
-                                        </ng-template>
-                                    </p-cellEditor>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
+                    <div *ngFor="let member of CommissionDay.memberList; let i = index">
+                        <div class="grid mt-2">
+                            <div class="col-6">
+                                <p-dropdown
+                                    [options]="CommissionMemberList" [(ngModel)]="member.id"
+                                    optionLabel="fullName" optionValue="id">
+                                </p-dropdown>
+                            </div>
+                            <div class="col-5">
+                                <p-inputNumber
+                                    [(ngModel)]="member.memberExpenses"
+                                    mode="currency"
+                                    currency="VND">
+                                </p-inputNumber>
+                            </div>
+                            <div class="col-1">
+                                <button
+                                    pButton pRipple
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-danger p-button-text"
+                                    (click)="removeMember(member)">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         <button
                             pButton pRipple type="button"
@@ -273,18 +253,16 @@
                         </button>
                     </div>
                 </div>
-
             </div>
 
             <div class="field col-12">
-                <label for="reason">Công tác phí</label>
-                <input type="text" pInputText id="reason" required />
-            </div>
 
-            <div class="field col-12">
                 <label for="reason">Chi phí công tác</label>
-                <input type="text" pInputText id="reason" required
-                    [(ngModel)]="CommissionDay.commissionExpenses" />
+                <p-inputNumber
+                    [(ngModel)]="CommissionDay.commissionExpenses"
+                    mode="currency"
+                    currency="VND">
+                </p-inputNumber>
             </div>
 
             <div class="field col-12">

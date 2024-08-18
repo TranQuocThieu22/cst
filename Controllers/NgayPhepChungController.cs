@@ -2,6 +2,7 @@
 using educlient.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace educlient.Controllers
@@ -15,63 +16,77 @@ namespace educlient.Controllers
         {
             database = dataContext;
         }
-        // GET: NgayPhepChungController
 
         [HttpGet]
-        public DsNgayPhepChungResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null)
+        public DayOffsResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null)
         {
-            var tb = database.Table<DsNgayPhepChungDO>();
+            var DayOffTable = database.Table<DayOff>();
 
-            DsNgayPhepChungDO[] resultData;
+            List<DayOff> resultData;
 
             if (query_dateFrom.HasValue && query_dateTo.HasValue)
             {
-                resultData = tb.Find(x =>
+                resultData = DayOffTable.Find(x =>
                 (x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
                 (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
                 (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
                 (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
-                ).ToArray();
+                ).ToList();
             }
             else if (query_dateFrom.HasValue)
             {
                 // Only dateFrom is provided
-                resultData = tb.Find(x => x.dateFrom >= query_dateFrom.Value).ToArray();
+                resultData = DayOffTable.Find(x => x.dateFrom >= query_dateFrom.Value).ToList();
             }
             else if (query_dateFrom.HasValue)
             {
                 // Only dateTo is provided
-                resultData = tb.Find(x => x.dateTo <= query_dateTo.Value).ToArray();
+                resultData = DayOffTable.Find(x => x.dateTo <= query_dateTo.Value).ToList();
             }
             else
             {
                 // No date filters provided
-                resultData = tb.FindAll().ToArray();
+                resultData = DayOffTable.FindAll().ToList();
             }
 
-            return new DsNgayPhepChungResult
+            return new DayOffsResult
             {
-                data = resultData,
+                data = resultData
             };
         }
 
 
         [HttpGet, Route("{id}")]
-        public DsNgayPhepChungResult GetById(Guid id)
+        public DayOffsResult GetById(int id)
         {
-            DsNgayPhepChungResult returnData = new DsNgayPhepChungResult();
-            var tb = database.Table<DsNgayPhepChungDO>();
-            returnData.data.Append(tb.FindById(id));
-            return new DsNgayPhepChungResult
+            List<DayOff> returnData = new List<DayOff>();
+
+            var DayOffTable = database.Table<DayOff>();
+
+            var dayOff = DayOffTable.FindById(id);
+            if (dayOff == null)
             {
-                data = returnData.data,
+                return new DayOffsResult
+                {
+                    code = 404,
+                    message = "Data not found"
+                };
+            }
+            returnData.Add(dayOff);
+
+            return new DayOffsResult
+            {
+                code = 200,
+                result = true,
+                data = returnData,
             };
         }
-        // GET: NgayPhepChungController
-        [HttpPost, Route("Insert")]
-        public DsNgayPhepChungResult insert([FromBody] DsNgayPhepChungInput[] inputData)
+
+
+        [HttpPost]
+        public DayOffsResult Insert([FromBody] DayOffInput[] inputData)
         {
-            var insertData = inputData.Select(input => new DsNgayPhepChungDO
+            var insertData = inputData.Select(input => new DayOff
             {
                 dateFrom = input.dateFrom,
                 dateTo = input.dateTo,
@@ -79,27 +94,30 @@ namespace educlient.Controllers
                 reason = input.reason,
                 note = input.note,
             }).ToList();
-            var tb = database.Table<DsNgayPhepChungDO>();
-            tb.Insert(insertData);
-            var data = tb.FindAll();
-            return new DsNgayPhepChungResult
+
+            var DayOffTable = database.Table<DayOff>();
+            DayOffTable.Insert(insertData);
+            var resultData = DayOffTable.FindAll();
+
+            return new DayOffsResult
             {
-                data = tb.FindAll().ToArray(),
+                data = resultData.ToList(),
             };
         }
-        [HttpPut, Route("{id}")]
-        public DsNgayPhepChungResult update(Guid id, [FromBody] DsNgayPhepChungInput inputData)
-        {
-            var tb = database.Table<DsNgayPhepChungDO>();
 
-            var existingRecord = tb.FindById(id);
+        [HttpPut, Route("{id}")]
+        public DayOffsResult Update(int id, [FromBody] DayOffInput inputData)
+        {
+            var DayOffTable = database.Table<DayOff>();
+
+            var existingRecord = DayOffTable.FindById(id);
             if (existingRecord == null)
             {
-                new DsNgayPhepChungResult
+                new DayOffsResult
                 {
                     code = 400,
                     message = "data not found",
-                }; // Return 404 if the record does not exist
+                };
             }
 
             // Update the existing record with new values
@@ -109,35 +127,52 @@ namespace educlient.Controllers
             existingRecord.reason = inputData.reason;
             existingRecord.note = inputData.note;
 
-
             // Update the record in the collection
-            tb.Update(existingRecord);
-            var data = tb.FindAll();
-            return new DsNgayPhepChungResult
+            DayOffTable.Update(existingRecord);
+            var resultData = DayOffTable.FindAll();
+
+            return new DayOffsResult
             {
-                data = tb.FindAll().ToArray(),
+                data = resultData.ToList()
             };
         }
-        [HttpDelete, Route("{id}")]
-        public DsNgayPhepChungResult delete(Guid id)
-        {
-            var tb = database.Table<DsNgayPhepChungDO>();
 
-            var existingRecord = tb.FindById(id);
+        [HttpDelete, Route("{id}")]
+        public DayOffsResult Delete(int id)
+        {
+            var DayOffTable = database.Table<DayOff>();
+
+            var existingRecord = DayOffTable.FindById(id);
             if (existingRecord == null)
             {
-                new DsNgayPhepChungResult
+                new DayOffsResult
                 {
                     code = 400,
                     message = "data not found",
-                }; // Return 404 if the record does not exist
+                };
             }
-            tb.Delete(id);
-            var data = tb.FindAll();
-            return new DsNgayPhepChungResult
+            DayOffTable.Delete(id);
+            var data = DayOffTable.FindAll();
+
+            return new DayOffsResult
             {
-                data = tb.FindAll().ToArray(),
+                data = data.ToList(),
             };
         }
+    }
+
+    public class DayOffsResult : ApiResultBaseDO
+    {
+        public List<DayOff> data { get; set; }
+    }
+
+    public class DayOffInput
+    {
+        public int id { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float sumDay { get; set; }
+        public string reason { get; set; }
+        public string note { get; set; }
     }
 }
