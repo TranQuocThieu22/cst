@@ -63,8 +63,8 @@ namespace educlient.Controllers
 
                 else if (model.password != null && model.password == "1234")
                 {
-                    var tb = database.Table<DsThongTinCaNhanDataDO>();
-                    var data = tb.FindOne(x => x.TFSName == model.username);
+                    var AQMemberTable = database.Table<AQMember>();
+                    var data = AQMemberTable.FindOne(x => x.TFSName == model.username);
 
                     return Ok(data);
                 }

@@ -30,6 +30,7 @@ import { ReportCaNhanComponent } from '../report-ca-nhan/report-ca-nhan.componen
 import { NhanSuAqComponent } from '../nhan-su-aq/nhan-su-aq.component';
 import { NgayNghiChungComponent } from '../ngay-nghi-chung/ngay-nghi-chung.component';
 import { NgayCongTacComponent } from '../ngay-cong-tac/ngay-cong-tac.component';
+import { NgayPhepCaNhanComponent } from '../ngay-phep-ca-nhan/ngay-phep-ca-nhan.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -57,9 +58,13 @@ import { AvatarModule } from "primeng/avatar";
 import { ChartModule } from 'primeng/chart';
 import { EchartsxModule } from 'echarts-for-angular';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
-  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent, NgayNghiChungComponent, NgayCongTacComponent],
+  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
+    NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent
+  ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -103,7 +108,9 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     AvatarModule,
     ChartModule,
     EchartsxModule,
-    ScrollPanelModule
+    ScrollPanelModule,
+    SelectButtonModule,
+    TagModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [

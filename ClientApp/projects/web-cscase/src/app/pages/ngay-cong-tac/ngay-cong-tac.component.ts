@@ -138,7 +138,8 @@ export class NgayCongTacComponent implements OnInit {
       ...this.CommissionDayInitState,
       memberList: []
     };
-    this.resetCalendarSelection();
+    this.resetCalendarSelection()
+    this.sumDay();
     this.editCommissionDayDialog = false;
     this.addNewCommissionDayDialog = true;
     this.openDialog = true;
@@ -218,6 +219,7 @@ export class NgayCongTacComponent implements OnInit {
 
   hideDialog() {
     this.CommissionDay = {};
+    this.resetCalendarSelection();
     this.openDialog = false;
     this.editCommissionDayDialog = false;
     this.addNewCommissionDayDialog = false;

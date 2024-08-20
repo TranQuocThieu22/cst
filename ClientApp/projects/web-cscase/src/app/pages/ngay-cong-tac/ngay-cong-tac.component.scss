@@ -11,16 +11,16 @@
     box-shadow: none !important;
 }
 
-::ng-deep {
-    .p-selectbutton .p-button.p-highlight {
-        background      : red;
-        background-color: red;
-    }
+// ::ng-deep {
+//     .p-selectbutton .p-button.p-highlight {
+//         background      : red;
+//         background-color: red;
+//     }
 
-    .p-selectbutton .p-button.p-highlight:hover {
-        background: green;
-    }
-}
+//     .p-selectbutton .p-button.p-highlight:hover {
+//         background: green;
+//     }
+// }
 
 .css_box1 {
     border: 1px solid red;

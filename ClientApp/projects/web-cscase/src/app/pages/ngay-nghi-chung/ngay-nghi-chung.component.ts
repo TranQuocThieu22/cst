@@ -7,9 +7,6 @@ import {
   PrimeNGConfig
 } from "primeng/api";
 import { Table } from 'primeng/table';
-// import { Calendar } from 'primeng/calendar';
-// Calendar.prototype.getDateFormat = () => 'dd/mm/yy';
-
 
 @Component({
   selector: 'app-ngay-nghi-chung',
@@ -27,10 +24,6 @@ export class NgayNghiChungComponent implements OnInit {
     reason: '',
     note: ''
   };
-
-
-  // filter_datefrom: string = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-  // filter_dateto: string = new Date().toLocaleDateString('en-GB');
 
   filter_datefrom: string = '';
   filter_dateto: string = '';

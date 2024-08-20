@@ -1,0 +1,8 @@
+:host ::ng-deep .p-datepicker {
+    transform: scale(0.8);
+    /* Adjust the scale to your desired value */
+}
+
+*:focus {
+    box-shadow: none !important;
+}

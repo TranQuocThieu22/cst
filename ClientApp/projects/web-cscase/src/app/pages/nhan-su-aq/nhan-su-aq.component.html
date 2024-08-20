@@ -39,7 +39,9 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th style="white-space: nowrap; min-width:120px;"></th>
+          <th style="white-space: nowrap; min-width:120px;" class="text-center">
+            <i class="pi pi-ellipsis-h"></i>
+          </th>
           <!-- <th pSortableColumn="id" style="white-space: nowrap;">
               ID
               <p-sortIcon field="id"></p-sortIcon>
@@ -147,6 +149,11 @@
               {{AQmember.isActive ? 'Hoạt động' : 'Không hoạt động'}}
             </span>
           </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">Không có dữ liệu nhân sự AQ.</td>
         </tr>
       </ng-template>
     </p-table>
