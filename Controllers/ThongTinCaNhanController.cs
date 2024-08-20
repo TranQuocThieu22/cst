@@ -27,6 +27,9 @@ namespace educlient.Controllers
 
             return new AQMembersResult
             {
+                message = "Success",
+                code = 200,
+                result = true,
                 data = NhanVienAQ.ToList()
             };
         }
@@ -51,6 +54,7 @@ namespace educlient.Controllers
 
             return new AQMembersResult
             {
+                message = "Success",
                 code = 200,
                 result = true,
                 data = returnData,
@@ -58,7 +62,7 @@ namespace educlient.Controllers
         }
 
         [HttpPost]
-        public AQMembersResult Insert([FromBody] AQMemberInput[] inputData)
+        public ApiResultBaseDO Insert([FromBody] AQMemberInput[] inputData)
         {
 
             var aqMember = inputData.Select(input => new AQMember
@@ -82,16 +86,17 @@ namespace educlient.Controllers
 
             var AQMemberTable = database.Table<AQMember>();
             AQMemberTable.Insert(aqMember);
-            var NhanVienAQ = AQMemberTable.FindAll();
 
-            return new AQMembersResult
+            return new ApiResultBaseDO
             {
-                data = NhanVienAQ.ToList()
+                message = "Insert Success",
+                code = 200,
+                result = true
             };
         }
 
         [HttpPut, Route("{id}")]
-        public AQMembersResult Update(int id, [FromBody] AQMemberInput inputData)
+        public ApiResultBaseDO Update(int id, [FromBody] AQMemberInput inputData)
         {
             var AQMemberTable = database.Table<AQMember>();
 
@@ -123,17 +128,18 @@ namespace educlient.Controllers
 
             // Update the record in the collection
             AQMemberTable.Update(existingRecord);
-            var NhanVienAQ = AQMemberTable.FindAll();
 
-            return new AQMembersResult
+            return new ApiResultBaseDO
             {
-                data = NhanVienAQ.ToList()
+                message = "Update Success",
+                code = 200,
+                result = true
             };
         }
 
 
         [HttpDelete, Route("{id}")]
-        public AQMembersResult Delete(int id)
+        public ApiResultBaseDO Delete(int id)
         {
             var AQMemberTable = database.Table<AQMember>();
 
@@ -148,9 +154,11 @@ namespace educlient.Controllers
             }
             AQMemberTable.Delete(id);
 
-            return new AQMembersResult
+            return new ApiResultBaseDO
             {
-                data = new List<AQMember> { existingRecord }
+                message = "Delete Success",
+                code = 200,
+                result = true
             };
         }
 
@@ -170,6 +178,9 @@ namespace educlient.Controllers
 
             return new MemberCommissionList
             {
+                message = "Success",
+                code = 200,
+                result = true,
                 data = result
             };
         }

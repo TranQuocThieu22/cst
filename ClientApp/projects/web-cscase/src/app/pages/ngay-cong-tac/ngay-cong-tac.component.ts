@@ -242,7 +242,7 @@ export class NgayCongTacComponent implements OnInit {
     });
     this.https.post<any>("/api/NgayCongTac", CommissionDayArray).subscribe({
       next: (res: any) => {
-        this.CommissionDays = res.data
+        //todo
       },
       error: (error) => {
         console.log(error);
@@ -251,7 +251,7 @@ export class NgayCongTacComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.resetCalendarSelection();
-        this.loadMember_From_CommissionMemberList();
+        this.fetchCommissionDaysData();
       }
     });
 
@@ -263,7 +263,7 @@ export class NgayCongTacComponent implements OnInit {
   updateCommissionDay() {
     this.https.put<any>("/api/NgayCongTac/" + this.CommissionDay.id, this.CommissionDay).subscribe({
       next: (res: any) => {
-        this.CommissionDays = res.data
+        //todo
       },
       error: (error) => {
         console.log(error);
@@ -271,7 +271,7 @@ export class NgayCongTacComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.loadMember_From_CommissionMemberList();
+        this.fetchCommissionDaysData();
       }
     });
     this.hideDialog();
@@ -293,15 +293,15 @@ export class NgayCongTacComponent implements OnInit {
 
         this.https.delete<any>("/api/NgayCongTac/" + data.id, data).subscribe({
           next: (res: any) => {
-            this.CommissionDays = res.data
+            //todo
           },
           error: (error) => {
             console.log(error);
             // Your logic for handling errors
           },
           complete: () => {
-            this.loadMember_From_CommissionMemberList();
             // Your logic for handling the completion event (optional)
+            this.fetchCommissionDaysData();
           }
         });
       },

@@ -51,6 +51,9 @@ namespace educlient.Controllers
 
             return new CommissionsResult
             {
+                message = "Success",
+                code = 200,
+                result = true,
                 data = resultData
             };
         }
@@ -75,6 +78,7 @@ namespace educlient.Controllers
 
             return new CommissionsResult
             {
+                message = "Success",
                 code = 200,
                 result = true,
                 data = returnData,
@@ -82,7 +86,7 @@ namespace educlient.Controllers
         }
 
         [HttpPost]
-        public CommissionsResult Insert([FromBody] CommissionInput[] inputData)
+        public ApiResultBaseDO Insert([FromBody] CommissionInput[] inputData)
         {
             var insertData = inputData.Select(input => new Commission
             {
@@ -98,16 +102,17 @@ namespace educlient.Controllers
 
             var CommissionTable = database.Table<Commission>();
             CommissionTable.Insert(insertData);
-            var resultData = CommissionTable.FindAll();
 
-            return new CommissionsResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList(),
+                message = "Update Success",
+                code = 200,
+                result = true
             };
         }
 
         [HttpPut, Route("{id}")]
-        public CommissionsResult Update(int id, [FromBody] CommissionInput inputData)
+        public ApiResultBaseDO Update(int id, [FromBody] CommissionInput inputData)
         {
             var CommissionTable = database.Table<Commission>();
 
@@ -134,16 +139,17 @@ namespace educlient.Controllers
 
             // Update the record in the collection
             CommissionTable.Update(existingRecord);
-            var resultData = CommissionTable.FindAll();
 
-            return new CommissionsResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList()
+                message = "Update Success",
+                code = 200,
+                result = true
             };
         }
 
         [HttpDelete, Route("{id}")]
-        public CommissionsResult Delete(int id)
+        public ApiResultBaseDO Delete(int id)
         {
             var CommissionTable = database.Table<Commission>();
             var existingRecord = CommissionTable.FindById(id);
@@ -158,11 +164,12 @@ namespace educlient.Controllers
             }
 
             CommissionTable.Delete(id);
-            var resultData = CommissionTable.FindAll();
 
-            return new CommissionsResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList()
+                message = "Delete Success",
+                code = 200,
+                result = true
             };
         }
     }

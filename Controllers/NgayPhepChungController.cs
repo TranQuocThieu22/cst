@@ -51,6 +51,9 @@ namespace educlient.Controllers
 
             return new DayOffsResult
             {
+                message = "Success",
+                code = 200,
+                result = true,
                 data = resultData
             };
         }
@@ -76,6 +79,7 @@ namespace educlient.Controllers
 
             return new DayOffsResult
             {
+                message = "Success",
                 code = 200,
                 result = true,
                 data = returnData,
@@ -84,7 +88,7 @@ namespace educlient.Controllers
 
 
         [HttpPost]
-        public DayOffsResult Insert([FromBody] DayOffInput[] inputData)
+        public ApiResultBaseDO Insert([FromBody] DayOffInput[] inputData)
         {
             var insertData = inputData.Select(input => new DayOff
             {
@@ -97,16 +101,17 @@ namespace educlient.Controllers
 
             var DayOffTable = database.Table<DayOff>();
             DayOffTable.Insert(insertData);
-            var resultData = DayOffTable.FindAll();
 
-            return new DayOffsResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList(),
+                message = "Insert Success",
+                code = 200,
+                result = true
             };
         }
 
         [HttpPut, Route("{id}")]
-        public DayOffsResult Update(int id, [FromBody] DayOffInput inputData)
+        public ApiResultBaseDO Update(int id, [FromBody] DayOffInput inputData)
         {
             var DayOffTable = database.Table<DayOff>();
 
@@ -129,16 +134,17 @@ namespace educlient.Controllers
 
             // Update the record in the collection
             DayOffTable.Update(existingRecord);
-            var resultData = DayOffTable.FindAll();
 
-            return new DayOffsResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList()
+                message = "Update Success",
+                code = 200,
+                result = true
             };
         }
 
         [HttpDelete, Route("{id}")]
-        public DayOffsResult Delete(int id)
+        public ApiResultBaseDO Delete(int id)
         {
             var DayOffTable = database.Table<DayOff>();
 
@@ -152,11 +158,12 @@ namespace educlient.Controllers
                 };
             }
             DayOffTable.Delete(id);
-            var data = DayOffTable.FindAll();
 
-            return new DayOffsResult
+            return new ApiResultBaseDO
             {
-                data = data.ToList(),
+                message = "Delete Success",
+                code = 200,
+                result = true
             };
         }
     }

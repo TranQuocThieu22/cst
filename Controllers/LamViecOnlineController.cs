@@ -1,35 +1,35 @@
 ﻿using educlient.Data;
-using educlient.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace educlient.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class NgayPhepCaNhanController : ControllerBase
+    [ApiController]
+    public class LamViecOnlineController : ControllerBase
     {
         private readonly IDbLiteContext database;
-        public NgayPhepCaNhanController(IDbLiteContext dataContext)
+        public LamViecOnlineController(IDbLiteContext dataContext)
         {
             database = dataContext;
         }
 
         [HttpGet]
-        public IndividualDayOffResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, [FromQuery] int? query_memberId = null)
+        public WorkingOnlineResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, [FromQuery] int? query_memberId = null)
         {
-            var IndividualDayOffTable = database.Table<IndividualDayOff>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
 
-            List<IndividualDayOff> resultData;
+            List<WorkingOnlineDataDO> resultData;
 
             if (query_memberId.HasValue)
             {
                 // Query based on userId
                 if (query_dateFrom.HasValue && query_dateTo.HasValue)
                 {
-                    resultData = IndividualDayOffTable.Find(x =>
+                    resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
                         ((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
                         (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
@@ -40,7 +40,7 @@ namespace educlient.Controllers
                 else if (query_dateFrom.HasValue)
                 {
                     // Only dateFrom is provided
-                    resultData = IndividualDayOffTable.Find(x =>
+                    resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
                         x.dateFrom >= query_dateFrom.Value
                     ).ToList();
@@ -48,7 +48,7 @@ namespace educlient.Controllers
                 else if (query_dateTo.HasValue)
                 {
                     // Only dateTo is provided
-                    resultData = IndividualDayOffTable.Find(x =>
+                    resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
                         x.dateTo <= query_dateTo.Value
                     ).ToList();
@@ -56,7 +56,7 @@ namespace educlient.Controllers
                 else
                 {
                     // Only userId filter provided
-                    resultData = IndividualDayOffTable.Find(x => x.memberId == query_memberId.Value).ToList();
+                    resultData = WorkingOnlineTable.Find(x => x.memberId == query_memberId.Value).ToList();
                 }
             }
             else
@@ -64,7 +64,7 @@ namespace educlient.Controllers
                 // Query all (no userId filter)
                 if (query_dateFrom.HasValue && query_dateTo.HasValue)
                 {
-                    resultData = IndividualDayOffTable.Find(x =>
+                    resultData = WorkingOnlineTable.Find(x =>
                         (x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
                         (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
                         (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
@@ -74,21 +74,21 @@ namespace educlient.Controllers
                 else if (query_dateFrom.HasValue)
                 {
                     // Only dateFrom is provided
-                    resultData = IndividualDayOffTable.Find(x => x.dateFrom >= query_dateFrom.Value).ToList();
+                    resultData = WorkingOnlineTable.Find(x => x.dateFrom >= query_dateFrom.Value).ToList();
                 }
                 else if (query_dateTo.HasValue)
                 {
                     // Only dateTo is provided
-                    resultData = IndividualDayOffTable.Find(x => x.dateTo <= query_dateTo.Value).ToList();
+                    resultData = WorkingOnlineTable.Find(x => x.dateTo <= query_dateTo.Value).ToList();
                 }
                 else
                 {
                     // No filters provided
-                    resultData = IndividualDayOffTable.FindAll().ToList();
+                    resultData = WorkingOnlineTable.FindAll().ToList();
                 }
             }
 
-            return new IndividualDayOffResult
+            return new WorkingOnlineResult
             {
                 message = "Success",
                 code = 200,
@@ -99,51 +99,50 @@ namespace educlient.Controllers
 
 
         [HttpGet, Route("{id}")]
-        public IndividualDayOffResult GetById(int id)
+        public WorkingOnlineResult GetById(int id)
         {
-            List<IndividualDayOff> returnData = new List<IndividualDayOff>();
+            List<WorkingOnlineDataDO> returnData = new List<WorkingOnlineDataDO>();
 
-            var IndividualDayOffTable = database.Table<IndividualDayOff>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
 
-            var resultData = IndividualDayOffTable.FindById(id);
+            var resultData = WorkingOnlineTable.FindById(id);
             if (resultData == null)
             {
-                return new IndividualDayOffResult
+                return new WorkingOnlineResult
                 {
                     code = 404,
-                    message = "Data not found"
+                    message = "Data not found",
+                    data = returnData
                 };
             }
             returnData.Add(resultData);
 
-            return new IndividualDayOffResult
+            return new WorkingOnlineResult
             {
-                message = "Success",
                 code = 200,
                 result = true,
                 data = returnData,
+                message = "Success"
             };
         }
 
 
         [HttpPost]
-        public ApiResultBaseDO Insert([FromBody] IndividualDayOffInput[] inputData)
+        public ApiResultBaseDO Insert([FromBody] WorkingOnlineInput[] inputData)
         {
-            var insertData = inputData.Select(input => new IndividualDayOff
+            var insertData = inputData.Select(input => new WorkingOnlineDataDO
             {
                 dateFrom = input.dateFrom,
                 dateTo = input.dateTo,
                 sumDay = input.sumDay,
                 memberId = input.memberId,
                 reason = input.reason,
-                isAnnual = input.isAnnual,
-                isWithoutPay = input.isWithoutPay,
                 approvalStatus = input.approvalStatus,
                 note = input.note,
             }).ToList();
 
-            var IndividualDayOffTable = database.Table<IndividualDayOff>();
-            IndividualDayOffTable.Insert(insertData);
+            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            WorkingOnlineTable.Insert(insertData);
 
             return new ApiResultBaseDO
             {
@@ -154,14 +153,14 @@ namespace educlient.Controllers
         }
 
         [HttpPut, Route("{id}")]
-        public ApiResultBaseDO Update(int id, [FromBody] IndividualDayOffInput inputData)
+        public ApiResultBaseDO Update(int id, [FromBody] WorkingOnlineInput inputData)
         {
-            var IndividualDayOffTable = database.Table<IndividualDayOff>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
 
-            var existingRecord = IndividualDayOffTable.FindById(id);
+            var existingRecord = WorkingOnlineTable.FindById(id);
             if (existingRecord == null)
             {
-                new IndividualDayOffResult
+                new WorkingOnlineResult
                 {
                     code = 400,
                     message = "data not found",
@@ -174,13 +173,11 @@ namespace educlient.Controllers
             existingRecord.sumDay = inputData.sumDay;
             existingRecord.memberId = inputData.memberId;
             existingRecord.reason = inputData.reason;
-            existingRecord.isAnnual = inputData.isAnnual;
-            existingRecord.isWithoutPay = inputData.isWithoutPay;
             existingRecord.approvalStatus = inputData.approvalStatus;
             existingRecord.note = inputData.note;
 
             // Update the record in the collection
-            IndividualDayOffTable.Update(existingRecord);
+            WorkingOnlineTable.Update(existingRecord);
 
             return new ApiResultBaseDO
             {
@@ -193,19 +190,19 @@ namespace educlient.Controllers
         [HttpDelete, Route("{id}")]
         public ApiResultBaseDO Delete(int id)
         {
-            var IndividualDayOffTable = database.Table<IndividualDayOff>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
 
-            var existingRecord = IndividualDayOffTable.FindById(id);
+            var existingRecord = WorkingOnlineTable.FindById(id);
             if (existingRecord == null)
             {
-                new IndividualDayOffResult
+                new WorkingOnlineResult
                 {
                     code = 400,
                     message = "data not found",
                 };
             }
-            IndividualDayOffTable.Delete(id);
-            var data = IndividualDayOffTable.FindAll();
+            WorkingOnlineTable.Delete(id);
+            var data = WorkingOnlineTable.FindAll();
 
             return new ApiResultBaseDO
             {
@@ -215,15 +212,15 @@ namespace educlient.Controllers
             };
         }
 
-        [HttpPut, Route("DuyetNgayPhep")]
-        public ApiResultBaseDO ApproveIndividualDayOff([FromBody] ApprovalInput inputData)
+        [HttpPut, Route("DuyetLamViecOnline")]
+        public ApiResultBaseDO ApproveWorkingOnline([FromBody] ApprovalInput inputData)
         {
-            var IndividualDayOffTable = database.Table<IndividualDayOff>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
 
-            var existingRecord = IndividualDayOffTable.FindById(inputData.id);
+            var existingRecord = WorkingOnlineTable.FindById(inputData.id);
             if (existingRecord == null)
             {
-                new IndividualDayOffResult
+                new WorkingOnlineResult
                 {
                     code = 400,
                     message = "data not found",
@@ -234,8 +231,7 @@ namespace educlient.Controllers
             existingRecord.approvalStatus = inputData.approvalStatus;
 
             // Update the record in the collection
-            IndividualDayOffTable.Update(existingRecord);
-            var resultData = IndividualDayOffTable.FindAll();
+            WorkingOnlineTable.Update(existingRecord);
 
             return new ApiResultBaseDO
             {
@@ -246,12 +242,12 @@ namespace educlient.Controllers
         }
     }
 
-    public class IndividualDayOffResult : ApiResultBaseDO
+    public class WorkingOnlineResult : ApiResultBaseDO
     {
-        public List<IndividualDayOff> data { get; set; }
+        public List<WorkingOnlineDataDO> data { get; set; }
     }
 
-    public class IndividualDayOffInput
+    public class WorkingOnlineInput
     {
         public int id { get; set; }
         public DateTime dateFrom { get; set; }
@@ -259,8 +255,6 @@ namespace educlient.Controllers
         public float sumDay { get; set; }
         public int memberId { get; set; }
         public string reason { get; set; }
-        public bool isAnnual { get; set; }
-        public bool isWithoutPay { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }

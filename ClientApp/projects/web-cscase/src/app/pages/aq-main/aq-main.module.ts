@@ -31,6 +31,7 @@ import { NhanSuAqComponent } from '../nhan-su-aq/nhan-su-aq.component';
 import { NgayNghiChungComponent } from '../ngay-nghi-chung/ngay-nghi-chung.component';
 import { NgayCongTacComponent } from '../ngay-cong-tac/ngay-cong-tac.component';
 import { NgayPhepCaNhanComponent } from '../ngay-phep-ca-nhan/ngay-phep-ca-nhan.component';
+import { LamViecOnlineComponent } from '../lam-viec-online/lam-viec-online.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -63,7 +64,8 @@ import { TagModule } from 'primeng/tag';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
-    NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent
+    NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
+    LamViecOnlineComponent
   ],
   imports: [
     FormsModule,

@@ -267,7 +267,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
     this.https.post<any>("/api/NgayPhepCaNhan", IndividualDayOffArray).subscribe({
       next: (res: any) => {
-        this.convertType(res);
+        //todo
       },
       error: (error) => {
         console.log(error);
@@ -276,7 +276,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.resetCalendarSelection();
-        this.loadMember_From_MemberList();
+        this.fetchIndividualDayOffsData();
       }
     });
     this.addNewIndividualDayOffDialog = false;
@@ -285,8 +285,6 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   updateIndividualDayOff() {
-    //todo update user
-
     let IndividualDayOffData: any = structuredClone(this.IndividualDayOff);
 
     let user = JSON.parse(sessionStorage.getItem('current-user'));
@@ -305,7 +303,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
     this.https.put<any>("/api/NgayPhepCaNhan/" + this.IndividualDayOff.id, IndividualDayOffData).subscribe({
       next: (res: any) => {
-        this.convertType(res);
+        //todo
       },
       error: (error) => {
         console.log(error);
@@ -313,7 +311,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.loadMember_From_MemberList();
+        this.fetchIndividualDayOffsData();
       }
     });
     this.hideDialog();
@@ -336,7 +334,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
         this.https.delete<any>("/api/NgayPhepCaNhan/" + data.id, data).subscribe({
           next: (res: any) => {
-            this.convertType(res);
+            //todo
           },
           error: (error) => {
             console.log(error);
@@ -344,7 +342,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
           },
           complete: () => {
             // Your logic for handling the completion event (optional)
-            this.loadMember_From_MemberList();
+            this.fetchIndividualDayOffsData();
           }
         });
       },
@@ -363,7 +361,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
     let approvalStatus = data.approvalStatus;
     this.https.put<any>("/api/NgayPhepCaNhan/DuyetNgayPhep", { id, approvalStatus }).subscribe({
       next: (res: any) => {
-        this.convertType(res);
+        //todo
       },
       error: (error) => {
         console.log(error);
@@ -371,7 +369,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.loadMember_From_MemberList();
+        this.fetchIndividualDayOffsData();
       }
     });
 

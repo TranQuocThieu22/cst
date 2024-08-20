@@ -1,1 +1,377 @@
-<p>lam-viec-online works!</p>
+<div class="block">
+
+    <div class="card p-4">
+        <p-toolbar styleClass="mb-4 p-3">
+            <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
+                Quản lý ngày làm việc online
+            </p-card>
+            <ng-template pTemplate="left">
+                <button pButton pRipple
+                    label="Tạo ngày làm việc online"
+                    icon="pi pi-calendar-plus mb-1"
+                    class="p-button-success py-2"
+                    (click)="openAddDialog()">
+                </button>
+            </ng-template>
+        </p-toolbar>
+
+        <p-toolbar styleClass="mb-4 p-3">
+            <div class="flex flex-row flex-wrap gap-3">
+                <div class="mt-2">
+                    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                        (click)="clear(dt1)">
+                    </button>
+                </div>
+                <span class="p-float-label mt-2">
+                    <input id="float-input" type="text" pInputText [(ngModel)]="filter_datefrom">
+                    <label for="float-input">Lọc từ ngày</label>
+                </span>
+                <span class="p-float-label mt-2">
+                    <input id="float-input" type="text" pInputText [(ngModel)]="filter_dateto">
+                    <label for="float-input">Lọc đến ngày</label>
+                </span>
+                <span class="mt-2">
+                    <!-- <button
+              pButton pRipple type="button"
+              label="Lọc"
+              class="p-button-rounded p-button-info  px-4">
+            </button> -->
+                    <!-- <button pButton pRipple type="button" label="Lọc" class="p-button-outlined p-button-info px-4"></button> -->
+                    <button
+                        pButton pRipple type="button"
+                        icon="pi pi-search"
+                        class="p-button-rounded p-button-info"
+                        (click)="fetchDataFiltered()">
+                    </button>
+                </span>
+            </div>
+        </p-toolbar>
+
+        <p-table
+            #dt1
+            [value]="WorkingOnlines"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[5,10,25]"
+            [paginator]="true"
+            [globalFilterFields]="['dateFrom', 'dateTo', 'sumDay', 'reason', 'note']"
+            styleClass="p-datatable-gridlines p-datatable-sm"
+            reorderableColumns="true"
+            responsiveLayout="scroll">
+            <!-- dataKey="id" -->
+            <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" -->
+            <!-- styleClass="p-datatable-customers p-datatable-gridlines" -->
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="white-space: nowrap; min-width:120px;" class="text-center">
+                        <i class="pi pi-ellipsis-h"></i>
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                        Trạng thái
+                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem" pSortableColumn="dateFrom">
+                        Ngày bắt đầu
+                        <p-sortIcon field="dateFrom"></p-sortIcon>
+                        <!-- <p-columnFilter type="date" field="dateFrom" display="menu">
+              </p-columnFilter> -->
+                        <!-- <p-columnFilter type="date" field="dateFrom" display="menu" [showMatchModes]="true" [showOperator]="false"
+                [showAddButton]="false">
+              </p-columnFilter> -->
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem " pSortableColumn="dateTo">
+                        Ngày kết thúc
+                        <!-- <p-columnFilter type="date" field="dateTo" display="menu">
+              </p-columnFilter> -->
+                        <p-sortIcon field="dateTo"></p-sortIcon>
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem" pSortableColumn="sumDay">
+                        Tổng số ngày
+                        <p-sortIcon field="sumDay"></p-sortIcon>
+                        <p-columnFilter type="numeric" field="sumDay" display="menu" class="mt-4"></p-columnFilter>
+                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                        Họ tên
+                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                    </th>
+                    <th style="white-space: nowrap; min-width:20rem" class="text-center">
+                        Lý do nghỉ
+                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                    </th>
+                    <th style="white-space: nowrap;" class="text-center">
+                        Ghi chú thêm
+                        <p-columnFilter type="text" field="note" display="menu"></p-columnFilter>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-WorkingOnline>
+                <tr>
+                    <td style="white-space: nowrap; text-align: center; width: 100px;">
+                        <!-- leader action-->
+                        <span *ngIf="checkIsLeader()">
+                            <button pButton icon="pi pi-check-circle"
+                                class="p-button-raised p-button-success p-button-text mr-2"
+                                (click)="openViewDialog(WorkingOnline)">
+                            </button>
+                            <button
+                                pButton pRipple icon="pi pi-pencil"
+                                class="p-button-rounded p-button-warning p-button-text p-0"
+                                (click)="openEditDialog(WorkingOnline)"></button>
+                            <button pButton pRipple icon="pi pi-trash"
+                                class="p-button-rounded p-button-danger p-button-text p-0"
+                                (click)="deleteWorkingOnline($event, WorkingOnline)"></button>
+                        </span>
+
+                        <!-- member action -->
+                        <span *ngIf="!checkIsLeader()">
+                            <button pButton icon="pi pi-check-circle"
+                                class="p-button-raised p-button-success p-button-text mr-2"
+                                (click)="openViewDialog(WorkingOnline)">
+                            </button>
+                            <button
+                                [disabled]="WorkingOnline.approvalStatus === 'Đã duyệt' || WorkingOnline.approvalStatus === 'Từ chối'"
+                                pButton pRipple icon="pi pi-pencil"
+                                class="p-button-rounded p-button-warning p-button-text p-0"
+                                (click)="openEditDialog(WorkingOnline)"></button>
+                            <button pButton pRipple icon="pi pi-trash"
+                                [disabled]="WorkingOnline.approvalStatus === 'Đã duyệt' || WorkingOnline.approvalStatus === 'Từ chối'"
+                                class="p-button-rounded p-button-danger p-button-text p-0"
+                                (click)="deleteWorkingOnline($event, WorkingOnline)"></button>
+                        </span>
+                    </td>
+                    <td style="white-space: nowrap; text-align: center; width: 15%;">
+                        <p-tag *ngIf="WorkingOnline.approvalStatus === 'Đã duyệt'"
+                            value="{{WorkingOnline.approvalStatus}}"
+                            icon="pi pi-check"
+                            severity="success">
+                        </p-tag>
+                        <p-tag *ngIf="WorkingOnline.approvalStatus === 'Từ chối'"
+                            value="{{WorkingOnline.approvalStatus}}"
+                            icon="pi pi-times"
+                            severity="danger">
+                        </p-tag>
+                        <p-tag *ngIf="WorkingOnline.approvalStatus === 'Chưa duyệt'"
+                            value="{{WorkingOnline.approvalStatus}}"
+                            icon="pi pi-exclamation-triangle"
+                            severity="warning">
+                        </p-tag>
+                        <!-- {{WorkingOnline.approvalStatus}} -->
+                    </td>
+                    <td style="white-space: nowrap; text-align: left; width: 12%;">
+                        {{WorkingOnline.dateFrom | date: 'dd/MM/yyyy'}}
+                    </td>
+                    <td style="white-space: nowrap; text-align: left; width: 12%;">
+                        {{WorkingOnline.dateTo | date: 'dd/MM/yyyy'}}
+                    </td>
+                    <td style="white-space: nowrap; text-align: center; width: 15%;">
+                        <span style="color:black; font-weight: bold;">{{WorkingOnline.sumDay}}</span>
+                    </td>
+                    <td style="white-space: nowrap; text-align: center; width: 15%;">
+                        {{WorkingOnline.member.fullName}}
+                    </td>
+                    <td style="white-space: nowrap; text-align: left;">
+                        {{WorkingOnline.reason}}
+                    </td>
+                    <td style="white-space: nowrap; text-align: left; max-width: 30rem">
+                        <p-scrollPanel [style]="{width: '100%', height: '50px'}">
+                            {{WorkingOnline.note}}
+                        </p-scrollPanel>
+                    </td>
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="10">Không có dữ liệu.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+</div>
+
+
+<p-dialog
+    header="Nhập thông tin ngày làm việc online"
+    [(visible)]="openDialog"
+    [style]="{width: '100%', maxWidth: '800px'}"
+    [contentStyle]="{minHeight: '350px'}"
+    [modal]="true"
+    styleClass="p-fluid">
+
+    <ng-template pTemplate="content">
+        <div class="formgrid grid">
+
+            <div class="col-12 mb-4" *ngIf="!checkIsLeader()">
+                <span>
+                    <strong>Nhân viên: </strong>
+                </span>
+                <span>
+                    {{ userInfo.fullName }}
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <label for="icon">Ngày bắt đầu</label>
+                <p-calendar
+                    [(ngModel)]="WorkingOnline.dateFrom"
+                    [showIcon]="true"
+                    inputId="icon"
+                    dateFormat="dd/mm/yy"
+                    (ngModelChange)="sumDay()">
+                </p-calendar>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <label for="icon">Ngày kết thúc</label>
+                <p-calendar
+                    [(ngModel)]="WorkingOnline.dateTo"
+                    [showIcon]="true"
+                    inputId="icon"
+                    dateFormat="dd/mm/yy"
+                    (ngModelChange)="sumDay()">
+                </p-calendar>
+            </div>
+
+
+            <div class="field col-5 md:col-4">
+                <label for="sumDay">Số lượng ngày</label>
+                <input type="number" pInputText id="sumDay" required
+                    [(ngModel)]="WorkingOnline.sumDay" />
+            </div>
+
+            <div class="field col-12">
+                <label
+                    *ngIf="checkIsLeader()"
+                    for="memberId">Chọn nhân viên
+                </label>
+                <p-dropdown
+                    *ngIf="checkIsLeader()"
+                    [options]="MemberList"
+                    [(ngModel)]="WorkingOnline.member.id"
+                    optionLabel="fullName" optionValue="id" required>
+                </p-dropdown>
+            </div>
+            <div *ngIf="checkIsLeader()" class="mt-2">
+            </div>
+
+            <div class="field col-12 mt-2">
+                <label for="reason">Lí do làm việc online</label>
+                <input type="text" pInputText id="reason" required
+                    [(ngModel)]="WorkingOnline.reason" />
+            </div>
+
+            <div class="field col-12">
+                <label>Ghi chú</label>
+                <textarea [rows]="5" [cols]="30" pInputTextarea [autoResize]="true"
+                    [(ngModel)]="WorkingOnline.note"></textarea>
+            </div>
+
+            <div class="field col-12" *ngIf="checkIsLeader()">
+                <label for="approvalStatus">Trạng thái</label>
+                <p-selectButton
+                    [options]="approvalStatusOptions"
+                    [(ngModel)]="WorkingOnline.approvalStatus"
+                    optionLabel="label" optionValue="value">
+                </p-selectButton>
+            </div>
+
+        </div>
+    </ng-template>
+
+
+    <!-- edit/addnew DayOff -->
+    <ng-template pTemplate="footer">
+        <!-- icon="pi pi-times" -->
+        <button pButton pRipple label="Quay trở lại" class="p-button-text"
+            (click)="hideDialog()"></button>
+        <!-- icon="pi pi-check"  -->
+        <button pButton pRipple label="Tạo"
+            class="p-button-text"
+            (click)="editWorkingOnlineDialog ? updateWorkingOnline() : addNewWorkingOnline()"></button>
+    </ng-template>
+</p-dialog>
+
+<!-- delete member popup -->
+<p-toast></p-toast>
+<p-confirmPopup></p-confirmPopup>
+
+<!-- detail view dialog -->
+<p-dialog
+    header="Thông tin ngày làm việc online cá nhân"
+    [(visible)]="viewWorkingOnlineDialog"
+    [style]="{width: '100%', maxWidth: '900px'}"
+    [comissionContentStyle]="{minHeight: '350px'}"
+    [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="comissionContent">
+        <p-scrollPanel [style]="{width: '100%', height: '700px'}">
+
+            <div class="flex flex-column">
+                <div class="flex align-items-center justify-content-left gap-3">
+                    <span class="col-4">Nhân viên:</span>
+                    <span>
+                        {{WorkingOnline.member.fullName}}
+                    </span>
+                </div>
+                <div class="flex align-items-center justify-content-left gap-3">
+                    <span class="col-4">Từ ngày:</span>
+                    <span class="">
+                        {{WorkingOnline.dateFrom | date: 'dd/MM/yyyy'}}
+                    </span>
+                </div>
+                <div class="flex align-items-center justify-content-left gap-3">
+                    <span class="col-4">Đến ngày:</span>
+                    <span>
+                        {{WorkingOnline.dateTo | date: 'dd/MM/yyyy'}}
+                    </span>
+                </div>
+                <div class="flex align-items-center justify-content-left gap-3">
+                    <span class="col-4">Số lượng ngày:</span>
+                    <span>
+                        {{WorkingOnline.sumDay}}
+                    </span>
+                </div>
+                <div class="flex align-items-center justify-content-left gap-3">
+                    <span class="col-4">Lý do làm việc online:</span>
+                    <span>
+                        {{WorkingOnline.reason}}
+                    </span>
+                </div>
+                <p-divider></p-divider>
+                <div class="flex align-items-center justify-content-left gap-3">
+                    <span class="col-4">Ghi chú</span>
+                    <span>
+                        {{WorkingOnline.note}}
+                    </span>
+                </div>
+                <p-divider></p-divider>
+                <div class="flex align-items-center justify-content-left">
+                    <span class="col-4">Trạng thái:</span>
+                    <span class="col-4">
+                        <!-- {{WorkingOnline.approvalStatus}} -->
+                        <div class="flex flex-row">
+                            <p-dropdown
+                                *ngIf="checkIsLeader()"
+                                [options]="approvalStatusOptions"
+                                [(ngModel)]="WorkingOnline.approvalStatus"
+                                optionLabel="label" optionValue="value"
+                                (click)="saveApprovalStatus(WorkingOnline)">
+                            </p-dropdown>
+                            <span
+                                *ngIf="!checkIsLeader()"
+                                class="ml-2"
+                                style="font-weight: bold;">
+                                {{WorkingOnline.approvalStatus}}
+                            </span>
+                        </div>
+                    </span>
+                </div>
+                <div>
+
+                </div>
+            </div>
+
+        </p-scrollPanel>
+    </ng-template>
+</p-dialog>

@@ -152,7 +152,7 @@ export class NgayNghiChungComponent implements OnInit {
 
     this.https.post<any>("/api/NgayPhepChung", dayOffArray).subscribe({
       next: (res: any) => {
-        this.DayOffs = res.data
+        //todo
       },
       error: (error) => {
         console.log(error);
@@ -161,6 +161,7 @@ export class NgayNghiChungComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.resetCalendarSelection();
+        this.fetchDayOffsData();
       }
     });
     // this.AQmembers = [...this.AQmembers];
@@ -172,7 +173,7 @@ export class NgayNghiChungComponent implements OnInit {
   updateDayOff() {
     this.https.put<any>("/api/NgayPhepChung/" + this.DayOff.id, this.DayOff).subscribe({
       next: (res: any) => {
-        this.DayOffs = res.data
+        //todo
       },
       error: (error) => {
         console.log(error);
@@ -180,6 +181,7 @@ export class NgayNghiChungComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
+        this.fetchDayOffsData();
       }
     });
     this.hideDialog();
@@ -202,7 +204,7 @@ export class NgayNghiChungComponent implements OnInit {
 
         this.https.delete<any>("/api/NgayPhepChung/" + data.id, data).subscribe({
           next: (res: any) => {
-            this.DayOffs = res.data
+            //todo
           },
           error: (error) => {
             console.log(error);
@@ -210,6 +212,7 @@ export class NgayNghiChungComponent implements OnInit {
           },
           complete: () => {
             // Your logic for handling the completion event (optional)
+            this.fetchDayOffsData();
           }
         });
       },

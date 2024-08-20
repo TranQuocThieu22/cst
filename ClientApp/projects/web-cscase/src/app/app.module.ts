@@ -24,11 +24,10 @@ import { NoidungcasenewComponent } from './pages/noidungcasenew/noidungcasenew.c
 import { ThongbaokhaosatComponent } from './pages/thongbaokhaosat/thongbaokhaosat.component';
 import { NgxEditorModule } from 'ngx-editor';
 import { AqReportComponent } from './pages/aq-report/aq-report.component';
-import { LamViecOnlineComponent } from './pages/lam-viec-online/lam-viec-online.component';
 @NgModule({
   declarations: [AppComponent, LoginComponent, NoidungcscaseComponent,
     MessBoxComponent, SettingComponent, NoidungcasenewComponent,
-    ThongbaokhaosatComponent, AqReportComponent, LamViecOnlineComponent],
+    ThongbaokhaosatComponent, AqReportComponent],
   imports: [
     NgxEditorModule,
     BrowserAnimationsModule,
