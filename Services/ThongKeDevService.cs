@@ -422,7 +422,7 @@ namespace educlient.Services
             foreach (var item in data)
             {
                 dataTreBaoTri dataTreBaoTri = new dataTreBaoTri { };
-                dataTreBaoTri.estimatetime = item.estimatetime;
+                dataTreBaoTri.estimatetime = item.estimatetime.HasValue ? item.estimatetime.Value : 0;
                 if (!IsLoaiHopDong3Hoac4(item.loaihopdong))
                 {
                     if (item.loaihopdong != "03 - HĐ bảo trì")

@@ -66,3 +66,14 @@ export interface DataLoaiCase {
 export interface DataPhanHe {
   phanhe: string;
 }
+export interface CaseMetrics {
+  SoGioLamViecTrongNgay: number[];
+  SoGioLamThieu: number[];
+  SoLuongCaseThucHienTrongTuan: number[];
+  SoLuotCaseBiMoLai: number[];
+  SoGioUocLuongCase: number[];
+  SoGioThucTeLamCase: number[];
+  SoGioThamGiaMeeting: number[];
+  PhanTramTiLeMoCase: number[];
+  PhanTramTiLeChenhLechUocLuongVaThucTe: number[];
+}

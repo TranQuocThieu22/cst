@@ -47,7 +47,8 @@ namespace educlient.Models
             public string loaicase { get; set; }        //  AQ.CaseType
             public string comment { get; set; }         // Comment
             public string assignedto { get; set; }
-            public float estimatetime { get; set; }
+            public float? estimatetime { get; set; }
+            public float? actualtime { get; set; }
             public DateTime? detaildate1 { get; set; }
             public DateTime? detaildate2 { get; set; }
             public DateTime? detaildate3 { get; set; }
@@ -68,7 +69,21 @@ namespace educlient.Models
             public float? detailactualtime8 { get; set; }
             public float? detailactualtime9 { get; set; }
             public float? detailactualtime10 { get; set; }
+            public string? RequiredAttendee1 { get; set; }
+            public string? RequiredAttendee2 { get; set; }
+            public string? RequiredAttendee3 { get; set; }
+            public string? RequiredAttendee4 { get; set; }
+            public string? RequiredAttendee5 { get; set; }
+            public string? RequiredAttendee6 { get; set; }
+            public string? RequiredAttendee7 { get; set; }
+            public string? RequiredAttendee8 { get; set; }
+            public string? RequiredAttendee9 { get; set; }
+            public string? RequiredAttendee10 { get; set; }
+            public int? MinuteTakerTime { get; set; }
+            public string? MeetingStart { get; set; }
         }
+
+
 
         public class ThongTinCaseSup
         {

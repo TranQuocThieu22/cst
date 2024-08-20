@@ -48,6 +48,7 @@ namespace educlient
             services.AddSingleton<IThongKeSupService, ThongKeSupService>();
             services.AddSingleton<IThongKeAqTechService, ThongKeAqTechService>();
             services.AddSingleton<ITFSAccountService, TFSAccountService>();
+            services.AddSingleton<IKetQuaLamViecCaNhan, KetQuaLamViecCaNhan>();
             //services.AddSwaggerGen(c =>
             //{
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });

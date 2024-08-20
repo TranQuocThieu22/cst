@@ -61,11 +61,12 @@ import { EchartsxModule } from 'echarts-for-angular';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
+import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
     NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
-    LamViecOnlineComponent
+    LamViecOnlineComponent,KetQuaLamViecCaNhanComponent
   ],
   imports: [
     FormsModule,

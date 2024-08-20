@@ -87,6 +87,7 @@ public class DsNgayPhepCaNhanDO
 
 
 }
+
 public class DsNgayPhepCaNhanInput
 {
     public int SoLuongBuoi { get; set; }
