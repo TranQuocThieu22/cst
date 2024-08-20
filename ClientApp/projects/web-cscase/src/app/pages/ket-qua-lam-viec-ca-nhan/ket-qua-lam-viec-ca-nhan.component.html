@@ -15,11 +15,8 @@
         <div class="flex">
           <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
             (click)="clear(dt1)"></button>
-          <span class="p-input-icon-left ml-auto">
-            <i class="pi pi-search"></i>
-            <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
-              placeholder="Search keyword" />
-          </span>
+          <p-calendar class="mx-4" (ngModelChange)="FetchKetQua($event)" [(ngModel)]="dateValue" view="year"
+            dateFormat="yy"></p-calendar>
         </div>
       </ng-template>
       <ng-template pTemplate="header">

@@ -16,7 +16,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public SoGioLamThieu;
   public SoLuongCaseThucHienTrongTuan
   public SoLuotCaseBiMoLai
-
+  public dateValue = new Date()
   public SoGioUocLuongCase
 
   public SoGioThucTeLamCase
@@ -41,14 +41,16 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       quantity: 1
     }
     this.primengConfig.ripple = true;
-    this.FetchKetQua()
+    this.FetchKetQua(this.dateValue.getFullYear())
   }
 
-  FetchKetQua() {
+
+  FetchKetQua(data) {
     this.spinner.show("spinner-ketqualamvieccanhan");
+
     const body = {
       user: "tin <AQ\\tin>",
-      year: 2024
+      year: this.dateValue.getFullYear()
     }
     this.https.post<any>("/api/KetQuaLamViecCaNhan/KetQuaLamViecCaNhan", body).subscribe({
       next: (res: any) => {
@@ -81,6 +83,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
               PhanTramTiLeMoCase: res.data.phanTramTiLeMoCase[index],
               PhanTramTiLeChenhLechUocLuongVaThucTe: res.data.phanTramTiLeChenhLechUocLuongVaThucTe[index],
             }));
+            this.caseMetricsList.sort((a, b) => b.weekNumber - a.weekNumber);
 
             console.log(dataLength);
             console.log(this.caseMetricsList);

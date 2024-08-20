@@ -67,6 +67,7 @@ export interface DataPhanHe {
   phanhe: string;
 }
 export interface CaseMetrics {
+  weekNumber: number
   SoGioLamViecTrongNgay: number[];
   SoGioLamThieu: number[];
   SoLuongCaseThucHienTrongTuan: number[];
