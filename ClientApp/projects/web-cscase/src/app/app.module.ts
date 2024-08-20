@@ -25,10 +25,11 @@ import { ThongbaokhaosatComponent } from './pages/thongbaokhaosat/thongbaokhaosa
 import { NgxEditorModule } from 'ngx-editor';
 import { AqReportComponent } from './pages/aq-report/aq-report.component';
 import { LamViecOnlineComponent } from './pages/lam-viec-online/lam-viec-online.component';
+import { LamViecNgoaiGioComponent } from './pages/lam-viec-ngoai-gio/lam-viec-ngoai-gio.component';
 @NgModule({
   declarations: [AppComponent, LoginComponent, NoidungcscaseComponent,
     MessBoxComponent, SettingComponent, NoidungcasenewComponent,
-    ThongbaokhaosatComponent, AqReportComponent, LamViecOnlineComponent],
+    ThongbaokhaosatComponent, AqReportComponent, LamViecOnlineComponent, LamViecNgoaiGioComponent],
   imports: [
     NgxEditorModule,
     BrowserAnimationsModule,

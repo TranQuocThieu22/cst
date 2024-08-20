@@ -107,5 +107,14 @@ namespace educlient.Data
         public int id { get; set; }
         public int memberExpenses { get; set; }
     }
-
+    public class OverTime
+    {
+        [BsonId]
+        public int id { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float hours { get; set; }
+        public string fullName { get; set; }
+        public string note { get; set; }
+    }
 }
