@@ -108,4 +108,19 @@ namespace educlient.Data
         public int memberExpenses { get; set; }
     }
 
+    public class IndividualDayOff
+    {
+        [BsonId]
+        public int id { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public float sumDay { get; set; }
+        public int memberId { get; set; }
+        public string reason { get; set; }
+        public bool isAnnual { get; set; }
+        public bool isWithoutPay { get; set; }
+        public string approvalStatus { get; set; }
+        public string note { get; set; }
+    }
+
 }
