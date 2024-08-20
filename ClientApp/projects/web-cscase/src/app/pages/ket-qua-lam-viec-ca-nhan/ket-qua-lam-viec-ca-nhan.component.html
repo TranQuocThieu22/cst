@@ -1,0 +1,99 @@
+<ngx-spinner name="spinner-ketqualamvieccanhan" [fullScreen]="true" type="ball-clip-rotate-multiple"
+  size="medium"></ngx-spinner>
+<div class="block">
+  <div class="card p-4">
+    <p-toolbar styleClass="mb-4 p-3">
+      <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
+        Thống kê kết quả làm việc cá nhân
+      </p-card>
+    </p-toolbar>
+    <p-table #dt1 [value]="caseMetricsList" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+      styleClass="p-datatable-gridlines p-datatable-sm" responsiveLayout="scroll" [globalFilterFields]="['tfsName','fullName','email','phone',
+      'birthDate','startDate','nickName','role',
+      'isLeader']">
+      <ng-template pTemplate="caption">
+        <div class="flex">
+          <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+            (click)="clear(dt1)"></button>
+          <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+              placeholder="Search keyword" />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+
+          <th pSortableColumn="weekNumber" style="white-space: nowrap; ;">
+            Tuần số
+            <p-sortIcon field="weekNumber"></p-sortIcon>
+            <p-columnFilter type="numeric" field="weekNumber" display="menu" class="ml-auto"></p-columnFilter>
+          </th>
+          <th pSortableColumn="SoGioLamViecTrongNgay" style="white-space: nowrap; ">
+            Số giờ làm việc trong ngày
+            <p-sortIcon field="SoGioLamViecTrongNgay"></p-sortIcon>
+          </th>
+          <th pSortableColumn="SoGioLamThieu" style="white-space: nowrap; ">
+            Số giờ làm thiếu
+            <p-sortIcon field="SoGioLamThieu"></p-sortIcon>
+          </th>
+          <th pSortableColumn="SoLuongCaseThucHienTrongTuan" style="white-space: nowrap; ">
+            Số lượng case thực hiện trong tuần
+            <p-sortIcon field="SoLuongCaseThucHienTrongTuan"></p-sortIcon>
+          </th>
+          <th pSortableColumn="SoLuotCaseBiMoLai" style="white-space: nowrap; ">
+            Số lượt case bị mở lại
+            <p-sortIcon field="SoLuotCaseBiMoLai"></p-sortIcon>
+
+          </th>
+          <th pSortableColumn="SoGioUocLuongCase" style="white-space: nowrap;">
+            Số giờ ước lượng case
+            <p-sortIcon field="SoGioUocLuongCase"></p-sortIcon>
+          </th>
+          <th pSortableColumn="SoGioThucTeLamCase" style="white-space: nowrap;">
+            Số giờ thực tế làm case
+            <p-sortIcon field="SoGioThucTeLamCase"></p-sortIcon>
+          </th>
+          <th pSortableColumn="SoGioThamGiaMeeting" style="white-space: nowrap;">
+            Số giờ tham gia meeting
+            <p-sortIcon field="SoGioThamGiaMeeting"></p-sortIcon>
+          </th>
+          <th pSortableColumn="PhanTramTiLeMoCase" style="white-space: nowrap;">
+            Phần trăm tỉ lệ mở case
+            <p-sortIcon field="PhanTramTiLeMoCase"></p-sortIcon>
+          </th>
+          <th pSortableColumn="PhanTramTiLeChenhLechUocLuongVaThucTe" style="white-space: nowrap;">
+            Phần trăm tỉ lệ chênh lệch ước lượng và thực tế
+            <p-sortIcon field="PhanTramTiLeChenhLechUocLuongVaThucTe"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-caseMetric>
+        <tr>
+
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.weekNumber}}</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{caseMetric.SoGioLamViecTrongNgay}}</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoGioLamThieu}}</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{caseMetric.SoLuongCaseThucHienTrongTuan}}</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoLuotCaseBiMoLai}}
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoGioUocLuongCase}}
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoGioThucTeLamCase}}
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            <span>{{caseMetric.SoGioThamGiaMeeting}}</span>
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{caseMetric.PhanTramTiLeMoCase}}%
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{caseMetric.PhanTramTiLeChenhLechUocLuongVaThucTe}}%</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

@@ -57,9 +57,10 @@ import { AvatarModule } from "primeng/avatar";
 import { ChartModule } from 'primeng/chart';
 import { EchartsxModule } from 'echarts-for-angular';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
 
 @NgModule({
-  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent, NgayNghiChungComponent, NgayCongTacComponent],
+  declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent, NgayNghiChungComponent, NgayCongTacComponent, KetQuaLamViecCaNhanComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,
