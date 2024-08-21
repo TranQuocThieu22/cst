@@ -61,6 +61,11 @@ export class NhanSuAqComponent implements OnInit {
     this.fetchAQMemberData();
   }
 
+  checkIsLeader() {
+    let user = sessionStorage.getItem('current-user');
+    return JSON.parse(user).isLeader
+  }
+
   fetchAQMemberData() {
     this.https.get<any>("/api/ThongTinCaNhan").subscribe({
       next: (res: any) => {

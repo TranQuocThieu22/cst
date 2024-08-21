@@ -142,4 +142,13 @@ namespace educlient.Data
         public string note { get; set; }
     }
 
+    public class WorkingOTDataDO
+    {
+        [BsonId]
+        public int id { get; set; }
+        public DateTime date { get; set; }
+        public float time { get; set; }
+        public int memberId { get; set; }
+        public string note { get; set; }
+    }
 }

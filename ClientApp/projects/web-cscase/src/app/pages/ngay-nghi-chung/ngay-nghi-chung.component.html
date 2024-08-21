@@ -2,16 +2,22 @@
 
   <div class="card p-4">
     <p-toolbar styleClass="mb-4 p-3">
-      <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
+      <p-card *ngIf="checkIsLeader()" header="header" style="font-weight: bold; font-size: x-large; color: navy;">
         Quản lý ngày nghỉ chung
       </p-card>
-      <ng-container *ngIf="checkIsLeader()">
-        <ng-template pTemplate="left">
-          <button pButton pRipple label="Tạo ngày nghỉ chung" icon="pi pi-calendar-plus mb-1"
-            class="p-button-success py-2" (click)="openAddDialog()">
-          </button>
-        </ng-template>
-      </ng-container>
+      <p-card *ngIf="!checkIsLeader()" header="header" style="font-weight: bold; font-size: x-large; color: navy;">
+        Thông tin ngày nghỉ chung
+      </p-card>
+      <ng-template
+        *ngIf="checkIsLeader()"
+        pTemplate="left">
+        <button pButton pRipple
+          label="Tạo ngày nghỉ chung"
+          icon="pi pi-calendar-plus mb-1"
+          class="p-button-success py-2"
+          (click)="openAddDialog()">
+        </button>
+      </ng-template>
     </p-toolbar>
 
     <p-toolbar styleClass="mb-4 p-3">
@@ -51,12 +57,9 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <ng-container *ngIf="checkIsLeader()">
-
-            <th style="white-space: nowrap; min-width:120px;" class="text-center">
-              <i class="pi pi-ellipsis-h"></i>
-            </th>
-          </ng-container>
+          <th *ngIf="checkIsLeader()" style="white-space: nowrap; min-width:120px;" class="text-center">
+            <i class="pi pi-ellipsis-h"></i>
+          </th>
           <th style="white-space: nowrap; min-width:10rem" pSortableColumn="dateFrom">
             Ngày bắt đầu
             <p-sortIcon field="dateFrom"></p-sortIcon>
@@ -88,14 +91,14 @@
       </ng-template>
       <ng-template pTemplate="body" let-DayOff>
         <tr>
-          <ng-container *ngIf="checkIsLeader()">
-            <td style="white-space: nowrap; text-align: center; width: 100px;">
-              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning p-button-text p-0"
-                (click)="openEditDialog(DayOff)"></button>
-              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text p-0"
-                (click)="deleteDayOff($event, DayOff)"></button>
-            </td>
-          </ng-container>
+          <td *ngIf="checkIsLeader()" style="white-space: nowrap; text-align: center; width: 100px;">
+            <button pButton pRipple icon="pi pi-pencil"
+              class="p-button-rounded p-button-warning p-button-text p-0"
+              (click)="openEditDialog(DayOff)"></button>
+            <button pButton pRipple icon="pi pi-trash"
+              class="p-button-rounded p-button-danger p-button-text p-0"
+              (click)="deleteDayOff($event, DayOff)"></button>
+          </td>
           <td style="white-space: nowrap; text-align: left; width: 12%;">
             {{DayOff.dateFrom | date: 'dd/MM/yyyy'}}
           </td>
