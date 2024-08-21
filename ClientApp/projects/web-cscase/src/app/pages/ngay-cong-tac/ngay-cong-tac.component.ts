@@ -61,10 +61,7 @@ export class NgayCongTacComponent implements OnInit {
     this.primengConfig.ripple = true;
   }
 
-  checkIsLeader() {
-    const user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader;
-  }
+
 
   sumDay() {
     const date1 = new Date(this.CommissionDay.dateFrom);
