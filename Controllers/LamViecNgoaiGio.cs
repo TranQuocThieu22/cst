@@ -1,8 +1,8 @@
-﻿//using educlient.Data;
-//using Microsoft.AspNetCore.Mvc;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
+﻿using educlient.Data;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace educlient.Controllers
 {
