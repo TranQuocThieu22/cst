@@ -319,10 +319,6 @@ export class NgayCongTacComponent implements OnInit {
       }
     });
   }
-  checkIsLeader() {
-    const user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader;
-  }
   clear(table: Table) {
     table.clear();
     this.fetchCommissionDaysData();
