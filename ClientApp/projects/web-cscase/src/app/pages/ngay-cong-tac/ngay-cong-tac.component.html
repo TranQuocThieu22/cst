@@ -5,14 +5,13 @@
             <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
                 Quản lý ngày công tác
             </p-card>
-            <ng-template pTemplate="left">
-                <button pButton pRipple
-                    label="Tạo ngày công tác"
-                    icon="pi pi-calendar-plus mb-1"
-                    class="p-button-success py-2"
-                    (click)="openAddDialog()">
-                </button>
-            </ng-template>
+            <ng-container *ngIf="checkIsLeader()">
+                <ng-template pTemplate="left">
+                    <button pButton pRipple label="Tạo ngày công tác" icon="pi pi-calendar-plus mb-1"
+                        class="p-button-success py-2" (click)="openAddDialog()">
+                    </button>
+                </ng-template>
+            </ng-container>
         </p-toolbar>
 
         <p-toolbar styleClass="mb-4 p-3">
@@ -31,27 +30,17 @@
                     <label for="float-input">Lọc đến ngày</label>
                 </span>
                 <span class="mt-2">
-                    <button
-                        pButton pRipple type="button"
-                        icon="pi pi-search"
-                        class="p-button-rounded p-button-info"
+                    <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-info"
                         (click)="fetchDataFiltered()">
                     </button>
                 </span>
             </div>
         </p-toolbar>
 
-        <p-table
-            #dt1
-            [value]="CommissionDays"
-            [rows]="10"
-            [showCurrentPageReport]="true"
-            [rowsPerPageOptions]="[5,10,15]"
-            [paginator]="true"
+        <p-table #dt1 [value]="CommissionDays" [rows]="10" [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[5,10,15]" [paginator]="true"
             [globalFilterFields]="['dateFrom', 'dateTo', 'sumDay', 'comissionContent', 'note']"
-            styleClass="p-datatable-gridlines p-datatable-sm"
-            reorderableColumns="true"
-            responsiveLayout="scroll">
+            styleClass="p-datatable-gridlines p-datatable-sm" reorderableColumns="true" responsiveLayout="scroll">
             <!-- dataKey="id" -->
             <ng-template pTemplate="header">
                 <tr>
@@ -106,18 +95,19 @@
             <ng-template pTemplate="body" let-CommissionDay>
                 <tr>
                     <td style="white-space: nowrap; text-align: center; width: 100px;">
-                        <button pButton icon="pi pi-users"
-                            class="p-button-raised p-button-success p-button-text mr-2"
+                        <button pButton icon="pi pi-users" class="p-button-raised p-button-success p-button-text mr-2"
                             (click)="openMemberDialog(CommissionDay)">
                         </button>
-                        <button pButton pRipple icon="pi pi-pencil"
-                            class="p-button-rounded p-button-warning p-button-text p-0"
-                            (click)="openEditDialog(CommissionDay)">
-                        </button>
-                        <button pButton pRipple icon="pi pi-trash"
-                            class="p-button-rounded p-button-danger p-button-text p-0"
-                            (click)="deleteCommissionDay($event, CommissionDay)">
-                        </button>
+                        <ng-container *ngIf="checkIsLeader()">
+                            <button pButton pRipple icon="pi pi-pencil"
+                                class="p-button-rounded p-button-warning p-button-text p-0"
+                                (click)="openEditDialog(CommissionDay)">
+                            </button>
+                            <button pButton pRipple icon="pi pi-trash"
+                                class="p-button-rounded p-button-danger p-button-text p-0"
+                                (click)="deleteCommissionDay($event, CommissionDay)">
+                            </button>
+                        </ng-container>
                     </td>
                     <td style="white-space: nowrap; text-align: left; width: 12%;">
                         {{CommissionDay.dateFrom | date: 'dd/MM/yyyy'}}
@@ -164,54 +154,38 @@
 </div>
 
 
-<p-dialog
-    header="Thông tin ngày công tác"
-    [(visible)]="openDialog"
-    [style]="{width: '100%', maxWidth: '800px'}"
-    [comissionContentStyle]="{minHeight: '350px'}"
-    [modal]="true"
-    styleClass="p-fluid">
+<p-dialog header="Thông tin ngày công tác" [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '800px'}"
+    [comissionContentStyle]="{minHeight: '350px'}" [modal]="true" styleClass="p-fluid">
 
     <ng-template pTemplate="comissionContent">
         <div class="formgrid grid">
 
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày bắt đầu</label>
-                <p-calendar
-                    [(ngModel)]="CommissionDay.dateFrom"
-                    [showIcon]="true"
-                    inputId="icon"
-                    dateFormat="dd/mm/yy"
+                <p-calendar [(ngModel)]="CommissionDay.dateFrom" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy"
                     (ngModelChange)="sumDay()"></p-calendar>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày kết thúc</label>
-                <p-calendar
-                    [(ngModel)]="CommissionDay.dateTo"
-                    [showIcon]="true"
-                    inputId="icon"
-                    dateFormat="dd/mm/yy"
+                <p-calendar [(ngModel)]="CommissionDay.dateTo" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy"
                     (ngModelChange)="sumDay()"></p-calendar>
             </div>
 
 
             <div class="field col-5 md:col-4">
                 <label for="sumDay">Số lượng ngày công tác</label>
-                <input type="number" pInputText id="sumDay" required
-                    [(ngModel)]="CommissionDay.sumDay" />
+                <input type="number" pInputText id="sumDay" required [(ngModel)]="CommissionDay.sumDay" />
             </div>
 
             <div class="field col-12">
                 <label for="reason">Nội dung công tác</label>
-                <input type="text" pInputText id="reason" required
-                    [(ngModel)]="CommissionDay.comissionContent" />
+                <input type="text" pInputText id="reason" required [(ngModel)]="CommissionDay.comissionContent" />
             </div>
 
             <div class="field col-12">
                 <label for="reason">Phương tiện</label>
-                <input type="text" pInputText id="reason" required
-                    [(ngModel)]="CommissionDay.transportation" />
+                <input type="text" pInputText id="reason" required [(ngModel)]="CommissionDay.transportation" />
             </div>
 
             <div class="field col-12">
@@ -222,23 +196,16 @@
                     <div *ngFor="let member of CommissionDay.memberList; let i = index">
                         <div class="grid mt-2">
                             <div class="col-6">
-                                <p-dropdown
-                                    [options]="CommissionMemberList" [(ngModel)]="member.id"
+                                <p-dropdown [options]="CommissionMemberList" [(ngModel)]="member.id"
                                     optionLabel="fullName" optionValue="id">
                                 </p-dropdown>
                             </div>
                             <div class="col-5">
-                                <p-inputNumber
-                                    [(ngModel)]="member.memberExpenses"
-                                    mode="currency"
-                                    currency="VND">
+                                <p-inputNumber [(ngModel)]="member.memberExpenses" mode="currency" currency="VND">
                                 </p-inputNumber>
                             </div>
                             <div class="col-1">
-                                <button
-                                    pButton pRipple
-                                    type="button"
-                                    icon="pi pi-times"
+                                <button pButton pRipple type="button" icon="pi pi-times"
                                     class="p-button-rounded p-button-danger p-button-text"
                                     (click)="removeMember(member)">
                                 </button>
@@ -247,11 +214,8 @@
                     </div>
 
                     <div>
-                        <button
-                            pButton pRipple type="button"
-                            label="Thêm nhân sự"
-                            class="p-button-info p-button-text mt-2"
-                            (click)="addMember()">
+                        <button pButton pRipple type="button" label="Thêm nhân sự"
+                            class="p-button-info p-button-text mt-2" (click)="addMember()">
                         </button>
                     </div>
                 </div>
@@ -260,10 +224,7 @@
             <div class="field col-12">
 
                 <label for="reason">Chi phí công tác</label>
-                <p-inputNumber
-                    [(ngModel)]="CommissionDay.commissionExpenses"
-                    mode="currency"
-                    currency="VND">
+                <p-inputNumber [(ngModel)]="CommissionDay.commissionExpenses" mode="currency" currency="VND">
                 </p-inputNumber>
             </div>
 
@@ -279,19 +240,14 @@
 
     <!-- edit/addnew CommissionDay -->
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
+        <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
         <button pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
             (click)="editCommissionDayDialog ? updateCommissionDay() : addNewCommissionDay()"></button>
     </ng-template>
 </p-dialog>
 
-<p-dialog
-    header="Thông tin thành viên ngày công tác"
-    [(visible)]="isOpenMemberDialog"
-    [style]="{width: '100%', maxWidth: '900px'}"
-    [comissionContentStyle]="{minHeight: '350px'}"
-    [modal]="true"
+<p-dialog header="Thông tin thành viên ngày công tác" [(visible)]="isOpenMemberDialog"
+    [style]="{width: '100%', maxWidth: '900px'}" [comissionContentStyle]="{minHeight: '350px'}" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="comissionContent">
         <p-scrollPanel [style]="{width: '100%', height: '700px'}">
@@ -345,9 +301,7 @@
             <div class="flex flex-column">
                 <span class="">Danh sách nhân sự:</span>
                 <div class="flex justify-content-center mt-4">
-                    <p-table
-                        [value]="CommissionDay.memberList"
-                        styleClass="p-datatable-sm p-datatable-gridlines"
+                    <p-table [value]="CommissionDay.memberList" styleClass="p-datatable-sm p-datatable-gridlines"
                         [tableStyle]="{'width': '600px'}">
                         <!-- <ng-template pTemplate="caption">
                         Header

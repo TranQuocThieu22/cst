@@ -15,8 +15,11 @@
         <div class="flex">
           <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
             (click)="clear(dt1)"></button>
-          <p-calendar class="mx-4" (ngModelChange)="FetchKetQua($event)" [(ngModel)]="dateValue" view="year"
-            dateFormat="yy"></p-calendar>
+          <div class="mx-4">
+            <p-calendar (ngModelChange)="FetchKetQua($event)" [(ngModel)]="dateValue" view="year"
+              dateFormat="yy"></p-calendar>
+          </div>
+
         </div>
       </ng-template>
       <ng-template pTemplate="header">
