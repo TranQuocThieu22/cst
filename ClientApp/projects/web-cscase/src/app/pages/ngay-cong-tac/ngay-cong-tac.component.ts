@@ -319,6 +319,7 @@ export class NgayCongTacComponent implements OnInit {
       }
     });
   }
+
   clear(table: Table) {
     table.clear();
     this.fetchCommissionDaysData();

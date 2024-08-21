@@ -1,0 +1,84 @@
+<div class="block">
+
+    <div class="card p-4">
+        <div class="card p-3">
+            <!-- header -->
+            <p-card header="header"
+                class="mb-1"
+                style="font-weight: bold;  color: navy;">
+                Thống kê tính tiền ăn trưa theo tháng
+            </p-card>
+            <!-- toolbar -->
+            <div class="flex flex-row flex-wrap gap-3 mb-2">
+                <div class="mt-2">
+                    <button
+                        pButton
+                        label="Clear"
+                        class="p-button-outlined"
+                        icon="pi pi-filter-slash">
+                    </button>
+                </div>
+                <span class="p-float-label mt-2">
+                    <p-calendar
+                        [(ngModel)]="selectedMonthYear"
+                        view="month" dateFormat="mm/yy"
+                        [readonlyInput]="true"
+                        inputId="monthpicker">
+                    </p-calendar>
+                    <label for="float-input">Chọn tháng</label>
+                </span>
+                <span class="mt-2">
+                    <button
+                        pButton pRipple
+                        type="button"
+                        icon="pi pi-search"
+                        class="p-button-rounded p-button-info">
+                    </button>
+                </span>
+            </div>
+            <!-- data table -->
+            <p-table #dt
+                [value]="AQLunchPaymentReport"
+                selectionMode="multiple"
+                [(selection)]="selectedRecords"
+                [exportHeader]="'customExportHeader'"
+                [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-filter"
+                            (click)="dt.exportCSV({selectionOnly:true})" class="p-button-info ml-auto"
+                            pTooltip="Selection Only" tooltipPosition="bottom"></button>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Nick name</th>
+                        <th>Tên đầy đủ</th>
+                        <th>Tổng số ngày phép (trọn ngày)</th>
+                        <th>Tổng số ngày online (trọn ngày)</th>
+                        <th>Tổng số ngày công tác (trọn ngày)</th>
+                        <th>Tổng số ngày nghỉ chung (nếu có)</th>
+                        <th>Số ngày còn lại</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-AQMember>
+                    <tr [pSelectableRow]="AQMember">
+                        <td>{{AQMember.member.nickName}}</td>
+                        <td>{{AQMember.member.fullName}}</td>
+                        <td>{{AQMember.total_IndividualDayOff}}</td>
+                        <td>{{AQMember.total_WorkingOnline}}</td>
+                        <td>{{AQMember.total_CommissionDay}}</td>
+                        <td>{{AQMember.total_AQDayOff}}</td>
+                        <td>{{AQMember.actual_workingDay}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <!-- end lunch report -->
+
+    </div>
+
+
+</div>

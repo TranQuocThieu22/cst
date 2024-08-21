@@ -63,11 +63,13 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
 import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
+import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.component';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
     NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
-    LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent
+    LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent,
+    BaoBieuThongKeComponent
   ],
   imports: [
     FormsModule,
