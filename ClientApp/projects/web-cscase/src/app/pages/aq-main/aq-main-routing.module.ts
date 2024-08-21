@@ -10,7 +10,6 @@ import { LamViecOnlineComponent } from '../lam-viec-online/lam-viec-online.compo
 import { AqReportComponent } from '../aq-report/aq-report.component';
 import { LamViecNgoaiGioComponent } from '../lam-viec-ngoai-gio/lam-viec-ngoai-gio.component';
 import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
-// import { NgayNghiPhepComponent } from '../ngay-nghi-phep/ngay-nghi-phep.component';
 import { NgayPhepCaNhanComponent } from '../ngay-phep-ca-nhan/ngay-phep-ca-nhan.component';
 
 const routes: Routes = [

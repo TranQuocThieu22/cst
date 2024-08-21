@@ -88,6 +88,11 @@ export class NgayNghiChungComponent implements OnInit {
     this.primengConfig.ripple = true;
   }
 
+  checkIsLeader() {
+    let user = sessionStorage.getItem('current-user');
+    return JSON.parse(user).isLeader
+  }
+
   openAddDialog() {
     console.log("dayoff:", this.DayOff);
     // this.aqmember = {};

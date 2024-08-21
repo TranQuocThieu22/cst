@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace educlient.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class LamViecNgoaiGio : Controller
     {
         private readonly IDbLiteContext database;
@@ -14,63 +16,106 @@ namespace educlient.Controllers
             database = dataContext;
         }
         [HttpGet]
-        public OverTimeResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null)
+        public WorkingOTResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, [FromQuery] int? query_memberId = null)
         {
-            var OverTimeTable = database.Table<OverTime>();
+            var OverTimeTable = database.Table<WorkingOTDataDO>();
 
-            List<OverTime> resultData;
+            List<WorkingOTDataDO> resultData;
 
-            if (query_dateFrom.HasValue && query_dateTo.HasValue)
+            if (query_memberId.HasValue)
             {
-                resultData = OverTimeTable.Find(x =>
-                (x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
-                (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
-                (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
-                (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
-                ).ToList();
-            }
-            else if (query_dateFrom.HasValue)
-            {
-                // Only dateFrom is provided
-                resultData = OverTimeTable.Find(x => x.dateFrom >= query_dateFrom.Value).ToList();
-            }
-            else if (query_dateFrom.HasValue)
-            {
-                // Only dateTo is provided
-                resultData = OverTimeTable.Find(x => x.dateTo <= query_dateTo.Value).ToList();
+                // Query based on userId
+                if (query_dateFrom.HasValue && query_dateTo.HasValue)
+                {
+                    resultData = OverTimeTable.Find(x =>
+                        x.memberId == query_memberId.Value &&
+                        ((x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value))
+                    //(x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                    //(x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value))
+                    ).ToList();
+                }
+                else if (query_dateFrom.HasValue)
+                {
+                    // Only dateFrom is provided
+                    resultData = OverTimeTable.Find(x =>
+                        x.memberId == query_memberId.Value &&
+                        x.date >= query_dateFrom.Value
+                    ).ToList();
+                }
+                else if (query_dateTo.HasValue)
+                {
+                    // Only dateTo is provided
+                    resultData = OverTimeTable.Find(x =>
+                        x.memberId == query_memberId.Value &&
+                        x.date <= query_dateTo.Value
+                    ).ToList();
+                }
+                else
+                {
+                    // Only userId filter provided
+                    resultData = OverTimeTable.Find(x => x.memberId == query_memberId.Value).ToList();
+                }
             }
             else
             {
-                // No date filters provided
-                resultData = OverTimeTable.FindAll().ToList();
+                // Query all (no userId filter)
+                if (query_dateFrom.HasValue && query_dateTo.HasValue)
+                {
+                    resultData = OverTimeTable.Find(x =>
+                        (x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value)
+                    //(x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                    //(x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
+                    ).ToList();
+                }
+                else if (query_dateFrom.HasValue)
+                {
+                    // Only dateFrom is provided
+                    resultData = OverTimeTable.Find(x => x.date >= query_dateFrom.Value).ToList();
+                }
+                else if (query_dateTo.HasValue)
+                {
+                    // Only dateTo is provided
+                    resultData = OverTimeTable.Find(x => x.date <= query_dateTo.Value).ToList();
+                }
+                else
+                {
+                    // No filters provided
+                    resultData = OverTimeTable.FindAll().ToList();
+                }
             }
 
-            return new OverTimeResult
+            return new WorkingOTResult
             {
+                message = "Success",
+                code = 200,
+                result = true,
                 data = resultData
             };
         }
 
         [HttpGet, Route("{id}")]
-        public OverTimeResult GetById(int id)
+        public WorkingOTResult GetById(int id)
         {
-            List<OverTime> returnData = new List<OverTime>();
+            List<WorkingOTDataDO> returnData = new List<WorkingOTDataDO>();
 
-            var overTimeTable = database.Table<OverTime>();
-            var overTime = overTimeTable.FindById(id);
+            var workingOTTable = database.Table<WorkingOTDataDO>();
+            var workingOT = workingOTTable.FindById(id);
 
-            if (overTime == null)
+            if (workingOT == null)
             {
-                return new OverTimeResult
+                return new WorkingOTResult
                 {
                     code = 404,
                     message = "Data not found"
                 };
             }
-            returnData.Add(overTime);
+            returnData.Add(workingOT);
 
-            return new OverTimeResult
+            return new WorkingOTResult
             {
+                message = "Success",
                 code = 200,
                 result = true,
                 data = returnData,
@@ -78,36 +123,36 @@ namespace educlient.Controllers
         }
 
         [HttpPost]
-        public OverTimeResult Insert([FromBody] OverTime[] inputData)
+        public ApiResultBaseDO Insert([FromBody] WorkingOTInput[] inputData)
         {
-            var insertData = inputData.Select(input => new OverTime
+            var insertData = inputData.Select(input => new WorkingOTDataDO
             {
-                dateFrom = input.dateFrom,
-                dateTo = input.dateTo,
-                hours = input.hours,
-                fullName = input.fullName,
+                date = input.date,
+                time = input.time,
+                memberId = input.memberId,
                 note = input.note
             }).ToList();
 
-            var overTimeTable = database.Table<OverTime>();
-            overTimeTable.Insert(insertData);
-            var resultData = overTimeTable.FindAll();
+            var workingOTTable = database.Table<WorkingOTDataDO>();
+            workingOTTable.Insert(insertData);
 
-            return new OverTimeResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList(),
+                message = "Insert Success",
+                code = 200,
+                result = true
             };
         }
 
         [HttpPut, Route("{id}")]
-        public OverTimeResult Update(int id, [FromBody] OverTime inputData)
+        public ApiResultBaseDO Update(int id, [FromBody] WorkingOTInput inputData)
         {
-            var overTimeTable = database.Table<OverTime>();
+            var workingOTTable = database.Table<WorkingOTDataDO>();
 
-            var existingRecord = overTimeTable.FindById(id);
+            var existingRecord = workingOTTable.FindById(id);
             if (existingRecord == null)
             {
-                new CommissionsResult
+                new ApiResultBaseDO
                 {
                     code = 400,
                     message = "data not found",
@@ -115,50 +160,58 @@ namespace educlient.Controllers
             }
 
             // Update the existing record with new values
-            existingRecord.dateFrom = inputData.dateFrom;
-            existingRecord.dateTo = inputData.dateTo;
-            existingRecord.hours = inputData.hours;
-            existingRecord.fullName = inputData.fullName;
+            existingRecord.date = inputData.date;
+            existingRecord.memberId = inputData.memberId;
+            existingRecord.time = inputData.time;
             existingRecord.note = inputData.note;
 
-
-
             // Update the record in the collection
-            overTimeTable.Update(existingRecord);
-            var resultData = overTimeTable.FindAll();
+            workingOTTable.Update(existingRecord);
 
-            return new OverTimeResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList()
+                message = "Update Success",
+                code = 200,
+                result = true
             };
         }
         [HttpDelete, Route("{id}")]
-        public OverTimeResult Delete(int id)
+        public ApiResultBaseDO Delete(int id)
 
         {
-            var overTimeTable = database.Table<OverTime>();
-            var existingRecord = overTimeTable.FindById(id);
+            var workingOTTable = database.Table<WorkingOTDataDO>();
+            var existingRecord = workingOTTable.FindById(id);
 
             if (existingRecord == null)
             {
-                return new OverTimeResult
+                return new ApiResultBaseDO
                 {
                     code = 404,
                     message = "Data not found"
                 };
             }
 
-            overTimeTable.Delete(id);
-            var resultData = overTimeTable.FindAll();
+            workingOTTable.Delete(id);
 
-            return new OverTimeResult
+            return new ApiResultBaseDO
             {
-                data = resultData.ToList()
+                message = "Delete Success",
+                code = 200,
+                result = true
             };
         }
-        public class OverTimeResult : ApiResultBaseDO
+        public class WorkingOTResult : ApiResultBaseDO
         {
-            public List<OverTime> data { get; set; }
+            public List<WorkingOTDataDO> data { get; set; }
+        }
+
+        public class WorkingOTInput
+        {
+            public int id { get; set; }
+            public DateTime date { get; set; }
+            public float time { get; set; }
+            public int memberId { get; set; }
+            public string note { get; set; }
         }
     }
 }
