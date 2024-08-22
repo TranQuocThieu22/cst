@@ -64,12 +64,15 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
 import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
 import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.component';
+import { InputMaskModule } from 'primeng/inputmask';
+import { TienAnTruaTheoThangComponent } from '../bao-bieu-thong-ke/tien-an-trua-theo-thang/tien-an-trua-theo-thang.component';
+import { TienCongTacPhiTheoQuiComponent } from '../bao-bieu-thong-ke/tien-cong-tac-phi-theo-qui/tien-cong-tac-phi-theo-qui.component';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
     NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
     LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent,
-    BaoBieuThongKeComponent
+    BaoBieuThongKeComponent, TienAnTruaTheoThangComponent, TienCongTacPhiTheoQuiComponent
   ],
   imports: [
     FormsModule,
@@ -116,7 +119,8 @@ import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.
     EchartsxModule,
     ScrollPanelModule,
     SelectButtonModule,
-    TagModule
+    TagModule,
+    InputMaskModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [

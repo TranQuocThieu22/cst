@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace educlient.Controllers
@@ -200,6 +201,74 @@ namespace educlient.Controllers
                 result = true
             };
         }
+        [HttpGet("ThongKeTienLamViecNgoaiGio")]
+        public ThongKeTienLamViecNgoaiGioResult GetThongKeTienLamViecNgoaiGio([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, int? year = null)
+        {
+            var membersTable = database.Table<AQMember>();
+            var membersData = membersTable.FindAll().ToList();
+            var OverTimeTable = database.Table<WorkingOTDataDO>();
+            if (membersData == null)
+            {
+                return new ThongKeTienLamViecNgoaiGioResult
+                {
+                    message = "Member not found",
+                    code = 404,
+                    result = false,
+                    data = null
+                };
+            }
+            var resultList = new List<ThongKeTienLamViecNgoaiGioDataDO>();
+            var tmpData = new List<WorkingOTDataDO>();
+            foreach (var member in membersData)
+            {
+                if (query_dateFrom.HasValue && query_dateTo.HasValue)
+                {
+                    tmpData = OverTimeTable.Find(x =>
+                        x.memberId == member.id &&
+                        ((x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value))
+
+                    ).ToList();
+                }
+                else if (query_dateFrom.HasValue)
+                {
+                    // Only dateFrom is provided
+                    tmpData = OverTimeTable.Find(x =>
+                         x.memberId == member.id &&
+                        x.date >= query_dateFrom.Value
+                    ).ToList();
+                }
+                else if (query_dateTo.HasValue)
+                {
+                    // Only dateTo is provided
+                    tmpData = OverTimeTable.Find(x =>
+                        x.memberId == member.id &&
+                        x.date <= query_dateTo.Value
+                    ).ToList();
+                }
+                else
+                {
+                    // Only userId filter provided
+                    tmpData = OverTimeTable.Find(x => x.memberId == member.id).ToList();
+                }
+                var sumTime = tmpData.Sum(x => x.time);
+                Debug.WriteLine(tmpData);
+                var resultData = new ThongKeTienLamViecNgoaiGioDataDO
+                {
+                    nickName = member.nickName,
+                    fullName = member.fullName,
+                    SumHours = sumTime
+                };
+                resultList.Add(resultData);
+
+            }
+            return new ThongKeTienLamViecNgoaiGioResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = resultList
+            };
+        }
         public class WorkingOTResult : ApiResultBaseDO
         {
             public List<WorkingOTDataDO> data { get; set; }
@@ -212,6 +281,19 @@ namespace educlient.Controllers
             public float time { get; set; }
             public int memberId { get; set; }
             public string note { get; set; }
+        }
+        public class ThongKeTienLamViecNgoaiGioResult : ApiResultBaseDO
+        {
+            public List<ThongKeTienLamViecNgoaiGioDataDO> data { get; set; }
+
+
+        }
+        public class ThongKeTienLamViecNgoaiGioDataDO
+        {
+            public string nickName { get; set; }
+            public string fullName { get; set; }
+            public float SumHours { get; set; }
+
         }
     }
 }

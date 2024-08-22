@@ -184,8 +184,31 @@ namespace educlient.Controllers
                 data = result
             };
         }
-    }
 
+        [HttpGet, Route("NhanVienTFSName")]
+        public MemberTFSList GetMemberTFSName()
+        {
+            var AQMemberTable = database.Table<AQMember>();
+
+            var result = AQMemberTable.Query()
+                           .Select(x => new MemberTFS
+                           {
+                               id = x.id,
+                               TFSName = x.TFSName,
+                               fullName = x.fullName,
+                               nickName = x.nickName
+                           })
+                           .ToList();
+
+            return new MemberTFSList
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = result
+            };
+        }
+    }
     public class AQMembersResult : ApiResultBaseDO
     {
         public List<AQMember> data { get; set; }
@@ -221,4 +244,23 @@ namespace educlient.Controllers
         public string fullName { get; set; }
         public string nickName { get; set; }
     }
+
+    public class MemberTFSList : ApiResultBaseDO
+    {
+        public List<MemberTFS> data { get; set; }
+    }
+
+
+    public class MemberTFS
+    {
+        public int id { get; set; }
+        public string TFSName { get; set; }
+        public string fullName { get; set; }
+        public string nickName { get; set; }
+    }
+
+
 }
+
+
+

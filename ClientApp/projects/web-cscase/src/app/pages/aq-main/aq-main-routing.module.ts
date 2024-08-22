@@ -26,8 +26,8 @@ const routes: Routes = [
       { path: 'lamvieconline', component: LamViecOnlineComponent, canActivate: [AuthGuard] },
       { path: 'report', component: AqReportComponent, canActivate: [AuthGuard] },
       { path: 'lamviecngoaigio', component: LamViecNgoaiGioComponent, canActivate: [AuthGuard] },
-      { path: 'ketqualamvieccanhan', component: KetQuaLamViecCaNhanComponent, canActivate: [AuthGuard] },
       { path: 'baobieuthongke', component: BaoBieuThongKeComponent, canActivate: [AuthGuard] },
+      { path: 'ketqualamvieccanhan', component: KetQuaLamViecCaNhanComponent, canActivate: [AuthGuard] },
       { path: '', redirectTo: 'aq', pathMatch: 'full' }
     ]
   },

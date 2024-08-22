@@ -210,7 +210,12 @@ export class NhanSuAqComponent implements OnInit {
 
   openEditDialog(data: any) {
     this.aqmember = {};
-    this.aqmember = { ...data };
+    this.aqmember = structuredClone(data);
+    this.aqmember = {
+      ...this.aqmember,
+      birthDate: new Date(data.birthDate),
+      startDate: new Date(data.startDate)
+    };
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
     this.openDialog = true;

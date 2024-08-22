@@ -4,6 +4,9 @@ import { ConfirmationService, MessageService, PrimeNGConfig } from 'primeng/api'
 import { NgxSpinnerService } from "ngx-spinner";
 import { CaseMetrics } from 'projects/libs/src/lib/edu.models';
 import { Table } from 'primeng/table';
+import { LineChart } from "echarts/charts";
+import { TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent } from "echarts/components";
+import { Member } from './DataObject';
 @Component({
   selector: 'app-ket-qua-lam-viec-ca-nhan',
   templateUrl: './ket-qua-lam-viec-ca-nhan.component.html',
@@ -18,13 +21,43 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public SoLuotCaseBiMoLai
   public dateValue = new Date()
   public SoGioUocLuongCase
-
+  public TiLeMoCaseChartOptions: object = {};
+  public TiLeMoCaseChartExtensions: object = {};
+  public SoGioLamThieuOptions: object = {};
+  public SoGioLamThieuExtensions: object = {};
+  public TiLeMoCaseChartPieces: object[] = [
+    {
+      gt: 0,
+      lte: 20,
+      color: 'green'
+    },
+    {
+      gt: 20,
+      lte: 80,
+      color: 'red'
+    }
+  ]
+  public SoGioLamThieuPieces: object[] = [
+    {
+      gt: 0,
+      lte: 5,
+      color: 'green'
+    },
+    {
+      gt: 5,
+      lte: 40,
+      color: 'red'
+    }
+  ]
   public SoGioThucTeLamCase
-
   public SoGioThamGiaMeeting
   public PhanTramTiLeMoCase
   public PhanTramTiLeChenhLechUocLuongVaThucTe
   public products
+
+  MemberList: Member[] = [];
+  selectedMember: string = "tin <AQ\\tin>";
+
   constructor(
     private https: HttpClient,
     private confirmationService: ConfirmationService,
@@ -34,6 +67,8 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.TiLeMoCaseChartExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
+    this.SoGioLamThieuExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
     this.products = {
       code: 1,
       name: "lam",
@@ -41,15 +76,18 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       quantity: 1
     }
     this.primengConfig.ripple = true;
-    this.FetchKetQua(this.dateValue.getFullYear())
+    this.dateValue.getFullYear()
+    this.fetchMemberListData();
+    this.FetchKetQua()
   }
 
 
-  FetchKetQua(data) {
+  FetchKetQua() {
     this.spinner.show("spinner-ketqualamvieccanhan");
 
     const body = {
-      user: "tin <AQ\\tin>",
+      // user: "tin <AQ\\tin>",
+      user: this.selectedMember,
       year: this.dateValue.getFullYear()
     }
     this.https.post<any>("/api/KetQuaLamViecCaNhan/KetQuaLamViecCaNhan", body).subscribe({
@@ -83,10 +121,17 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
               PhanTramTiLeMoCase: res.data.phanTramTiLeMoCase[index],
               PhanTramTiLeChenhLechUocLuongVaThucTe: res.data.phanTramTiLeChenhLechUocLuongVaThucTe[index],
             }));
+            this.PhanTramTiLeMoCase = res.data.phanTramTiLeMoCase
+            const xAxisData = this.PhanTramTiLeMoCase.map((_, index) => `Week ${index + 1}`);
+            console.log(xAxisData);
+            this.SoGioLamThieu = res.data.soGioLamThieu
+            console.log(this.SoGioLamThieu);
+
+
+            this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces, this.TiLeMoCaseChartOptions)
+            // this.LineChartTyLeMoCaseOptions(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces, this.SoGioLamThieuOptions)
             this.caseMetricsList.sort((a, b) => b.weekNumber - a.weekNumber);
 
-            console.log(dataLength);
-            console.log(this.caseMetricsList);
 
             this.spinner.hide("spinner-ketqualamvieccanhan");
 
@@ -103,6 +148,80 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     })
 
   }
+  LineChartTyLeMoCaseOptions(xAxisData, data, TiLeMoCaseChartPieces, option) {
+    option = {
+      title: {
+        text: 'Tỷ lệ mở Case',
+        subtext: `năm ${this.dateValue.getFullYear()}`
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        }
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value} %'
+        },
+        axisPointer: {
+          snap: true
+        }
+      },
+      visualMap: {
+        show: false,
+        dimension: 1,
+        pieces: TiLeMoCaseChartPieces
+      },
+      series: [
+        {
+          name: 'Electricity',
+          type: 'line',
+          smooth: true,
+          data: data,
+          markArea: {
+            itemStyle: {
+              color: 'rgba(255, 173, 177, 0.4)'
+            },
+          }
+
+        }
+      ]
+    };
+
+  }
+
+
+  fetchMemberListData() {
+    this.https.get<any>("/api/ThongTinCaNhan/NhanVienTFSName").subscribe({
+      next: (res: any) => {
+        this.MemberList = [];
+        this.MemberList = [...res.data];
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        console.log(this.MemberList);
+
+      }
+    });
+  }
+
   clear(table: Table) {
     table.clear();
   }

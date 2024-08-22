@@ -1,8 +1,7 @@
-<!-- <div class="container-fluid" style="background-color: #f4f2ee;"> -->
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
-    <p-toolbar class="col-lg-3 mt-4">
+    <p-toolbar class="col-lg-2 mt-4">
       <div class="text-start">
         <a routerLink="aq" class="nav-link active fw-bold fs-4">Danh mục</a>
       </div>
@@ -11,76 +10,80 @@
         <ng-container *ngIf="checkIsLeader()">
           <div>
             <a class="nav-link" role="button" routerLink="report">
-              <i class="fas fa-laptop me-1"></i>
+              <i class="fas fa-laptop me-2"></i>
               Báo cáo hằng ngày
             </a>
           </div>
           <div>
             <a class="nav-link active" role="button" routerLink="nhansuaq">
-              <i class="fas fa-users me-1"></i>
+              <i class="fas fa-users me-2"></i>
               Nhân sự AQ
             </a>
           </div>
         </ng-container>
         <div>
           <a class="nav-link" role="button" routerLink="ngaynghichungaq">
-            <i class="fas fa-calendar-alt me-1"></i>
+            <i class="fas fa-calendar-alt me-2"></i>
             Ngày nghỉ chung
           </a>
         </div>
         <div>
           <a class="nav-link" role="button" routerLink="ngaycongtacpaq">
-            <i class="fas fa-briefcase me-1"></i>
+            <i class="fas fa-briefcase me-2"></i>
             Ngày công tác
           </a>
         </div>
         <div>
           <a class="nav-link" role="button" routerLink="ngayphepcanhan">
-            <i class="fas fa-umbrella-beach me-1"></i>
+            <i class="fas fa-umbrella-beach me-2"></i>
             Ngày nghỉ phép
           </a>
         </div>
         <div>
           <a class="nav-link" role="button" routerLink="lamvieconline">
-            <i class="fas fa-laptop me-1"></i>
+            <i class="fas fa-laptop me-2"></i>
             Làm việc online
           </a>
         </div>
         <div>
           <a class="nav-link" role="button" routerLink="lamviecngoaigio">
-            <i class="fas fa-laptop me-1"></i>
+            <i class="fas fa-laptop me-2"></i>
             Làm việc ngoài giờ
           </a>
         </div>
         <div>
           <a class="nav-link" role="button" routerLink="baobieuthongke">
-            <i class="fas fa-laptop me-1"></i>
+            <i class="fas fa-laptop-house me-2"></i>
             Báo biểu thống kê
           </a>
         </div>
         <div>
           <a class="nav-link" role="button" routerLink="ketqualamvieccanhan">
-            <i class="fas fa-chart-line me-1"></i>
+            <i class="fas fa-chart-line me-2"></i>
             Kết quả làm việc cá nhân
           </a>
         </div>
         <div>
           <a class="nav-link" role="button" routerLink="report">
-            <i class="fas fa-laptop-house me-1"></i>
+            <i class="fas fa-laptop-house me-2"></i>
             Report cá nhân
           </a>
         </div>
+
         <div>
           <a class="nav-link" role="button" (click)="logOut()">
-            <i class="fas fa-sign-out-alt me-1"></i>
+            <i class="fas fa-sign-out-alt me-2"></i>
             Đăng xuất
           </a>
         </div>
       </div>
     </p-toolbar>
 
+    <!-- <main class="ms-sm-auto col-lg-10 px-md-4 mt-4 main-content"> -->
+    <!-- <main class=""> -->
+    <!-- <p-button type="button" (click)="visibleSidebar1 = true" icon="pi pi-arrow-right"></p-button> -->
 
-    <main class="ms-sm-auto col-lg-9 px-md-4 mt-4 main-content">
+    <main class="ms-sm-auto col-lg-10 px-md-4 mt-4 main-content">
       <router-outlet></router-outlet>
     </main>
 

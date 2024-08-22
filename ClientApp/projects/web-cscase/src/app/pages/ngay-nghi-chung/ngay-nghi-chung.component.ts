@@ -231,6 +231,7 @@ export class NgayNghiChungComponent implements OnInit {
     });
   }
 
+
   clear(table: Table) {
     table.clear();
     this.fetchDayOffsData();
