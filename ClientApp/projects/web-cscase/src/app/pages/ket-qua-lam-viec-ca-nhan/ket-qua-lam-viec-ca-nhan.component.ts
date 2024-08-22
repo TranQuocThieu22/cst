@@ -76,12 +76,13 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       quantity: 1
     }
     this.primengConfig.ripple = true;
-    this.FetchKetQua(this.dateValue.getFullYear())
+    this.dateValue.getFullYear()
     this.fetchMemberListData();
+    this.FetchKetQua()
   }
 
 
-  FetchKetQua(data?: any) {
+  FetchKetQua() {
     this.spinner.show("spinner-ketqualamvieccanhan");
 
     const body = {

@@ -52,11 +52,24 @@
           </a>
         </div>
         <div>
+          <a class="nav-link" role="button" routerLink="baobieuthongke">
+            <i class="fas fa-laptop-house me-2"></i>
+            Báo biểu thống kê
+          </a>
+        </div>
+        <div>
           <a class="nav-link" role="button" routerLink="ketqualamvieccanhan">
             <i class="fas fa-chart-line me-2"></i>
             Kết quả làm việc cá nhân
           </a>
         </div>
+        <div>
+          <a class="nav-link" role="button" routerLink="report">
+            <i class="fas fa-laptop-house me-2"></i>
+            Report cá nhân
+          </a>
+        </div>
+
         <div>
           <a class="nav-link" role="button" (click)="logOut()">
             <i class="fas fa-sign-out-alt me-2"></i>
@@ -66,52 +79,9 @@
       </div>
     </p-toolbar>
 
-    <!-- <p-sidebar [(visible)]="visibleSidebar1" [baseZIndex]="10000" [style]="{width: '250px'}">
-      <div class="text-start css_box_1">
-        <a routerLink="aq" class="nav-link active fw-bold fs-4">Dashboard</a>
-      </div>
-
-      <ul class="nav flex-column">
-        <li class="nav-item" routerLink="nhansuaq">
-          <a class="nav-link active" role="button">
-            <i class="fas fa-users me-2"></i>
-            Nhân sự AQ
-          </a>
-        </li>
-        <li class="nav-item" routerLink="ngaynghichungaq">
-          <a class="nav-link" role="button">
-            <i class="fas fa-calendar-alt me-2"></i>
-            Ngày nghỉ chung
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            <i class="fas fa-briefcase me-2"></i>
-            Ngày công tác
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            <i class="fas fa-umbrella-beach me-2"></i>
-            Ngày nghỉ phép
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            <i class="fas fa-laptop-house me-2"></i>
-            Làm việc online
-          </a>
-        </li>
-      </ul>
-
-      <p-button type="button" (click)="visibleSidebar1 = false" label="Close"
-        styleClass="p-button-secondary mt-3"></p-button>
-    </p-sidebar> -->
-
-
-    <main class="ms-sm-auto col-lg-10 px-md-4 mt-4 main-content">
-      <!-- <main class=""> -->
-      <!-- <p-button type="button" (click)="visibleSidebar1 = true" icon="pi pi-arrow-right"></p-button> -->
+    <!-- <main class="ms-sm-auto col-lg-10 px-md-4 mt-4 main-content"> -->
+    <!-- <main class=""> -->
+    <!-- <p-button type="button" (click)="visibleSidebar1 = true" icon="pi pi-arrow-right"></p-button> -->
 
     <main class="ms-sm-auto col-lg-10 px-md-4 mt-4 main-content">
       <router-outlet></router-outlet>

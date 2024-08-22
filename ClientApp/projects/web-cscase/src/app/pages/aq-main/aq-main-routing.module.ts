@@ -11,6 +11,7 @@ import { AqReportComponent } from '../aq-report/aq-report.component';
 import { LamViecNgoaiGioComponent } from '../lam-viec-ngoai-gio/lam-viec-ngoai-gio.component';
 import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
 import { NgayPhepCaNhanComponent } from '../ngay-phep-ca-nhan/ngay-phep-ca-nhan.component';
+import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.component';
 
 const routes: Routes = [
   { path: 'aq-main', pathMatch: 'full', redirectTo: 'aq' },
@@ -25,8 +26,8 @@ const routes: Routes = [
       { path: 'lamvieconline', component: LamViecOnlineComponent, canActivate: [AuthGuard] },
       { path: 'report', component: AqReportComponent, canActivate: [AuthGuard] },
       { path: 'lamviecngoaigio', component: LamViecNgoaiGioComponent, canActivate: [AuthGuard] },
+      { path: 'baobieuthongke', component: BaoBieuThongKeComponent, canActivate: [AuthGuard] },
       { path: 'ketqualamvieccanhan', component: KetQuaLamViecCaNhanComponent, canActivate: [AuthGuard] },
-      // { path: 'ngaynghiphepaq', component: NgayNghiPhepComponent, canActivate: [AuthGuard] },
       { path: '', redirectTo: 'aq', pathMatch: 'full' }
     ]
   },
