@@ -1,5 +1,5 @@
 ﻿using educlient.Data;
-using educlient.Models;
+using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -244,12 +244,63 @@ namespace educlient.Controllers
                 result = true
             };
         }
+        [HttpGet("thongkenghiphepnam")]
+        public ThongKePhepNamResult GetNghiPhepInYear([FromQuery] int year, [FromQuery] int? query_memberId = null)
+        {
+
+            // Get the tables
+            var membersTable = database.Table<AQMember>();
+            var dayOffsTable = database.Table<IndividualDayOff>();
+            var membersData = membersTable.FindAll().ToList();
+            var dayOffsData = dayOffsTable.FindAll().ToList();
+            if (membersData == null)
+            {
+                return new ThongKePhepNamResult
+                {
+                    message = "Member not found",
+                    code = 404,
+                    result = false,
+                    data = null
+                };
+            }
+            var resultList = new List<ThongKePhepNamDataDO>();
+            foreach (var member in membersData)
+            {
+                // Find day-off data for each member by year
+                var dayOffData = dayOffsTable.Find(x => x.memberId == member.id && x.dateFrom.Year == year).ToList().Count();
+
+                // Combine member data with their day-off data
+                var resultData = new ThongKePhepNamDataDO
+                {
+                    fullName = member.fullName,
+                    nickName = member.nickName,
+                    absenceQuota = member.absenceQuota,
+                    WFHQuota = member.WFHQuota,
+                    DayOffs = dayOffData
+                };
+
+                resultList.Add(resultData);
+            }
+            return new ThongKePhepNamResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = resultList
+            };
+
+
+
+
+
+        }
     }
 
     public class IndividualDayOffResult : ApiResultBaseDO
     {
         public List<IndividualDayOff> data { get; set; }
     }
+
 
     public class IndividualDayOffInput
     {
@@ -264,5 +315,18 @@ namespace educlient.Controllers
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }
+    public class ThongKePhepNamDataDO
+    {
+        public string fullName { get; set; }
+        public string nickName { get; set; }
+        public int absenceQuota { get; set; }
+        public int WFHQuota { get; set; }
+        public int DayOffs { get; set; }
 
+
+    }
+    public class ThongKePhepNamResult : ApiResultBaseDO
+    {
+        public List<ThongKePhepNamDataDO> data { get; set; }
+    }
 }
