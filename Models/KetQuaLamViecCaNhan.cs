@@ -16,7 +16,7 @@ namespace educlient.Models
         public List<float> SoGioThamGiaMeeting { get; set; }
         public List<float> PhanTramTiLeMoCase { get; set; }
         public List<float> PhanTramTiLeChenhLechUocLuongVaThucTe { get; set; }
-        public List<int> SoGioLamThieu { get; set; }
+        public List<float> SoGioLamThieu { get; set; }
     }
     public class KetQuaLamViecCaNhanInput
     {
