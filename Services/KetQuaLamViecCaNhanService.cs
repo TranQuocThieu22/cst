@@ -103,56 +103,14 @@ namespace educlient.Services
             int totalWeeks = (year == DateTime.Now.Year) ? currentWeek : GetWeeksInYear(year);
             int numberOfDaysInWeek = 5;
 
-            var dayOffTable = database.Table<DayOff>();
-            var NhanSuTable = database.Table<AQMember>();
-            var NghiCaNhanTable = database.Table<IndividualDayOff>();
-            var ngayCongTacTable = database.Table<Commission>();
+            var dayOffData = GetDayOffData();
+            var NghiCaNhanData = GetNghiCaNhanData();
+            var NgayCongTacData = GetNgayCongTacData();
+            var NhanSuData = GetNhanSuData();
 
-            var NgayCongTacData = ngayCongTacTable?.Query().Select(x => new Commission
-            {
-                id = x.id,
-                dateFrom = x.dateFrom,
-                dateTo = x.dateTo,
-                memberList = x.memberList,
-            }).ToList() ?? new List<Commission>();
-
-            var NghiCaNhanData = NghiCaNhanTable?.Query().Select(x => new IndividualDayOff
-            {
-                id = x.id,
-                dateFrom = x.dateFrom,
-                dateTo = x.dateTo,
-                memberId = x.memberId,
-                reason = x.reason,
-                isAnnual = x.isAnnual,
-                isWithoutPay = x.isWithoutPay,
-                note = x.note
-            }).ToList() ?? new List<IndividualDayOff>();
-
-            var NhanSuData = NhanSuTable?.Query().Select(x => new AQMember
-            {
-                id = x.id,
-                TFSName = x.TFSName
-            }).ToList() ?? new List<AQMember>();
-
-            var dayOffData = dayOffTable?.Query().Select(x => new DayOff
-            {
-                id = x.id,
-                dateFrom = x.dateFrom,
-                dateTo = x.dateTo,
-                sumDay = x.sumDay,
-                reason = x.reason,
-                note = x.note
-            }).ToList() ?? new List<DayOff>();
-
-            var IdNhanSuHienTai = NhanSuData.FirstOrDefault(n => n.TFSName == user)?.id;
-
-            var matchingNghiCaNhanData = IdNhanSuHienTai != null
-                ? NghiCaNhanData.Where(n => n.memberId == IdNhanSuHienTai).ToList()
-                : new List<IndividualDayOff>();
-
-            var matchingNgayCongTacData = IdNhanSuHienTai != null
-                ? NgayCongTacData.Where(commission => commission.memberList.Any(member => member.id == IdNhanSuHienTai)).ToList()
-                : new List<Commission>();
+            var IdNhanSuHienTai = GetNhanSuId(user, NhanSuData);
+            var matchingNghiCaNhanData = FilterNghiCaNhanData(IdNhanSuHienTai, NghiCaNhanData);
+            var matchingNgayCongTacData = FilterNgayCongTacData(IdNhanSuHienTai, NgayCongTacData);
 
             var soNgayNghiChung = new List<int>();
 
@@ -160,106 +118,96 @@ namespace educlient.Services
             {
                 int workingDaysInWeek = numberOfDaysInWeek;
 
-                foreach (var dayOff in dayOffData)
-                {
-                    if (IsInWeek(dayOff.dateFrom, year, week) || IsInWeek(dayOff.dateTo, year, week))
-                    {
-                        DateTime firstDayOfWeek = GetFirstDayOfWeek(year, week);
-                        DateTime lastDayOfWeek = firstDayOfWeek.AddDays(4);
+                workingDaysInWeek -= CalculateDaysOffInWeek(dayOffData, year, week);
+                workingDaysInWeek -= CalculateDaysOffInWeek(matchingNghiCaNhanData, year, week);
+                workingDaysInWeek -= CalculateDaysOffInWeek(matchingNgayCongTacData, year, week);
 
-                        DateTime actualDateFrom = (dayOff.dateFrom < firstDayOfWeek) ? firstDayOfWeek : dayOff.dateFrom;
-                        DateTime actualDateTo = (dayOff.dateTo > lastDayOfWeek) ? lastDayOfWeek : dayOff.dateTo;
-
-                        int daysOffInWeek = (actualDateTo - actualDateFrom).Days + 1;
-                        workingDaysInWeek -= daysOffInWeek;
-                    }
-                }
-
-                foreach (var individualDayOff in matchingNghiCaNhanData)
-                {
-                    if (IsInWeek(individualDayOff.dateFrom, year, week) || IsInWeek(individualDayOff.dateTo, year, week))
-                    {
-                        DateTime firstDayOfWeek = GetFirstDayOfWeek(year, week);
-                        DateTime lastDayOfWeek = firstDayOfWeek.AddDays(4);
-
-                        DateTime actualDateFrom = (individualDayOff.dateFrom < firstDayOfWeek) ? firstDayOfWeek : individualDayOff.dateFrom;
-                        DateTime actualDateTo = (individualDayOff.dateTo > lastDayOfWeek) ? lastDayOfWeek : individualDayOff.dateTo;
-
-                        int daysOffInWeek = (actualDateTo - actualDateFrom).Days + 1;
-                        workingDaysInWeek -= daysOffInWeek;
-                    }
-                }
-
-                foreach (var commission in matchingNgayCongTacData)
-                {
-                    if (IsInWeek(commission.dateFrom, year, week) || IsInWeek(commission.dateTo, year, week))
-                    {
-                        DateTime firstDayOfWeek = GetFirstDayOfWeek(year, week);
-                        DateTime lastDayOfWeek = firstDayOfWeek.AddDays(4);
-
-                        DateTime actualDateFrom = (commission.dateFrom < firstDayOfWeek) ? firstDayOfWeek : commission.dateFrom;
-                        DateTime actualDateTo = (commission.dateTo > lastDayOfWeek) ? lastDayOfWeek : commission.dateTo;
-
-                        int daysOffInWeek = (actualDateTo - actualDateFrom).Days + 1;
-                        workingDaysInWeek -= daysOffInWeek;
-                    }
-                }
                 workingDaysInWeek *= 8;
                 soNgayNghiChung.Add(workingDaysInWeek);
             }
 
             return soNgayNghiChung;
         }
+
+
         public async Task<List<int>> SoLuongCaseThucHienTrongTuan(string user, int year)
         {
-            var tmpCaseCountList = new List<int>();
-            int tmpCount = 0;
+
+            //string escapedUser = user.Replace("\\", "\\\\");
+            //var query = SoLuongCaseThucHienTrongTuanQuery2(escapedUser);
+            //var idsCaseThucHien = await GetCaseIds(query);
+            //var DetailCaseThucHien = await GetCaseDetails(idsCaseThucHien);
+            //List<ThongTinCase> thongTinCases = processSoLuongCaseThucHienTrongTuan(DetailCaseThucHien);
+            //List<int> returnData = CalSoLuongCaseTrongTuan(thongTinCases, year);
+            //return returnData;
+
             string escapedUser = user.Replace("\\", "\\\\");
             var query = SoLuongCaseThucHienTrongTuanQuery2(escapedUser);
-            var idsCaseThucHien = await GetCaseIds(query);
+
+            // Parallel execution of independent tasks
+            var caseIdsTask = GetCaseIds(query);
+
+            var idsCaseThucHien = await caseIdsTask;
             var DetailCaseThucHien = await GetCaseDetails(idsCaseThucHien);
-            List<ThongTinCase> thongTinCases = processSoLuongCaseThucHienTrongTuan(DetailCaseThucHien);
-            List<int> returnData = CalSoLuongCaseTrongTuan(thongTinCases, year);
-            return returnData;
-            ////var soLuongCaseThucHienWiqlQuery = SoLuongCaseThucHienTrongTuanWiqlQuery(user);
-            ////var idsCaseThucHien = await GetCaseIds(soLuongCaseThucHienWiqlQuery);
 
-            ////if (idsCaseThucHien == null)
-            ////{
-            ////    return 0;
-            ////}
+            var thongTinCases = processSoLuongCaseThucHienTrongTuan(DetailCaseThucHien);
 
-            //var queries = GetWeeklyQueries(year, user);
-
-            //// Output all queries
-            //foreach (var query in queries)
-            //{
-            //    //var soLuongCaseThucHienWiqlQuery = SoLuongCaseThucHienTrongTuanWiqlQuery(user);
-            //    var idsCaseThucHien = await GetCaseIds(query);
-            //    if (idsCaseThucHien == null)
-            //    {
-            //        tmpCount = 0;
-            //    }
-            //    else
-            //    {
-            //        tmpCount = idsCaseThucHien.Count;
-            //    }
-            //    tmpCaseCountList.Add(tmpCount);
-            //}
-            //Debug.WriteLine(tmpCaseCountList);
-            //return tmpCaseCountList;
+            return CalSoLuongCaseTrongTuan(thongTinCases, year);
         }
 
+        //public List<int> CalSoLuongCaseTrongTuan(List<ThongTinCase> thongTinCases, int year)
+        //{
+        //    List<int> weeklyCaseCounts = new List<int>();
+        //    int currentWeek = GetCurrentWeekNumber(year);
+        //    int totalWeeks = (year == DateTime.Now.Year) ? currentWeek : GetWeeksInYear(year);
+        //    for (int week = 1; week <= totalWeeks; week++)
+        //    {
+        //        int caseCount = 0;
+        //        DateTime startDate = GetFirstDayOfWeek(year, week);
+        //        DateTime endDate = startDate.AddDays(6);
+        //        foreach (var caseInfo in thongTinCases)
+        //        {
+        //            bool caseCountedForWeek = false;
+
+        //            // Check detaildate1 to detaildate10
+        //            for (int i = 1; i <= 10; i++)
+        //            {
+        //                var detailDate = GetDetailDate(caseInfo, i);
+        //                if (detailDate.HasValue && IsInWeek(detailDate.Value, year, week))
+        //                {
+        //                    caseCount++;
+        //                    caseCountedForWeek = true;
+        //                    break;
+        //                }
+        //            }
+
+        //            // If case not counted based on detaildate, check other conditions
+        //            if (!caseCountedForWeek)
+        //            {
+        //                DateTime? targetDate = ParseDate(caseInfo.ngaydukien);
+        //                if (IsClosedOrProcessedCase(caseInfo.trangthai) &&
+        //                    targetDate.HasValue &&
+        //                    IsInWeek(targetDate.Value, year, week))
+        //                {
+        //                    caseCount++;
+        //                }
+        //            }
+        //        }
+
+        //        weeklyCaseCounts.Add(caseCount);
+        //    }
+
+        //    return weeklyCaseCounts;
+        //}
         public List<int> CalSoLuongCaseTrongTuan(List<ThongTinCase> thongTinCases, int year)
         {
             List<int> weeklyCaseCounts = new List<int>();
             int currentWeek = GetCurrentWeekNumber(year);
             int totalWeeks = (year == DateTime.Now.Year) ? currentWeek : GetWeeksInYear(year);
+
             for (int week = 1; week <= totalWeeks; week++)
             {
                 int caseCount = 0;
-                DateTime startDate = GetFirstDayOfWeek(year, week);
-                DateTime endDate = startDate.AddDays(6);
 
                 foreach (var caseInfo in thongTinCases)
                 {
@@ -295,6 +243,7 @@ namespace educlient.Services
 
             return weeklyCaseCounts;
         }
+
         public Tuple<string, string> GetCurrentWeekDates()
         {
             DateTime today = DateTime.Now;
@@ -364,10 +313,10 @@ namespace educlient.Services
                 return "";
             }
         }
-        public async Task<TfsCaseDetailModel> GetCaseDetails(List<workItemBase> caseIds)
+        public async Task<TfsCaseDetailModel> GetReopenCaseDetails(List<workItemBase> caseIds)
         {
-            const int batchSize = 200; // Adjust this value based on your needs
-            string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,AQ.UserGuideRequested,AQ.ReviewCase,System.State,AQ.EstimateTime,AQ.DetailDate1,AQ.DetailDate2,AQ.DetailDate3,AQ.DetailDate4,AQ.DetailDate5,AQ.DetailDate6,AQ.DetailDate7,AQ.DetailDate8,AQ.DetailDate9,AQ.DetailDate10,AQ.DetailActualTime1,AQ.DetailActualTime2,AQ.DetailActualTime3,AQ.DetailActualTime4,AQ.DetailActualTime5,AQ.DetailActualTime6,AQ.DetailActualTime7,AQ.DetailActualTime8,AQ.DetailActualTime9,AQ.DetailActualTime10,AQ.ActualTime";
+            const int batchSize = 225; // Adjust this value based on your needs
+            string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,System.State,AQ.EstimateTime,AQ.ActualTime";
 
             var result = new TfsCaseDetailModel
             {
@@ -394,16 +343,68 @@ namespace educlient.Services
             }
 
             return result;
+        }
+        public async Task<TfsCaseDetailModel> GetUocLuongCaseDetails(List<workItemBase> caseIds)
+        {
+            const int batchSize = 225; // Adjust this value based on your needs
+            string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,System.State,AQ.EstimateTime";
 
+            var result = new TfsCaseDetailModel
+            {
+                count = 0,
+                value = new List<workItem0>()
+            };
 
-            //string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,AQ.UserGuideRequested,AQ.ReviewCase,System.State,AQ.EstimateTime,AQ.DetailDate1,AQ.DetailDate2,AQ.DetailDate3,AQ.DetailDate4,AQ.DetailDate5,AQ.DetailDate6,AQ.DetailDate7,AQ.DetailDate8,AQ.DetailDate9,AQ.DetailDate10,AQ.DetailActualTime1,AQ.DetailActualTime2,AQ.DetailActualTime3,AQ.DetailActualTime4,AQ.DetailActualTime5,AQ.DetailActualTime6,AQ.DetailActualTime7,AQ.DetailActualTime8,AQ.DetailActualTime9,AQ.DetailActualTime10,AQ.ActualTime";
-            //string sCaseList = string.Join(",", caseIds.Select(s => s.id));
+            for (int i = 0; i < caseIds.Count; i += batchSize)
+            {
+                var batch = caseIds.Skip(i).Take(batchSize).ToList();
+                string sCaseList = string.Join(",", batch.Select(s => s.id));
 
-            //var tmpjson = await DoTfsQueryData(TFS_HOST,
-            //    $"tfs/aq/Edusoft.Net-CS/_apis/wit/workitems?ids={sCaseList}&fields={sTfsFieldList}",
-            //    "", "", TFS_TOKEN_BASE64);
+                var tmpjson = await DoTfsQueryData(TFS_HOST,
+                    $"tfs/aq/Edusoft.Net-CS/_apis/wit/workitems?ids={sCaseList}&fields={sTfsFieldList}",
+                    "", "", TFS_TOKEN_BASE64);
 
-            //return JsonConvert.DeserializeObject<TfsCaseDetailModel>(tmpjson);
+                var batchResult = JsonConvert.DeserializeObject<TfsCaseDetailModel>(tmpjson);
+
+                if (batchResult != null)
+                {
+                    result.count += batchResult.count;
+                    result.value.AddRange(batchResult.value);
+                }
+            }
+
+            return result;
+        }
+        public async Task<TfsCaseDetailModel> GetCaseDetails(List<workItemBase> caseIds)
+        {
+            const int batchSize = 225; // Adjust this value based on your needs
+            string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,System.State,AQ.EstimateTime,AQ.DetailDate1,AQ.DetailDate2,AQ.DetailDate3,AQ.DetailDate4,AQ.DetailDate5,AQ.DetailDate6,AQ.DetailDate7,AQ.DetailDate8,AQ.DetailDate9,AQ.DetailDate10,AQ.DetailActualTime1,AQ.DetailActualTime2,AQ.DetailActualTime3,AQ.DetailActualTime4,AQ.DetailActualTime5,AQ.DetailActualTime6,AQ.DetailActualTime7,AQ.DetailActualTime8,AQ.DetailActualTime9,AQ.DetailActualTime10,AQ.ActualTime";
+
+            var result = new TfsCaseDetailModel
+            {
+                count = 0,
+                value = new List<workItem0>()
+            };
+
+            for (int i = 0; i < caseIds.Count; i += batchSize)
+            {
+                var batch = caseIds.Skip(i).Take(batchSize).ToList();
+                string sCaseList = string.Join(",", batch.Select(s => s.id));
+
+                var tmpjson = await DoTfsQueryData(TFS_HOST,
+                    $"tfs/aq/Edusoft.Net-CS/_apis/wit/workitems?ids={sCaseList}&fields={sTfsFieldList}",
+                    "", "", TFS_TOKEN_BASE64);
+
+                var batchResult = JsonConvert.DeserializeObject<TfsCaseDetailModel>(tmpjson);
+
+                if (batchResult != null)
+                {
+                    result.count += batchResult.count;
+                    result.value.AddRange(batchResult.value);
+                }
+            }
+
+            return result;
         }
         public async Task<TfsCaseDetailModel> GetMeetingCaseDetails(List<workItemBase> caseIds)
         {
@@ -568,6 +569,8 @@ namespace educlient.Services
             var query = MeetingCaseQuery(escapedUser);
             var idsCaseThucHien = await GetCaseIds(query);
             var DetailCaseMoLai = await GetMeetingCaseDetails(idsCaseThucHien);
+
+
             List<ThongTinCase> thongTinCases = processSoSoGioUocLuongCase(DetailCaseMoLai);
             List<float> returnData = SumGioMeetingCase(thongTinCases, year);
             return returnData;
@@ -577,27 +580,42 @@ namespace educlient.Services
             string escapedUser = user.Replace("\\", "\\\\");
             var query = SoGioUocLuongCaseQuery(escapedUser);
             var idsCaseThucHien = await GetCaseIds(query);
-            var DetailCaseMoLai = await GetCaseDetails(idsCaseThucHien);
+            var DetailCaseMoLai = await GetUocLuongCaseDetails(idsCaseThucHien);
+
+
             List<ThongTinCase> thongTinCases = processSoSoGioUocLuongCase(DetailCaseMoLai);
             List<float> returnData = SumGioUocLuongCase(thongTinCases, year);
             return returnData;
         }
         public async Task<List<float>> SoGioThucTeLamCase(string user, int year)
         {
+            //string escapedUser = user.Replace("\\", "\\\\");
+            //var query = SoGioUocLuongCaseQuery(escapedUser);
+            //var idsCaseThucHien = await GetCaseIds(query);
+            //var DetailCaseMoLai = await GetCaseDetails(idsCaseThucHien);
+            //List<ThongTinCase> thongTinCases = processSoSoGioUocLuongCase(DetailCaseMoLai);
+            //List<float> returnData = SumGioThucTeCase(thongTinCases, year);
+            //return returnData;
             string escapedUser = user.Replace("\\", "\\\\");
             var query = SoGioUocLuongCaseQuery(escapedUser);
-            var idsCaseThucHien = await GetCaseIds(query);
+
+            // Parallel execution of GetCaseIds and creation of DataTable
+            var caseIdsTask = GetCaseIds(query);
+
+
+            var idsCaseThucHien = await caseIdsTask;
             var DetailCaseMoLai = await GetCaseDetails(idsCaseThucHien);
+
             List<ThongTinCase> thongTinCases = processSoSoGioUocLuongCase(DetailCaseMoLai);
-            List<float> returnData = SumGioThucTeCase(thongTinCases, year);
-            return returnData;
+
+            return SumGioThucTeCase(thongTinCases, year);
         }
         public async Task<List<int>> SoLuotCaseBiMoLai(string user, int year)
         {
             string escapedUser = user.Replace("\\", "\\\\");
             var query = reOpenCasesQuery(escapedUser);
             var idsCaseThucHien = await GetCaseIds(query);
-            var DetailCaseMoLai = await GetCaseDetails(idsCaseThucHien);
+            var DetailCaseMoLai = await GetReopenCaseDetails(idsCaseThucHien);
             List<ThongTinCase> thongTinCases = processSoCaseMoLai(DetailCaseMoLai);
 
             List<int> returnData = GroupCasesByWeek(thongTinCases, year);
@@ -623,6 +641,7 @@ namespace educlient.Services
             var jsonString = JsonConvert.SerializeObject(dt);
             return JsonConvert.DeserializeObject<List<ThongTinCase>>(jsonString);
         }
+
         public List<ThongTinCase> processSoSoGioUocLuongCase(TfsCaseDetailModel caseDetails)
         {
             var dt = CreateDataTable();
@@ -1051,7 +1070,6 @@ namespace educlient.Services
                             if (IsInWeek(targetDate.Value, year, week))
                             {
                                 sumActualTimeInWeek += c.actualtime.Value;
-                                Debug.WriteLine($"Case with actual time: {c.macase}, {sumActualTimeInWeek}, {c.actualtime}");
                             }
                         }
                     }
@@ -1067,7 +1085,6 @@ namespace educlient.Services
                             {
                                 DateTime? date = (DateTime?)dateProperty.GetValue(c);
                                 float? time = (float?)timeProperty.GetValue(c);
-
                                 if (date.HasValue && IsInWeek(date.Value, year, week))
                                 {
                                     sumActualTimeInWeek += time ?? 0;
@@ -1077,10 +1094,8 @@ namespace educlient.Services
                         }
                     }
                 }
-
                 result.Add(sumActualTimeInWeek);
             }
-
             return result;
         }
         private bool IsInWeek(DateTime date, int year, int weekNumber)
@@ -1092,7 +1107,6 @@ namespace educlient.Services
             {
                 DateTime firstDayOfYear = new DateTime(year, 1, 1);
                 int daysOffset = (weekNumber - 1) * 7;
-
                 // Get the first day of the week
                 DateTime firstDayOfWeek = firstDayOfYear.AddDays(daysOffset - (int)firstDayOfYear.DayOfWeek + (int)DayOfWeek.Monday);
 
@@ -1219,6 +1233,135 @@ namespace educlient.Services
         private DateTime? ParseDate(string dateString)
         {
             return DateTime.TryParse(dateString, out DateTime result) ? result : (DateTime?)null;
+        }
+        private List<DayOff> GetDayOffData()
+        {
+            return database.Table<DayOff>()
+                ?.Query()
+                .Select(x => new DayOff
+                {
+                    id = x.id,
+                    dateFrom = x.dateFrom,
+                    dateTo = x.dateTo,
+                    sumDay = x.sumDay,
+                    reason = x.reason,
+                    note = x.note
+                })
+                .ToList() ?? new List<DayOff>();
+        }
+
+        private List<IndividualDayOff> GetNghiCaNhanData()
+        {
+            return database.Table<IndividualDayOff>()
+                ?.Query()
+                .Select(x => new IndividualDayOff
+                {
+                    id = x.id,
+                    dateFrom = x.dateFrom,
+                    dateTo = x.dateTo,
+                    memberId = x.memberId,
+                    reason = x.reason,
+                    isAnnual = x.isAnnual,
+                    isWithoutPay = x.isWithoutPay,
+                    note = x.note
+                })
+                .ToList() ?? new List<IndividualDayOff>();
+        }
+
+        private List<Commission> GetNgayCongTacData()
+        {
+            return database.Table<Commission>()
+                ?.Query()
+                .Select(x => new Commission
+                {
+                    id = x.id,
+                    dateFrom = x.dateFrom,
+                    dateTo = x.dateTo,
+                    memberList = x.memberList,
+                })
+                .ToList() ?? new List<Commission>();
+        }
+
+        private List<AQMember> GetNhanSuData()
+        {
+            return database.Table<AQMember>()
+                ?.Query()
+                .Select(x => new AQMember
+                {
+                    id = x.id,
+                    TFSName = x.TFSName
+                })
+                .ToList() ?? new List<AQMember>();
+        }
+
+        private int? GetNhanSuId(string user, List<AQMember> nhanSuData)
+        {
+            return nhanSuData.FirstOrDefault(n => n.TFSName == user)?.id;
+        }
+
+        private List<IndividualDayOff> FilterNghiCaNhanData(int? memberId, List<IndividualDayOff> data)
+        {
+            return memberId != null
+                ? data.Where(n => n.memberId == memberId).ToList()
+                : new List<IndividualDayOff>();
+        }
+
+        private List<Commission> FilterNgayCongTacData(int? memberId, List<Commission> data)
+        {
+            return memberId != null
+                ? data.Where(c => c.memberList.Any(member => member.id == memberId)).ToList()
+                : new List<Commission>();
+        }
+
+        private int CalculateDaysOffInWeek(IEnumerable<DayOff> dayOffData, int year, int week)
+        {
+            return CalculateDaysOffInWeek(dayOffData, year, week, IsInWeek);
+        }
+
+        private int CalculateDaysOffInWeek(IEnumerable<IndividualDayOff> dayOffData, int year, int week)
+        {
+            return CalculateDaysOffInWeek(dayOffData, year, week, IsInWeek);
+        }
+
+        private int CalculateDaysOffInWeek(IEnumerable<Commission> dayOffData, int year, int week)
+        {
+            return CalculateDaysOffInWeek(dayOffData, year, week, IsInWeek);
+        }
+
+        private int CalculateDaysOffInWeek<T>(IEnumerable<T> data, int year, int week, Func<DateTime, int, int, bool> isInWeek)
+        {
+            int totalDaysOff = 0;
+
+            foreach (var item in data)
+            {
+                DateTime dateFrom = GetDateFrom(item);
+                DateTime dateTo = GetDateTo(item);
+
+                if (isInWeek(dateFrom, year, week) || isInWeek(dateTo, year, week))
+                {
+                    DateTime firstDayOfWeek = GetFirstDayOfWeek(year, week);
+                    DateTime lastDayOfWeek = firstDayOfWeek.AddDays(4);
+
+                    DateTime actualDateFrom = (dateFrom < firstDayOfWeek) ? firstDayOfWeek : dateFrom;
+                    DateTime actualDateTo = (dateTo > lastDayOfWeek) ? lastDayOfWeek : dateTo;
+
+                    totalDaysOff += (actualDateTo - actualDateFrom).Days + 1;
+                }
+            }
+
+            return totalDaysOff;
+        }
+
+        private DateTime GetDateFrom<T>(T item)
+        {
+            // Extract the 'dateFrom' property from the item based on type
+            return (DateTime)item.GetType().GetProperty("dateFrom")?.GetValue(item);
+        }
+
+        private DateTime GetDateTo<T>(T item)
+        {
+            // Extract the 'dateTo' property from the item based on type
+            return (DateTime)item.GetType().GetProperty("dateTo")?.GetValue(item);
         }
 
     }

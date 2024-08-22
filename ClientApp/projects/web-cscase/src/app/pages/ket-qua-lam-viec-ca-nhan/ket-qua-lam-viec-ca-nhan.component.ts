@@ -68,7 +68,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
 
   ngOnInit(): void {
     this.TiLeMoCaseChartExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
-    this.SoGioLamThieuExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
+    // this.SoGioLamThieuExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
     this.products = {
       code: 1,
       name: "lam",
@@ -93,17 +93,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       next: (res: any) => {
         if (res && res.code === 200) {
           if (res.data) {
-            // const caseMetrics: CaseMetrics = {
-            //   SoGioLamViecTrongNgay: res.data.soGioLamViecTrongNgay,
-            //   SoGioLamThieu: res.data.soGioLamThieu,
-            //   SoLuongCaseThucHienTrongTuan: res.data.soLuongCaseThucHienTrongTuan,
-            //   SoLuotCaseBiMoLai: res.data.soLuotCaseBiMoLai,
-            //   SoGioUocLuongCase: res.data.soGioUocLuongCase,
-            //   SoGioThucTeLamCase: res.data.soGioThucTeLamCase,
-            //   SoGioThamGiaMeeting: res.data.soGioThamGiaMeeting,
-            //   PhanTramTiLeMoCase: res.data.phanTramTiLeMoCase,
-            //   PhanTramTiLeChenhLechUocLuongVaThucTe: res.data.phanTramTiLeChenhLechUocLuongVaThucTe,
-            // };
+
             const dataLength = res.data.soLuongCaseThucHienTrongTuan.length;
 
             this.caseMetricsList = Array.from({ length: dataLength }, (_, index) => ({
@@ -127,7 +117,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
             console.log(this.SoGioLamThieu);
 
 
-            this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces, this.TiLeMoCaseChartOptions)
+            this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces,)
             // this.LineChartTyLeMoCaseOptions(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces, this.SoGioLamThieuOptions)
             this.caseMetricsList.sort((a, b) => b.weekNumber - a.weekNumber);
 
@@ -147,8 +137,8 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     })
 
   }
-  LineChartTyLeMoCaseOptions(xAxisData, data, TiLeMoCaseChartPieces, option) {
-    option = {
+  LineChartTyLeMoCaseOptions(xAxisData, data, TiLeMoCaseChartPieces) {
+    this.TiLeMoCaseChartOptions = {
       title: {
         text: 'Tỷ lệ mở Case',
         subtext: `năm ${this.dateValue.getFullYear()}`
