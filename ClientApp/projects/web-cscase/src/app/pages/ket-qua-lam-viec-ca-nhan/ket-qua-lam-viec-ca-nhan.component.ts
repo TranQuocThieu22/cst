@@ -4,6 +4,7 @@ import { ConfirmationService, MessageService, PrimeNGConfig } from 'primeng/api'
 import { NgxSpinnerService } from "ngx-spinner";
 import { CaseMetrics } from 'projects/libs/src/lib/edu.models';
 import { Table } from 'primeng/table';
+import { Member } from './DataObject';
 @Component({
   selector: 'app-ket-qua-lam-viec-ca-nhan',
   templateUrl: './ket-qua-lam-viec-ca-nhan.component.html',
@@ -25,6 +26,10 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public PhanTramTiLeMoCase
   public PhanTramTiLeChenhLechUocLuongVaThucTe
   public products
+
+  MemberList: Member[] = [];
+  selectedMember: string = "tin <AQ\\tin>";
+
   constructor(
     private https: HttpClient,
     private confirmationService: ConfirmationService,
@@ -42,14 +47,16 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     }
     this.primengConfig.ripple = true;
     this.FetchKetQua(this.dateValue.getFullYear())
+    this.fetchMemberListData();
   }
 
 
-  FetchKetQua(data) {
+  FetchKetQua(data?: any) {
     this.spinner.show("spinner-ketqualamvieccanhan");
 
     const body = {
-      user: "tin <AQ\\tin>",
+      // user: "tin <AQ\\tin>",
+      user: this.selectedMember,
       year: this.dateValue.getFullYear()
     }
     this.https.post<any>("/api/KetQuaLamViecCaNhan/KetQuaLamViecCaNhan", body).subscribe({
@@ -103,6 +110,26 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     })
 
   }
+
+
+  fetchMemberListData() {
+    this.https.get<any>("/api/ThongTinCaNhan/NhanVienTFSName").subscribe({
+      next: (res: any) => {
+        this.MemberList = [];
+        this.MemberList = [...res.data];
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        console.log(this.MemberList);
+
+      }
+    });
+  }
+
   clear(table: Table) {
     table.clear();
   }

@@ -63,6 +63,8 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
 import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
+import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.component';
+import { InputMaskModule } from 'primeng/inputmask';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
@@ -114,7 +116,8 @@ import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qu
     EchartsxModule,
     ScrollPanelModule,
     SelectButtonModule,
-    TagModule
+    TagModule,
+    InputMaskModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [

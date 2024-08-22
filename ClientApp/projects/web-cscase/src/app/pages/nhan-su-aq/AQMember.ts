@@ -5,8 +5,8 @@ export interface AQMember {
     email?: string;
     phone?: string;
     avatar?: string;
-    birthDate?: string;
-    startDate?: string;
+    birthDate?: Date | string;
+    startDate?: Date | string;
     nickName?: string;
     role?: string;
     isLeader?: boolean;

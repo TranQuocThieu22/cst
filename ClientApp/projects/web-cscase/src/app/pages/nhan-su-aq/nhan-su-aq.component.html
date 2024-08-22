@@ -189,10 +189,6 @@
       <!-- First column -->
       <div class="field col-12 md:col-6">
         <div class="p-field">
-          <label for="tfsName">Tfs name</label>
-          <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
-        </div>
-        <div class="p-field">
           <label for="fullName">Họ tên</label>
           <input type="text" pInputText id="fullName" [(ngModel)]="aqmember.fullName" required />
         </div>
@@ -200,9 +196,13 @@
           <label for="nickName">Nick Name</label>
           <input type="text" pInputText id="nickName" [(ngModel)]="aqmember.nickName" required />
         </div>
-        <div class="p-field">
+        <!-- <div class="p-field">
           <label for="birthDate">Ngày sinh</label>
-          <input type="date" pInputText id="birthDate" [(ngModel)]="aqmember.birthDate" required />
+          <input type="date" pInputText id="birthDate" [(ngModel)]="aqmember.birthDate" required /> -->
+        <!-- </div> -->
+        <div class="p-field">
+          <label for="dateformat">Ngày sinh</label>
+          <p-calendar [(ngModel)]="aqmember.birthDate" dateFormat="dd/mm/yy" inputId="dateformat"></p-calendar>
         </div>
         <div class="p-field">
           <label for="email">Email</label>
@@ -217,13 +217,21 @@
       <!-- Second column -->
       <div class="field col-12 md:col-6">
         <div class="p-field">
+          <label for="tfsName">Tfs name</label>
+          <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
+        </div>
+        <div class="p-field">
           <label for="role">Phòng ban</label>
           <p-dropdown [options]="AQRoles" [(ngModel)]="aqmember.role" optionLabel="role"
             optionValue="code"></p-dropdown>
         </div>
-        <div class="p-field">
+        <!-- <div class="p-field">
           <label for="startDate">Ngày vào công ty</label>
           <input type="date" pInputText id="startDate" [(ngModel)]="aqmember.startDate" required />
+        </div> -->
+        <div class="p-field">
+          <label for="dateformat">Ngày vào công ty</label>
+          <p-calendar [(ngModel)]="aqmember.startDate" dateFormat="dd/mm/yy" inputId="dateformat"></p-calendar>
         </div>
         <div class="p-field">
           <label for="wfhQuota">Hạn mức % làm việc online</label>

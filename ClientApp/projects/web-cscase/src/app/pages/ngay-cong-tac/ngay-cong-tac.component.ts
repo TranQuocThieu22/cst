@@ -159,6 +159,8 @@ export class NgayCongTacComponent implements OnInit {
     this.addNewCommissionDayDialog = false;
     this.editCommissionDayDialog = true;
     this.openDialog = true;
+    console.log(this.CommissionDay);
+
   }
 
   openMemberDialog(data: any) {
