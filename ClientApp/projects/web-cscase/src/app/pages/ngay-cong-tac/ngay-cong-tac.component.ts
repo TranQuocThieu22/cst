@@ -7,6 +7,9 @@ import {
 } from "primeng/api";
 import { Table } from 'primeng/table';
 import { CommissionDay, CommissionMember } from './NgayCongTac';
+import { BarChart } from 'echarts/charts';
+import { TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent } from 'echarts/components';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-ngay-cong-tac',
@@ -14,9 +17,9 @@ import { CommissionDay, CommissionMember } from './NgayCongTac';
   styleUrls: ['./ngay-cong-tac.component.scss']
 })
 export class NgayCongTacComponent implements OnInit {
-
+  chartOptions
   CommissionDays: CommissionDay[] = [];
-
+  memberDataMap: Map<string, number> = new Map<string, number>();
   CommissionDayInitState = {
     id: 0,
     dateFrom: '',
@@ -28,7 +31,7 @@ export class NgayCongTacComponent implements OnInit {
     commissionExpenses: 0,
     note: ''
   };
-
+  chartExtension
   CommissionDay: CommissionDay = {
     ...this.CommissionDayInitState
   };
@@ -51,6 +54,7 @@ export class NgayCongTacComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
     this.fetchCommissionDaysData();
 
     this.resetCalendarSelection();
@@ -197,6 +201,8 @@ export class NgayCongTacComponent implements OnInit {
       next: (res: any) => {
         this.CommissionMemberList = [];
         this.CommissionMemberList = [...res.data];
+        console.log(this.CommissionMemberList);
+
       },
       error: (error) => {
         console.log(error);
@@ -210,17 +216,52 @@ export class NgayCongTacComponent implements OnInit {
   }
 
   loadMember_From_CommissionMemberList() {
+    const testData = new Map<string, number>()
     this.CommissionDays.forEach((commission: CommissionDay) => {
       commission.memberList.forEach((member: CommissionMember) => {
         const foundMember = this.CommissionMemberList.find((m: CommissionMember) => m.id === member.id);
         if (foundMember) {
           member.fullName = foundMember.fullName;
           member.nickName = foundMember.nickName;
+
         }
+        // Aggregate sumDay by fullName
+        if (testData.has(member.fullName)) {
+          testData.set(member.fullName, testData.get(member.fullName) + commission.sumDay);
+        } else {
+          testData.set(member.fullName, commission.sumDay);
+        }
+        this.chartData(testData)
       });
     });
-  }
 
+  }
+  chartData(data) {
+    const xAxisData = Array.from(data.keys());
+    const SeriesData = Array.from(data.values());
+    this.chartOptions = {
+      xAxis: {
+        type: 'category',
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: SeriesData,
+          type: 'bar',
+          label: {
+            show: true,            // Enable labels
+            position: 'inside',    // 'inside' or 'top' for label position
+            formatter: '{c}',      // Display the value
+            color: '#fff',         // Text color, adjust if needed
+            fontWeight: 'bold'     // Make the text bold for better readability
+          }
+        }
+      ]
+    };
+  }
   hideDialog() {
     this.CommissionDay = {};
     this.resetCalendarSelection();
