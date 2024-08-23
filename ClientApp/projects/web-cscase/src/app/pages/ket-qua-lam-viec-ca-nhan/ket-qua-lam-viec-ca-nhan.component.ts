@@ -24,6 +24,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public TiLeMoCaseChartOptions: object = {};
   public TiLeMoCaseChartExtensions: object = {};
   public SoGioLamThieuOptions: object = {};
+  public TiLeChenhLechUocTinhVaThucTeOption: object = {};
   public SoGioLamThieuExtensions: object = {};
   public TiLeMoCaseChartPieces: object[] = [
     {
@@ -33,13 +34,25 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     },
     {
       gt: 20,
-      lte: 80,
+      lte: 100,
+      color: 'red'
+    }
+  ]
+  public TiLeChenhLechUocTinhVaThucTeChartPieces: object[] = [
+    {
+      gt: 0,
+      lte: 20,
+      color: 'green'
+    },
+    {
+      gt: 20,
+
       color: 'red'
     }
   ]
   public SoGioLamThieuPieces: object[] = [
     {
-      gt: 0,
+
       lte: 5,
       color: 'green'
     },
@@ -114,11 +127,13 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
             const xAxisData = this.PhanTramTiLeMoCase.map((_, index) => `Week ${index + 1}`);
             console.log(xAxisData);
             this.SoGioLamThieu = res.data.soGioLamThieu
-            console.log(this.SoGioLamThieu);
+            this.PhanTramTiLeChenhLechUocLuongVaThucTe = res.data.phanTramTiLeChenhLechUocLuongVaThucTe
+            console.log(this.PhanTramTiLeChenhLechUocLuongVaThucTe);
 
 
             this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces,)
-            // this.LineChartTyLeMoCaseOptions(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces, this.SoGioLamThieuOptions)
+            this.LineChartSoGioLamVIecThieu(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces)
+            this.LineChartTiLeChenhLechUocTinhVaThucTeOptions(xAxisData, this.PhanTramTiLeChenhLechUocLuongVaThucTe, this.TiLeChenhLechUocTinhVaThucTeChartPieces)
             this.caseMetricsList.sort((a, b) => b.weekNumber - a.weekNumber);
 
 
@@ -140,7 +155,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   LineChartTyLeMoCaseOptions(xAxisData, data, TiLeMoCaseChartPieces) {
     this.TiLeMoCaseChartOptions = {
       title: {
-        text: 'Tỷ lệ mở Case',
+        text: 'Số lần mở lại case (tính theo phần trăm)',
         subtext: `năm ${this.dateValue.getFullYear()}`
       },
       tooltip: {
@@ -176,7 +191,115 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       },
       series: [
         {
-          name: 'Electricity',
+          name: '% Mở lại case',
+          type: 'line',
+          smooth: true,
+          data: data,
+          markArea: {
+            itemStyle: {
+              color: 'rgba(255, 173, 177, 0.4)'
+            },
+          }
+
+        }
+      ]
+    };
+
+  }
+  LineChartTiLeChenhLechUocTinhVaThucTeOptions(xAxisData, data, TiLeChenhLechChartPieces) {
+    this.TiLeChenhLechUocTinhVaThucTeOption = {
+      title: {
+        text: 'Tỉ lệ chênh lệch ước tính và thực tế',
+        subtext: `năm ${this.dateValue.getFullYear()}`
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        }
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value} %'
+        },
+        axisPointer: {
+          snap: true
+        }
+      },
+      visualMap: {
+        show: false,
+        dimension: 1,
+        pieces: TiLeChenhLechChartPieces
+      },
+      series: [
+        {
+          name: '% chênh lệch',
+          type: 'line',
+          smooth: true,
+          data: data,
+          markArea: {
+            itemStyle: {
+              color: 'rgba(255, 173, 177, 0.4)'
+            },
+          }
+
+        }
+      ]
+    };
+
+  }
+  LineChartSoGioLamVIecThieu(xAxisData, data, SoGioLamViecThieuChartPieces) {
+    this.SoGioLamThieuOptions = {
+      title: {
+        text: 'Số giờ làm thiếu',
+        subtext: `năm ${this.dateValue.getFullYear()}`
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        }
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value} giờ'
+        },
+        axisPointer: {
+          snap: true
+        }
+      },
+      visualMap: {
+        show: false,
+        dimension: 1,
+        pieces: SoGioLamViecThieuChartPieces
+      },
+      series: [
+        {
+          name: 'Số giờ làm thiếu',
           type: 'line',
           smooth: true,
           data: data,

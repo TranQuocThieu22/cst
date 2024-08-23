@@ -69,7 +69,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
     NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
-    LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent
+    LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent, BaoBieuThongKeComponent
   ],
   imports: [
     FormsModule,

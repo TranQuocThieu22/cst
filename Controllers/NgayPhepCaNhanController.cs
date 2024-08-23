@@ -266,6 +266,7 @@ namespace educlient.Controllers
             var resultList = new List<ThongKePhepNamDataDO>();
             foreach (var member in membersData)
             {
+
                 // Find day-off data for each member by year
                 var dayOffData = dayOffsTable.Find(x => x.memberId == member.id && x.dateFrom.Year == year).ToList().Count();
 

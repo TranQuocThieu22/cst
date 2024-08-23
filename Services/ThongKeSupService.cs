@@ -73,32 +73,35 @@ namespace educlient.Services
             var caseGanTagDetails = await GetCaseDetails(caseGanTagIds);
             var caseTestTreDetails = await GetCaseDetails(caseTestTreIds);
             var casePhanTichTreDetails = await GetCaseDetails(casePhanTichTreIds);
-            foreach (var item in caseDetails.value)
-            {
-                Debug.WriteLine($"caseDetails:{item.id}");
-            }
-
-            foreach (var item in caseTestDetails.value)
-            {
-                Debug.WriteLine($"caseTestDetails:{item.id}");
-            }
-            foreach (var item in caseGanTagDetails.value)
-            {
-                Debug.WriteLine($"caseGanTagDetails:{item.id}");
-            }
-            //foreach (var item in caseTestTreDetails.value)
+            //foreach (var item in caseDetails.value)
             //{
-            //    Debug.WriteLine($"caseTestTreDetails:{item.id}");
+            //    Debug.WriteLine($"caseDetails:{item.id}");
             //}
-            foreach (var item in casePhanTichTreDetails.value)
-            {
-                Debug.WriteLine($"casePhanTichTreDetails:{item.id}");
-            }
+
+            //foreach (var item in caseTestDetails.value)
+            //{
+            //    Debug.WriteLine($"caseTestDetails:{item.id}");
+            //}
+            //foreach (var item in caseGanTagDetails.value)
+            //{
+            //    Debug.WriteLine($"caseGanTagDetails:{item.id}");
+            //}
+            ////foreach (var item in caseTestTreDetails.value)
+            ////{
+            ////    Debug.WriteLine($"caseTestTreDetails:{item.id}");
+            ////}
+            //foreach (var item in casePhanTichTreDetails.value)
+            //{
+            //    Debug.WriteLine($"casePhanTichTreDetails:{item.id}");
+            //}
             var thongTinCases = ProcessCaseDetails(caseDetails);
             var thongTinCasesTest = ProcessCaseDetails(caseTestDetails);
+
             var thongTinCasesGanTag = ProcessCaseDetails(caseGanTagDetails);
             var thongTinCasesTestTre = ProcessCaseDetails(caseTestTreDetails);
             var thongTinCasesPhanTichTre = ProcessCaseDetails(casePhanTichTreDetails);
+
+
 
             //var SoLuongCanPhanTich = GetSoLuongCanPhanTich(thongTinCases);
             //var SoLuongCaseCanTest = GetSoLuongCanTest(thongTinCasesTest);
@@ -126,6 +129,7 @@ namespace educlient.Services
     AND [System.State] = 'Mở Case' 
     AND [System.CreatedDate] <= @today - 2 
     AND [System.AssignedTo] = 'tiepnhansup <AQ\\tiepnhansup>') 
+    AND [AQ.ReqState] <> '01 – Đã phân tích xong'
     ORDER BY [System.State]""
 }}";
         }
@@ -156,7 +160,7 @@ namespace educlient.Services
                     'thanhtrung <AQ\\thanhtrung>', 'chivtan <AQ\\chivtan>', 'quocthieu <AQ\\quocthieu>','thieu <AQ\\thieu>', 'mtrung <AQ\\mtrung>', 'mtien <AQ\\mtien>','lamto <AQ\\lamto>', 'thuannam <AQ\\thuannam>', 'giaminh <AQ\\duongminh>','thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>', 'kimtuyen <AQ\\kimtuyen>','nvhanh <AQ\\nvhanh>', 'admin <AQ\\admin>', 'dat <AQ\\dat>','minhlam <AQ\\minhlam>', 'tin <AQ\\tin>'
                 )
                 AND [AQ.TestState] <> '01 - Đã kiểm tra và kết quả đúng'
-                AND [AQ.CaseType] <> 'CV - Trao đổi hoặc chưa phân loại'
+
                 ORDER BY [AQ.CaseTester]""
 }}";
         }
@@ -460,7 +464,7 @@ namespace educlient.Services
             var duocGan = GetSoLuongGanTag(thongTinCasesGanTag);
             foreach (var item in canPhanTich)
             {
-                if (item.assignedto == "havt <AQ\\havt>")
+                if (item.assignedto == "thanh <AQ\\thanh>")
                 {
 
                     foreach (var item1 in item.caseList)
@@ -472,7 +476,7 @@ namespace educlient.Services
             }
             foreach (var item in canTest)
             {
-                if (item.assignedto == "havt <AQ\\havt>")
+                if (item.assignedto == "thanh <AQ\\thanh>")
                 {
 
                     foreach (var item1 in item.caseList)
@@ -484,7 +488,7 @@ namespace educlient.Services
             }
             foreach (var item in duocGan)
             {
-                if (item.assignedto == "havt <AQ\\havt>")
+                if (item.assignedto == "thanh <AQ\\thanh>")
                 {
 
                     foreach (var item1 in item.caseList)
