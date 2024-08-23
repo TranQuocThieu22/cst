@@ -76,5 +76,5 @@ export interface CaseMetrics {
   SoGioThucTeLamCase: number[];
   SoGioThamGiaMeeting: number[];
   PhanTramTiLeMoCase: number[];
-  PhanTramTiLeChenhLechUocLuongVaThucTe: number[];
+  PhanTramTiLeChenhLechThucTeVaUocLuong: number[];
 }

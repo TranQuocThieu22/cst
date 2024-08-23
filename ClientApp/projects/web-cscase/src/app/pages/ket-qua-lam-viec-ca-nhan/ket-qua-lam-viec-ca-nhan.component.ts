@@ -24,7 +24,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public TiLeMoCaseChartOptions: object = {};
   public TiLeMoCaseChartExtensions: object = {};
   public SoGioLamThieuOptions: object = {};
-  public TiLeChenhLechUocTinhVaThucTeOption: object = {};
+  public PhanTramTiLeChenhLechThucTeVaUocLuongOption: object = {};
   public SoGioLamThieuExtensions: object = {};
   public TiLeMoCaseChartPieces: object[] = [
     {
@@ -38,7 +38,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       color: 'red'
     }
   ]
-  public TiLeChenhLechUocTinhVaThucTeChartPieces: object[] = [
+  public PhanTramTiLeChenhLechThucTeVaUocLuongChartPieces: object[] = [
     {
       gt: 0,
       lte: 20,
@@ -65,11 +65,11 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public SoGioThucTeLamCase
   public SoGioThamGiaMeeting
   public PhanTramTiLeMoCase
-  public PhanTramTiLeChenhLechUocLuongVaThucTe
+  public PhanTramTiLeChenhLechThucTeVaUocLuong
   public products
 
   MemberList: Member[] = [];
-  selectedMember: string = "tin <AQ\\tin>";
+  selectedMember: string = "minhlam <AQ\\minhlam>";
 
   constructor(
     private https: HttpClient,
@@ -121,19 +121,19 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
               SoGioThucTeLamCase: res.data.soGioThucTeLamCase[index],
               SoGioThamGiaMeeting: res.data.soGioThamGiaMeeting[index],
               PhanTramTiLeMoCase: res.data.phanTramTiLeMoCase[index],
-              PhanTramTiLeChenhLechUocLuongVaThucTe: res.data.phanTramTiLeChenhLechUocLuongVaThucTe[index],
+              PhanTramTiLeChenhLechThucTeVaUocLuong: res.data.phanTramTiLeChenhLechUocLuongVaThucTe[index],
             }));
             this.PhanTramTiLeMoCase = res.data.phanTramTiLeMoCase
             const xAxisData = this.PhanTramTiLeMoCase.map((_, index) => `Week ${index + 1}`);
             console.log(xAxisData);
             this.SoGioLamThieu = res.data.soGioLamThieu
-            this.PhanTramTiLeChenhLechUocLuongVaThucTe = res.data.phanTramTiLeChenhLechUocLuongVaThucTe
-            console.log(this.PhanTramTiLeChenhLechUocLuongVaThucTe);
+            this.PhanTramTiLeChenhLechThucTeVaUocLuong = res.data.phanTramTiLeChenhLechUocLuongVaThucTe
+            console.log(this.PhanTramTiLeChenhLechThucTeVaUocLuong);
 
 
             this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces,)
             this.LineChartSoGioLamVIecThieu(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces)
-            this.LineChartTiLeChenhLechUocTinhVaThucTeOptions(xAxisData, this.PhanTramTiLeChenhLechUocLuongVaThucTe, this.TiLeChenhLechUocTinhVaThucTeChartPieces)
+            this.LineChartPhanTramTiLeChenhLechThucTeVaUocLuongOptions(xAxisData, this.PhanTramTiLeChenhLechThucTeVaUocLuong, this.PhanTramTiLeChenhLechThucTeVaUocLuongChartPieces)
             this.caseMetricsList.sort((a, b) => b.weekNumber - a.weekNumber);
 
 
@@ -206,10 +206,10 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     };
 
   }
-  LineChartTiLeChenhLechUocTinhVaThucTeOptions(xAxisData, data, TiLeChenhLechChartPieces) {
-    this.TiLeChenhLechUocTinhVaThucTeOption = {
+  LineChartPhanTramTiLeChenhLechThucTeVaUocLuongOptions(xAxisData, data, TiLeChenhLechChartPieces) {
+    this.PhanTramTiLeChenhLechThucTeVaUocLuongOption = {
       title: {
-        text: 'Tỉ lệ chênh lệch ước tính và thực tế',
+        text: 'Tỉ lệ chênh lệch giờ thực tế và giờ ước lượng ',
         subtext: `năm ${this.dateValue.getFullYear()}`
       },
       tooltip: {

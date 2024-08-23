@@ -69,9 +69,9 @@
             Phần trăm tỉ lệ mở case
             <p-sortIcon field="PhanTramTiLeMoCase"></p-sortIcon>
           </th>
-          <th pSortableColumn="PhanTramTiLeChenhLechUocLuongVaThucTe" style="white-space: nowrap;">
-            Phần trăm tỉ lệ chênh lệch ước lượng và thực tế
-            <p-sortIcon field="PhanTramTiLeChenhLechUocLuongVaThucTe"></p-sortIcon>
+          <th pSortableColumn="PhanTramTiLeChenhLechThucTeVaUocLuong" style="white-space: nowrap;">
+            Phần trăm tỉ lệ chênh lệch giờ thực tế và giờ ước lượng
+            <p-sortIcon field="PhanTramTiLeChenhLechThucTeVaUocLuong"></p-sortIcon>
           </th>
           <th pSortableColumn="SoGioLamThieu" style="white-space: nowrap; ">
             Số giờ làm thiếu
@@ -101,7 +101,7 @@
             {{caseMetric.PhanTramTiLeMoCase}}%
           </td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
-            {{caseMetric.PhanTramTiLeChenhLechUocLuongVaThucTe}}%</td>
+            {{caseMetric.PhanTramTiLeChenhLechThucTeVaUocLuong}}%</td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoGioLamThieu}}</td>
         </tr>
       </ng-template>
@@ -117,6 +117,6 @@
   </div>
 </div>
 <div class="card mt-4 sm:mt-0 flex-1 p-4">
-  <div echarts [options]="TiLeChenhLechUocTinhVaThucTeOption" [extentions]="TiLeMoCaseChartExtensions">
+  <div echarts [options]="PhanTramTiLeChenhLechThucTeVaUocLuongOption" [extentions]="TiLeMoCaseChartExtensions">
   </div>
 </div>
