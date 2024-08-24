@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import { ReportCommissionPayment } from './tien-cong-tac-DT';
+import { ReportWorkingOTPayment } from './tien-lam-viec-ngoai-gio-DT';
 import { HttpClient } from '@angular/common/http';
 import { Table } from 'primeng/table';
 
 @Component({
-  selector: 'app-tien-cong-tac-phi-theo-qui',
-  templateUrl: './tien-cong-tac-phi-theo-qui.component.html',
-  styleUrls: ['./tien-cong-tac-phi-theo-qui.component.scss']
+  selector: 'app-tien-lam-viec-ngoai-gio-theo-qui',
+  templateUrl: './tien-lam-viec-ngoai-gio-theo-qui.component.html',
+  styleUrls: ['./tien-lam-viec-ngoai-gio-theo-qui.component.scss']
 })
-export class TienCongTacPhiTheoQuiComponent implements OnInit {
+export class TienLamViecNgoaiGioTheoQuiComponent implements OnInit {
 
-  AQCommissionPaymentReport: ReportCommissionPayment[];
+  AQWorkingOTPaymentReport: ReportWorkingOTPayment[];
   quarterList: any[] = [];
 
   selectedYearInput: any;
@@ -29,7 +29,11 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
     this.selectedYearInput.setHours(0, 0, 0, 0);
     this.setQuarterList(this.selectedYearInput.getFullYear());
     this.selectedQuarter = this.getCurrentQuarter();
-    this.fetchCommissionPaymentReport(this.getCurrentQuarter());
+    this.fetchOTPaymentReport(this.getCurrentQuarter());
+
+    // console.log(this.quarterList);
+    // console.log(this.selectedQuarter);
+
   }
 
   convertDateFormat(date: string): string {
@@ -65,12 +69,12 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
     return result;
   }
 
-  fetchFilteredCommissionPaymentReport() {
-    this.fetchCommissionPaymentReport(this.selectedQuarter);
+  fetchFilteredOTPaymentReport() {
+    this.fetchOTPaymentReport(this.selectedQuarter);
   }
 
 
-  fetchCommissionPaymentReport(selectedQuarter?: any) {
+  fetchOTPaymentReport(selectedQuarter?: any) {
 
     let params: any = {};
     if (selectedQuarter) {
@@ -79,9 +83,9 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
       params.year = this.selectedYearInput.getFullYear();
     }
 
-    this.https.get<any>("/api/BaoBieuThongKe/ThongKeTinhTienCongTac", { params: params }).subscribe({
+    this.https.get<any>("/api/LamViecNgoaiGio/ThongKeTienLamViecNgoaiGio", { params: params }).subscribe({
       next: (res: any) => {
-        this.AQCommissionPaymentReport = res.data;
+        this.AQWorkingOTPaymentReport = res.data;
       },
       error: (error) => {
         console.log(error);
@@ -95,14 +99,11 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
 
 
   calculateTotal(type: string) {
-    if (!this.AQCommissionPaymentReport) return 0;
+    if (!this.AQWorkingOTPaymentReport) return 0;
     let total = 0;
     switch (type) {
-      case 'total_commissionDay':
-        total = this.AQCommissionPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay, 0);
-        break;
-      case 'total_commissionPayment':
-        total = this.AQCommissionPaymentReport.reduce((acc, report) => acc + report.total_CommissionPayment, 0);
+      case 'total_sumHours':
+        total = this.AQWorkingOTPaymentReport.reduce((acc, report) => acc + report.sumHours, 0);
         break;
       default:
         break;
@@ -113,7 +114,7 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
   exportExcel(type: string) {
     let data = [];
     if (type === 'full') {
-      data = this.AQCommissionPaymentReport;
+      data = this.AQWorkingOTPaymentReport;
     }
     else {
       data = this.selectedRecords;
@@ -124,14 +125,13 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
         return {
           'Full Name': report.fullName,
           'Nick Name': report.nickName,
-          'Total Commission Day': report.total_CommissionDay,
-          'Total Commission Payment': report.total_CommissionPayment
+          'OT sumHours': report.sumHours
         };
       });
       const worksheet = xlsx.utils.json_to_sheet(data);
       const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, "Commission_payment_report");
+      this.saveAsExcelFile(excelBuffer, "workingOT_payment_report");
     });
   }
 
@@ -149,6 +149,7 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
     table.clear();
     this.selectedYearInput = new Date();
     this.selectedQuarter = this.getCurrentQuarter();
-    this.fetchCommissionPaymentReport(this.selectedQuarter);
+    this.fetchOTPaymentReport(this.selectedQuarter);
   }
 }
+

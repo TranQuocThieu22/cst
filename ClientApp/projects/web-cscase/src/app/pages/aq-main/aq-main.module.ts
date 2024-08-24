@@ -67,12 +67,15 @@ import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.
 import { InputMaskModule } from 'primeng/inputmask';
 import { TienAnTruaTheoThangComponent } from '../bao-bieu-thong-ke/tien-an-trua-theo-thang/tien-an-trua-theo-thang.component';
 import { TienCongTacPhiTheoQuiComponent } from '../bao-bieu-thong-ke/tien-cong-tac-phi-theo-qui/tien-cong-tac-phi-theo-qui.component';
+import { TienLamViecNgoaiGioTheoQuiComponent } from '../bao-bieu-thong-ke/tien-lam-viec-ngoai-gio-theo-qui/tien-lam-viec-ngoai-gio-theo-qui.component';
+import { ThongKeNghiPhepNamComponent } from '../bao-bieu-thong-ke/thong-ke-nghi-phep-nam/thong-ke-nghi-phep-nam.component';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
     NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
     LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent,
-    BaoBieuThongKeComponent, TienAnTruaTheoThangComponent, TienCongTacPhiTheoQuiComponent
+    BaoBieuThongKeComponent, TienAnTruaTheoThangComponent, TienCongTacPhiTheoQuiComponent,
+    TienLamViecNgoaiGioTheoQuiComponent, ThongKeNghiPhepNamComponent
   ],
   imports: [
     FormsModule,
