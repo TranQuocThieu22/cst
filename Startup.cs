@@ -2,6 +2,7 @@ using educlient.Data;
 using educlient.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,11 @@ namespace educlient
 
 
             services.AddDistributedMemoryCache();
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
 
             services.AddSession(options =>
             {
@@ -69,7 +75,7 @@ namespace educlient
             {
                 app.UseExceptionHandler("/Error");
             }
-
+            app.UseResponseCompression();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {

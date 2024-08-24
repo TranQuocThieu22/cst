@@ -10,11 +10,8 @@
                 Thông tin ngày công tác
             </p-card>
             <ng-template *ngIf="checkIsLeader()" pTemplate="left">
-                <button pButton pRipple
-                    label="Tạo ngày công tác"
-                    icon="pi pi-calendar-plus mb-1"
-                    class="p-button-success py-2"
-                    (click)="openAddDialog()">
+                <button pButton pRipple label="Tạo ngày công tác" icon="pi pi-calendar-plus mb-1"
+                    class="p-button-success py-2" (click)="openAddDialog()">
                 </button>
             </ng-template>
         </p-toolbar>
@@ -330,7 +327,10 @@
         </p-scrollPanel>
     </ng-template>
 </p-dialog>
-
+<div class="card mt-4 sm:mt-0 flex-1 p-4">
+    <div echarts [options]="chartOptions" [extentions]="chartExtension">
+    </div>
+</div>
 <!-- delete member popup -->
 <p-toast></p-toast>
 <p-confirmPopup></p-confirmPopup>

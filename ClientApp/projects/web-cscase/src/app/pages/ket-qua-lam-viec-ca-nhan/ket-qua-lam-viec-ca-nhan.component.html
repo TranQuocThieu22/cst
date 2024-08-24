@@ -16,13 +16,10 @@
           <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
             (click)="clear(dt1)"></button>
           <div class="mx-4 flex flex-row gap-3">
-            <p-dropdown
-              [options]="MemberList"
-              [(ngModel)]="selectedMember"
-              optionLabel="fullName" optionValue="tfsName" required>
+            <p-dropdown [options]="MemberList" [(ngModel)]="selectedMember" optionLabel="fullName" optionValue="tfsName"
+              required>
             </p-dropdown>
-            <p-calendar [(ngModel)]="dateValue" view="year"
-              dateFormat="yy">
+            <p-calendar [(ngModel)]="dateValue" view="year" dateFormat="yy">
             </p-calendar>
             <span class="">
               <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-info"
@@ -42,17 +39,15 @@
             <p-columnFilter type="numeric" field="weekNumber" display="menu" class="ml-auto"></p-columnFilter>
           </th>
           <th pSortableColumn="SoGioLamViecTrongNgay" style="white-space: nowrap; ">
-            Số giờ làm việc trong ngày
+            Số giờ làm việc trong tuần
             <p-sortIcon field="SoGioLamViecTrongNgay"></p-sortIcon>
-          </th>
-          <th pSortableColumn="SoGioLamThieu" style="white-space: nowrap; ">
-            Số giờ làm thiếu
-            <p-sortIcon field="SoGioLamThieu"></p-sortIcon>
           </th>
           <th pSortableColumn="SoLuongCaseThucHienTrongTuan" style="white-space: nowrap; ">
             Số lượng case thực hiện trong tuần
             <p-sortIcon field="SoLuongCaseThucHienTrongTuan"></p-sortIcon>
           </th>
+
+
           <th pSortableColumn="SoLuotCaseBiMoLai" style="white-space: nowrap; ">
             Số lượt case bị mở lại
             <p-sortIcon field="SoLuotCaseBiMoLai"></p-sortIcon>
@@ -74,9 +69,13 @@
             Phần trăm tỉ lệ mở case
             <p-sortIcon field="PhanTramTiLeMoCase"></p-sortIcon>
           </th>
-          <th pSortableColumn="PhanTramTiLeChenhLechUocLuongVaThucTe" style="white-space: nowrap;">
-            Phần trăm tỉ lệ chênh lệch ước lượng và thực tế
-            <p-sortIcon field="PhanTramTiLeChenhLechUocLuongVaThucTe"></p-sortIcon>
+          <th pSortableColumn="PhanTramTiLeChenhLechThucTeVaUocLuong" style="white-space: nowrap;">
+            Phần trăm tỉ lệ chênh lệch giờ thực tế và giờ ước lượng
+            <p-sortIcon field="PhanTramTiLeChenhLechThucTeVaUocLuong"></p-sortIcon>
+          </th>
+          <th pSortableColumn="SoGioLamThieu" style="white-space: nowrap; ">
+            Số giờ làm thiếu
+            <p-sortIcon field="SoGioLamThieu"></p-sortIcon>
           </th>
         </tr>
       </ng-template>
@@ -86,9 +85,9 @@
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.weekNumber}}</td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
             {{caseMetric.SoGioLamViecTrongNgay}}</td>
-          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoGioLamThieu}}</td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
             {{caseMetric.SoLuongCaseThucHienTrongTuan}}</td>
+
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoLuotCaseBiMoLai}}
           </td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoGioUocLuongCase}}
@@ -102,7 +101,8 @@
             {{caseMetric.PhanTramTiLeMoCase}}%
           </td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
-            {{caseMetric.PhanTramTiLeChenhLechUocLuongVaThucTe}}%</td>
+            {{caseMetric.PhanTramTiLeChenhLechThucTeVaUocLuong}}%</td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{caseMetric.SoGioLamThieu}}</td>
         </tr>
       </ng-template>
     </p-table>
@@ -112,7 +112,11 @@
   <div echarts [options]="TiLeMoCaseChartOptions" [extentions]="TiLeMoCaseChartExtensions">
   </div>
 </div>
-<!-- <div class="card mt-4 sm:mt-0 flex-1 p-4">
-  <div echarts [options]="SoGioLamThieuOptions" [extentions]="SoGioLamThieuExtensions">
+<div class="card mt-4 sm:mt-0 flex-1 p-4">
+  <div echarts [options]="SoGioLamThieuOptions" [extentions]="TiLeMoCaseChartExtensions">
   </div>
-</div> -->
+</div>
+<div class="card mt-4 sm:mt-0 flex-1 p-4">
+  <div echarts [options]="PhanTramTiLeChenhLechThucTeVaUocLuongOption" [extentions]="TiLeMoCaseChartExtensions">
+  </div>
+</div>

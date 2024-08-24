@@ -24,6 +24,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public TiLeMoCaseChartOptions: object = {};
   public TiLeMoCaseChartExtensions: object = {};
   public SoGioLamThieuOptions: object = {};
+  public PhanTramTiLeChenhLechThucTeVaUocLuongOption: object = {};
   public SoGioLamThieuExtensions: object = {};
   public TiLeMoCaseChartPieces: object[] = [
     {
@@ -33,13 +34,25 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     },
     {
       gt: 20,
-      lte: 80,
+      lte: 100,
+      color: 'red'
+    }
+  ]
+  public PhanTramTiLeChenhLechThucTeVaUocLuongChartPieces: object[] = [
+    {
+      gt: 0,
+      lte: 20,
+      color: 'green'
+    },
+    {
+      gt: 20,
+
       color: 'red'
     }
   ]
   public SoGioLamThieuPieces: object[] = [
     {
-      gt: 0,
+
       lte: 5,
       color: 'green'
     },
@@ -52,11 +65,11 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
   public SoGioThucTeLamCase
   public SoGioThamGiaMeeting
   public PhanTramTiLeMoCase
-  public PhanTramTiLeChenhLechUocLuongVaThucTe
+  public PhanTramTiLeChenhLechThucTeVaUocLuong
   public products
 
   MemberList: Member[] = [];
-  selectedMember: string = "tin <AQ\\tin>";
+  selectedMember: string = "minhlam <AQ\\minhlam>";
 
   constructor(
     private https: HttpClient,
@@ -68,7 +81,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
 
   ngOnInit(): void {
     this.TiLeMoCaseChartExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
-    this.SoGioLamThieuExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
+    // this.SoGioLamThieuExtensions = [LineChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
     this.products = {
       code: 1,
       name: "lam",
@@ -94,17 +107,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       next: (res: any) => {
         if (res && res.code === 200) {
           if (res.data) {
-            // const caseMetrics: CaseMetrics = {
-            //   SoGioLamViecTrongNgay: res.data.soGioLamViecTrongNgay,
-            //   SoGioLamThieu: res.data.soGioLamThieu,
-            //   SoLuongCaseThucHienTrongTuan: res.data.soLuongCaseThucHienTrongTuan,
-            //   SoLuotCaseBiMoLai: res.data.soLuotCaseBiMoLai,
-            //   SoGioUocLuongCase: res.data.soGioUocLuongCase,
-            //   SoGioThucTeLamCase: res.data.soGioThucTeLamCase,
-            //   SoGioThamGiaMeeting: res.data.soGioThamGiaMeeting,
-            //   PhanTramTiLeMoCase: res.data.phanTramTiLeMoCase,
-            //   PhanTramTiLeChenhLechUocLuongVaThucTe: res.data.phanTramTiLeChenhLechUocLuongVaThucTe,
-            // };
+
             const dataLength = res.data.soLuongCaseThucHienTrongTuan.length;
 
             this.caseMetricsList = Array.from({ length: dataLength }, (_, index) => ({
@@ -119,17 +122,19 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
               SoGioThucTeLamCase: res.data.soGioThucTeLamCase[index],
               SoGioThamGiaMeeting: res.data.soGioThamGiaMeeting[index],
               PhanTramTiLeMoCase: res.data.phanTramTiLeMoCase[index],
-              PhanTramTiLeChenhLechUocLuongVaThucTe: res.data.phanTramTiLeChenhLechUocLuongVaThucTe[index],
+              PhanTramTiLeChenhLechThucTeVaUocLuong: res.data.phanTramTiLeChenhLechUocLuongVaThucTe[index],
             }));
             this.PhanTramTiLeMoCase = res.data.phanTramTiLeMoCase
             const xAxisData = this.PhanTramTiLeMoCase.map((_, index) => `Week ${index + 1}`);
             console.log(xAxisData);
             this.SoGioLamThieu = res.data.soGioLamThieu
-            console.log(this.SoGioLamThieu);
+            this.PhanTramTiLeChenhLechThucTeVaUocLuong = res.data.phanTramTiLeChenhLechUocLuongVaThucTe
+            console.log(this.PhanTramTiLeChenhLechThucTeVaUocLuong);
 
 
-            this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces, this.TiLeMoCaseChartOptions)
-            // this.LineChartTyLeMoCaseOptions(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces, this.SoGioLamThieuOptions)
+            this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces,)
+            this.LineChartSoGioLamVIecThieu(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces)
+            this.LineChartPhanTramTiLeChenhLechThucTeVaUocLuongOptions(xAxisData, this.PhanTramTiLeChenhLechThucTeVaUocLuong, this.PhanTramTiLeChenhLechThucTeVaUocLuongChartPieces)
             this.caseMetricsList.sort((a, b) => b.weekNumber - a.weekNumber);
 
 
@@ -148,10 +153,10 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
     })
 
   }
-  LineChartTyLeMoCaseOptions(xAxisData, data, TiLeMoCaseChartPieces, option) {
-    option = {
+  LineChartTyLeMoCaseOptions(xAxisData, data, TiLeMoCaseChartPieces) {
+    this.TiLeMoCaseChartOptions = {
       title: {
-        text: 'Tỷ lệ mở Case',
+        text: 'Số lần mở lại case (tính theo phần trăm)',
         subtext: `năm ${this.dateValue.getFullYear()}`
       },
       tooltip: {
@@ -187,7 +192,115 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       },
       series: [
         {
-          name: 'Electricity',
+          name: '% Mở lại case',
+          type: 'line',
+          smooth: true,
+          data: data,
+          markArea: {
+            itemStyle: {
+              color: 'rgba(255, 173, 177, 0.4)'
+            },
+          }
+
+        }
+      ]
+    };
+
+  }
+  LineChartPhanTramTiLeChenhLechThucTeVaUocLuongOptions(xAxisData, data, TiLeChenhLechChartPieces) {
+    this.PhanTramTiLeChenhLechThucTeVaUocLuongOption = {
+      title: {
+        text: 'Tỉ lệ chênh lệch giờ thực tế và giờ ước lượng ',
+        subtext: `năm ${this.dateValue.getFullYear()}`
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        }
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value} %'
+        },
+        axisPointer: {
+          snap: true
+        }
+      },
+      visualMap: {
+        show: false,
+        dimension: 1,
+        pieces: TiLeChenhLechChartPieces
+      },
+      series: [
+        {
+          name: '% chênh lệch',
+          type: 'line',
+          smooth: true,
+          data: data,
+          markArea: {
+            itemStyle: {
+              color: 'rgba(255, 173, 177, 0.4)'
+            },
+          }
+
+        }
+      ]
+    };
+
+  }
+  LineChartSoGioLamVIecThieu(xAxisData, data, SoGioLamViecThieuChartPieces) {
+    this.SoGioLamThieuOptions = {
+      title: {
+        text: 'Số giờ làm thiếu',
+        subtext: `năm ${this.dateValue.getFullYear()}`
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        }
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value} giờ'
+        },
+        axisPointer: {
+          snap: true
+        }
+      },
+      visualMap: {
+        show: false,
+        dimension: 1,
+        pieces: SoGioLamViecThieuChartPieces
+      },
+      series: [
+        {
+          name: 'Số giờ làm thiếu',
           type: 'line',
           smooth: true,
           data: data,
