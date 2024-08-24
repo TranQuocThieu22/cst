@@ -5,12 +5,12 @@
         <p-card header="header"
             class="mb-2"
             style="font-weight: bold;  color: navy;">
-            Thống kê tính tiền công tác phí theo quý
+            Thống kê tính nghỉ phép năm
         </p-card>
         <!-- data table -->
         <p-table
             #dt
-            [value]="AQCommissionPaymentReport"
+            [value]="AQIndividualWFT_DayOffReport"
             [rows]="5"
             [showCurrentPageReport]="true"
             [rowsPerPageOptions]="[5,10,25]"
@@ -45,21 +45,13 @@
                                 [style]="{'width':'12rem'}" [inputStyle]="{'width':'12rem'}"></p-calendar>
                             <label for="float-input">Chọn năm</label>
                         </span>
-                        <span>
-                            <p-dropdown
-                                [(ngModel)]="selectedQuarter"
-                                [options]="quarterList"
-                                optionLabel="name"
-                                optionValue="value">
-                            </p-dropdown>
-                        </span>
                         <span class="">
                             <button
                                 pButton pRipple
                                 type="button"
                                 icon="pi pi-search"
                                 class="p-button-rounded p-button-info"
-                                (click)="fetchFilteredCommissionPaymentReport()">
+                                (click)="fetchFilteredData()">
                             </button>
                         </span>
                     </div>
@@ -90,15 +82,33 @@
                     </th>
                     <th style="white-space: wrap; min-width:10rem"
                         class="text-center"
-                        pSortableColumn="total_CommissionDay">
-                        Tổng số ngày công tác
-                        <p-sortIcon field="total_CommissionDay"></p-sortIcon>
+                        pSortableColumn="absenceQuota">
+                        Hạn mức nghỉ phép
+                        <p-sortIcon field="absenceQuota"></p-sortIcon>
                     </th>
-                    <th style="white-space: wrap; min-width:10rem"
-                        class="text-center"
-                        pSortableColumn="total_CommissionPayment">
-                        Tổng công tác phí
-                        <p-sortIcon field="total_CommissionPayment"></p-sortIcon>
+                    <th style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
+                        Tổng ngày nghỉ phép
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
+                        Tên số ngày phép còn lại
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
+                        Hạn mức % online
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
+                        Hạn mức số ngày online
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
+                        Số ngày online
+                    </th>
+                    <th style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
+                        Số ngày online còn lại
                     </th>
                 </tr>
             </ng-template>
@@ -106,18 +116,16 @@
                 <tr [pSelectableRow]="AQMember">
                     <td style="text-align: center;">{{AQMember.nickName}}</td>
                     <td style="text-align: center;">{{AQMember.fullName}}</td>
-                    <td style="text-align: center;">{{AQMember.total_CommissionDay}}</td>
-                    <td style="text-align: center;">
-                        {{AQMember.total_CommissionPayment | currency: 'VND'}}
-                    </td>
+                    <td style="text-align: center;">{{AQMember.absenceQuota}}</td>
+                    <td style="text-align: center;">{{AQMember.dayOffs}}</td>
+                    <td style="text-align: center;">{{calculateSummary('songayphepconlai', AQMember)}}</td>
+                    <td style="text-align: center;">{{AQMember.wfhQuota}}%</td>
+                    <td style="text-align: center;">{{calculateSummary('hanmucsongayonline', AQMember)}}</td>
+                    <td style="text-align: center;">{{AQMember.total_wfh}}</td>
+                    <td style="text-align: center;">{{calculateSummary('songayonlineconlai', AQMember)}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="footer">
-                <tr>
-                    <td colspan="2" style="text-align: center;">Tổng cộng:</td>
-                    <td style="text-align: center;">{{calculateTotal('total_commissionDay')}}</td>
-                    <td style="text-align: center;">{{calculateTotal('total_commissionPayment') | currency: 'VND'}}</td>
-                </tr>
             </ng-template>
         </p-table>
     </div>

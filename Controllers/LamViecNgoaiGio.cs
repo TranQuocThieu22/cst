@@ -225,8 +225,8 @@ namespace educlient.Controllers
                 {
                     tmpData = OverTimeTable.Find(x =>
                         x.memberId == member.id &&
-                        ((x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value))
-
+                        ((x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value)) &&
+                        x.date.Year == year
                     ).ToList();
                 }
                 else if (query_dateFrom.HasValue)
@@ -248,7 +248,7 @@ namespace educlient.Controllers
                 else
                 {
                     // Only userId filter provided
-                    tmpData = OverTimeTable.Find(x => x.memberId == member.id).ToList();
+                    tmpData = OverTimeTable.FindAll().ToList();
                 }
                 var sumTime = tmpData.Sum(x => x.time);
                 Debug.WriteLine(tmpData);

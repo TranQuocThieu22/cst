@@ -3,6 +3,7 @@ using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 
 namespace educlient.Controllers
@@ -244,15 +245,16 @@ namespace educlient.Controllers
                 result = true
             };
         }
-        [HttpGet("thongkenghiphepnam")]
+        [HttpGet("Thongkenghiphepnam")]
         public ThongKePhepNamResult GetNghiPhepInYear([FromQuery] int year, [FromQuery] int? query_memberId = null)
         {
 
             // Get the tables
             var membersTable = database.Table<AQMember>();
             var dayOffsTable = database.Table<IndividualDayOff>();
+            var workingOnlineTable = database.Table<WorkingOnlineDataDO>();
+
             var membersData = membersTable.FindAll().ToList();
-            var dayOffsData = dayOffsTable.FindAll().ToList();
             if (membersData == null)
             {
                 return new ThongKePhepNamResult
@@ -267,7 +269,32 @@ namespace educlient.Controllers
             foreach (var member in membersData)
             {
                 // Find day-off data for each member by year
-                var dayOffData = dayOffsTable.Find(x => x.memberId == member.id && x.dateFrom.Year == year).ToList().Count();
+                var dayOffData = dayOffsTable.Find(x =>
+                    x.memberId == member.id &&
+                    x.dateFrom.Year == year &&
+                    x.isAnnual == true &&
+                    x.approvalStatus == "Đã duyệt" &&
+                    x.sumDay != 0
+                    ).ToList();
+
+                var countDayOff = 0;
+                foreach (var dayOff in dayOffData)
+                {
+                    countDayOff += (int)dayOff.sumDay;
+                }
+
+                var wfhData = workingOnlineTable.Find(x =>
+                    x.memberId == member.id &&
+                    x.dateFrom.Year == year &&
+                    x.approvalStatus == "Đã duyệt" &&
+                    x.sumDay != 0
+                    ).ToList();
+
+                var countWorkingOnline = 0;
+                foreach (var wfhday in wfhData)
+                {
+                    countWorkingOnline += (int)wfhday.sumDay;
+                }
 
                 // Combine member data with their day-off data
                 var resultData = new ThongKePhepNamDataDO
@@ -276,7 +303,8 @@ namespace educlient.Controllers
                     nickName = member.nickName,
                     absenceQuota = member.absenceQuota,
                     WFHQuota = member.WFHQuota,
-                    DayOffs = dayOffData
+                    DayOffs = countDayOff,
+                    total_wfh = countWorkingOnline
                 };
 
                 resultList.Add(resultData);
@@ -288,11 +316,6 @@ namespace educlient.Controllers
                 result = true,
                 data = resultList
             };
-
-
-
-
-
         }
     }
 
@@ -322,9 +345,9 @@ namespace educlient.Controllers
         public int absenceQuota { get; set; }
         public int WFHQuota { get; set; }
         public int DayOffs { get; set; }
-
-
+        public int total_wfh { get; set; }
     }
+
     public class ThongKePhepNamResult : ApiResultBaseDO
     {
         public List<ThongKePhepNamDataDO> data { get; set; }

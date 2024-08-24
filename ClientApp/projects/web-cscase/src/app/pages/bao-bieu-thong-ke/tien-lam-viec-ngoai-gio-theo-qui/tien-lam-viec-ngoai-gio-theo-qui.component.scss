@@ -1,0 +1,12 @@
+.p-inputswitch.p-focus .p-inputswitch-slider {
+    box-shadow: none;
+}
+
+:host ::ng-deep .p-datepicker {
+    transform: scale(0.8);
+    /* Adjust the scale to your desired value */
+}
+
+*:focus {
+    box-shadow: none !important;
+}

@@ -129,6 +129,11 @@ export class NgayCongTacComponent implements OnInit {
     this.fetchCommissionDaysData(input_filter_datefrom, input_filter_dateto);
   }
 
+  checkIsLeader() {
+    const user = sessionStorage.getItem('current-user');
+    return JSON.parse(user).isLeader;
+  }
+
   convertDateFormat(date: string): string {
     const [day, month, year] = date.split('/');
     return `${month}/${day}/${year}`;
