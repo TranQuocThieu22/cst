@@ -109,8 +109,13 @@
           <td style="white-space: nowrap; text-align: left;">{{AQmember.email}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.phone}}</td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
-            <p-avatar label="A" styleClass="p-mr-2" size="large"
-              [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+            <p-avatar
+              image="data:image/png;base64, {{AQmember.avatar}}"
+              styleClass="p-mr-2"
+              size="large"
+              shape="circle"
+              [style]="{'background-color':'#2196F3', 'color': '#ffffff'}">
+            </p-avatar>
           </td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.birthDate | date: 'dd/MM/yyyy'}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.startDate | date: 'dd/MM/yyyy'}}</td>
