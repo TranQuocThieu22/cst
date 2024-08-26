@@ -141,7 +141,7 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
             this.spinner.hide("spinner-ketqualamvieccanhan");
 
           } else {
-
+            this.spinner.hide("spinner-ketqualamvieccanhan");
           }
         } else {
           this.spinner.hide("spinner-ketqualamvieccanhan");

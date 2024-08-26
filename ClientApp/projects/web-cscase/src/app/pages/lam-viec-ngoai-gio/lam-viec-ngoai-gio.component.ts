@@ -7,6 +7,9 @@ import {
   PrimeNGConfig
 } from "primeng/api";
 import { Table } from 'primeng/table';
+import { TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+
 
 @Component({
   selector: 'app-lam-viec-ngoai-gio',
@@ -14,6 +17,8 @@ import { Table } from 'primeng/table';
   styleUrls: ['./lam-viec-ngoai-gio.component.scss']
 })
 export class LamViecNgoaiGioComponent implements OnInit {
+  chartOptions: any;
+  chartExtension: any;
 
   WorkingOTs: WorkingOT[];
   WorkingOTInitState = {
@@ -70,8 +75,9 @@ export class LamViecNgoaiGioComponent implements OnInit {
     this.resetCalendarSelection();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
-
     this.primengConfig.ripple = true;
+    this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
+
   }
 
   checkIsLeader() {
@@ -117,6 +123,7 @@ export class LamViecNgoaiGioComponent implements OnInit {
     this.https.get<any>("/api/LamViecNgoaiGio", { params: params }).subscribe({
       next: (res: any) => {
         this.convertType(res);
+        this.sortInitData();
       },
       error: (error) => {
         console.log(error);
@@ -127,6 +134,47 @@ export class LamViecNgoaiGioComponent implements OnInit {
         this.fetchMemberListData();
       }
     });
+  }
+
+  calculateData(): any {
+    const memberTotalWorkingOTs = {};
+    this.WorkingOTs.forEach((WokingOT: WorkingOT) => {
+      const memberName = WokingOT.member.fullName;
+      if (memberTotalWorkingOTs.hasOwnProperty(memberName)) {
+        memberTotalWorkingOTs[memberName] += WokingOT.time;
+      } else {
+        memberTotalWorkingOTs[memberName] = WokingOT.time;
+      }
+    });
+
+    return memberTotalWorkingOTs;
+  }
+
+  chartData(data) {
+    const xAxisData = Object.keys(data);
+    const SeriesData = Object.values(data);
+    this.chartOptions = {
+      xAxis: {
+        type: 'category',
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: SeriesData,
+          type: 'bar',
+          label: {
+            show: true,            // Enable labels
+            position: 'inside',    // 'inside' or 'top' for label position
+            formatter: '{c}',      // Display the value
+            color: '#fff',         // Text color, adjust if needed
+            fontWeight: 'bold'     // Make the text bold for better readability
+          }
+        }
+      ]
+    };
   }
 
   convertType(res: any): void {
@@ -141,6 +189,16 @@ export class LamViecNgoaiGioComponent implements OnInit {
         },
       };
       return WorkingOT;
+    });
+  }
+
+  sortInitData() {
+    this.WorkingOTs.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      dateA.setHours(0, 0, 0, 0);
+      dateB.setHours(0, 0, 0, 0);
+      return dateB.getTime() - dateA.getTime();
     });
   }
 
@@ -170,6 +228,7 @@ export class LamViecNgoaiGioComponent implements OnInit {
         WorkingOT.member.nickName = foundMember.nickName;
       }
     });
+    this.chartData(this.calculateData());
   }
 
   hideDialog() {

@@ -7,6 +7,8 @@ import {
   PrimeNGConfig
 } from "primeng/api";
 import { Table } from 'primeng/table';
+import { TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
 
 
 @Component({
@@ -15,6 +17,8 @@ import { Table } from 'primeng/table';
   styleUrls: ['./ngay-phep-ca-nhan.component.scss']
 })
 export class NgayPhepCaNhanComponent implements OnInit {
+  chartOptions: any;
+  chartExtension: any;
 
   approvalStatusOptions = [
     { label: 'Duyệt', value: 'Đã duyệt' },
@@ -71,6 +75,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
     this.primengConfig.ripple = true;
     this.fetchUserInfo();
+    this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
   }
 
   checkIsLeader() {
@@ -196,6 +201,58 @@ export class NgayPhepCaNhanComponent implements OnInit {
     });
   }
 
+  sortInitData() {
+    this.IndividualDayOffs.sort((a, b) => {
+      const dateA = new Date(a.dateFrom);
+      const dateB = new Date(b.dateFrom);
+      dateA.setHours(0, 0, 0, 0);
+      dateB.setHours(0, 0, 0, 0);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }
+
+
+  calculateData(): any {
+    const memberTotalDayOffs = {};
+    this.IndividualDayOffs.forEach((individualDayOff: IndividualDayOff) => {
+      const memberName = individualDayOff.member.fullName;
+      if (memberTotalDayOffs.hasOwnProperty(memberName)) {
+        memberTotalDayOffs[memberName] += individualDayOff.sumDay;
+      } else {
+        memberTotalDayOffs[memberName] = individualDayOff.sumDay;
+      }
+    });
+    return memberTotalDayOffs;
+  }
+
+  chartData(data) {
+    const xAxisData = Object.keys(data);
+    const SeriesData = Object.values(data);
+    this.chartOptions = {
+      xAxis: {
+        type: 'category',
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: SeriesData,
+          type: 'bar',
+          label: {
+            show: true,            // Enable labels
+            position: 'inside',    // 'inside' or 'top' for label position
+            formatter: '{c}',      // Display the value
+            color: '#fff',         // Text color, adjust if needed
+            fontWeight: 'bold'     // Make the text bold for better readability
+          }
+        }
+      ]
+    };
+  }
+
+
   convertType(res: any): void {
     this.IndividualDayOffs = res.data.map((item: IndividualDayOff_API_DO) => {
       const { memberId, ...rest } = item;
@@ -236,6 +293,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
         individualdayoff.member.nickName = foundMember.nickName;
       }
     });
+    this.chartData(this.calculateData());
+    this.sortInitData();
   }
 
   hideDialog() {

@@ -197,9 +197,21 @@ export class NgayCongTacComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.fetchMemberCommissionData();
+        this.sortInitData();
       }
     });
   }
+
+  sortInitData() {
+    this.CommissionDays.sort((a, b) => {
+      const dateA = new Date(a.dateFrom);
+      const dateB = new Date(b.dateFrom);
+      dateA.setHours(0, 0, 0, 0);
+      dateB.setHours(0, 0, 0, 0);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }
+
 
   fetchMemberCommissionData() {
     this.https.get<any>("/api/ThongTinCaNhan/NhanVienCongTac").subscribe({
@@ -267,6 +279,7 @@ export class NgayCongTacComponent implements OnInit {
       ]
     };
   }
+
   hideDialog() {
     this.CommissionDay = {};
     this.resetCalendarSelection();
