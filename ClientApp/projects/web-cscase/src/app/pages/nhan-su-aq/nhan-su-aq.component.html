@@ -2,28 +2,17 @@
   <div class="card p-4">
     <p-toolbar styleClass="mb-4 p-3">
       <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-        Danh sách nhân sự AQ
+        🧑🏻‍💼 Danh sách nhân sự AQ
       </p-card>
-      <ng-template
-        *ngIf="checkIsLeader()"
-        pTemplate="left">
-        <button pButton pRipple
-          label="Thêm member"
-          icon="pi pi-user-plus mb-1"
-          class="p-button-success py-2"
+      <ng-template *ngIf="checkIsLeader()" pTemplate="left">
+        <button pButton pRipple label="Thêm member" icon="pi pi-user-plus mb-1" class="p-button-success py-2"
           (click)="openAddDialog()">
         </button>
       </ng-template>
     </p-toolbar>
 
-    <p-table
-      #dt1
-      [value]="AQmembers"
-      [paginator]="true" [rows]="10"
-      [rowsPerPageOptions]="[5, 10, 20]"
-      styleClass="p-datatable-gridlines p-datatable-sm"
-      responsiveLayout="scroll"
-      [globalFilterFields]="['tfsName','fullName','email','phone',
+    <p-table #dt1 [value]="AQmembers" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+      styleClass="p-datatable-gridlines p-datatable-sm" responsiveLayout="scroll" [globalFilterFields]="['tfsName','fullName','email','phone',
         'birthDate','startDate','nickName','role',
         'isLeader','isLunch','isActive','wfhQuota',
         'absenceQuota'
@@ -41,9 +30,7 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th
-            *ngIf="checkIsLeader()"
-            style="white-space: nowrap; min-width:120px;" class="text-center">
+          <th *ngIf="checkIsLeader()" style="white-space: nowrap; min-width:120px;" class="text-center">
             <i class="pi pi-ellipsis-h"></i>
           </th>
           <!-- <th pSortableColumn="id" style="white-space: nowrap;">
@@ -110,13 +97,10 @@
       </ng-template>
       <ng-template pTemplate="body" let-AQmember>
         <tr>
-          <td *ngIf="checkIsLeader()"
-            style="white-space: nowrap; text-align: center; width: 100px;">
-            <button pButton pRipple icon="pi pi-pencil"
-              class="p-button-rounded p-button-warning p-button-text p-0"
+          <td *ngIf="checkIsLeader()" style="white-space: nowrap; text-align: center; width: 100px;">
+            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning p-button-text p-0"
               (click)="openEditDialog(AQmember)"></button>
-            <button pButton pRipple icon="pi pi-trash"
-              class="p-button-rounded p-button-danger p-button-text p-0"
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text p-0"
               (click)="deleteMember($event, AQmember)"></button>
           </td>
           <!-- <td style="white-space: nowrap; text-align: left;">{{AQmember.id}}</td> -->
@@ -125,12 +109,8 @@
           <td style="white-space: nowrap; text-align: left;">{{AQmember.email}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.phone}}</td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
-            <p-avatar
-              label="A"
-              styleClass="p-mr-2"
-              size="large"
-              [style]="{'background-color':'#2196F3', 'color': '#ffffff'}"
-              shape="circle"></p-avatar>
+            <p-avatar label="A" styleClass="p-mr-2" size="large"
+              [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
           </td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.birthDate | date: 'dd/MM/yyyy'}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.startDate | date: 'dd/MM/yyyy'}}</td>
@@ -181,8 +161,7 @@
   </div>
 </div>
 
-<p-dialog [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '1200px'}"
-  header="Thông tin nhân sự"
+<p-dialog [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '1200px'}" header="Thông tin nhân sự"
   [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
     <div class="formgrid grid">
@@ -260,8 +239,7 @@
 
   <!-- edit/add member button -->
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text"
-      (click)="hideDialog()"></button>
+    <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
       (click)="editMemberDialog ? updateMember() : addNewMember()"></button>
   </ng-template>

@@ -3,14 +3,11 @@
     <div class="card p-4">
         <p-toolbar styleClass="mb-4 p-3">
             <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-                Quản lý ngày nghỉ phép cá nhân
+                🛏️ Quản lý ngày nghỉ phép cá nhân
             </p-card>
             <ng-template pTemplate="left">
-                <button pButton pRipple
-                    label="Tạo ngày nghỉ phép"
-                    icon="pi pi-calendar-plus mb-1"
-                    class="p-button-success py-2"
-                    (click)="openAddDialog()">
+                <button pButton pRipple label="Tạo ngày nghỉ phép" icon="pi pi-calendar-plus mb-1"
+                    class="p-button-success py-2" (click)="openAddDialog()">
                 </button>
             </ng-template>
         </p-toolbar>
@@ -37,27 +34,17 @@
               class="p-button-rounded p-button-info  px-4">
             </button> -->
                     <!-- <button pButton pRipple type="button" label="Lọc" class="p-button-outlined p-button-info px-4"></button> -->
-                    <button
-                        pButton pRipple type="button"
-                        icon="pi pi-search"
-                        class="p-button-rounded p-button-info"
+                    <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-info"
                         (click)="fetchDataFiltered()">
                     </button>
                 </span>
             </div>
         </p-toolbar>
 
-        <p-table
-            #dt1
-            [value]="IndividualDayOffs"
-            [rows]="10"
-            [showCurrentPageReport]="true"
-            [rowsPerPageOptions]="[5,10,25]"
-            [paginator]="true"
+        <p-table #dt1 [value]="IndividualDayOffs" [rows]="10" [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[5,10,25]" [paginator]="true"
             [globalFilterFields]="['dateFrom', 'dateTo', 'sumDay', 'reason', 'note']"
-            styleClass="p-datatable-gridlines p-datatable-sm"
-            reorderableColumns="true"
-            responsiveLayout="scroll">
+            styleClass="p-datatable-gridlines p-datatable-sm" reorderableColumns="true" responsiveLayout="scroll">
             <!-- dataKey="id" -->
             <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" -->
             <!-- styleClass="p-datatable-customers p-datatable-gridlines" -->
@@ -121,8 +108,7 @@
                                 class="p-button-raised p-button-success p-button-text mr-2"
                                 (click)="openViewDialog(IndividualDayOff)">
                             </button>
-                            <button
-                                pButton pRipple icon="pi pi-pencil"
+                            <button pButton pRipple icon="pi pi-pencil"
                                 class="p-button-rounded p-button-warning p-button-text p-0"
                                 (click)="openEditDialog(IndividualDayOff)"></button>
                             <button pButton pRipple icon="pi pi-trash"
@@ -149,18 +135,13 @@
                     </td>
                     <td style="white-space: nowrap; text-align: center; width: 15%;">
                         <p-tag *ngIf="IndividualDayOff.approvalStatus === 'Đã duyệt'"
-                            value="{{IndividualDayOff.approvalStatus}}"
-                            icon="pi pi-check"
-                            severity="success">
+                            value="{{IndividualDayOff.approvalStatus}}" icon="pi pi-check" severity="success">
                         </p-tag>
                         <p-tag *ngIf="IndividualDayOff.approvalStatus === 'Từ chối'"
-                            value="{{IndividualDayOff.approvalStatus}}"
-                            icon="pi pi-times"
-                            severity="danger">
+                            value="{{IndividualDayOff.approvalStatus}}" icon="pi pi-times" severity="danger">
                         </p-tag>
                         <p-tag *ngIf="IndividualDayOff.approvalStatus === 'Chưa duyệt'"
-                            value="{{IndividualDayOff.approvalStatus}}"
-                            icon="pi pi-exclamation-triangle"
+                            value="{{IndividualDayOff.approvalStatus}}" icon="pi pi-exclamation-triangle"
                             severity="warning">
                         </p-tag>
                         <!-- {{IndividualDayOff.approvalStatus}} -->
@@ -209,13 +190,8 @@
 </div>
 
 
-<p-dialog
-    header="Nhập thông tin ngày nghỉ phép"
-    [(visible)]="openDialog"
-    [style]="{width: '100%', maxWidth: '800px'}"
-    [contentStyle]="{minHeight: '350px'}"
-    [modal]="true"
-    styleClass="p-fluid">
+<p-dialog header="Nhập thông tin ngày nghỉ phép" [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '800px'}"
+    [contentStyle]="{minHeight: '350px'}" [modal]="true" styleClass="p-fluid">
 
     <ng-template pTemplate="content">
         <div class="formgrid grid">
@@ -231,22 +207,14 @@
 
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày bắt đầu</label>
-                <p-calendar
-                    [(ngModel)]="IndividualDayOff.dateFrom"
-                    [showIcon]="true"
-                    inputId="icon"
-                    dateFormat="dd/mm/yy"
-                    (ngModelChange)="sumDay()">
+                <p-calendar [(ngModel)]="IndividualDayOff.dateFrom" [showIcon]="true" inputId="icon"
+                    dateFormat="dd/mm/yy" (ngModelChange)="sumDay()">
                 </p-calendar>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày kết thúc</label>
-                <p-calendar
-                    [(ngModel)]="IndividualDayOff.dateTo"
-                    [showIcon]="true"
-                    inputId="icon"
-                    dateFormat="dd/mm/yy"
+                <p-calendar [(ngModel)]="IndividualDayOff.dateTo" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy"
                     (ngModelChange)="sumDay()">
                 </p-calendar>
             </div>
@@ -254,19 +222,13 @@
 
             <div class="field col-5 md:col-4">
                 <label for="sumDay">Số lượng ngày nghỉ</label>
-                <input type="number" pInputText id="sumDay" required
-                    [(ngModel)]="IndividualDayOff.sumDay" />
+                <input type="number" pInputText id="sumDay" required [(ngModel)]="IndividualDayOff.sumDay" />
             </div>
 
             <div class="field col-12">
-                <label
-                    *ngIf="checkIsLeader()"
-                    for="memberId">Chọn nhân viên
+                <label *ngIf="checkIsLeader()" for="memberId">Chọn nhân viên
                 </label>
-                <p-dropdown
-                    *ngIf="checkIsLeader()"
-                    [options]="MemberList"
-                    [(ngModel)]="IndividualDayOff.member.id"
+                <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="IndividualDayOff.member.id"
                     optionLabel="fullName" optionValue="id" required>
                 </p-dropdown>
             </div>
@@ -274,15 +236,13 @@
             </div>
 
             <div class="p-field-checkbox flex flex-row col-12 sm:col-5 md:col-4">
-                <p-checkbox class="pb-2 mr-2" [(ngModel)]="IndividualDayOff.isAnnual" binary="true"
-                    inputId="isAnnual">
+                <p-checkbox class="pb-2 mr-2" [(ngModel)]="IndividualDayOff.isAnnual" binary="true" inputId="isAnnual">
                 </p-checkbox>
                 <label for="isAnnual">Tính vào nghỉ phép năm</label>
             </div>
 
             <div class="p-field-checkbox flex flex-row col-12 sm:col-5 md:col-4">
-                <p-checkbox
-                    class="pb-2 mr-2" [(ngModel)]="IndividualDayOff.isWithoutPay" binary="true"
+                <p-checkbox class="pb-2 mr-2" [(ngModel)]="IndividualDayOff.isWithoutPay" binary="true"
                     inputId="isWithoutPay">
                 </p-checkbox>
                 <label for="isWithoutPay">Nghỉ không lương</label>
@@ -290,8 +250,7 @@
 
             <div class="field col-12 mt-2">
                 <label for="reason">Lí do nghỉ phép</label>
-                <input type="text" pInputText id="reason" required
-                    [(ngModel)]="IndividualDayOff.reason" />
+                <input type="text" pInputText id="reason" required [(ngModel)]="IndividualDayOff.reason" />
             </div>
 
             <div class="field col-12">
@@ -302,9 +261,7 @@
 
             <div class="field col-12" *ngIf="checkIsLeader()">
                 <label for="approvalStatus">Trạng thái</label>
-                <p-selectButton
-                    [options]="approvalStatusOptions"
-                    [(ngModel)]="IndividualDayOff.approvalStatus"
+                <p-selectButton [options]="approvalStatusOptions" [(ngModel)]="IndividualDayOff.approvalStatus"
                     optionLabel="label" optionValue="value">
                 </p-selectButton>
             </div>
@@ -316,11 +273,9 @@
     <!-- edit/addnew DayOff -->
     <ng-template pTemplate="footer">
         <!-- icon="pi pi-times" -->
-        <button pButton pRipple label="Suy nghĩ lại" class="p-button-text"
-            (click)="hideDialog()"></button>
+        <button pButton pRipple label="Suy nghĩ lại" class="p-button-text" (click)="hideDialog()"></button>
         <!-- icon="pi pi-check"  -->
-        <button pButton pRipple label="+1 Chữa lành"
-            class="p-button-text"
+        <button pButton pRipple label="+1 Chữa lành" class="p-button-text"
             (click)="editIndividualDayOffDialog ? updateIndividualDayOff() : addNewIndividualDayOff()"></button>
     </ng-template>
 </p-dialog>
@@ -330,12 +285,8 @@
 <p-confirmPopup></p-confirmPopup>
 
 <!-- detail view dialog -->
-<p-dialog
-    header="Thông tin ngày nghỉ phép cá nhân"
-    [(visible)]="viewIndividualDayOffDialog"
-    [style]="{width: '100%', maxWidth: '900px'}"
-    [comissionContentStyle]="{minHeight: '350px'}"
-    [modal]="true"
+<p-dialog header="Thông tin ngày nghỉ phép cá nhân" [(visible)]="viewIndividualDayOffDialog"
+    [style]="{width: '100%', maxWidth: '900px'}" [comissionContentStyle]="{minHeight: '350px'}" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="comissionContent">
         <p-scrollPanel [style]="{width: '100%', height: '700px'}">
@@ -398,17 +349,11 @@
                     <span class="col-4">
                         <!-- {{IndividualDayOff.approvalStatus}} -->
                         <div class="flex flex-row">
-                            <p-dropdown
-                                *ngIf="checkIsLeader()"
-                                [options]="approvalStatusOptions"
-                                [(ngModel)]="IndividualDayOff.approvalStatus"
-                                optionLabel="label" optionValue="value"
+                            <p-dropdown *ngIf="checkIsLeader()" [options]="approvalStatusOptions"
+                                [(ngModel)]="IndividualDayOff.approvalStatus" optionLabel="label" optionValue="value"
                                 (click)="saveApprovalStatus(IndividualDayOff)">
                             </p-dropdown>
-                            <span
-                                *ngIf="!checkIsLeader()"
-                                class="ml-2"
-                                style="font-weight: bold;">
+                            <span *ngIf="!checkIsLeader()" class="ml-2" style="font-weight: bold;">
                                 {{IndividualDayOff.approvalStatus}}
                             </span>
                         </div>
