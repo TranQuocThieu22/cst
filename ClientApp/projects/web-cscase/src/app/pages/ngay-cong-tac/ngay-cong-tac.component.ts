@@ -38,6 +38,7 @@ export class NgayCongTacComponent implements OnInit {
 
   CommissionMemberList: CommissionMember[] = [];
 
+  isValidDateRange: boolean = true;
   filter_datefrom: string = '';
   filter_dateto: string = '';
 
@@ -54,17 +55,17 @@ export class NgayCongTacComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent]
-    this.fetchCommissionDaysData();
+    this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
 
-    this.resetCalendarSelection();
-    this.sumDay();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
 
+    this.fetchCommissionDaysData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
+    this.resetCalendarSelection();
+    this.sumDay();
+
     this.primengConfig.ripple = true;
   }
-
 
 
   sumDay() {
@@ -73,11 +74,13 @@ export class NgayCongTacComponent implements OnInit {
     let diffDays = 0;
 
     if (date1 > date2) {
+      this.isValidDateRange = false;
       this.CommissionDay.sumDay = 0;
       return;
     }
     else {
       while (date1 <= date2) {
+        this.isValidDateRange = true;
         if (date1.getDay() !== 0 && date1.getDay() !== 6) {
           diffDays++;
         }

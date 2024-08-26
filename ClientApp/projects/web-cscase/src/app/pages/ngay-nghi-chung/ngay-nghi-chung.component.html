@@ -139,10 +139,13 @@
           (ngModelChange)="sumDay()"></p-calendar>
       </div>
 
-
       <div class="field col-5 md:col-4">
         <label for="sumDay">Tổng cộng ngày nghỉ</label>
         <input type="number" pInputText id="sumDay" required [(ngModel)]="DayOff.sumDay" />
+      </div>
+
+      <div *ngIf="!isValidDateRange" class="field col-12" style="color: red;">
+        *khoảng thời gian không hợp lệ
       </div>
 
       <div class="field col-12">
@@ -162,7 +165,8 @@
   <!-- edit/addnew DayOff -->
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
+    <button [disabled]="!isValidDateRange"
+      pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
       (click)="editDayOffDialog ? updateDayOff() : addNewDayOff()"></button>
   </ng-template>
 </p-dialog>

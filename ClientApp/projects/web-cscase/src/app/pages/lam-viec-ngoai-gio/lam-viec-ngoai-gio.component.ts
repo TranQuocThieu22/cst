@@ -74,10 +74,11 @@ export class LamViecNgoaiGioComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.fetchWorkingOTsData();
-    this.resetCalendarSelection();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.fetchWorkingOTsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
+    this.resetCalendarSelection();
+
     this.primengConfig.ripple = true;
     this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
 

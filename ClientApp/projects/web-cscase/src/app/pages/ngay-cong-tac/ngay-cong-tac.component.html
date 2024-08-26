@@ -178,6 +178,10 @@
                 <input type="number" pInputText id="sumDay" required [(ngModel)]="CommissionDay.sumDay" />
             </div>
 
+            <div *ngIf="!isValidDateRange" class="field col-12" style="color: red;">
+                *khoảng thời gian không hợp lệ
+            </div>
+
             <div class="field col-12">
                 <label for="reason">Nội dung công tác</label>
                 <input type="text" pInputText id="reason" required [(ngModel)]="CommissionDay.comissionContent" />
@@ -241,7 +245,9 @@
     <!-- edit/addnew CommissionDay -->
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
+        <button
+            [disabled]="!isValidDateRange"
+            pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text"
             (click)="editCommissionDayDialog ? updateCommissionDay() : addNewCommissionDay()"></button>
     </ng-template>
 </p-dialog>

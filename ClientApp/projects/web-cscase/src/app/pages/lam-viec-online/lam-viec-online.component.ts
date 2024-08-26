@@ -47,6 +47,7 @@ export class LamViecOnlineComponent implements OnInit {
 
   filter_datefrom: string = '';
   filter_dateto: string = '';
+  isValidDateRange: boolean = true;
 
   openDialog: boolean;
   viewWorkingOnlineDialog: boolean;
@@ -65,11 +66,12 @@ export class LamViecOnlineComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.fetchWorkingOnlinesData();
-    this.resetCalendarSelection();
-    this.sumDay();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.fetchWorkingOnlinesData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
+    this.resetCalendarSelection();
+    this.sumDay();
+
     this.primengConfig.ripple = true;
     this.fetchUserInfo();
     this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
@@ -112,11 +114,13 @@ export class LamViecOnlineComponent implements OnInit {
     let diffDays = 0;
 
     if (date1 > date2) {
+      this.isValidDateRange = false;
       this.WorkingOnline.sumDay = 0;
       return;
     }
     else {
       while (date1 <= date2) {
+        this.isValidDateRange = true;
         if (date1.getDay() !== 0 && date1.getDay() !== 6) {
           diffDays++;
         }
@@ -151,6 +155,7 @@ export class LamViecOnlineComponent implements OnInit {
   }
 
   openAddDialog() {
+    this.isValidDateRange = true;
     this.fetchMemberListData();
     this.WorkingOnline = {
       ...this.WorkingOnlineInitState
@@ -163,6 +168,7 @@ export class LamViecOnlineComponent implements OnInit {
   }
 
   openEditDialog(data: any) {
+    this.isValidDateRange = true;
     this.fetchMemberListData();
     this.WorkingOnline = {};
     this.WorkingOnline = { ...data };

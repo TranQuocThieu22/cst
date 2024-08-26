@@ -50,6 +50,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   filter_datefrom: string = '';
   filter_dateto: string = '';
+  isValidDateRange: boolean = true;
 
   openDialog: boolean;
   viewIndividualDayOffDialog: boolean;
@@ -68,11 +69,12 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.fetchIndividualDayOffsData();
-    this.resetCalendarSelection();
-    this.sumDay();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.fetchIndividualDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
+    this.resetCalendarSelection();
+    this.sumDay();
+
     this.primengConfig.ripple = true;
     this.fetchUserInfo();
     this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
@@ -112,11 +114,13 @@ export class NgayPhepCaNhanComponent implements OnInit {
     let diffDays = 0;
 
     if (date1 > date2) {
+      this.isValidDateRange = false;
       this.IndividualDayOff.sumDay = 0;
       return;
     }
     else {
       while (date1 <= date2) {
+        this.isValidDateRange = true;
         if (date1.getDay() !== 0 && date1.getDay() !== 6) {
           diffDays++;
         }
@@ -151,6 +155,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   openAddDialog() {
+    this.isValidDateRange = true;
     this.fetchMemberListData();
     this.IndividualDayOff = {
       ...this.IndividualDayOffInitState
@@ -163,6 +168,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   openEditDialog(data: any) {
+    this.isValidDateRange = true;
     this.IndividualDayOff = {};
     this.IndividualDayOff = { ...data };
     this.IndividualDayOff.dateFrom = new Date(data.dateFrom);

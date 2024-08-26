@@ -208,6 +208,10 @@
                 <input type="number" pInputText id="sumDay" required [(ngModel)]="WorkingOnline.sumDay" />
             </div>
 
+            <div *ngIf="!isValidDateRange" class="field col-12" style="color: red;">
+                *khoảng thời gian không hợp lệ
+            </div>
+
             <div class="field col-12">
                 <label *ngIf="checkIsLeader()" for="memberId">Chọn nhân viên
                 </label>
@@ -245,7 +249,9 @@
         <!-- icon="pi pi-times" -->
         <button pButton pRipple label="Quay trở lại" class="p-button-text" (click)="hideDialog()"></button>
         <!-- icon="pi pi-check"  -->
-        <button pButton pRipple label="Tạo" class="p-button-text"
+        <button
+            [disabled]="!isValidDateRange"
+            pButton pRipple label="Tạo" class="p-button-text"
             (click)="editWorkingOnlineDialog ? updateWorkingOnline() : addNewWorkingOnline()"></button>
     </ng-template>
 </p-dialog>

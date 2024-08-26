@@ -17,13 +17,18 @@ import { Table } from 'primeng/table';
 export class NgayNghiChungComponent implements OnInit {
 
   DayOffs: DayOff[];
-  DayOff: DayOff = {
+  DayOffInitState: DayOff = {
     dateFrom: '',
     dateTo: '',
     sumDay: 0,
     reason: '',
-    note: ''
+    note: '',
   };
+  DayOff: DayOff = {
+    ...this.DayOffInitState
+  };
+
+  isValidDateRange: boolean = true;
 
   filter_datefrom: string = '';
   filter_dateto: string = '';
@@ -39,10 +44,12 @@ export class NgayNghiChungComponent implements OnInit {
 
     if (date1 > date2) {
       this.DayOff.sumDay = 0;
+      this.isValidDateRange = false;
       return;
     }
     else {
       while (date1 <= date2) {
+        this.isValidDateRange = true;
         if (date1.getDay() !== 0 && date1.getDay() !== 6) {
           diffDays++;
         }
@@ -79,14 +86,12 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.resetCalendarSelection();
-    this.sumDay();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
-    console.log("filter_datefrom:", this.filter_datefrom);
-    console.log("filter_dateto:", this.filter_dateto);
 
-    this.fetchDayOffsData();
+    this.fetchDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
+    this.resetCalendarSelection();
+    this.sumDay();
 
     this.primengConfig.ripple = true;
   }
@@ -97,14 +102,19 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   openAddDialog() {
-    console.log("dayoff:", this.DayOff);
-    // this.aqmember = {};
-    // this.editMemberDialog = false;
-    // this.addNewMemberDialog = true;
+    this.isValidDateRange = true;
+    this.DayOff = {
+      ...this.DayOffInitState
+    };
+    this.resetCalendarSelection();
+    this.sumDay();
+    this.addNewDayOffDialog = true;
+    this.editDayOffDialog = false;
     this.openDialog = true;
   }
 
   openEditDialog(data: any) {
+    this.isValidDateRange = true;
     this.DayOff = {};
     this.DayOff = { ...data };
     this.DayOff.dateFrom = new Date(data.dateFrom);
