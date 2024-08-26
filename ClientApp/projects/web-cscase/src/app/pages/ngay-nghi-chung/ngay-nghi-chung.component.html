@@ -3,19 +3,14 @@
   <div class="card p-4">
     <p-toolbar styleClass="mb-4 p-3">
       <p-card *ngIf="checkIsLeader()" header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-        Quản lý ngày nghỉ chung
+        🏄 Quản lý ngày nghỉ chung
       </p-card>
       <p-card *ngIf="!checkIsLeader()" header="header" style="font-weight: bold; font-size: x-large; color: navy;">
         Thông tin ngày nghỉ chung
       </p-card>
-      <ng-template
-        *ngIf="checkIsLeader()"
-        pTemplate="left">
-        <button pButton pRipple
-          label="Tạo ngày nghỉ chung"
-          icon="pi pi-calendar-plus mb-1"
-          class="p-button-success py-2"
-          (click)="openAddDialog()">
+      <ng-template *ngIf="checkIsLeader()" pTemplate="left">
+        <button pButton pRipple label="Tạo ngày nghỉ chung" icon="pi pi-calendar-plus mb-1"
+          class="p-button-success py-2" (click)="openAddDialog()">
         </button>
       </ng-template>
     </p-toolbar>
@@ -92,11 +87,9 @@
       <ng-template pTemplate="body" let-DayOff>
         <tr>
           <td *ngIf="checkIsLeader()" style="white-space: nowrap; text-align: center; width: 100px;">
-            <button pButton pRipple icon="pi pi-pencil"
-              class="p-button-rounded p-button-warning p-button-text p-0"
+            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning p-button-text p-0"
               (click)="openEditDialog(DayOff)"></button>
-            <button pButton pRipple icon="pi pi-trash"
-              class="p-button-rounded p-button-danger p-button-text p-0"
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text p-0"
               (click)="deleteDayOff($event, DayOff)"></button>
           </td>
           <td style="white-space: nowrap; text-align: left; width: 12%;">

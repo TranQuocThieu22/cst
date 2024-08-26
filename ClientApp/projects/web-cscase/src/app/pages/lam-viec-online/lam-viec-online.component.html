@@ -3,14 +3,11 @@
     <div class="card p-4">
         <p-toolbar styleClass="mb-4 p-3">
             <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-                Quản lý ngày làm việc online
+                🐱‍💻 Quản lý ngày làm việc online
             </p-card>
             <ng-template pTemplate="left">
-                <button pButton pRipple
-                    label="Tạo ngày làm việc online"
-                    icon="pi pi-calendar-plus mb-1"
-                    class="p-button-success py-2"
-                    (click)="openAddDialog()">
+                <button pButton pRipple label="Tạo ngày làm việc online" icon="pi pi-calendar-plus mb-1"
+                    class="p-button-success py-2" (click)="openAddDialog()">
                 </button>
             </ng-template>
         </p-toolbar>
@@ -37,27 +34,17 @@
               class="p-button-rounded p-button-info  px-4">
             </button> -->
                     <!-- <button pButton pRipple type="button" label="Lọc" class="p-button-outlined p-button-info px-4"></button> -->
-                    <button
-                        pButton pRipple type="button"
-                        icon="pi pi-search"
-                        class="p-button-rounded p-button-info"
+                    <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-info"
                         (click)="fetchDataFiltered()">
                     </button>
                 </span>
             </div>
         </p-toolbar>
 
-        <p-table
-            #dt1
-            [value]="WorkingOnlines"
-            [rows]="5"
-            [showCurrentPageReport]="true"
-            [rowsPerPageOptions]="[5,10,25]"
-            [paginator]="true"
+        <p-table #dt1 [value]="WorkingOnlines" [rows]="5" [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[5,10,25]" [paginator]="true"
             [globalFilterFields]="['dateFrom', 'dateTo', 'sumDay', 'reason', 'note']"
-            styleClass="p-datatable-gridlines p-datatable-sm"
-            reorderableColumns="true"
-            responsiveLayout="scroll">
+            styleClass="p-datatable-gridlines p-datatable-sm" reorderableColumns="true" responsiveLayout="scroll">
             <!-- dataKey="id" -->
             <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" -->
             <!-- styleClass="p-datatable-customers p-datatable-gridlines" -->
@@ -113,8 +100,7 @@
                                 class="p-button-raised p-button-success p-button-text mr-2"
                                 (click)="openViewDialog(WorkingOnline)">
                             </button>
-                            <button
-                                pButton pRipple icon="pi pi-pencil"
+                            <button pButton pRipple icon="pi pi-pencil"
                                 class="p-button-rounded p-button-warning p-button-text p-0"
                                 (click)="openEditDialog(WorkingOnline)"></button>
                             <button pButton pRipple icon="pi pi-trash"
@@ -141,18 +127,13 @@
                     </td>
                     <td style="white-space: nowrap; text-align: center; width: 15%;">
                         <p-tag *ngIf="WorkingOnline.approvalStatus === 'Đã duyệt'"
-                            value="{{WorkingOnline.approvalStatus}}"
-                            icon="pi pi-check"
-                            severity="success">
+                            value="{{WorkingOnline.approvalStatus}}" icon="pi pi-check" severity="success">
                         </p-tag>
                         <p-tag *ngIf="WorkingOnline.approvalStatus === 'Từ chối'"
-                            value="{{WorkingOnline.approvalStatus}}"
-                            icon="pi pi-times"
-                            severity="danger">
+                            value="{{WorkingOnline.approvalStatus}}" icon="pi pi-times" severity="danger">
                         </p-tag>
                         <p-tag *ngIf="WorkingOnline.approvalStatus === 'Chưa duyệt'"
-                            value="{{WorkingOnline.approvalStatus}}"
-                            icon="pi pi-exclamation-triangle"
+                            value="{{WorkingOnline.approvalStatus}}" icon="pi pi-exclamation-triangle"
                             severity="warning">
                         </p-tag>
                         <!-- {{WorkingOnline.approvalStatus}} -->
@@ -191,12 +172,8 @@
 </div>
 
 
-<p-dialog
-    header="Nhập thông tin ngày làm việc online"
-    [(visible)]="openDialog"
-    [style]="{width: '100%', maxWidth: '800px'}"
-    [contentStyle]="{minHeight: '350px'}"
-    [modal]="true"
+<p-dialog header="Nhập thông tin ngày làm việc online" [(visible)]="openDialog"
+    [style]="{width: '100%', maxWidth: '800px'}" [contentStyle]="{minHeight: '350px'}" [modal]="true"
     styleClass="p-fluid">
 
     <ng-template pTemplate="content">
@@ -213,22 +190,14 @@
 
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày bắt đầu</label>
-                <p-calendar
-                    [(ngModel)]="WorkingOnline.dateFrom"
-                    [showIcon]="true"
-                    inputId="icon"
-                    dateFormat="dd/mm/yy"
+                <p-calendar [(ngModel)]="WorkingOnline.dateFrom" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy"
                     (ngModelChange)="sumDay()">
                 </p-calendar>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày kết thúc</label>
-                <p-calendar
-                    [(ngModel)]="WorkingOnline.dateTo"
-                    [showIcon]="true"
-                    inputId="icon"
-                    dateFormat="dd/mm/yy"
+                <p-calendar [(ngModel)]="WorkingOnline.dateTo" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy"
                     (ngModelChange)="sumDay()">
                 </p-calendar>
             </div>
@@ -236,19 +205,13 @@
 
             <div class="field col-5 md:col-4">
                 <label for="sumDay">Số lượng ngày</label>
-                <input type="number" pInputText id="sumDay" required
-                    [(ngModel)]="WorkingOnline.sumDay" />
+                <input type="number" pInputText id="sumDay" required [(ngModel)]="WorkingOnline.sumDay" />
             </div>
 
             <div class="field col-12">
-                <label
-                    *ngIf="checkIsLeader()"
-                    for="memberId">Chọn nhân viên
+                <label *ngIf="checkIsLeader()" for="memberId">Chọn nhân viên
                 </label>
-                <p-dropdown
-                    *ngIf="checkIsLeader()"
-                    [options]="MemberList"
-                    [(ngModel)]="WorkingOnline.member.id"
+                <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="WorkingOnline.member.id"
                     optionLabel="fullName" optionValue="id" required>
                 </p-dropdown>
             </div>
@@ -257,8 +220,7 @@
 
             <div class="field col-12 mt-2">
                 <label for="reason">Lí do làm việc online</label>
-                <input type="text" pInputText id="reason" required
-                    [(ngModel)]="WorkingOnline.reason" />
+                <input type="text" pInputText id="reason" required [(ngModel)]="WorkingOnline.reason" />
             </div>
 
             <div class="field col-12">
@@ -269,9 +231,7 @@
 
             <div class="field col-12" *ngIf="checkIsLeader()">
                 <label for="approvalStatus">Trạng thái</label>
-                <p-selectButton
-                    [options]="approvalStatusOptions"
-                    [(ngModel)]="WorkingOnline.approvalStatus"
+                <p-selectButton [options]="approvalStatusOptions" [(ngModel)]="WorkingOnline.approvalStatus"
                     optionLabel="label" optionValue="value">
                 </p-selectButton>
             </div>
@@ -283,11 +243,9 @@
     <!-- edit/addnew DayOff -->
     <ng-template pTemplate="footer">
         <!-- icon="pi pi-times" -->
-        <button pButton pRipple label="Quay trở lại" class="p-button-text"
-            (click)="hideDialog()"></button>
+        <button pButton pRipple label="Quay trở lại" class="p-button-text" (click)="hideDialog()"></button>
         <!-- icon="pi pi-check"  -->
-        <button pButton pRipple label="Tạo"
-            class="p-button-text"
+        <button pButton pRipple label="Tạo" class="p-button-text"
             (click)="editWorkingOnlineDialog ? updateWorkingOnline() : addNewWorkingOnline()"></button>
     </ng-template>
 </p-dialog>
@@ -297,12 +255,8 @@
 <p-confirmPopup></p-confirmPopup>
 
 <!-- detail view dialog -->
-<p-dialog
-    header="Thông tin ngày làm việc online cá nhân"
-    [(visible)]="viewWorkingOnlineDialog"
-    [style]="{width: '100%', maxWidth: '900px'}"
-    [comissionContentStyle]="{minHeight: '350px'}"
-    [modal]="true"
+<p-dialog header="Thông tin ngày làm việc online cá nhân" [(visible)]="viewWorkingOnlineDialog"
+    [style]="{width: '100%', maxWidth: '900px'}" [comissionContentStyle]="{minHeight: '350px'}" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="comissionContent">
         <p-scrollPanel [style]="{width: '100%', height: '700px'}">
@@ -351,17 +305,11 @@
                     <span class="col-4">
                         <!-- {{WorkingOnline.approvalStatus}} -->
                         <div class="flex flex-row">
-                            <p-dropdown
-                                *ngIf="checkIsLeader()"
-                                [options]="approvalStatusOptions"
-                                [(ngModel)]="WorkingOnline.approvalStatus"
-                                optionLabel="label" optionValue="value"
+                            <p-dropdown *ngIf="checkIsLeader()" [options]="approvalStatusOptions"
+                                [(ngModel)]="WorkingOnline.approvalStatus" optionLabel="label" optionValue="value"
                                 (click)="saveApprovalStatus(WorkingOnline)">
                             </p-dropdown>
-                            <span
-                                *ngIf="!checkIsLeader()"
-                                class="ml-2"
-                                style="font-weight: bold;">
+                            <span *ngIf="!checkIsLeader()" class="ml-2" style="font-weight: bold;">
                                 {{WorkingOnline.approvalStatus}}
                             </span>
                         </div>
