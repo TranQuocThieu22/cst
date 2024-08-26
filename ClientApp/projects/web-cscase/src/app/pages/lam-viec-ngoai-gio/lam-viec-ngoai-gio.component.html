@@ -8,9 +8,14 @@
                 style="font-weight: bold; font-size: x-large; color: navy;">
                 Thông tin làm việc ngoài giờ
             </p-card>
-            <ng-template *ngIf="checkIsLeader()" pTemplate="left">
-                <button pButton pRipple label="Tạo ca làm việc ngoài giờ" icon="pi pi-calendar-plus mb-1"
-                    class="p-button-success py-2" (click)="openAddDialog()">
+            <ng-template
+                *ngIf="checkIsLeader()"
+                pTemplate="left">
+                <button pButton pRipple
+                    label="Lưu thời gian làm ngoài giờ"
+                    icon="pi pi-calendar-plus mb-1"
+                    class="p-button-success py-2"
+                    (click)="openAddDialog()">
                 </button>
             </ng-template>
         </p-toolbar>
@@ -110,6 +115,11 @@
             </ng-template>
         </p-table>
 
+    </div>
+</div>
+
+<div class="card mt-4 flex-1 p-4">
+    <div echarts [options]="chartOptions" [extentions]="chartExtension">
     </div>
 </div>
 

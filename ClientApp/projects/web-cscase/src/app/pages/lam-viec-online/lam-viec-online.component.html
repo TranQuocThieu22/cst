@@ -250,6 +250,11 @@
     </ng-template>
 </p-dialog>
 
+<div class="card mt-4 flex-1 p-4">
+    <div echarts [options]="chartOptions" [extentions]="chartExtension">
+    </div>
+</div>
+
 <!-- delete member popup -->
 <p-toast></p-toast>
 <p-confirmPopup></p-confirmPopup>

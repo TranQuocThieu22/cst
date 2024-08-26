@@ -7,6 +7,8 @@ import {
   PrimeNGConfig
 } from "primeng/api";
 import { Table } from 'primeng/table';
+import { TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
 
 @Component({
   selector: 'app-lam-viec-online',
@@ -14,6 +16,8 @@ import { Table } from 'primeng/table';
   styleUrls: ['./lam-viec-online.component.scss']
 })
 export class LamViecOnlineComponent implements OnInit {
+  chartOptions: any;
+  chartExtension: any;
 
   approvalStatusOptions = [
     { label: 'Duyệt', value: 'Đã duyệt' },
@@ -68,6 +72,7 @@ export class LamViecOnlineComponent implements OnInit {
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
     this.primengConfig.ripple = true;
     this.fetchUserInfo();
+    this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
   }
 
   checkIsLeader() {
@@ -181,6 +186,7 @@ export class LamViecOnlineComponent implements OnInit {
     this.https.get<any>("/api/LamViecOnline", { params: params }).subscribe({
       next: (res: any) => {
         this.convertType(res);
+        this.sortInitData();
       },
       error: (error) => {
         console.log(error);
@@ -190,6 +196,57 @@ export class LamViecOnlineComponent implements OnInit {
         // Your logic for handling the completion event (optional)
         this.fetchMemberListData();
       }
+    });
+  }
+
+  calculateData(): any {
+    const memberTotalWorkingOnlines = {};
+    this.WorkingOnlines.forEach((WorkingOnline: WorkingOnline) => {
+      const memberName = WorkingOnline.member.fullName;
+      if (memberTotalWorkingOnlines.hasOwnProperty(memberName)) {
+        memberTotalWorkingOnlines[memberName] += WorkingOnline.sumDay;
+      } else {
+        memberTotalWorkingOnlines[memberName] = WorkingOnline.sumDay;
+      }
+    });
+
+    return memberTotalWorkingOnlines;
+  }
+
+  chartData(data) {
+    const xAxisData = Object.keys(data);
+    const SeriesData = Object.values(data);
+    this.chartOptions = {
+      xAxis: {
+        type: 'category',
+        data: xAxisData
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: SeriesData,
+          type: 'bar',
+          label: {
+            show: true,            // Enable labels
+            position: 'inside',    // 'inside' or 'top' for label position
+            formatter: '{c}',      // Display the value
+            color: '#fff',         // Text color, adjust if needed
+            fontWeight: 'bold'     // Make the text bold for better readability
+          }
+        }
+      ]
+    };
+  }
+
+  sortInitData() {
+    this.WorkingOnlines.sort((a, b) => {
+      const dateA = new Date(a.dateFrom);
+      const dateB = new Date(b.dateFrom);
+      dateA.setHours(0, 0, 0, 0);
+      dateB.setHours(0, 0, 0, 0);
+      return dateB.getTime() - dateA.getTime();
     });
   }
 
@@ -233,7 +290,9 @@ export class LamViecOnlineComponent implements OnInit {
         WorkingOnline.member.nickName = foundMember.nickName;
       }
     });
+    this.chartData(this.calculateData());
   }
+
 
   hideDialog() {
     this.WorkingOnline = {};

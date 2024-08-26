@@ -132,7 +132,18 @@ export class NgayNghiChungComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
+        this.sortInitData();
       }
+    });
+  }
+
+  sortInitData() {
+    this.DayOffs.sort((a, b) => {
+      const dateA = new Date(a.dateFrom);
+      const dateB = new Date(b.dateFrom);
+      dateA.setHours(0, 0, 0, 0);
+      dateB.setHours(0, 0, 0, 0);
+      return dateB.getTime() - dateA.getTime();
     });
   }
 
@@ -152,9 +163,7 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   addNewDayOff() {
-
     let dayOffArray: DayOff[] = [this.DayOff];
-
     this.https.post<any>("/api/NgayPhepChung", dayOffArray).subscribe({
       next: (res: any) => {
         //todo
