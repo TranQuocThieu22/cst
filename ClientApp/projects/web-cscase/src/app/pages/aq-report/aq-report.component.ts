@@ -57,6 +57,7 @@ export class AqReportComponent implements OnInit {
   public yAxisBieuDoPhanBoThoiGianDev: string = 'Giờ'
   public generalColor = ["#5087f3", "#e79434", "#c44d49", "#47b7df", "#7c50cc", "#e5b515"];
   public generalColor2 = ["#5087f3", "#c44d49", "#e79434", "#47b7df", "#7c50cc", "#e5b515"];
+  public generalColor3 = ["#7c50cc", "#5087f3", "#c44d49", "#e79434", "#47b7df", "#e5b515"];
   public charts: { [key: string]: ChartData, } = {};
   public AqReport_TongCase: number[] = [];
   public AqReport_treHan: number[] = [];
@@ -77,6 +78,7 @@ export class AqReportComponent implements OnInit {
   public xuLyTreSup: number[] = [];
   public phanTichTreSup: number[] = [];
   public testTreSup: number[] = [];
+  public CaseDaLamTrongNgaySup: number[] = [];
 
   constructor(private spinner: NgxSpinnerService, private http: HttpClient) {
     this.initializeCharts();
@@ -259,7 +261,10 @@ export class AqReportComponent implements OnInit {
       },
       yaxis: {
         title: {
-          text: yaxis
+          text: yaxis,
+          style: {
+            fontSize: '15px',
+          }
         }
       },
       fill: {
@@ -321,6 +326,7 @@ export class AqReportComponent implements OnInit {
       this.xuLyTreSup = res.data.map(item => item.xuLyTre || 0);
       this.phanTichTreSup = res.data.map(item => item.phanTichTre || 0);
       this.testTreSup = res.data.map(item => item.testTre || 0);
+      this.CaseDaLamTrongNgaySup = res.data.map(item => item.caseLamTrongNgay || 0);
     } else {
       console.error('Invalid response format or empty data for sup data');
     }
@@ -408,12 +414,16 @@ export class AqReportComponent implements OnInit {
       return;
     }
     this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.series = [
+      { name: "Số case đã sử lý", data: this.CaseDaLamTrongNgaySup },
       { name: "Cần xử lý", data: this.canXuLySup },
       { name: "Xử lý trễ", data: this.xuLyTreSup },
       { name: "Phân tích trễ", data: this.phanTichTreSup },
-      { name: "test trễ", data: this.testTreSup }
+      { name: "test trễ", data: this.testTreSup },
     ];
     this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.xaxis = { categories: this.assignedToListSup };
+    this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.fill.colors = this.generalColor3;
+    this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.dataLabels.style.colors = this.generalColor3;
+    this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.legend.markers.fillColors = this.generalColor3;
   }
   updateBieuDoTronCuaSup() {
     if (!this.canXuLySup || !this.assignedToListSup) {
@@ -468,6 +478,7 @@ export class AqReportComponent implements OnInit {
 
   updateBieuDoSUPReport() {
     this.charts.BieuDoSUPReport.chartOptions.series = [
+      { name: "Số case đã sử lý", data: this.CaseDaLamTrongNgaySup },
       { name: "Cần xử lý", data: this.canXuLySup },
       { name: "Xử lý Trễ", data: this.xuLyTreSup }
     ];

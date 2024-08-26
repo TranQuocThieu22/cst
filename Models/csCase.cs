@@ -141,6 +141,7 @@ namespace educlient.Models
             public int XuLyTre { get; set; }
             public int PhanTichTre { get; set; }
             public int TestTre { get; set; }
+            public int CaseLamTrongNgay { get; set; }
         }
 
         public class CanXuLyDataDO
@@ -150,6 +151,12 @@ namespace educlient.Models
             public int CanTest { get; set; }
             public int CanPhanTich { get; set; }
             public int DuocGan { get; set; }
+        }
+        public class CaseSupLamTrongNgayDataDO
+        {
+            public string assignedto { get; set; }
+            public List<string> caseList { get; set; }
+            public int TongSo { get; set; }
         }
         public class AQReportDataDO
         {

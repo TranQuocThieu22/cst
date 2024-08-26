@@ -62,12 +62,14 @@ namespace educlient.Services
             var CanGanTagwiqlQuery = _thongKeSupService.BuildWiqlGanTagQuery();
             var TestTreWiqlTestTreQuery = _thongKeSupService.BuildWiqlTestTreQuery();
             var PhanTichTreWiqlTestTreQuery = _thongKeSupService.BuildWiqlPhanTichTreQuery();
+            var TongCaseCuaSupQuery = _thongKeSupService.BuildWiqlQueryCaseLamTrongNgay();
 
             var caseIds = await _thongKeSupService.GetCaseIds(wiqlQuery);
             var caseTestIds = await _thongKeSupService.GetCaseIds(CanTestwiqlQuery);
             var caseGanTagIds = await _thongKeSupService.GetCaseIds(CanGanTagwiqlQuery);
             var caseTestTreIds = await _thongKeSupService.GetCaseIds(TestTreWiqlTestTreQuery);
             var casePhanTichTreIds = await _thongKeSupService.GetCaseIds(PhanTichTreWiqlTestTreQuery);
+            var TongCaseDaLamCuaSup = await _thongKeSupService.GetCaseIds(TongCaseCuaSupQuery);
 
             if (caseIds == null || !caseIds.Any())
             {
@@ -79,19 +81,22 @@ namespace educlient.Services
             var caseGanTagDetails = await _thongKeSupService.GetCaseDetails(caseGanTagIds);
             var caseTestTreDetails = await _thongKeSupService.GetCaseDetails(caseTestTreIds);
             var casePhanTichTreDetails = await _thongKeSupService.GetCaseDetails(casePhanTichTreIds);
+            var TongCaseDaLamCuaSupDetails = await _thongKeSupService.GetCaseDetails(TongCaseDaLamCuaSup);
 
             var thongTinCases = _thongKeSupService.ProcessCaseDetails(caseDetails);
             var thongTinCasesTest = _thongKeSupService.ProcessCaseDetails(caseTestDetails);
             var thongTinCasesGanTag = _thongKeSupService.ProcessCaseDetails(caseGanTagDetails);
             var thongTinCasesTestTre = _thongKeSupService.ProcessCaseDetails(caseTestTreDetails);
             var thongTinCasesPhanTichTre = _thongKeSupService.ProcessCaseDetails(casePhanTichTreDetails);
+            var thongTinTongCaseCuaSup = _thongKeSupService.ProcessCaseDetails(TongCaseDaLamCuaSupDetails);
 
+            var SoLuongCaseSupXuLyTrongNgay = _thongKeSupService.GetSoLuongCaseSupLam(thongTinTongCaseCuaSup);
             var SoLuongCanXuLy = _thongKeSupService.SummarizeCanXuLyData(thongTinCases, thongTinCasesTest, thongTinCasesGanTag);
             var SoLuongTestTreCase = _thongKeSupService.CountXuLyTreByCaseTester(thongTinCasesTestTre);
             var SoLuongPhanTichTreCase = _thongKeSupService.CountPhanTichTreByCaseAnalyst(thongTinCasesPhanTichTre);
             var caseXuLyTre = _thongKeSupService.CalculateXuLyTre(thongTinCasesPhanTichTre, thongTinCasesTestTre);
 
-            var supReport = _thongKeSupService.SupReport(caseXuLyTre, SoLuongCanXuLy);
+            var supReport = _thongKeSupService.SupReport(caseXuLyTre, SoLuongCanXuLy, SoLuongCaseSupXuLyTrongNgay);
             return supReport;
         }
 

@@ -17,6 +17,7 @@ namespace educlient.Services
     {
         Task<XuLyCaseSupDataResult> SupportCaseReport();
         string BuildWiqlQuery();
+        string BuildWiqlQueryCaseLamTrongNgay();
         string BuildWiqlPhanTichTreQuery();
         string BuildWiqlTestTreQuery();
         string BuildWiqlCanTestQuery();
@@ -34,7 +35,8 @@ namespace educlient.Services
         List<XuLyCaseSupdataDO> CountXuLyTreByCaseTester(List<ThongTinCaseSup> thongTinCases);
         List<XuLyCaseSupdataDO> CountPhanTichTreByCaseAnalyst(List<ThongTinCaseSup> thongTinCases);
         List<XuLyCaseSupdataDO> CalculateXuLyTre(List<ThongTinCaseSup> thongTinCasesPhanTichTre, List<ThongTinCaseSup> thongTinCasesTestTre);
-        List<XuLyCaseSupdataDO> SupReport(List<XuLyCaseSupdataDO> combinedData, List<XuLyCaseSupdataDO> SoLuongCanXuLy);
+        List<XuLyCaseSupdataDO> GetSoLuongCaseSupLam(List<ThongTinCaseSup> data);
+        List<XuLyCaseSupdataDO> SupReport(List<XuLyCaseSupdataDO> combinedData, List<XuLyCaseSupdataDO> SoLuongCanXuLy, List<XuLyCaseSupdataDO> CaseSupLamTrongNgay);
     }
 
     public class ThongKeSupService : IThongKeSupService
@@ -54,12 +56,15 @@ namespace educlient.Services
             var CanGanTagwiqlQuery = BuildWiqlGanTagQuery();
             var TestTreWiqlTestTreQuery = BuildWiqlTestTreQuery();
             var PhanTichTreWiqlTestTreQuery = BuildWiqlPhanTichTreQuery();
+            var TongCaseCuaSupQuery = BuildWiqlQueryCaseLamTrongNgay();
+
 
             var caseIds = await GetCaseIds(wiqlQuery);
             var caseTestIds = await GetCaseIds(CanTestwiqlQuery);
             var caseGanTagIds = await GetCaseIds(CanGanTagwiqlQuery);
             var caseTestTreIds = await GetCaseIds(TestTreWiqlTestTreQuery);
             var casePhanTichTreIds = await GetCaseIds(PhanTichTreWiqlTestTreQuery);
+            var TongCaseDaLamCuaSup = await GetCaseIds(TongCaseCuaSupQuery);
 
             if (caseIds == null || !caseIds.Any())
 
@@ -73,45 +78,27 @@ namespace educlient.Services
             var caseGanTagDetails = await GetCaseDetails(caseGanTagIds);
             var caseTestTreDetails = await GetCaseDetails(caseTestTreIds);
             var casePhanTichTreDetails = await GetCaseDetails(casePhanTichTreIds);
-            //foreach (var item in caseDetails.value)
-            //{
-            //    Debug.WriteLine($"caseDetails:{item.id}");
-            //}
+            var TongCaseDaLamCuaSupDetails = await GetCaseDetails(TongCaseDaLamCuaSup);
 
-            //foreach (var item in caseTestDetails.value)
-            //{
-            //    Debug.WriteLine($"caseTestDetails:{item.id}");
-            //}
-            //foreach (var item in caseGanTagDetails.value)
-            //{
-            //    Debug.WriteLine($"caseGanTagDetails:{item.id}");
-            //}
-            ////foreach (var item in caseTestTreDetails.value)
-            ////{
-            ////    Debug.WriteLine($"caseTestTreDetails:{item.id}");
-            ////}
-            //foreach (var item in casePhanTichTreDetails.value)
-            //{
-            //    Debug.WriteLine($"casePhanTichTreDetails:{item.id}");
-            //}
             var thongTinCases = ProcessCaseDetails(caseDetails);
             var thongTinCasesTest = ProcessCaseDetails(caseTestDetails);
-
             var thongTinCasesGanTag = ProcessCaseDetails(caseGanTagDetails);
             var thongTinCasesTestTre = ProcessCaseDetails(caseTestTreDetails);
             var thongTinCasesPhanTichTre = ProcessCaseDetails(casePhanTichTreDetails);
+            var thongTinTongCaseCuaSup = ProcessCaseDetails(TongCaseDaLamCuaSupDetails);
 
 
 
             //var SoLuongCanPhanTich = GetSoLuongCanPhanTich(thongTinCases);
             //var SoLuongCaseCanTest = GetSoLuongCanTest(thongTinCasesTest);
             //var SoLuongCaseGanTag = GetSoLuongGanTag(thongTinCasesGanTag);
+            var SoLuongCaseSupXuLyTrongNgay = GetSoLuongCaseSupLam(thongTinTongCaseCuaSup);
             var SoLuongCanXuLy = SummarizeCanXuLyData(thongTinCases, thongTinCasesTest, thongTinCasesGanTag);
             var SoLuongTestTreCase = CountXuLyTreByCaseTester(thongTinCasesTestTre);
             var SoLuongPhanTichTreCase = CountPhanTichTreByCaseAnalyst(thongTinCasesPhanTichTre);
             var caseXuLyTre = CalculateXuLyTre(thongTinCasesPhanTichTre, thongTinCasesTestTre);
 
-            var supReport = SupReport(caseXuLyTre, SoLuongCanXuLy);
+            var supReport = SupReport(caseXuLyTre, SoLuongCanXuLy, SoLuongCaseSupXuLyTrongNgay);
 
             return new XuLyCaseSupDataResult { code = 200, message = "success", result = true, data = supReport };
         }
@@ -149,6 +136,8 @@ namespace educlient.Services
     ORDER BY [System.State]""
 }}";
         }
+
+
         public string BuildWiqlCanTestQuery()
         {
             return $@"{{
@@ -163,6 +152,21 @@ namespace educlient.Services
 
                 ORDER BY [AQ.CaseTester]""
 }}";
+        }
+        public string BuildWiqlQueryCaseLamTrongNgay()
+        {
+            return $@"{{
+            ""query"": ""SELECT [System.Id], [System.Title], [System.CreatedDate], [AQ.ReqState], [AQ.CaseAnalyst], [AQ.DateKQPhanTich], [System.AssignedTo], [Microsoft.VSTS.Common.ResolvedDate], [System.State], [AQ.DateKQTest], [AQ.CaseTester]
+            FROM WorkItems
+            WHERE [System.TeamProject] = @project
+            AND [System.WorkItemType] <> ''
+            AND (
+                ([AQ.CaseAnalyst] IN ('thanh <AQ\\thanh>', 'havt <AQ\\havt>', 'thuannam <AQ\\thuannam>', 'thuyduong <AQ\\thuyduong>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>') AND [AQ.DateKQPhanTich] = @today)
+                OR ([System.AssignedTo] IN ('thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thanh <AQ\\thanh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') AND [Microsoft.VSTS.Common.ResolvedDate] = @today)
+                OR ([AQ.CaseTester] IN ('thanh <AQ\\thanh>', 'thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') AND [AQ.DateKQTest] = @today)
+            )
+            ORDER BY [AQ.CaseAnalyst]""
+            }}";
         }
         public string BuildWiqlGanTagQuery()
         {
@@ -443,7 +447,37 @@ namespace educlient.Services
         .ToList();
             return xuLyCaseSupdataDO;
         }
+        public List<XuLyCaseSupdataDO> GetSoLuongCaseSupLam(List<ThongTinCaseSup> data)
+        {
+            var allowedPeople = new HashSet<string>
+    {
+        "thanh <AQ\\thanh>",
+        "havt <AQ\\havt>",
+        "thuannam <AQ\\thuannam>",
+        "thuyduong <AQ\\thuyduong>",
+        "mtien <AQ\\mtien>",
+        "giaminh <AQ\\duongminh>"
+    };
 
+            var result = data
+                .SelectMany(c => new[]
+                {
+            new { Person = c.caseanalyst, Case = c.macase },
+            new { Person = c.casetester, Case = c.macase },
+            new { Person = c.assignedto, Case = c.macase }
+                })
+                .Where(x => !string.IsNullOrEmpty(x.Person) && allowedPeople.Contains(x.Person))
+                .GroupBy(x => x.Person)
+                .Select(g => new XuLyCaseSupdataDO
+                {
+                    assignedto = g.Key,
+                    //caseList = g.Select(x => x.Case).Distinct().ToList(),
+                    CaseLamTrongNgay = g.Select(x => x.Case).Distinct().Count()
+                })
+                .ToList();
+
+            return result;
+        }
         public List<CanXuLyDataDO> GetSoLuongGanTag(List<ThongTinCaseSup> data)
         {
             List<CanXuLyDataDO> xuLyCaseSupdataDO = data
@@ -457,6 +491,7 @@ namespace educlient.Services
         .ToList();
             return xuLyCaseSupdataDO;
         }
+
         public List<XuLyCaseSupdataDO> SummarizeCanXuLyData(List<ThongTinCaseSup> thongTinCases, List<ThongTinCaseSup> thongTinCasesTest, List<ThongTinCaseSup> thongTinCasesGanTag)
         {
             var canPhanTich = GetSoLuongCanPhanTich(thongTinCases);
@@ -525,7 +560,10 @@ namespace educlient.Services
 
             return combinedData;
         }
+        //public List<CaseSupLamTrongNgay> CountTongSoCaseSupLamTrongNgay(List<ThongTinCaseSup> thongTinCases)
+        //{
 
+        //}
         public List<XuLyCaseSupdataDO> CountXuLyTreByCaseTester(List<ThongTinCaseSup> thongTinCases)
         {
             // Group the cases by casetester
@@ -597,10 +635,11 @@ namespace educlient.Services
 
             return combinedData;
         }
-        public List<XuLyCaseSupdataDO> SupReport(List<XuLyCaseSupdataDO> combinedData, List<XuLyCaseSupdataDO> SoLuongCanXuLy)
+        public List<XuLyCaseSupdataDO> SupReport(List<XuLyCaseSupdataDO> combinedData, List<XuLyCaseSupdataDO> SoLuongCanXuLy, List<XuLyCaseSupdataDO> CaseSupLamTrongNgay)
         {
             var finalData = combinedData
                 .Concat(SoLuongCanXuLy)
+                .Concat(CaseSupLamTrongNgay)
                 .GroupBy(x => x.assignedto)
                 .Select(g => new XuLyCaseSupdataDO
                 {
@@ -608,7 +647,8 @@ namespace educlient.Services
                     canXuLy = g.Sum(x => x.canXuLy), // Default value
                     XuLyTre = g.Sum(x => x.PhanTichTre + x.TestTre),
                     PhanTichTre = g.Sum(x => x.PhanTichTre),
-                    TestTre = g.Sum(x => x.TestTre)
+                    TestTre = g.Sum(x => x.TestTre),
+                    CaseLamTrongNgay = g.Sum(x => x.CaseLamTrongNgay)
                 })
                 .ToList();
             return finalData;
