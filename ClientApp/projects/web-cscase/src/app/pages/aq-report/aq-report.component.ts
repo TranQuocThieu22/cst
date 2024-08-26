@@ -414,7 +414,7 @@ export class AqReportComponent implements OnInit {
       return;
     }
     this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.series = [
-      { name: "Số case đã sử lý", data: this.CaseDaLamTrongNgaySup },
+      { name: "Số case đã xử lý", data: this.CaseDaLamTrongNgaySup },
       { name: "Cần xử lý", data: this.canXuLySup },
       { name: "Xử lý trễ", data: this.xuLyTreSup },
       { name: "Phân tích trễ", data: this.phanTichTreSup },
@@ -478,7 +478,7 @@ export class AqReportComponent implements OnInit {
 
   updateBieuDoSUPReport() {
     this.charts.BieuDoSUPReport.chartOptions.series = [
-      { name: "Số case đã sử lý", data: this.CaseDaLamTrongNgaySup },
+      { name: "Số case đã xử lý", data: this.CaseDaLamTrongNgaySup },
       { name: "Cần xử lý", data: this.canXuLySup },
       { name: "Xử lý Trễ", data: this.xuLyTreSup }
     ];
