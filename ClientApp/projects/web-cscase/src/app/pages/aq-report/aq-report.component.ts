@@ -15,7 +15,9 @@ import {
   ApexMarkers,
   ApexTheme,
   ApexNonAxisChartSeries,
-  ApexResponsive
+  ApexResponsive,
+  ApexStates,
+  ApexTooltip
 
 } from "ng-apexcharts";
 import { KeyValue } from '@angular/common';
@@ -35,6 +37,10 @@ export type ChartOptions = {
   fill: ApexFill;
   responsive: ApexResponsive[];
   labels: string[];
+  states: ApexStates;
+  tooltip: ApexTooltip;
+  marker: ApexMarkers
+
 };
 
 interface ChartData {
@@ -55,9 +61,9 @@ export class AqReportComponent implements OnInit {
   formattedDate: string = this.formatDate(this.datePickerValue);
   public yAxisBieuDoTienDoXuLyCasesDev: string = 'Cases';
   public yAxisBieuDoPhanBoThoiGianDev: string = 'Giờ'
-  public generalColor = ["#5087f3", "#e79434", "#c44d49", "#47b7df", "#7c50cc", "#e5b515"];
-  public generalColor2 = ["#5087f3", "#c44d49", "#e79434", "#47b7df", "#7c50cc", "#e5b515"];
-  public generalColor3 = ["#7c50cc", "#5087f3", "#c44d49", "#e79434", "#47b7df", "#e5b515"];
+  public generalColor = ["#1f77b4", "#ff7f0e", "#d62728", "#9467bd", "#2ca02c", "#8c564b", "#e377c2", "#7f7f7f"];
+  public generalColor2 = ["#1f77b4", "#d62728", "#ff7f0e", "#9467bd", "#2ca02c", "#8c564b", "#e377c2", "#7f7f7f"];
+  public generalColor3 = ["#2ca02c", "#1f77b4", "#d62728", "#ff7f0e", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f"];
   public charts: { [key: string]: ChartData, } = {};
   public AqReport_TongCase: number[] = [];
   public AqReport_treHan: number[] = [];
@@ -139,13 +145,13 @@ export class AqReportComponent implements OnInit {
       BieuDoPhanBoSoCaseTheoThoiGianCho: { // Added new chart
         chartOptions: this.getPieChartOptions(),
         updateFunction: () => this.updateBieuDoPhanBoSoCaseTheoThoiGianCho(),
-        title: 'phân bố số case theo thời gian chờ',
+        title: 'Phân bố số case theo thời gian chờ',
         id: 4
       },
       BieuDoPhanBoSoCaseTheoThoiGianCho2: {
         chartOptions: this.getBaseChartOptions(this.yAxisBieuDoTienDoXuLyCasesDev),
         updateFunction: () => this.updateBieuDoPhanBoSoCaseTheoThoiGianCho2(),
-        title: 'phân bố số case theo thời gian chờ',
+        title: 'Phân bố số case theo thời gian chờ',
         id: 5
       },
       BieuDoTongHopAQReport: {
@@ -191,19 +197,24 @@ export class AqReportComponent implements OnInit {
       }],
       labels: [],
       legend: {
-        show: true,
         position: 'bottom',
         fontSize: '20px',
-        labels: {
-          useSeriesColors: false
-        },
+
         markers: {
           fillColors: this.generalColor,
         }
       },
-      dataLabels: {
 
+      dataLabels: {
         enabled: true,
+        style: {
+          colors: ["#000000"]
+        },
+        background: {
+          foreColor: "#E8E8E8",
+          enabled: true,
+
+        },
         formatter: function (val: string | number | number[], opts) {
           const value = typeof val === 'number' ? val : Number(val);
           if (!isNaN(value)) {
@@ -212,12 +223,34 @@ export class AqReportComponent implements OnInit {
             return `${opts.w.config.labels[opts.seriesIndex]}: ${opts.w.config.series[opts.seriesIndex]}( ${value.toFixed(1)}%)`
           }
           return opts.w.config.series[opts.seriesIndex].toString();
+
         }
       },
       fill: {
         opacity: 1,
         colors: this.generalColor
       },
+      states: {
+        hover: {
+          filter: {
+            type: 'none',
+            value: 0.15
+          }
+        }
+      },
+
+      tooltip: {
+
+        fillSeriesColor: false,
+        onDatasetHover: {
+          highlightDataSeries: true
+        },
+        marker: {
+          show: false,
+
+        },
+
+      }
     };
   }
 
@@ -226,15 +259,18 @@ export class AqReportComponent implements OnInit {
       series: [],
       chart: {
         type: "bar",
-        height: 700
+        height: 700,
       },
 
       plotOptions: {
         bar: {
           horizontal: false,
           columnWidth: "55%",
+
+
           dataLabels: {
             position: "top",
+
           }
         }
       },
@@ -242,6 +278,7 @@ export class AqReportComponent implements OnInit {
       dataLabels: {
         enabled: true,
         offsetY: -20,
+        textAnchor: "middle",
         style: {
           colors: this.generalColor
         }
@@ -260,11 +297,15 @@ export class AqReportComponent implements OnInit {
         }
       },
       yaxis: {
+        max: function (max) {
+          return max * 1.1; // Add 10% padding to the top
+        },
         title: {
           text: yaxis,
           style: {
             fontSize: '15px',
-          }
+          },
+
         }
       },
       fill: {
@@ -277,6 +318,10 @@ export class AqReportComponent implements OnInit {
         markers: {
           fillColors: this.generalColor,
         }
+      },
+
+      tooltip: {
+        fillSeriesColor: false
       }
     };
   }
@@ -390,9 +435,9 @@ export class AqReportComponent implements OnInit {
     }
     const specificColorIndex = 1;
     this.charts.BieuDoTienDoXyLyCasesDev.chartOptions.series = [
-      { name: "cần xử lý", data: this.CanXuLyListDev },
-      { name: "số case trong ngày", data: this.soCaseTrongNgayListDev },
-      { name: "xử lý trễ", data: this.xuLyTreListDev }
+      { name: "Cần xử lý", data: this.CanXuLyListDev },
+      { name: "Số case trong ngày", data: this.soCaseTrongNgayListDev },
+      { name: "Xử lý trễ", data: this.xuLyTreListDev }
     ];
     this.charts.BieuDoTienDoXyLyCasesDev.chartOptions.xaxis = { categories: this.assignedToListDev };
   }
@@ -418,7 +463,7 @@ export class AqReportComponent implements OnInit {
       { name: "Cần xử lý", data: this.canXuLySup },
       { name: "Xử lý trễ", data: this.xuLyTreSup },
       { name: "Phân tích trễ", data: this.phanTichTreSup },
-      { name: "test trễ", data: this.testTreSup },
+      { name: "Test trễ", data: this.testTreSup },
     ];
     this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.xaxis = { categories: this.assignedToListSup };
     this.charts.BieuDoTienDoXyLyCasesSup.chartOptions.fill.colors = this.generalColor3;
@@ -468,9 +513,9 @@ export class AqReportComponent implements OnInit {
 
   updateBieuDoDEVReport() {
     this.charts.BieuDoDEVReport.chartOptions.series = [
-      { name: "cần xử lý", data: this.CanXuLyListDev },
-      { name: "số case trong ngày", data: this.soCaseTrongNgayListDev },
-      { name: "xử lý trễ", data: this.xuLyTreListDev }
+      { name: "Cần xử lý", data: this.CanXuLyListDev },
+      { name: "Số case trong ngày", data: this.soCaseTrongNgayListDev },
+      { name: "Xử lý trễ", data: this.xuLyTreListDev }
     ];
     this.charts.BieuDoDEVReport.chartOptions.xaxis = { categories: this.assignedToListDev };
     this.charts.BieuDoDEVReport.chartOptions.chart.height = 300;
