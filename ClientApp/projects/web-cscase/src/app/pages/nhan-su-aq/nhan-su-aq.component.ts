@@ -66,6 +66,20 @@ export class NhanSuAqComponent implements OnInit {
     return JSON.parse(user).isLeader
   }
 
+  handleUploadAvatar(event) {
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      reader.onload = (event) => {
+        // called once readAsDataURL is completed
+        this.aqmember.avatar = event.target.result as string;
+      };
+    }
+  }
+  deleteInputImg() {
+    this.aqmember.avatar = null;
+  }
+
   fetchAQMemberData() {
     this.https.get<any>("/api/ThongTinCaNhan").subscribe({
       next: (res: any) => {
@@ -240,7 +254,10 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   addNewMember() {
-    this.aqmember.avatar = "avatar content";
+    if (this.aqmember.avatar === undefined || this.aqmember.avatar === '') {
+      this.aqmember.avatar = null;
+    }
+    // this.aqmember.avatar = "avatar content";
     let aqmemberArray: AQMember[] = [this.aqmember];
 
     this.https.post<any>("/api/ThongTinCaNhan", aqmemberArray).subscribe({
@@ -260,6 +277,7 @@ export class NhanSuAqComponent implements OnInit {
     this.AQmembers = [...this.AQmembers];
     this.addNewMemberDialog = false;
     this.aqmember = {};
+    this.deleteInputImg();
     this.hideDialog();
   }
 
