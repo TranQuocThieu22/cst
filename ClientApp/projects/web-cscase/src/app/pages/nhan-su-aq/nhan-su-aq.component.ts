@@ -70,6 +70,7 @@ export class NhanSuAqComponent implements OnInit {
     this.https.get<any>("/api/ThongTinCaNhan").subscribe({
       next: (res: any) => {
         this.AQmembers = res.data
+        this.sortInitData();
       },
       error: (error) => {
         console.log(error);
@@ -200,12 +201,19 @@ export class NhanSuAqComponent implements OnInit {
     return roleObj ? roleObj.role : 'Unknown';
   }
 
+  sortInitData() {
+    this.AQmembers.sort((a, b) => {
+      const roleA = new Date(a.role);
+      const roleB = new Date(b.role);
+      return roleA < roleB ? 1 : -1;
+    });
+  }
+
   openAddDialog() {
     this.aqmember = {};
     this.editMemberDialog = false;
     this.addNewMemberDialog = true;
     this.openDialog = true;
-    console.log(this.aqmember);
   }
 
   openEditDialog(data: any) {
@@ -219,7 +227,6 @@ export class NhanSuAqComponent implements OnInit {
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
     this.openDialog = true;
-    console.log(this.aqmember);
   }
 
   openDeleteDialog(data: any) {
