@@ -383,9 +383,9 @@ export class NgayCongTacComponent implements OnInit {
 
   clear(table: Table) {
     table.clear();
-    this.fetchCommissionDaysData();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.fetchCommissionDaysData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
   }
 
 }

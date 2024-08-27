@@ -59,6 +59,7 @@ namespace educlient
             //{
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
             //});
+            services.AddSwaggerGen();
 
         }
 
@@ -87,7 +88,8 @@ namespace educlient
             //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
             //});
 
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
 
 

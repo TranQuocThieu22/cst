@@ -442,9 +442,9 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   clear(table: Table) {
     table.clear();
-    this.fetchIndividualDayOffsData();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.fetchIndividualDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
   }
 
 }
