@@ -65,7 +65,7 @@ namespace educlient.Data
         public string fullName { get; set; }
         public string email { get; set; }
         public string phone { get; set; }
-        public string avatar { get; set; }
+        public byte[] avatar { get; set; }
         public DateTime birthDate { get; set; }
         public DateTime startDate { get; set; }
         public string nickName { get; set; }

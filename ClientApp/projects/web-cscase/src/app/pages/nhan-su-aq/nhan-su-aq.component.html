@@ -110,7 +110,7 @@
           <td style="white-space: nowrap; text-align: left;">{{AQmember.phone}}</td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
             <p-avatar
-              image="data:image/png;base64, {{AQmember.avatar}}"
+              image="{{AQmember.avatar}}"
               styleClass="p-mr-2"
               size="large"
               shape="circle"
@@ -166,7 +166,8 @@
   </div>
 </div>
 
-<p-dialog [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '1200px'}" header="Thông tin nhân sự"
+<p-dialog [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '1200px'}"
+  header="Thông tin nhân sự"
   [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
     <div class="formgrid grid">
@@ -196,7 +197,52 @@
           <label for="phone">Điện thoại</label>
           <input type="text" pInputText id="phone" [(ngModel)]="aqmember.phone" required />
         </div>
+        <div class="p-field col-12">
+          <div class="flex flex-column mt-4">
+            <!-- add member avatar -->
+            <div class="image-container flex flex-row align-items-center justify-content-center">
+
+              <div *ngIf="aqmember.avatar">
+                <label
+                  for="fileInput"
+                  pButton pRipple type="button"
+                  icon="pi pi-image"
+                  class="p-button-rounded p-button-info p-button-text align-items-center hover-button">
+                </label>
+              </div>
+
+              <div class="flex flex-column mx-1">
+                <label for="fileInput">
+                  <img [src]="aqmember.avatar ? aqmember.avatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
+                </label>
+                <input
+                  id="fileInput"
+                  type="file"
+                  [(ngModel)]="aqmember.avatar"
+                  class="select-profile-picture"
+                  (change)="handleUploadAvatar($event)" hidden />
+              </div>
+
+
+              <div *ngIf="aqmember.avatar">
+                <label
+                  pButton pRipple type="button"
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-danger p-button-text align-items-center hover-button"
+                  (click)="deleteInputImg()">
+                </label>
+              </div>
+
+            </div>
+
+            <!-- show message if no avatar -->
+            <div style="height: 5px;">
+              <div *ngIf="!aqmember.avatar" class="text-center">Chưa có ảnh đại diện</div>
+            </div>
+          </div>
+        </div>
       </div>
+
 
       <!-- Second column -->
       <div class="field col-12 md:col-6">

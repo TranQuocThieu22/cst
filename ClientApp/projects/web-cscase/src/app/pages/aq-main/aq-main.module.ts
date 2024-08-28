@@ -69,6 +69,7 @@ import { TienAnTruaTheoThangComponent } from '../bao-bieu-thong-ke/tien-an-trua-
 import { TienCongTacPhiTheoQuiComponent } from '../bao-bieu-thong-ke/tien-cong-tac-phi-theo-qui/tien-cong-tac-phi-theo-qui.component';
 import { TienLamViecNgoaiGioTheoQuiComponent } from '../bao-bieu-thong-ke/tien-lam-viec-ngoai-gio-theo-qui/tien-lam-viec-ngoai-gio-theo-qui.component';
 import { ThongKeNghiPhepNamComponent } from '../bao-bieu-thong-ke/thong-ke-nghi-phep-nam/thong-ke-nghi-phep-nam.component';
+import { ImageModule } from 'primeng/image';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
@@ -123,7 +124,8 @@ import { ThongKeNghiPhepNamComponent } from '../bao-bieu-thong-ke/thong-ke-nghi-
     ScrollPanelModule,
     SelectButtonModule,
     TagModule,
-    InputMaskModule
+    InputMaskModule,
+    ImageModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
