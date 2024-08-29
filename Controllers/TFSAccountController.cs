@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace educlient.Controllers
@@ -46,7 +47,7 @@ namespace educlient.Controllers
                         fullName = "admin",
                         email = "admin",
                         phone = "admin",
-                        avatar = "admin",
+                        avatar = null,
                         birthDate = new DateTime(2024, 1, 1),
                         startDate = new DateTime(2024, 1, 1),
                         nickName = "admin",
@@ -66,7 +67,26 @@ namespace educlient.Controllers
                     var AQMemberTable = database.Table<AQMember>();
                     var data = AQMemberTable.FindOne(x => x.TFSName == model.username);
 
-                    return Ok(data);
+                    var aqMemberReturn = new AQMemberInput
+                    {
+                        id = data.id,
+                        TFSName = data.TFSName,
+                        fullName = data.fullName,
+                        email = data.email,
+                        phone = data.phone,
+                        avatar = data.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(data.avatar)}" : null,
+                        birthDate = data.birthDate,
+                        startDate = data.startDate,
+                        nickName = data.nickName,
+                        role = data.role,
+                        isLeader = data.isLeader,
+                        isLunch = data.isLunch,
+                        WFHQuota = data.WFHQuota,
+                        absenceQuota = data.absenceQuota,
+                        isActive = data.isActive
+                    };
+
+                    return Ok(aqMemberReturn);
                 }
                 else
                 {
