@@ -1,10 +1,12 @@
 ﻿using educlient.Data;
 using educlient.Models;
 using LiteDB;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 
 namespace educlient.Controllers
 {
@@ -23,21 +25,40 @@ namespace educlient.Controllers
         {
             var AQMemberTable = database.Table<AQMember>();
 
-            var NhanVienAQ = AQMemberTable.FindAll();
+            var NhanVienAQ = AQMemberTable.FindAll().ToList();
+
+            var membersWithBase64 = NhanVienAQ.Select(member => new AQMemberInput
+            {
+                id = member.id,
+                TFSName = member.TFSName,
+                fullName = member.fullName,
+                email = member.email,
+                phone = member.phone,
+                avatar = member.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(member.avatar)}" : null,
+                birthDate = member.birthDate,
+                startDate = member.startDate,
+                nickName = member.nickName,
+                role = member.role,
+                isLeader = member.isLeader,
+                isLunch = member.isLunch,
+                WFHQuota = member.WFHQuota,
+                absenceQuota = member.absenceQuota,
+                isActive = member.isActive
+            }).ToList();
 
             return new AQMembersResult
             {
                 message = "Success",
                 code = 200,
                 result = true,
-                data = NhanVienAQ.ToList()
+                data = membersWithBase64
             };
         }
 
         [HttpGet, Route("{id}")]
         public AQMembersResult GetById(int id)
         {
-            List<AQMember> returnData = new List<AQMember>();
+            List<AQMemberInput> returnData = new List<AQMemberInput>();
 
             var AQMemberTable = database.Table<AQMember>();
 
@@ -50,7 +71,26 @@ namespace educlient.Controllers
                     message = "Data not found"
                 };
             }
-            returnData.Add(aqMember);
+
+            var aqMemberReturn = new AQMemberInput
+            {
+                TFSName = aqMember.TFSName,
+                fullName = aqMember.fullName,
+                email = aqMember.email,
+                phone = aqMember.phone,
+                avatar = aqMember.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(aqMember.avatar)}" : null,
+                birthDate = aqMember.birthDate,
+                startDate = aqMember.startDate,
+                nickName = aqMember.nickName,
+                role = aqMember.role,
+                isLeader = aqMember.isLeader,
+                isLunch = aqMember.isLunch,
+                WFHQuota = aqMember.WFHQuota,
+                absenceQuota = aqMember.absenceQuota,
+                isActive = aqMember.isActive
+            };
+
+            returnData.Add(aqMemberReturn);
 
             return new AQMembersResult
             {
@@ -71,7 +111,9 @@ namespace educlient.Controllers
                 fullName = input.fullName,
                 email = input.email,
                 phone = input.phone,
-                avatar = input.avatar,
+                avatar = !string.IsNullOrEmpty(input.avatar)
+                ? Convert.FromBase64String(input.avatar.Substring(input.avatar.IndexOf(",") + 1))
+                : null,
                 birthDate = input.birthDate,
                 startDate = input.startDate,
                 nickName = input.nickName,
@@ -114,7 +156,9 @@ namespace educlient.Controllers
             existingRecord.fullName = inputData.fullName;
             existingRecord.email = inputData.email;
             existingRecord.phone = inputData.phone;
-            existingRecord.avatar = inputData.avatar;
+            existingRecord.avatar = !string.IsNullOrEmpty(inputData.avatar)
+                ? Convert.FromBase64String(inputData.avatar.Substring(inputData.avatar.IndexOf(",") + 1))
+                : null;
             existingRecord.birthDate = inputData.birthDate;
             existingRecord.startDate = inputData.startDate;
             existingRecord.nickName = inputData.nickName;
@@ -211,7 +255,7 @@ namespace educlient.Controllers
     }
     public class AQMembersResult : ApiResultBaseDO
     {
-        public List<AQMember> data { get; set; }
+        public List<AQMemberInput> data { get; set; }
     }
 
     public class MemberCommissionList : ApiResultBaseDO

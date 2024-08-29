@@ -1,150 +1,196 @@
-<div class="container-fluid">
-  <div class="row">
-    <div
-      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-      <h1 class="h2">😎 Employee Dashboard</h1>
-    </div>
+<div class="block">
 
-    <!-- User Info and Work Metrics Cards -->
-    <div class="mb-4">
-      <div class="row">
-        <div class="col-md-6 equal-height mb-md-0">
-          <div class="card">
-            <div class="card-body d-flex flex-column">
-              <h2 class="card-title mb-4">
-                🤪 Tfs user: {{user}}
-              </h2>
-              <ul class="list-group list-group-flush flex-grow-1">
-                <li class="list-group-item">
-                  👽 Họ và tên: {{hoTen}}
-                </li>
-                <li class="list-group-item">
-                  <i class="fas fa-building me-2 text-muted"></i>
-                  Phòng ban: {{phongBan}}
-                </li>
-                <li class="list-group-item">
-                  ⏳ Ngày bắt đầu làm việc: {{NgayBatDau}}
-                </li>
-                <li class="list-group-item">
-                  🎂 Sinh nhật: {{birthDate}}
-                </li>
-                <li class="list-group-item">
-                  📬 Email: {{email}}
-                </li>
-                <li class="list-group-item">
-                  📱 Số điện thoại: {{phone}}
-                </li>
-                <li class="list-group-item">
-                  🤡 Nickname: {{nickname}}
-                </li>
-              </ul>
+  <div class="flex flex-column gap-3">
+
+    <div class="flex flex-column lg:flex-row gap-3">
+
+      <!-- content thongtincanhan -->
+      <div class="card p-4 col-12 lg:col-7 xl:col-7">
+        <!-- <div class="col-12">Thông tin cá nhân</div> -->
+        <div class="flex flex-row gap-3">
+
+          <!-- content left - avatar -->
+          <div class="">
+            <img [src]="user.avatar ? user.avatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
+          </div>
+
+          <!-- item 2 -->
+          <div class="" style="height: 100%; width: 80%;">
+            <div class="flex flex-column md:flex-row gap-2">
+
+              <div class="flex flex-column">
+                <div class="flex justify-content-left gap-3 mb-2">
+                  <span>
+                    <span style="font-weight: bold; font-size: x-large;">
+                      {{user.fullName}}
+                    </span>
+                    ({{user.nickName}})
+                  </span>
+                </div>
+
+                <div class="flex justify-content-left mb-1">
+                  <span>
+                    <span style="font-weight: bold;">✉️ Email:</span>
+                    {{user.email}}
+                  </span>
+                </div>
+
+                <div class="flex justify-content-left mb-1">
+                  <span>
+                    <span style="font-weight: bold;">📞 Số điện thoại:</span>
+                    {{user.phone}}
+                  </span>
+                </div>
+
+                <div class="flex justify-content-left mb-1">
+                  <span>
+                    <span style="font-weight: bold;">🎉 Sinh nhật:</span>
+                    {{user.birthDate | date: 'dd/MM/yyyy'}}
+                  </span>
+                </div>
+
+                <div class="flex justify-content-left mb-1">
+                  <span>
+                    <span style="font-weight: bold;">✨ Ngày bắt đầu làm việc:</span>
+                    {{user.startDate | date: 'dd/MM/yyyy'}}
+                  </span>
+                </div>
+
+                <div class="flex justify-content-left mb-1">
+                  <span>
+                    <span style="font-weight: bold;">💻 TFS Account:</span>
+                    {{user.tfsName}}
+                  </span>
+                </div>
+
+                <div class="flex justify-content-left flex-wrap gap-2 mt-2">
+                  <span>
+                    <span class="" [class]="'role-' + user.role">{{getRoleName(user.role)}}</span>
+                  </span>
+                  <span>
+                    <span *ngIf="user.isLeader" [class]="'leader-label'">AQ Leader</span>
+                  </span>
+                </div>
+
+              </div>
+
+              <!-- <div class="flex flex-column">
+                content right 
+              </div> -->
+
             </div>
           </div>
-        </div>
-        <div class="col-md-6 equal-height mb-md-0">
-          <div class="card">
-            <div class="card-body d-flex flex-column">
-              <h2 class="card-title mb-4">
-                📊 Kết quả định lượng công việc trong năm:
-              </h2>
-              <ul class="list-group list-group-flush flex-grow-1">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>
-                    🏢 Tổng số ngày làm việc trong tuần (cố định):
-                  </span>
-                  <span class="badge bg-primary rounded-pill">{{tongSoNgayLamViecTrongTuan}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>
-                    🕰️ Tổng số giờ làm việc trong ngày (Theo cá nhân):
-                  </span>
-                  <span class="badge bg-primary rounded-pill">{{tongSoGioPhaiLamViecTrongNgay}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>
-                    🏖️ Tổng số ngày nghỉ phép cá nhân, lễ, tết, nghỉ chung:
-                  </span>
-                  <span class="badge bg-primary rounded-pill">{{tongSoNgayNghiPhep}}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- <div class="col-md-6 equal-height">
-          <div class="card">
-            <div class="card-body d-flex flex-column">
-              <h2 class="card-title mb-4">
-                📊 Kết quả định lượng công việc trong năm:
-              </h2>
-              <ul class="list-group list-group-flush flex-grow-1">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>
-                    🏢 Tổng số ngày làm việc trong tuần (cố định):
-                  </span>
-                  <span class="badge bg-primary rounded-pill">{{tongSoNgayLamViecTrongTuan}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>
-                    🕰️ Tổng số giờ làm việc trong ngày (Theo cá nhân):
-                  </span>
-                  <span class="badge bg-primary rounded-pill">{{tongSoGioPhaiLamViecTrongNgay}}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span>
-                    🏖️ Tổng số ngày nghỉ phép cá nhân, lễ, tết, nghỉ chung:
-                  </span>
-                  <span class="badge bg-primary rounded-pill">{{tongSoNgayNghiPhep}}</span>
-                </li>
-              </ul>
-            </div>
+
+        </div>
+
+        <!-- <div class="mt-4" style="width: 100%; height: 10%;">
+          <div class="flex flex-column">
+            content bottom
           </div>
         </div> -->
 
-    <!-- Leave Information Table -->
-    <!-- <div class="card mb-4">
-      <div class="card-body">
-        <h2 class="card-title mb-4">
-          <i class="fas fa-calendar-minus me-2"></i>
-          Thông tin nghỉ phép
-        </h2>
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Ngày</th>
-                <th>Số lượng ngày</th>
-                <th>Lý do</th>
-                <th>Loại ngày</th>
-                <th>User</th>
-                <th>Trạng thái</th>
-                <th>Ghi chú</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of ThongTinNghiPhep">
-                <td>{{data.id}}</td>
-                <td>{{data.ngay}}</td>
-                <td>{{data.soLuongNgay}}</td>
-                <td>{{data.lyDo}}</td>
-                <td>{{data.loaiNgay}}</td>
-                <td>{{data.user}}</td>
-                <td>
-                  <span class="badge" [ngClass]="{
-                                      'bg-success': data.trangThai === 'Đã duyệt',
-                                      'bg-warning': data.trangThai === 'Chờ duyệt',
-                                      'bg-danger': data.trangThai === 'Từ chối'
-                                  }">{{data.trangThai}}</span>
-                </td>
-                <td>{{data.ghiChu}}</td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+      <!-- end content thongtincanhan -->
+
+      <!-- <div class="card p-4 col-12 lg:col-5 xl:col-5">
+        <div echarts [options]="c1_echartsOptions" [extentions]="c1_echartsExtentions" style="height: 250px;">
+        </div>
+      </div> -->
+
+      <div class="card p-4 col-12 lg:col-5 xl:col-5">
+        <div>
+
+          <div class="flex flex-column">
+
+            <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Số ngày làm việc trong tuần:</span>
+              <span>
+                <span style="font-weight: bold;">
+                  5
+                </span>
+              </span>
+            </div>
+
+            <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Tổng số giờ làm việc trong ngày :</span>
+              <span>
+                <span style="font-weight: bold;">
+                  7
+                </span>
+              </span>
+            </div>
+
+            <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Tổng số ngày nghỉ (tháng hiện tại):</span>
+              <span style="font-weight: bold;">
+                {{userTotalDayOff_Month}}
+              </span>
+            </div>
+
+            <!-- <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Tổng số ngày nghỉ (tháng):</span>
+              <span>
+                <p-badge [value]="3"></p-badge>
+              </span>
+            </div> -->
+
+
+
+          </div>
         </div>
       </div>
-    </div> -->
+
+    </div>
+
+    <div class="flex flex-column lg:flex-row gap-3">
+
+      <!-- <div class="card p-4 col-12 lg:col-4 xl:col-4">
+        <div>
+
+          <div class="flex flex-column">
+
+            <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Số ngày làm việc trong tuần:</span>
+              <span>
+                <p-badge [value]="5"></p-badge>
+              </span>
+            </div>
+
+            <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Tổng số giờ làm việc trong ngày :</span>
+              <span>
+                <p-badge [value]="7"></p-badge>
+              </span>
+            </div>
+
+            <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Tổng số ngày nghỉ (tuần hiện tại):</span>
+              <span>
+                <p-badge [value]="5"></p-badge>
+              </span>
+            </div>
+
+            <div class="flex align-items-center justify-content-left gap-3">
+              <span class="col-10">Tổng số ngày nghỉ (tháng):</span>
+              <span>
+                <p-badge [value]="3"></p-badge>
+              </span>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div> -->
+
+      <!-- <div class="card p-4 col-12 lg:col-8 xl:col-8">
+        <div>C4</div>
+        <div>
+          <div echarts [options]="c2_echartsOptions" [extentions]="c2_echartsExtentions">
+          </div>
+        </div>
+      </div> -->
+
+    </div>
   </div>
-</div>

@@ -475,21 +475,21 @@ namespace educlient.Services
                     DateTime parsedDate = DateTime.Parse(c.ngaynhan);
                     var daysDifference = (today - parsedDate).Days;
                     if (daysDifference < 7)
-                        return "Less than a week";
+                        return "Ít hơn 1 tuần";
                     else if (daysDifference <= 14)
-                        return "Week 1";
+                        return "Tuần 1";
                     else if (daysDifference <= 21)
-                        return "Week 2";
+                        return "Tuần 2";
                     else if (daysDifference <= 28)
-                        return "Week 3";
+                        return "Tuần 3";
                     else if (daysDifference <= 35)
-                        return "Week 4";
+                        return "Tuần 4";
                     else if (daysDifference <= 42)
-                        return "Week 5";
+                        return "Tuần 5";
                     else if (daysDifference <= 49)
-                        return "Week 6";
+                        return "Tuần 6";
                     else
-                        return "More than 6 weeks";
+                        return "Nhiều hơn 6 tuần";
                 })
                 .Select(g => new CaseTheoThoiGianChoDataDO
                 {
