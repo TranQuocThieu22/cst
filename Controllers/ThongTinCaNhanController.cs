@@ -88,7 +88,6 @@ namespace educlient.Controllers
                 WFHQuota = aqMember.WFHQuota,
                 absenceQuota = aqMember.absenceQuota,
                 isActive = aqMember.isActive
-
             };
 
             returnData.Add(aqMemberReturn);

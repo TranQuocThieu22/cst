@@ -70,6 +70,7 @@ import { TienCongTacPhiTheoQuiComponent } from '../bao-bieu-thong-ke/tien-cong-t
 import { TienLamViecNgoaiGioTheoQuiComponent } from '../bao-bieu-thong-ke/tien-lam-viec-ngoai-gio-theo-qui/tien-lam-viec-ngoai-gio-theo-qui.component';
 import { ThongKeNghiPhepNamComponent } from '../bao-bieu-thong-ke/thong-ke-nghi-phep-nam/thong-ke-nghi-phep-nam.component';
 import { ImageModule } from 'primeng/image';
+import { BadgeModule } from 'primeng/badge';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
@@ -125,7 +126,8 @@ import { ImageModule } from 'primeng/image';
     SelectButtonModule,
     TagModule,
     InputMaskModule,
-    ImageModule
+    ImageModule,
+    BadgeModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [

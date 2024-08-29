@@ -168,6 +168,72 @@ namespace educlient.Controllers
             };
         }
 
+        [HttpGet("ThongKeNgayNghiCaNhan")]
+        public ThongKeNgayNghiCaNhanResult ThongKeNgayNghiById([FromQuery] int year, [FromQuery] int month, [FromQuery] int? query_memberId = null)
+        {
+            // Get the tables
+            var membersTable = database.Table<AQMember>();
+            var dayOffsTable = database.Table<IndividualDayOff>();
+            var aqDayOffTable = database.Table<DayOff>();
+
+            var member = membersTable.FindById(query_memberId);
+            if (member == null)
+            {
+                return new ThongKeNgayNghiCaNhanResult
+                {
+                    message = "Member not found",
+                    code = 404,
+                    result = false,
+                    data = null
+                };
+            }
+            var resultList = new List<ThongKeNgayNghiCaNhanDataDO>();
+            // Find day-off data for each member by year
+            var dayOffData = dayOffsTable.Find(x =>
+                x.memberId == query_memberId &&
+                x.dateFrom.Year == year &&
+                x.dateFrom.Month == month &&
+                x.approvalStatus == "Đã duyệt" &&
+                x.sumDay > 0.5
+                ).ToList();
+
+            var countDayOff = 0;
+            foreach (var dayOff in dayOffData)
+            {
+                countDayOff += (int)dayOff.sumDay;
+            }
+
+            var aqDayOffData = aqDayOffTable.Find(x =>
+                x.dateFrom.Year == year &&
+                x.dateFrom.Month == month
+                ).ToList();
+            var countaqDayOff = 0;
+            foreach (var aqDayOff in aqDayOffData)
+            {
+                countaqDayOff += (int)aqDayOff.sumDay;
+            }
+
+
+            // Combine member data with their day-off data
+            var resultData = new ThongKeNgayNghiCaNhanDataDO
+            {
+                id = member.id,
+                fullName = member.fullName,
+                nickName = member.nickName,
+                userTotalDayOff_Month = countDayOff + countaqDayOff,
+            };
+
+            resultList.Add(resultData);
+
+            return new ThongKeNgayNghiCaNhanResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = resultList
+            };
+        }
+
         public class ThongKeTinhTienAnTruaDataDO
         {
             public int id { get; set; }
@@ -196,6 +262,19 @@ namespace educlient.Controllers
         public class ThongKeTinhTienCongTacResult : ApiResultBaseDO
         {
             public List<ThongKeTinhTienCongTacDataDO> data { get; set; }
+        }
+
+        public class ThongKeNgayNghiCaNhanDataDO
+        {
+            public int id { get; set; }
+            public string fullName { get; set; }
+            public string nickName { get; set; }
+            public float userTotalDayOff_Month { get; set; }
+        }
+
+        public class ThongKeNgayNghiCaNhanResult : ApiResultBaseDO
+        {
+            public List<ThongKeNgayNghiCaNhanDataDO> data { get; set; }
         }
 
     }

@@ -1,46 +1,143 @@
+.css_box1 {
+  border: 1px solid red;
+}
+
+.css_box2 {
+  border: 1px solid green;
+}
+
+.css_box3 {
+  border: 1px solid blue;
+}
+
+
 .sidebar {
   background-color: #f8f9fa;
-  min-height: 100vh;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  min-height      : 100vh;
+  box-shadow      : 2px 0 5px rgba(0, 0, 0, 0.1);
 }
+
 .sidebar .nav-link {
-  color: #333;
+  color     : #333;
   transition: all 0.3s;
 }
+
 .sidebar .nav-link:hover {
   background-color: #e9ecef;
 }
+
 .main-content {
   padding: 2rem;
 }
+
 .card {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
 }
+
 .card:hover {
   transform: translateY(-5px);
 }
+
 .list-group-item {
   border-left: 4px solid transparent;
 }
+
 .list-group-item:hover {
   border-left-color: #007bff;
 }
+
 .table th {
   background-color: #f8f9fa;
 }
 
 .list-group-item {
-  border: none;
+  border : none;
   padding: 0.5rem 1.25rem;
 }
+
 .badge {
   font-size: 0.9em;
 }
+
 .equal-height {
-  display: flex;
+  display       : flex;
   flex-direction: column;
 }
+
 .equal-height .card {
   flex: 1;
+}
+
+img {
+  height          : 20vh;
+  width           : 20vh;
+  border          : 1px solid #505050;
+  // border-radius: 50%;
+}
+
+.role-1 {
+  background    : #b3e5fc;
+  color         : #23547b;
+  border-radius : 20px;
+  padding       : .25em .5rem;
+  text-transform: uppercase;
+  font-weight   : 700;
+  font-size     : 14px;
+  letter-spacing: .3px;
+}
+
+.role-2 {
+  background    : #ffd8b2;
+  color         : #805b36;
+  border-radius : 20px;
+  padding       : .25em .5rem;
+  text-transform: uppercase;
+  font-weight   : 700;
+  font-size     : 14px;
+  letter-spacing: .3px;
+}
+
+.role-3 {
+  background    : #8dbca1;
+  color         : #1a5533;
+  border-radius : 20px;
+  padding       : .25em .5rem;
+  text-transform: uppercase;
+  font-weight   : 700;
+  font-size     : 14px;
+  letter-spacing: .3px;
+}
+
+.role-4 {
+  background    : #f1e1d4;
+  color         : #fe1155;
+  border-radius : 20px;
+  padding       : .25em .5rem;
+  text-transform: uppercase;
+  font-weight   : 700;
+  font-size     : 14px;
+  letter-spacing: .3px;
+}
+
+.role-5 {
+  background    : #f5f5dc;
+  color         : #0a3d62;
+  border-radius : 20px;
+  padding       : .25em .5rem;
+  text-transform: uppercase;
+  font-weight   : 700;
+  font-size     : 14px;
+  letter-spacing: .3px;
+}
+
+.leader-label {
+  background    : #f5f5dc;
+  color         : #9d9441;
+  border-radius : 20px;
+  padding       : .25em .5rem;
+  text-transform: uppercase;
+  font-weight   : 700;
+  font-size     : 14px;
+  letter-spacing: .3px;
 }
