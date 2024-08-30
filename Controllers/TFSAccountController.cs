@@ -70,7 +70,7 @@ namespace educlient.Controllers
                     var aqMemberReturn = new AQMemberInput
                     {
                         id = data.id,
-                        TFSName = data.TFSName,
+                        tfsName = data.TFSName,
                         fullName = data.fullName,
                         email = data.email,
                         phone = data.phone,

@@ -30,7 +30,7 @@ namespace educlient.Controllers
             var membersWithBase64 = NhanVienAQ.Select(member => new AQMemberInput
             {
                 id = member.id,
-                TFSName = member.TFSName,
+                tfsName = member.TFSName,
                 fullName = member.fullName,
                 email = member.email,
                 phone = member.phone,
@@ -74,7 +74,7 @@ namespace educlient.Controllers
 
             var aqMemberReturn = new AQMemberInput
             {
-                TFSName = aqMember.TFSName,
+                tfsName = aqMember.TFSName,
                 fullName = aqMember.fullName,
                 email = aqMember.email,
                 phone = aqMember.phone,
@@ -107,7 +107,7 @@ namespace educlient.Controllers
 
             var aqMember = inputData.Select(input => new AQMember
             {
-                TFSName = input.TFSName,
+                TFSName = input.tfsName,
                 fullName = input.fullName,
                 email = input.email,
                 phone = input.phone,
@@ -152,7 +152,7 @@ namespace educlient.Controllers
                 };
             }
 
-            existingRecord.TFSName = inputData.TFSName;
+            existingRecord.TFSName = inputData.tfsName;
             existingRecord.fullName = inputData.fullName;
             existingRecord.email = inputData.email;
             existingRecord.phone = inputData.phone;
@@ -266,7 +266,7 @@ namespace educlient.Controllers
     public class AQMemberInput
     {
         public int id { get; set; }
-        public string TFSName { get; set; }
+        public string tfsName { get; set; }
         public string fullName { get; set; }
         public string email { get; set; }
         public string phone { get; set; }
