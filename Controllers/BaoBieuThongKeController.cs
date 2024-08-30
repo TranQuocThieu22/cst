@@ -141,11 +141,21 @@ namespace educlient.Controllers
                     ).ToList();
 
                 float countCommission = 0;
-                commissionData.ForEach(d => countCommission += d.sumDay);
-
                 var totalExpense = 0;
-                commissionData.ForEach(d => totalExpense += d.commissionExpenses);
 
+                if (commissionData.Any(d => d.memberList.Any(m => m.id == member.id)))
+                {
+                    // Execute only for members with a commission
+                    commissionData.ForEach(d =>
+                    {
+                        countCommission += d.sumDay;
+                        var memberExpenseData = d.memberList.Find(x => x.id == member.id);
+                        if (memberExpenseData != null)
+                        {
+                            totalExpense += memberExpenseData.memberExpenses;
+                        }
+                    });
+                }
 
                 // Combine member data with their day-off data
                 var resultData = new ThongKeTinhTienCongTacDataDO
