@@ -282,6 +282,8 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   updateMember() {
+    console.log(this.aqmember);
+
     this.https.put<any>("/api/ThongTinCaNhan/" + this.aqmember.id, this.aqmember).subscribe({
       next: (res: any) => {
         // console.log(res);
@@ -339,6 +341,7 @@ export class NhanSuAqComponent implements OnInit {
 
   clear(table: Table) {
     table.clear();
+    this.fetchAQMemberData();
   }
 }
 
