@@ -56,15 +56,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.submitted = true;
       this.authenticationService.login(this.f.username.value.trim().toUpperCase(), this.f.password.value.trim())
         .subscribe((data: User) => {
-          if (data) {
-            if (data.maTruong) {
+          if (data.maTruong !== null) {
+            if (data.roles !== "TFS") {
               this.spinner.hide();
               this.serverLink.setLogin(true);
               this.islogin = true;
               this.router.navigate(['/main/cscase']);
 
             }
-            else if (data.tfsName) {
+            // else if (data.tfsName) {
+            //   this.spinner.hide();
+            //   this.serverLink.setLogin(true);
+            //   this.islogin = true;
+            //   this.router.navigate(['/main/aq-main']);
+            // }
+            else if (data.roles === "TFS") {
               this.spinner.hide();
               this.serverLink.setLogin(true);
               this.islogin = true;
@@ -91,6 +97,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.serverLink.setLogin(false);
           sessionStorage.clear();
           this.messError = 'Đăng nhập không thành công';
+          console.log(error);
+
         });
 
       setTimeout(() => { this.spinner.hide(); }, 20000);

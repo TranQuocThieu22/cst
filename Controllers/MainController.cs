@@ -1,5 +1,4 @@
 using educlient.Data;
-using educlient.Models;
 using educlient.Services;
 using educlient.Utils;
 using HtmlAgilityPack;
@@ -73,10 +72,7 @@ namespace educlient.Controllers
             }
             else if (TFSUser != null)
             {
-                var tb = database.Table<DsThongTinCaNhanDataDO>();
-                TFSUser.userData = tb.Query()
-                .Where(x => x.TFSName == TFSUser.User.ToLower())
-                .FirstOrDefault();
+
 
                 _logger.LogInformation("Login Success: " + log.username);
                 Session.SetString("current-user", JsonConvert.SerializeObject(TFSUser));

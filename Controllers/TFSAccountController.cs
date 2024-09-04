@@ -1,12 +1,9 @@
-﻿using AQFramework.Utilities;
-using educlient.Data;
+﻿using educlient.Data;
 using educlient.Models;
 using educlient.Services;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace educlient.Controllers
@@ -34,9 +31,9 @@ namespace educlient.Controllers
             }
             try
             {
-                //var winAccount = await _tfsAccountService.LoginAsync(model);
+                var winAccount = await _tfsAccountService.LoginAsync(model);
                 // Here you might generate a JWT token or set up a session
-                //return Ok(new { message = "Login successful", user = winAccount });
+                return Ok(new { message = "Login successful", user = winAccount });
 
                 if (model.username.ToLower() == "admin" && model.password == "12345")
                 {

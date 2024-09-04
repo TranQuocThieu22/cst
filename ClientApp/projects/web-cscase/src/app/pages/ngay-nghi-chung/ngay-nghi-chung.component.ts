@@ -36,7 +36,7 @@ export class NgayNghiChungComponent implements OnInit {
   openDialog: boolean;
   editDayOffDialog: boolean;
   addNewDayOffDialog: boolean;
-
+  user: any
   sumDay() {
     const date1 = new Date(this.DayOff.dateFrom);
     const date2 = new Date(this.DayOff.dateTo);
@@ -88,6 +88,7 @@ export class NgayNghiChungComponent implements OnInit {
   ngOnInit() {
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.user = JSON.parse(sessionStorage.getItem('current-user')).userData;
 
     this.fetchDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
     this.resetCalendarSelection();
@@ -97,8 +98,7 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   checkIsLeader() {
-    let user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader
+    return this.user
   }
 
   openAddDialog() {

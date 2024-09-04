@@ -53,7 +53,7 @@ export class LamViecOnlineComponent implements OnInit {
   viewWorkingOnlineDialog: boolean;
   editWorkingOnlineDialog: boolean;
   addNewWorkingOnlineDialog: boolean;
-
+  user: any
   userInfo: any = {};
 
   constructor(
@@ -66,12 +66,12 @@ export class LamViecOnlineComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.user = JSON.parse(sessionStorage.getItem('current-user')).userData;
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
     this.fetchWorkingOnlinesData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
     this.resetCalendarSelection();
     this.sumDay();
-
     this.primengConfig.ripple = true;
     this.fetchUserInfo();
     this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
@@ -80,20 +80,19 @@ export class LamViecOnlineComponent implements OnInit {
 
 
   checkIsLeader() {
-    const user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader;
+
+    return this.user
   }
 
   fetchUserInfo() {
-    const user = sessionStorage.getItem('current-user');
-    const userInfo = JSON.parse(user);
-    const userId = +userInfo["id"];
 
-    if (userInfo.role === 'admin') {
+
+
+    if (this.user.role === 'admin') {
       return;
     }
 
-    this.https.get<any>("/api/ThongTinCaNhan/" + userId).subscribe({
+    this.https.get<any>("/api/ThongTinCaNhan/" + this.user.id).subscribe({
       next: (res: any) => {
         console.log(res.data[0]);
         this.userInfo = res.data[0];
@@ -180,7 +179,7 @@ export class LamViecOnlineComponent implements OnInit {
   }
 
   fetchWorkingOnlinesData(input_filter_datefrom?: string, input_filter_dateto?: string) {
-    let user = JSON.parse(sessionStorage.getItem('current-user'));
+
     let params: any = {};
     if (input_filter_datefrom) {
       params.query_dateFrom = input_filter_datefrom + ' 00:00:00';
@@ -189,8 +188,8 @@ export class LamViecOnlineComponent implements OnInit {
       params.query_dateTo = input_filter_dateto + ' 00:00:00';
     }
 
-    if (!user.isLeader) {
-      params.query_memberId = user.id;
+    if (!this.user.isLeader) {
+      params.query_memberId = this.user.id;
     }
 
     this.https.get<any>("/api/LamViecOnline", { params: params }).subscribe({
@@ -322,9 +321,9 @@ export class LamViecOnlineComponent implements OnInit {
   addNewWorkingOnline() {
     let WorkingOnlineArray: WorkingOnline[] = [this.WorkingOnline];
     WorkingOnlineArray.forEach((item: any) => {
-      const user = sessionStorage.getItem('current-user');
-      if (!JSON.parse(user).isLeader) {
-        item.memberId = JSON.parse(user).id
+
+      if (!this.user.isLeader) {
+        item.memberId = this.user.id
       } else {
         item.memberId = item.member.id;
       }
@@ -353,12 +352,11 @@ export class LamViecOnlineComponent implements OnInit {
   updateWorkingOnline() {
     let WorkingOnlineData: any = structuredClone(this.WorkingOnline);
 
-    let user = JSON.parse(sessionStorage.getItem('current-user'));
 
-    if (!user.isLeader) {
+    if (!this.user.isLeader) {
       WorkingOnlineData = {
         ...WorkingOnlineData,
-        memberId: user.id
+        memberId: this.user.id
       }
     } else {
       WorkingOnlineData = {

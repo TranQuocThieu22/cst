@@ -22,7 +22,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ReportCaNhanComponent implements OnInit {
 
-  user: AQMember;
+  user: any;
   AQRoles: AQRole[];
 
   readonly c1_echartsExtentions: any[];
@@ -40,7 +40,7 @@ export class ReportCaNhanComponent implements OnInit {
   dataList = [];
   encodeY = [];
   // c2 variables
-
+  avatarURL: string
   userTotalDayOff_Week = 0;
   userTotalDayOff_Month = 0;
 
@@ -69,7 +69,10 @@ export class ReportCaNhanComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.user = JSON.parse(sessionStorage.getItem('current-user'));
+
+    this.user = JSON.parse(sessionStorage.getItem('current-user')).userData;
+    this.avatarURL = `data:image/png;base64,${this.user.avatar}`
+
     // this.fetchDataC1();
     // this.fetchDataC2();
     this.fetchLunchPaymentReport();

@@ -56,7 +56,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
   viewIndividualDayOffDialog: boolean;
   editIndividualDayOffDialog: boolean;
   addNewIndividualDayOffDialog: boolean;
-
+  user: any
   userInfo: any = {};
 
   constructor(
@@ -69,6 +69,9 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.user = JSON.parse(sessionStorage.getItem('current-user')).userData;
+    console.log(this.user);
+
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
     this.fetchIndividualDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
@@ -81,20 +84,20 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   checkIsLeader() {
-    const user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader;
+
+
+    return this.user
   }
 
   fetchUserInfo() {
-    const user = sessionStorage.getItem('current-user');
-    const userInfo = JSON.parse(user);
-    const userId = +userInfo["id"];
 
-    if (userInfo.role === 'admin') {
+
+
+    if (this.user.role === 'admin') {
       return;
     }
 
-    this.https.get<any>("/api/ThongTinCaNhan/" + userId).subscribe({
+    this.https.get<any>("/api/ThongTinCaNhan/" + this.user.id).subscribe({
       next: (res: any) => {
         this.userInfo = res.data[0];
       },
@@ -179,7 +182,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   fetchIndividualDayOffsData(input_filter_datefrom?: string, input_filter_dateto?: string) {
-    let user = JSON.parse(sessionStorage.getItem('current-user'));
+
     let params: any = {};
     if (input_filter_datefrom) {
       params.query_dateFrom = input_filter_datefrom + ' 00:00:00';
@@ -188,8 +191,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
       params.query_dateTo = input_filter_dateto + ' 00:00:00';
     }
 
-    if (!user.isLeader) {
-      params.query_memberId = user.id;
+    if (!this.user.isLeader) {
+      params.query_memberId = this.user.id;
     }
 
     this.https.get<any>("/api/NgayPhepCaNhan", { params: params }).subscribe({
@@ -321,9 +324,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
   addNewIndividualDayOff() {
     let IndividualDayOffArray: IndividualDayOff[] = [this.IndividualDayOff];
     IndividualDayOffArray.forEach((item: any) => {
-      const user = sessionStorage.getItem('current-user');
-      if (!JSON.parse(user).isLeader) {
-        item.memberId = JSON.parse(user).id
+      if (!this.user.isLeader) {
+        item.memberId = this.user.id
       } else {
         item.memberId = item.member.id;
       }
@@ -352,12 +354,12 @@ export class NgayPhepCaNhanComponent implements OnInit {
   updateIndividualDayOff() {
     let IndividualDayOffData: any = structuredClone(this.IndividualDayOff);
 
-    let user = JSON.parse(sessionStorage.getItem('current-user'));
 
-    if (!user.isLeader) {
+
+    if (!this.user.isLeader) {
       IndividualDayOffData = {
         ...IndividualDayOffData,
-        memberId: user.id
+        memberId: this.user.id
       }
     } else {
       IndividualDayOffData = {

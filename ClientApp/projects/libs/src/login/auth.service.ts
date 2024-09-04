@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient, HttpParameterCodec } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParameterCodec } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { User } from './user';
@@ -20,17 +20,16 @@ export class AuthService {
   }
 
   public login(username: string, password: string) {
-    // const options = {
-    //   headers: new HttpHeaders()
-    //     .set('Content-Type', 'application/x-www-form-urlencoded')
-    // };
+    const options = {
+      headers: new HttpHeaders()
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+    };
     // return this.http.post<any>('api/main/login', { username, password })
-    return this.http.post<any>('api/TFSAccount/login', { username, password })
+    return this.http.post<any>('api/main/login', { username, password })
       .pipe(map((response: User) => {
+        console.log(response);
 
         if (response) {
-
-          console.log(response);
           // response[0].pass = '';
           sessionStorage.setItem('current-user', JSON.stringify(response));
           this.currentUserSubject.next(response);
@@ -38,6 +37,19 @@ export class AuthService {
         return response;
       }), catchError(error => throwError(error))
       );
+    // return this.http.post<any>('api/TFSAccount/login', { username, password })
+    //   .pipe(map((response: User) => {
+
+    //     if (response) {
+
+    //       console.log(response);
+    //       // response[0].pass = '';
+    //       sessionStorage.setItem('current-user', JSON.stringify(response));
+    //       this.currentUserSubject.next(response);
+    //     }
+    //     return response;
+    //   }), catchError(error => throwError(error))
+    //   );
   }
 
   public logout() {

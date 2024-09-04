@@ -22,7 +22,7 @@ export class LamViecNgoaiGioComponent implements OnInit {
 
   isOpenOTInfoDialog: boolean;
   OTDialogContent: any;
-
+  user: any
   WorkingOTs: WorkingOT[];
   WorkingOTInitState = {
     date: '',
@@ -74,6 +74,7 @@ export class LamViecNgoaiGioComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.user = JSON.parse(sessionStorage.getItem('current-user')).userData;
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
     this.fetchWorkingOTsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
@@ -85,8 +86,7 @@ export class LamViecNgoaiGioComponent implements OnInit {
   }
 
   checkIsLeader() {
-    const user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader;
+    return this.user
   }
 
   openAddDialog() {
@@ -119,7 +119,6 @@ export class LamViecNgoaiGioComponent implements OnInit {
 
 
   fetchWorkingOTsData(input_filter_datefrom?: string, input_filter_dateto?: string) {
-    let user = JSON.parse(sessionStorage.getItem('current-user'));
     let params: any = {};
     if (input_filter_datefrom) {
       params.query_dateFrom = input_filter_datefrom + ' 00:00:00';
@@ -128,8 +127,8 @@ export class LamViecNgoaiGioComponent implements OnInit {
       params.query_dateTo = input_filter_dateto + ' 00:00:00';
     }
 
-    if (!user.isLeader) {
-      params.query_memberId = user.id;
+    if (!this.user.isLeader) {
+      params.query_memberId = this.user.id;
     }
 
     this.https.get<any>("/api/LamViecNgoaiGio", { params: params }).subscribe({
@@ -259,9 +258,9 @@ export class LamViecNgoaiGioComponent implements OnInit {
   addNewWorkingOT() {
     let WorkingOTArray: WorkingOT[] = [this.WorkingOT];
     WorkingOTArray.forEach((item: any) => {
-      const user = sessionStorage.getItem('current-user');
-      if (!JSON.parse(user).isLeader) {
-        item.memberId = JSON.parse(user).id
+
+      if (!this.user.isLeader) {
+        item.memberId = this.user.id
       } else {
         item.memberId = item.member.id;
       }
@@ -290,12 +289,12 @@ export class LamViecNgoaiGioComponent implements OnInit {
   updateWorkingOT() {
     let WorkingOTData: any = structuredClone(this.WorkingOT);
 
-    let user = JSON.parse(sessionStorage.getItem('current-user'));
 
-    if (!user.isLeader) {
+
+    if (!this.user.isLeader) {
       WorkingOTData = {
         ...WorkingOTData,
-        memberId: user.id
+        memberId: this.user.id
       }
     } else {
       WorkingOTData = {

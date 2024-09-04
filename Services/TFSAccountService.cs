@@ -24,18 +24,21 @@ namespace educlient.Services
         private const string ServerUrl = "https://dev.aqtech.vn:1443/pw/LdapUtils.asmx?op=Login";
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IDbLiteContext database;
-        public TFSAccountService(IHttpClientFactory httpClientFactory)
+        public TFSAccountService(IHttpClientFactory httpClientFactory, IDbLiteContext dataContext)
         {
             _httpClientFactory = httpClientFactory;
+            database = dataContext;
 
         }
         public async Task<EduClient> LoginAsync(LoginModel inputData)
         {
+            var AQMemberTable = database.Table<AQMember>();
+
             if (string.IsNullOrWhiteSpace(inputData.username) || string.IsNullOrWhiteSpace(inputData.password))
             {
                 throw new ArgumentException("Username and password are required.");
             }
-
+            var aqMember = AQMemberTable.FindOne(m => m.TFSName == inputData.username);
             var input = Crypt.Encrypt($"{inputData.username},{inputData.password}", pss);
             var xmlRequest = $@"
                 <soap:Envelope xmlns:soap=""http://www.w3.org/2003/05/soap-envelope"" xmlns:tem=""http://tempuri.org/"">
@@ -50,7 +53,7 @@ namespace educlient.Services
             using (var httpClient = new HttpClient())
             {
                 var content = new StringContent(xmlRequest, Encoding.UTF8, "text/xml");
-                var response =  httpClient.PostAsync(ServerUrl, content).Result;
+                var response = httpClient.PostAsync(ServerUrl, content).Result;
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -75,8 +78,10 @@ namespace educlient.Services
                             TenTruong = "AQ",  // Set appropriately based on your logic
                             Roles = "TFS",  // Set appropriately based on your logic
                             Group = tempResult.group.ToObject<List<string>>(),
-                            User = inputData.username
+                            User = inputData.username,
+                            userData = aqMember
                         };
+
                         return tfsUserModel;
 
                     }

@@ -41,7 +41,7 @@ export class NgayCongTacComponent implements OnInit {
   isValidDateRange: boolean = true;
   filter_datefrom: string = '';
   filter_dateto: string = '';
-
+  user: any
   openDialog: boolean;
   isOpenMemberDialog: boolean;
   editCommissionDayDialog: boolean;
@@ -55,6 +55,8 @@ export class NgayCongTacComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.user = JSON.parse(sessionStorage.getItem('current-user')).userData;
+
     this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
 
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
@@ -137,8 +139,7 @@ export class NgayCongTacComponent implements OnInit {
   }
 
   checkIsLeader() {
-    const user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader;
+    return this.user
   }
 
   convertDateFormat(date: string): string {

@@ -34,7 +34,7 @@ export class NhanSuAqComponent implements OnInit {
   //data pie chart
   data_RolePieChart: any;
   role_chartOptions: any;
-
+  user: any;
   //pie chart 2
   readonly pc2_echartsExtentions: any[];
   pc2_echartsOptions: object = {};
@@ -56,14 +56,15 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.user = JSON.parse(sessionStorage.getItem('current-user')).userData;
+
     this.constructor;
     this.primengConfig.ripple = true;
     this.fetchAQMemberData();
   }
 
   checkIsLeader() {
-    let user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader
+    return this.user
   }
 
   handleUploadAvatar(event) {
@@ -295,8 +296,11 @@ export class NhanSuAqComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.fetchAQMemberData();
+
       }
     });
+
+
     this.hideDialog();
   }
 
