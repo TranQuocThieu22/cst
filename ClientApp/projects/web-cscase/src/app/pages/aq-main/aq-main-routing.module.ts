@@ -12,6 +12,7 @@ import { LamViecNgoaiGioComponent } from '../lam-viec-ngoai-gio/lam-viec-ngoai-g
 import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qua-lam-viec-ca-nhan.component';
 import { NgayPhepCaNhanComponent } from '../ngay-phep-ca-nhan/ngay-phep-ca-nhan.component';
 import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.component';
+import { BaoCaoTheoChuKyComponent } from '../bao-cao-theo-chu-ky/bao-cao-theo-chu-ky.component';
 
 const routes: Routes = [
   { path: 'aq-main', pathMatch: 'full', redirectTo: 'aq' },
@@ -28,6 +29,7 @@ const routes: Routes = [
       { path: 'lamviecngoaigio', component: LamViecNgoaiGioComponent, canActivate: [AuthGuard] },
       { path: 'baobieuthongke', component: BaoBieuThongKeComponent, canActivate: [AuthGuard] },
       { path: 'ketqualamvieccanhan', component: KetQuaLamViecCaNhanComponent, canActivate: [AuthGuard] },
+      { path: 'baocaotheochuky', component: BaoCaoTheoChuKyComponent, canActivate: [AuthGuard] },
       { path: '', redirectTo: 'aq', pathMatch: 'full' }
     ]
   },

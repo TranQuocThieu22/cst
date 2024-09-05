@@ -25,6 +25,7 @@ import { ThongbaokhaosatComponent } from './pages/thongbaokhaosat/thongbaokhaosa
 import { NgxEditorModule } from 'ngx-editor';
 import { AqReportComponent } from './pages/aq-report/aq-report.component';
 
+
 @NgModule({
   declarations: [AppComponent, LoginComponent, NoidungcscaseComponent,
     MessBoxComponent, SettingComponent, NoidungcasenewComponent,

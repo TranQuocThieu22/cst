@@ -71,13 +71,14 @@ import { TienLamViecNgoaiGioTheoQuiComponent } from '../bao-bieu-thong-ke/tien-l
 import { ThongKeNghiPhepNamComponent } from '../bao-bieu-thong-ke/thong-ke-nghi-phep-nam/thong-ke-nghi-phep-nam.component';
 import { ImageModule } from 'primeng/image';
 import { BadgeModule } from 'primeng/badge';
+import { BaoCaoTheoChuKyComponent } from '../bao-cao-theo-chu-ky/bao-cao-theo-chu-ky.component';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
     NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
     LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent,
     BaoBieuThongKeComponent, TienAnTruaTheoThangComponent, TienCongTacPhiTheoQuiComponent,
-    TienLamViecNgoaiGioTheoQuiComponent, ThongKeNghiPhepNamComponent
+    TienLamViecNgoaiGioTheoQuiComponent, ThongKeNghiPhepNamComponent, BaoCaoTheoChuKyComponent
   ],
   imports: [
     FormsModule,
