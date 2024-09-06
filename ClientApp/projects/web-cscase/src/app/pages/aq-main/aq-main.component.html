@@ -1,73 +1,62 @@
-<div class="container-fluid">
-  <div class="row">
-    <!-- Sidebar -->
-    <p-toolbar class="col-lg-2 mt-4">
-      <div class="text-start">
-        <a routerLink="aq" class="nav-link active fw-bold fs-4">Danh mục</a>
-      </div>
-
-      <div>
-        <div>
-          <a class="nav-link" role="button" routerLink="report">
-            📈 Báo cáo hằng ngày
-          </a>
-        </div>
-        <div>
-          <a class="nav-link active" role="button" routerLink="nhansuaq">
-            👪 Nhân sự AQ
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" routerLink="ngaynghichungaq">
-            🎉 Ngày nghỉ chung
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" routerLink="ngaycongtacpaq">
-            ✈️ Ngày công tác
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" routerLink="ngayphepcanhan">
-            🏖️ Ngày nghỉ phép
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" routerLink="lamvieconline">
-            🌏 Làm việc online
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" routerLink="lamviecngoaigio">
-            🥵 Làm việc ngoài giờ
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" routerLink="ketqualamvieccanhan">
-            📋 Kết quả làm việc cá nhân
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" routerLink="baobieuthongke">
-            📊 Báo biểu thống kê
-          </a>
-        </div>
-        <div>
-          <a class="nav-link" role="button" (click)="logOut()">
-
-            👋 Đăng xuất
-          </a>
-        </div>
-      </div>
-    </p-toolbar>
-
-    <!-- <main class="ms-sm-auto col-lg-10 px-md-4 mt-4 main-content"> -->
-    <!-- <main class=""> -->
-    <!-- <p-button type="button" (click)="visibleSidebar1 = true" icon="pi pi-arrow-right"></p-button> -->
-
-    <main class="ms-sm-auto col-lg-10 px-md-4 mt-4 main-content">
-      <router-outlet></router-outlet>
-    </main>
-
-
+<!-- app.component.html -->
+<p-toolbar styleClass="top-toolbar">
+  <div class="p-toolbar-group-left">
+    <p-button icon="pi pi-bars" (click)="toggleSidebar()" styleClass="p-button-text"></p-button>
+    <span class="app-title"> <a routerLink="aq" class="nav-link active  ">AQ Dashboard</a></span>
   </div>
+  <div class="p-toolbar-group-right">
+    <p-button icon="pi pi-user" styleClass="p-button-text" (click)="showUserMenu($event)"></p-button>
+    <p-menu #userMenu [popup]="true" [model]="userMenuItems"></p-menu>
+  </div>
+</p-toolbar>
+
+<p-sidebar [(visible)]="sidebarVisible" [baseZIndex]="10000">
+  <h3> <a routerLink="aq" class="nav-link active fw-bold fs-4">Danh mục</a></h3>
+  <div class="sidebar-menu">
+    <a pButton class="p-button-text" routerLink="report" routerLinkActive="active-link">
+      <i class="pi pi-chart-line"></i>
+      <span>Báo cáo hằng ngày</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="nhansuaq" routerLinkActive="active-link">
+      <i class="pi pi-users"></i>
+      <span>Nhân sự AQ</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ngaynghichungaq" routerLinkActive="active-link">
+      <i class="pi pi-calendar"></i>
+      <span>Ngày nghỉ chung</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ngaycongtacpaq" routerLinkActive="active-link">
+      <i class="pi pi-send"></i>
+      <span>Ngày công tác</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ngayphepcanhan" routerLinkActive="active-link">
+      <i class="pi pi-calendar-minus"></i>
+      <span>Ngày nghỉ phép</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="lamvieconline" routerLinkActive="active-link">
+      <i class="pi pi-globe"></i>
+      <span>Làm việc online</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="lamviecngoaigio" routerLinkActive="active-link">
+      <i class="pi pi-clock"></i>
+      <span>Làm việc ngoài giờ</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ketqualamvieccanhan" routerLinkActive="active-link">
+      <i class="pi pi-file"></i>
+      <span>Kết quả làm việc cá nhân</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="baobieuthongke" routerLinkActive="active-link">
+      <i class="pi pi-chart-bar"></i>
+      <span>Báo biểu thống kê</span>
+    </a>
+    <a pButton class="p-button-text" (click)="logOut()">
+      <i class="pi pi-sign-out"></i>
+      <span>Đăng xuất</span>
+    </a>
+  </div>
+</p-sidebar>
+
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

@@ -52,9 +52,41 @@
 // }
 
 .box1 {
-    border: 1px solid red;
+  border: 1px solid red;
 }
 
 .box2 {
-    border: 1px solid green;
+  border: 1px solid green;
+}
+
+/* app.component.css */
+:host ::ng-deep .p-sidebar {
+  width: 250px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-menu a {
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+.sidebar-menu .p-button-text {
+  justify-content: flex-start;
+}
+
+.sidebar-menu .p-button-text .pi {
+  margin-right: 0.5rem;
+}
+
+.active-link {
+  background-color: #e9ecef;
+}
+
+.main-content {
+  margin-left: 1rem;
+  margin-top: 1rem;
 }
