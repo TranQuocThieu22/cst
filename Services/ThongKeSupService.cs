@@ -15,9 +15,9 @@ namespace educlient.Services
 {
     public interface IThongKeSupService
     {
-        Task<XuLyCaseSupDataResult> SupportCaseReport();
+        Task<XuLyCaseSupDataResult> SupportCaseReport(DateInput date);
         string BuildWiqlQuery();
-        string BuildWiqlQueryCaseLamTrongNgay();
+        string BuildWiqlQueryCaseLamTrongNgay(string Date);
         string BuildWiqlPhanTichTreQuery();
         string BuildWiqlTestTreQuery();
         string BuildWiqlCanTestQuery();
@@ -48,7 +48,7 @@ namespace educlient.Services
         {
             config = cf;
         }
-        public async Task<XuLyCaseSupDataResult> SupportCaseReport()
+        public async Task<XuLyCaseSupDataResult> SupportCaseReport(DateInput date)
         {
 
             var wiqlQuery = BuildWiqlQuery();
@@ -56,7 +56,7 @@ namespace educlient.Services
             var CanGanTagwiqlQuery = BuildWiqlGanTagQuery();
             var TestTreWiqlTestTreQuery = BuildWiqlTestTreQuery();
             var PhanTichTreWiqlTestTreQuery = BuildWiqlPhanTichTreQuery();
-            var TongCaseCuaSupQuery = BuildWiqlQueryCaseLamTrongNgay();
+            var TongCaseCuaSupQuery = BuildWiqlQueryCaseLamTrongNgay(date.data);
 
 
             var caseIds = await GetCaseIds(wiqlQuery);
@@ -153,7 +153,7 @@ namespace educlient.Services
                 ORDER BY [AQ.CaseTester]""
 }}";
         }
-        public string BuildWiqlQueryCaseLamTrongNgay()
+        public string BuildWiqlQueryCaseLamTrongNgay(string Date)
         {
             return $@"{{
             ""query"": ""SELECT [System.Id], [System.Title], [System.CreatedDate], [AQ.ReqState], [AQ.CaseAnalyst], [AQ.DateKQPhanTich], [System.AssignedTo], [Microsoft.VSTS.Common.ResolvedDate], [System.State], [AQ.DateKQTest], [AQ.CaseTester]
@@ -161,9 +161,9 @@ namespace educlient.Services
             WHERE [System.TeamProject] = @project
             AND [System.WorkItemType] <> ''
             AND (
-                ([AQ.CaseAnalyst] IN ('thanh <AQ\\thanh>', 'havt <AQ\\havt>', 'thuannam <AQ\\thuannam>', 'thuyduong <AQ\\thuyduong>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>') AND [AQ.DateKQPhanTich] = @today)
-                OR ([System.AssignedTo] IN ('thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thanh <AQ\\thanh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') AND [Microsoft.VSTS.Common.ResolvedDate] = @today)
-                OR ([AQ.CaseTester] IN ('thanh <AQ\\thanh>', 'thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') AND [AQ.DateKQTest] = @today)
+                ([AQ.CaseAnalyst] IN ('thanh <AQ\\thanh>', 'havt <AQ\\havt>', 'thuannam <AQ\\thuannam>', 'thuyduong <AQ\\thuyduong>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>') AND [AQ.DateKQPhanTich] = '{Date}')
+                OR ([System.AssignedTo] IN ('thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thanh <AQ\\thanh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') AND [Microsoft.VSTS.Common.ResolvedDate] = '{Date}')
+                OR ([AQ.CaseTester] IN ('thanh <AQ\\thanh>', 'thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') AND [AQ.DateKQTest] = '{Date}')
             )
             ORDER BY [AQ.CaseAnalyst]""
             }}";

@@ -27,7 +27,7 @@ namespace educlient.Services
         public async Task<AQReportResult> AqReport(DateInput Date)
         {
             List<XuLyCasedataDO> dev = await DevFunct(Date);
-            List<XuLyCaseSupdataDO> sup = await SupFunct();
+            List<XuLyCaseSupdataDO> sup = await SupFunct(Date);
             List<AQReportDataDO> aqReport = CalAqReport(sup, dev);
             return new AQReportResult { code = 200, message = "success", result = true, data = aqReport };
         }
@@ -55,14 +55,14 @@ namespace educlient.Services
 
             return dataTienDoCongViec;
         }
-        public async Task<List<XuLyCaseSupdataDO>> SupFunct()
+        public async Task<List<XuLyCaseSupdataDO>> SupFunct(DateInput date)
         {
             var wiqlQuery = _thongKeSupService.BuildWiqlQuery();
             var CanTestwiqlQuery = _thongKeSupService.BuildWiqlCanTestQuery();
             var CanGanTagwiqlQuery = _thongKeSupService.BuildWiqlGanTagQuery();
             var TestTreWiqlTestTreQuery = _thongKeSupService.BuildWiqlTestTreQuery();
             var PhanTichTreWiqlTestTreQuery = _thongKeSupService.BuildWiqlPhanTichTreQuery();
-            var TongCaseCuaSupQuery = _thongKeSupService.BuildWiqlQueryCaseLamTrongNgay();
+            var TongCaseCuaSupQuery = _thongKeSupService.BuildWiqlQueryCaseLamTrongNgay(date.data);
 
             var caseIds = await _thongKeSupService.GetCaseIds(wiqlQuery);
             var caseTestIds = await _thongKeSupService.GetCaseIds(CanTestwiqlQuery);

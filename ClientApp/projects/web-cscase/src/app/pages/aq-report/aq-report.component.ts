@@ -331,8 +331,8 @@ export class AqReportComponent implements OnInit {
 
     forkJoin({
       coderData: this.http.post('/api/thongke/w-coderCaseReport', { data: this.formattedDate }),
-      supData: this.http.post('/api/thongke/w-supCaseReport', {}),
-      aqData: this.http.post('/api/thongke/w-AqCaseReport', {}),
+      supData: this.http.post('/api/thongke/w-supCaseReport', { data: this.formattedDate }),
+      aqData: this.http.post('/api/thongke/w-AqCaseReport', { data: this.formattedDate }),
       phanBoData: this.http.post('/api/thongke/w-PhanBoSoCaseTheoThoiGianChoCoder', {})
     }).subscribe(
       (results: any) => {

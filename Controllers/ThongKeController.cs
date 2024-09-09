@@ -32,12 +32,12 @@ namespace educlient.Controllers
         }
 
         [HttpPost, Route("w-supCaseReport")]
-        public Task<XuLyCaseSupDataResult> supCsData()
+        public Task<XuLyCaseSupDataResult> supCsData([FromBody] DateInput Date)
         {
-            return _thongKeSupService.SupportCaseReport();
+            return _thongKeSupService.SupportCaseReport(Date);
         }
         [HttpPost, Route("w-AqCaseReport")]
-        public Task<AQReportResult> AqCaseData(DateInput Date)
+        public Task<AQReportResult> AqCaseData([FromBody] DateInput Date)
         {
             return _thongKeAqTechService.AqReport(Date);
         }
