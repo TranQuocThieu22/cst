@@ -90,7 +90,7 @@ namespace educlient.Services
             var thongTinCasesPhanTichTre = _thongKeSupService.ProcessCaseDetails(casePhanTichTreDetails);
             var thongTinTongCaseCuaSup = _thongKeSupService.ProcessCaseDetails(TongCaseDaLamCuaSupDetails);
 
-            var SoLuongCaseSupXuLyTrongNgay = _thongKeSupService.GetSoLuongCaseSupLam(thongTinTongCaseCuaSup);
+            var SoLuongCaseSupXuLyTrongNgay = _thongKeSupService.GetSoLuongCaseSupLam(thongTinTongCaseCuaSup, date.data);
             var SoLuongCanXuLy = _thongKeSupService.SummarizeCanXuLyData(thongTinCases, thongTinCasesTest, thongTinCasesGanTag);
             var SoLuongTestTreCase = _thongKeSupService.CountXuLyTreByCaseTester(thongTinCasesTestTre);
             var SoLuongPhanTichTreCase = _thongKeSupService.CountPhanTichTreByCaseAnalyst(thongTinCasesPhanTichTre);

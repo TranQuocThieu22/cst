@@ -104,6 +104,9 @@ namespace educlient.Models
             public string caseanalyst { get; set; }
             public string casetester { get; set; }
             public string assignedto { get; set; }
+            public string datekqphantich { get; set; }
+            public string datekqtest { get; set; }
+            public string resolveddate { get; set; }
         }
         public class XuLyCasedataDO
         {
@@ -142,6 +145,7 @@ namespace educlient.Models
             public int PhanTichTre { get; set; }
             public int TestTre { get; set; }
             public int CaseLamTrongNgay { get; set; }
+            public List<string> CaseList { get; set; }
         }
 
         public class CanXuLyDataDO

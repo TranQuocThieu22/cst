@@ -35,7 +35,7 @@ namespace educlient.Services
         List<XuLyCaseSupdataDO> CountXuLyTreByCaseTester(List<ThongTinCaseSup> thongTinCases);
         List<XuLyCaseSupdataDO> CountPhanTichTreByCaseAnalyst(List<ThongTinCaseSup> thongTinCases);
         List<XuLyCaseSupdataDO> CalculateXuLyTre(List<ThongTinCaseSup> thongTinCasesPhanTichTre, List<ThongTinCaseSup> thongTinCasesTestTre);
-        List<XuLyCaseSupdataDO> GetSoLuongCaseSupLam(List<ThongTinCaseSup> data);
+        List<XuLyCaseSupdataDO> GetSoLuongCaseSupLam(List<ThongTinCaseSup> data, string date);
         List<XuLyCaseSupdataDO> SupReport(List<XuLyCaseSupdataDO> combinedData, List<XuLyCaseSupdataDO> SoLuongCanXuLy, List<XuLyCaseSupdataDO> CaseSupLamTrongNgay);
     }
 
@@ -56,7 +56,8 @@ namespace educlient.Services
             var CanGanTagwiqlQuery = BuildWiqlGanTagQuery();
             var TestTreWiqlTestTreQuery = BuildWiqlTestTreQuery();
             var PhanTichTreWiqlTestTreQuery = BuildWiqlPhanTichTreQuery();
-            var TongCaseCuaSupQuery = BuildWiqlQueryCaseLamTrongNgay(date.data);
+            //var TongCaseCuaSupQuery = BuildWiqlQueryCaseLamTrongNgay(date.data);
+            var TongCaseCuaSupQuery = BuildWiqlQueryCaseLamTrongNgay2(date.data);
 
 
             var caseIds = await GetCaseIds(wiqlQuery);
@@ -92,7 +93,7 @@ namespace educlient.Services
             //var SoLuongCanPhanTich = GetSoLuongCanPhanTich(thongTinCases);
             //var SoLuongCaseCanTest = GetSoLuongCanTest(thongTinCasesTest);
             //var SoLuongCaseGanTag = GetSoLuongGanTag(thongTinCasesGanTag);
-            var SoLuongCaseSupXuLyTrongNgay = GetSoLuongCaseSupLam(thongTinTongCaseCuaSup);
+            var SoLuongCaseSupXuLyTrongNgay = GetSoLuongCaseSupLam(thongTinTongCaseCuaSup, date.data);
             var SoLuongCanXuLy = SummarizeCanXuLyData(thongTinCases, thongTinCasesTest, thongTinCasesGanTag);
             var SoLuongTestTreCase = CountXuLyTreByCaseTester(thongTinCasesTestTre);
             var SoLuongPhanTichTreCase = CountPhanTichTreByCaseAnalyst(thongTinCasesPhanTichTre);
@@ -105,7 +106,7 @@ namespace educlient.Services
         public string BuildWiqlPhanTichTreQuery()
         {
             return $@"{{
-    ""query"": ""SELECT [System.Id], [System.Title], [System.CreatedDate], [AQ.CaseAnalyst], [Microsoft.VSTS.Common.ResolvedDate], [AQ.CaseTester], [AQ.Customer], [AQ.Module], [AQ.CustomerName], [System.State], [System.CreatedBy], [System.WorkItemType], [System.AssignedTo], [AQ.CaseType], [System.Tags], [AQ.Priority] 
+    ""query"": ""SELECT [System.Id]
     FROM WorkItems 
     WHERE [System.TeamProject] = 'Edusoft.Net-CS' 
     AND [System.WorkItemType] <> '' 
@@ -156,7 +157,7 @@ namespace educlient.Services
         public string BuildWiqlQueryCaseLamTrongNgay(string Date)
         {
             return $@"{{
-            ""query"": ""SELECT [System.Id], [System.Title], [System.CreatedDate], [AQ.ReqState], [AQ.CaseAnalyst], [AQ.DateKQPhanTich], [System.AssignedTo], [Microsoft.VSTS.Common.ResolvedDate], [System.State], [AQ.DateKQTest], [AQ.CaseTester]
+            ""query"": ""SELECT [System.Id]
             FROM WorkItems
             WHERE [System.TeamProject] = @project
             AND [System.WorkItemType] <> ''
@@ -167,6 +168,27 @@ namespace educlient.Services
             )
             ORDER BY [AQ.CaseAnalyst]""
             }}";
+        }
+        public string BuildWiqlQueryCaseLamTrongNgay2(string Date)
+        {
+            return $@"{{
+            ""query"": ""SELECT [System.Id]
+            FROM WorkItems
+            WHERE [System.TeamProject] = @project
+            AND [System.WorkItemType] <> ''
+            AND (
+                ([AQ.CaseAnalyst] IN ('thanh <AQ\\thanh>', 'havt <AQ\\havt>', 'thuannam <AQ\\thuannam>', 'thuyduong <AQ\\thuyduong>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>') 
+                AND [AQ.ReqState] = '01 – Đã phân tích xong' 
+                AND [AQ.DateKQPhanTich] = '{Date}')
+                OR ([System.AssignedTo] IN ('thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thanh <AQ\\thanh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') 
+                AND [Microsoft.VSTS.Common.ResolvedDate] = '{Date}' 
+                AND ([System.State] = 'Đã xử lý' OR [System.State] = 'Đóng case'))
+                OR ([AQ.CaseTester] IN ('thanh <AQ\\thanh>', 'thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') 
+                AND [AQ.DateKQTest] = '{Date}' 
+                AND ([AQ.TestState] = '01 - Đã kiểm tra và kết quả đúng' OR [AQ.TestState] = '02 - Đã kiểm tra và cần thực hiện lại Case'))
+            )
+            ORDER BY [AQ.CaseAnalyst]""
+                    }}";
         }
         public string BuildWiqlGanTagQuery()
         {
@@ -261,7 +283,7 @@ namespace educlient.Services
         public async Task<TfsCaseDetailModel> GetCaseDetails(List<workItemBase> caseIds)
         {
 
-            string sTfsFieldList = "System.Title,System.Id,System.CreatedDate,AQ.ReqState,AQ.CaseAnalyst,AQ.Customer,System.State,AQ.CaseTester,System.AssignedTo,Microsoft.VSTS.Common.ResolvedDate,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,System.AssignedTo";
+            string sTfsFieldList = "System.Title,System.Id,System.CreatedDate,AQ.ReqState,AQ.CaseAnalyst,AQ.Customer,System.State,AQ.CaseTester,System.AssignedTo,Microsoft.VSTS.Common.ResolvedDate,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,System.AssignedTo,AQ.DateKQTest,AQ.DateKQPhanTich";
             string sCaseList = string.Join(",", caseIds.Select(s => s.id));
 
             var tmpjson = await DoTfsQueryData(TFS_HOST,
@@ -312,6 +334,9 @@ namespace educlient.Services
             dt.Columns.Add("caseanalyst", typeof(string));
             dt.Columns.Add("casetester", typeof(string));
             dt.Columns.Add("tinhnangmoi", typeof(bool));
+            dt.Columns.Add("datekqphantich", typeof(string));
+            dt.Columns.Add("datekqtest", typeof(string));
+            dt.Columns.Add("resolveddate", typeof(string));
             return dt;
         }
 
@@ -352,8 +377,8 @@ namespace educlient.Services
                 case "aq.releasedate":
                     dr["hieuluc"] = kvp.Value;
                     break;
-                case "microsoft.vsts.common.resolvedate":
-                    dr["resolvedate"] = kvp.Value;
+                case "microsoft.vsts.common.resolveddate":
+                    dr["resolveddate"] = kvp.Value;
                     break;
                 case "aq.mailto":
                     dr["mailto"] = kvp.Value;
@@ -366,6 +391,12 @@ namespace educlient.Services
                     break;
                 case "aq.comment":
                     dr["comment"] = (string.IsNullOrEmpty(kvp.Value) || kvp.Value == "0" || kvp.Value == "1") ? "" : kvp.Value;
+                    break;
+                case "aq.datekqphantich":
+                    dr["datekqphantich"] = kvp.Value;
+                    break;
+                case "aq.datekqtest":
+                    dr["datekqtest"] = kvp.Value;
                     break;
             }
         }
@@ -447,7 +478,39 @@ namespace educlient.Services
         .ToList();
             return xuLyCaseSupdataDO;
         }
-        public List<XuLyCaseSupdataDO> GetSoLuongCaseSupLam(List<ThongTinCaseSup> data)
+        //    public List<XuLyCaseSupdataDO> GetSoLuongCaseSupLam(List<ThongTinCaseSup> data,string date)
+        //    {
+        //        var allowedPeople = new HashSet<string>
+        //{
+        //    "thanh <AQ\\thanh>",
+        //    "havt <AQ\\havt>",
+        //    "thuannam <AQ\\thuannam>",
+        //    "thuyduong <AQ\\thuyduong>",
+        //    "mtien <AQ\\mtien>",
+        //    "giaminh <AQ\\duongminh>"
+        //};
+
+        //        var result = data
+        //            .SelectMany(c => new[]
+        //            {
+        //        new { Person = c.caseanalyst, Case = c.macase },
+        //        new { Person = c.casetester, Case = c.macase },
+        //        new { Person = c.assignedto, Case = c.macase }
+        //            })
+        //            .Where(x => !string.IsNullOrEmpty(x.Person) && allowedPeople.Contains(x.Person))
+        //            .GroupBy(x => x.Person)
+        //            .Select(g => new XuLyCaseSupdataDO
+        //            {
+        //                assignedto = g.Key,
+        //                //caseList = g.Select(x => x.Case).Distinct().ToList(),
+        //                CaseLamTrongNgay = g.Select(x => x.Case).Distinct().Count(),
+        //                CaseList = g.Select(x => x.Case).Distinct().ToList()
+        //            })
+        //            .ToList();
+
+        //        return result;
+        //    }
+        public List<XuLyCaseSupdataDO> GetSoLuongCaseSupLam(List<ThongTinCaseSup> data, string date)
         {
             var allowedPeople = new HashSet<string>
     {
@@ -459,20 +522,29 @@ namespace educlient.Services
         "giaminh <AQ\\duongminh>"
     };
 
+            DateTime inputDate;
+            if (!DateTime.TryParse(date, out inputDate))
+            {
+                throw new ArgumentException("Invalid date format", nameof(date));
+            }
+
             var result = data
                 .SelectMany(c => new[]
                 {
-            new { Person = c.caseanalyst, Case = c.macase },
-            new { Person = c.casetester, Case = c.macase },
-            new { Person = c.assignedto, Case = c.macase }
+            new { Person = c.caseanalyst, Case = c.macase, Date = DateTime.TryParse(c.datekqphantich, out var d1) ? d1 : (DateTime?)null },
+            new { Person = c.casetester, Case = c.macase, Date = DateTime.TryParse(c.datekqtest, out var d2) ? d2 : (DateTime?)null },
+            new { Person = c.assignedto, Case = c.macase, Date = DateTime.TryParse(c.resolveddate, out var d3) ? d3 : (DateTime?)null }
                 })
-                .Where(x => !string.IsNullOrEmpty(x.Person) && allowedPeople.Contains(x.Person))
+                .Where(x => !string.IsNullOrEmpty(x.Person) &&
+                            allowedPeople.Contains(x.Person) &&
+                            x.Date.HasValue &&
+                            x.Date.Value.Date == inputDate.Date)
                 .GroupBy(x => x.Person)
                 .Select(g => new XuLyCaseSupdataDO
                 {
                     assignedto = g.Key,
-                    //caseList = g.Select(x => x.Case).Distinct().ToList(),
-                    CaseLamTrongNgay = g.Select(x => x.Case).Distinct().Count()
+                    CaseLamTrongNgay = g.Select(x => x.Case).Count(),
+                    CaseList = g.Select(x => x.Case).Distinct().ToList()
                 })
                 .ToList();
 
