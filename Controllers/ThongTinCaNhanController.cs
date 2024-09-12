@@ -6,7 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
 using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography;
+
 
 namespace educlient.Controllers
 {
@@ -14,6 +20,21 @@ namespace educlient.Controllers
     [Route("api/[controller]")]
     public class ThongTinCaNhanController : ControllerBase
     {
+        private static string HashPassword(string pwd)
+        {
+            if (string.IsNullOrEmpty(pwd)) return "";
+            SHA256 sha = new SHA256Managed();
+            var pwdBuff = Encoding.ASCII.GetBytes(pwd);
+            var hashedPwd = sha.TransformFinalBlock(pwdBuff, 0, pwdBuff.Length);
+            var hash = new StringBuilder();
+            foreach (var b in sha.Hash)
+            {
+                hash.Append(string.Format("{0:x2}", b));
+            }
+            sha.Clear();
+            return hash.ToString();
+        }
+
         private readonly IDbLiteContext database;
         public ThongTinCaNhanController(IDbLiteContext dataContext)
         {
@@ -27,10 +48,10 @@ namespace educlient.Controllers
 
             var NhanVienAQ = AQMemberTable.FindAll().ToList();
 
-            var membersWithBase64 = NhanVienAQ.Select(member => new AQMemberInput
+            var memberList = NhanVienAQ.Select(member => new AQMemberDTO
             {
                 id = member.id,
-                tfsName = member.TFSName,
+                TFSName = member.TFSName,
                 fullName = member.fullName,
                 email = member.email,
                 phone = member.phone,
@@ -40,10 +61,15 @@ namespace educlient.Controllers
                 nickName = member.nickName,
                 role = member.role,
                 isLeader = member.isLeader,
-                isLunch = member.isLunch,
-                WFHQuota = member.WFHQuota,
-                absenceQuota = member.absenceQuota,
-                isActive = member.isActive
+                isLunchStatus = member.isLunchStatus,
+                detailLunch = member.detailLunch,
+                detailWFHQuota = member.detailWFHQuota,
+                detailAbsenceQuota = member.detailAbsenceQuota,
+                isActive = member.isActive,
+                maSoCCCD = member.MaSoCCCD,
+                address = member.address,
+                workingYear = member.workingYear,
+                detailContract = member.detailContract
             }).ToList();
 
             return new AQMembersResult
@@ -51,14 +77,14 @@ namespace educlient.Controllers
                 message = "Success",
                 code = 200,
                 result = true,
-                data = membersWithBase64
+                data = memberList
             };
         }
 
         [HttpGet, Route("{id}")]
         public AQMembersResult GetById(int id)
         {
-            List<AQMemberInput> returnData = new List<AQMemberInput>();
+            List<AQMemberDTO> returnData = new List<AQMemberDTO>();
 
             var AQMemberTable = database.Table<AQMember>();
 
@@ -72,9 +98,9 @@ namespace educlient.Controllers
                 };
             }
 
-            var aqMemberReturn = new AQMemberInput
+            var aqMemberReturn = new AQMemberDTO
             {
-                tfsName = aqMember.TFSName,
+                TFSName = aqMember.TFSName,
                 fullName = aqMember.fullName,
                 email = aqMember.email,
                 phone = aqMember.phone,
@@ -84,10 +110,15 @@ namespace educlient.Controllers
                 nickName = aqMember.nickName,
                 role = aqMember.role,
                 isLeader = aqMember.isLeader,
-                isLunch = aqMember.isLunch,
-                WFHQuota = aqMember.WFHQuota,
-                absenceQuota = aqMember.absenceQuota,
-                isActive = aqMember.isActive
+                isLunchStatus = aqMember.isLunchStatus,
+                detailLunch = aqMember.detailLunch,
+                detailWFHQuota = aqMember.detailWFHQuota,
+                detailAbsenceQuota = aqMember.detailAbsenceQuota,
+                isActive = aqMember.isActive,
+                maSoCCCD = aqMember.MaSoCCCD,
+                address = aqMember.address,
+                workingYear = aqMember.workingYear,
+                detailContract = aqMember.detailContract
             };
 
             returnData.Add(aqMemberReturn);
@@ -102,12 +133,13 @@ namespace educlient.Controllers
         }
 
         [HttpPost]
-        public ApiResultBaseDO Insert([FromBody] AQMemberInput[] inputData)
+        public ApiResultBaseDO Insert([FromBody] AQMemberInsertDTO[] inputData)
         {
 
-            var aqMember = inputData.Select(input => new AQMember
+            var aqMembers = inputData.Select(input => new AQMember
             {
-                TFSName = input.tfsName,
+                TFSName = input.TFSName,
+                password = HashPassword("1234"),
                 fullName = input.fullName,
                 email = input.email,
                 phone = input.phone,
@@ -119,15 +151,74 @@ namespace educlient.Controllers
                 nickName = input.nickName,
                 role = input.role,
                 isLeader = input.isLeader,
-                isLunch = input.isLunch,
-                WFHQuota = input.WFHQuota,
-                absenceQuota = input.absenceQuota,
-                isActive = input.isActive
+                isLunchStatus = input.isLunchStatus,
+                isActive = input.isActive,
+                address = input.address,
+                MaSoCCCD = input.maSoCCCD,
+                workingYear = 0,
+                detailContract = new detailContract
+                {
+                    contractStartDate = input.detailContract.contractStartDate,
+                    contractExpireDate = input.detailContract.contractExpireDate,
+                    contractDuration = input.detailContract.contractDuration,
+                    contractType = input.detailContract.contractType,
+                },
+                detailAbsenceQuota = new detailAbsenceQuota
+                {
+                    minAbsenceQuota = input.minAbsenceQuota,
+                    actualAbsenceQuotaByYear = new List<actualAbsenceQuotaByYear> {
+                        new actualAbsenceQuotaByYear
+                        {
+                            year = DateTime.Now.Year,
+                            absenceQuota = input.minAbsenceQuota
+                        }
+                    }
+                },
+                detailWFHQuota = new detailWFHQuota
+                {
+                    minWFHQuota = input.minWFHQuota,
+                    actualWFHQuotaByYear = new List<actualWFHQuotaByYear>
+                    {
+                        new actualWFHQuotaByYear
+                        {
+                            year = DateTime.Now.Year,
+                            WFHQuota = input.minWFHQuota
+                        }
+                    }
+                },
+                detailLunch = input.isLunchStatus == true ? new List<detailLunch> {
+                    new detailLunch
+                    {
+                        year = DateTime.Now.Year,
+                        lunchByMonth = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
+                            .Select(month => new lunchByMonth
+                            {
+                                month = month,
+                                isLunch = true
+                            })
+                            .ToList()
+                    }
+                }
+                :
+                new List<detailLunch> {
+                    new detailLunch
+                    {
+                        year = DateTime.Now.Year,
+                        lunchByMonth = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
+                            .Select(month => new lunchByMonth
+                            {
+                                month = month,
+                                isLunch = false,
+                                note = ""
 
+                            })
+                            .ToList()
+                    }
+                }
             }).ToList();
 
             var AQMemberTable = database.Table<AQMember>();
-            AQMemberTable.Insert(aqMember);
+            AQMemberTable.Insert(aqMembers);
 
             return new ApiResultBaseDO
             {
@@ -138,7 +229,7 @@ namespace educlient.Controllers
         }
 
         [HttpPut, Route("{id}")]
-        public ApiResultBaseDO Update(int id, [FromBody] AQMemberInput inputData)
+        public ApiResultBaseDO Update(int id, [FromBody] AQMemberUpdateDTO inputData)
         {
             var AQMemberTable = database.Table<AQMember>();
 
@@ -152,7 +243,7 @@ namespace educlient.Controllers
                 };
             }
 
-            existingRecord.TFSName = inputData.tfsName;
+            existingRecord.TFSName = inputData.TFSName;
             existingRecord.fullName = inputData.fullName;
             existingRecord.email = inputData.email;
             existingRecord.phone = inputData.phone;
@@ -164,10 +255,15 @@ namespace educlient.Controllers
             existingRecord.nickName = inputData.nickName;
             existingRecord.role = inputData.role;
             existingRecord.isLeader = inputData.isLeader;
-            existingRecord.isLunch = inputData.isLunch;
-            existingRecord.WFHQuota = inputData.WFHQuota;
-            existingRecord.absenceQuota = inputData.absenceQuota;
+            existingRecord.isLunchStatus = inputData.isLunchStatus;
+            existingRecord.detailLunch = inputData.detailLunch;
+            existingRecord.detailWFHQuota = inputData.detailWFHQuota;
+            existingRecord.detailAbsenceQuota = inputData.detailAbsenceQuota;
             existingRecord.isActive = inputData.isActive;
+            existingRecord.address = inputData.address;
+            existingRecord.MaSoCCCD = inputData.maSoCCCD;
+            existingRecord.workingYear = inputData.workingYear;
+            existingRecord.detailContract = inputData.detailContract;
 
 
             // Update the record in the collection
@@ -253,9 +349,12 @@ namespace educlient.Controllers
             };
         }
     }
+
+
+
     public class AQMembersResult : ApiResultBaseDO
     {
-        public List<AQMemberInput> data { get; set; }
+        public List<AQMemberDTO> data { get; set; }
     }
 
     public class MemberCommissionList : ApiResultBaseDO
@@ -263,10 +362,9 @@ namespace educlient.Controllers
         public List<MemberCommission> data { get; set; }
     }
 
-    public class AQMemberInput
+    public class AQMemberInsertDTO
     {
-        public int id { get; set; }
-        public string tfsName { get; set; }
+        public string TFSName { get; set; }
         public string fullName { get; set; }
         public string email { get; set; }
         public string phone { get; set; }
@@ -276,10 +374,63 @@ namespace educlient.Controllers
         public string nickName { get; set; }
         public string role { get; set; }
         public bool isLeader { get; set; }
-        public bool isLunch { get; set; }
-        public int WFHQuota { get; set; }
-        public int absenceQuota { get; set; }
+        public bool isLunchStatus { get; set; }
+        public int lunchFee { get; set; }
+        public int minWFHQuota { get; set; }
+        public int minAbsenceQuota { get; set; }
         public bool isActive { get; set; }
+        public string maSoCCCD { get; set; }
+        public string address { get; set; }
+        public int workingYear { get; set; }
+        public detailContract detailContract { get; set; }
+    }
+
+    public class AQMemberUpdateDTO
+    {
+        public int id { get; set; }
+        public string TFSName { get; set; }
+        public string fullName { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string avatar { get; set; }
+        public DateTime birthDate { get; set; }
+        public DateTime startDate { get; set; }
+        public string nickName { get; set; }
+        public string role { get; set; }
+        public bool isLeader { get; set; }
+        public bool isLunchStatus { get; set; }
+        public List<detailLunch> detailLunch { get; set; }
+        public detailWFHQuota detailWFHQuota { get; set; }
+        public detailAbsenceQuota detailAbsenceQuota { get; set; }
+        public bool isActive { get; set; }
+        public string maSoCCCD { get; set; }
+        public string address { get; set; }
+        public int workingYear { get; set; }
+        public detailContract detailContract { get; set; }
+    }
+
+    public class AQMemberDTO
+    {
+        public int id { get; set; }
+        public string TFSName { get; set; }
+        public string fullName { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string avatar { get; set; }
+        public DateTime birthDate { get; set; }
+        public DateTime startDate { get; set; }
+        public string nickName { get; set; }
+        public string role { get; set; }
+        public bool isLeader { get; set; }
+        public bool isLunchStatus { get; set; }
+        public List<detailLunch> detailLunch { get; set; }
+        public int workingYear { get; set; }
+        public detailWFHQuota detailWFHQuota { get; set; }
+        public detailAbsenceQuota detailAbsenceQuota { get; set; }
+        public bool isActive { get; set; }
+        public string maSoCCCD { get; set; }
+        public string address { get; set; }
+        public detailContract detailContract { get; set; }
     }
 
     public class MemberCommission

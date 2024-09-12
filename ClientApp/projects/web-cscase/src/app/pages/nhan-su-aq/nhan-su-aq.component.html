@@ -2,7 +2,7 @@
   <div class="card p-4">
     <p-toolbar styleClass="mb-4 p-3">
       <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-        🧑🏻‍💼 Danh sách nhân sự AQ
+        Danh sách nhân sự AQ
       </p-card>
       <ng-template *ngIf="checkIsLeader()" pTemplate="left">
         <button pButton pRipple label="Thêm member" icon="pi pi-user-plus mb-1" class="p-button-success py-2"
@@ -33,10 +33,9 @@
           <th *ngIf="checkIsLeader()" style="white-space: nowrap; min-width:120px;" class="text-center">
             <i class="pi pi-ellipsis-h"></i>
           </th>
-          <!-- <th pSortableColumn="id" style="white-space: nowrap;">
-              ID
-              <p-sortIcon field="id"></p-sortIcon>
-            </th> -->
+          <th style="white-space: nowrap; min-width:3rem">
+            Số thứ tự
+          </th>
           <th pSortableColumn="tfsName" style="white-space: nowrap; min-width:10rem;">
             Tfs name
             <p-sortIcon field="tfsName"></p-sortIcon>
@@ -81,21 +80,50 @@
             Trợ cấp ăn trưa
             <p-sortIcon field="isLunch"></p-sortIcon>
           </th>
+          <th pSortableColumn="isLunch" style="white-space: nowrap;">
+            Trợ cấp ăn trưa (tháng hiện tại)
+            <p-sortIcon field="isLunch"></p-sortIcon>
+          </th>
           <th pSortableColumn="wfhQuota" style="white-space: nowrap;">
-            Hạn mức % làm việc online/năm
+            Hạn mức % làm việc online/năm (tối thiểu)
+            <p-sortIcon field="wfhQuota"></p-sortIcon>
+          </th>
+          <th pSortableColumn="wfhQuota" style="white-space: nowrap;">
+            Hạn mức % làm việc online/năm (năm hiện tại)
             <p-sortIcon field="wfhQuota"></p-sortIcon>
           </th>
           <th pSortableColumn="absenceQuota" style="white-space: nowrap;">
-            Số ngày nghỉ phép/năm
+            Số ngày nghỉ phép/năm (tối thiểu)
+            <p-sortIcon field="absenceQuota"></p-sortIcon>
+          </th>
+          <th pSortableColumn="absenceQuota" style="white-space: nowrap;">
+            Số ngày nghỉ phép/năm (năm hiện tại)
             <p-sortIcon field="absenceQuota"></p-sortIcon>
           </th>
           <th pSortableColumn="isActive" style="white-space: nowrap;">
             Trạng thái làm việc
             <p-sortIcon field="isActive"></p-sortIcon>
           </th>
+          <th pSortableColumn="isActive" style="white-space: nowrap;">
+            Mã số CCCD
+            <p-sortIcon field="isActive"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isActive" style="white-space: nowrap;">
+            Địa chỉ
+            <p-sortIcon field="isActive"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isActive" style="white-space: nowrap;">
+            Thời hạn hợp đồng
+            <p-sortIcon field="isActive"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isActive" style="white-space: nowrap;">
+            Loại hợp đồng
+            <p-sortIcon field="isActive"></p-sortIcon>
+          </th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-AQmember>
+      <ng-template let-i="rowIndex" let-line pTemplate="rowexpansion"></ng-template>
+      <ng-template pTemplate="body" let-rowIndex="rowIndex" let-AQmember>
         <tr>
           <td *ngIf="checkIsLeader()" style="white-space: nowrap; text-align: center; width: 100px;">
             <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning p-button-text p-0"
@@ -103,7 +131,7 @@
             <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text p-0"
               (click)="deleteMember($event, AQmember)"></button>
           </td>
-          <!-- <td style="white-space: nowrap; text-align: left;">{{AQmember.id}}</td> -->
+          <td>{{rowIndex}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.tfsName}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.fullName}}</td>
           <td style="white-space: nowrap; text-align: left;">{{AQmember.email}}</td>
@@ -129,15 +157,61 @@
               style="color: rgb(212, 191, 1); font-size: 1.2rem;"></i>
           </td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
-            <i *ngIf="AQmember.isLunch" class="pi pi-check" style="color: green; font-size: 1.5rem;"></i>
-            <i *ngIf="!AQmember.isLunch" class="pi pi-times" style="color: red; font-size: 1.5rem;"></i>
+            <i *ngIf="AQmember.isLunchStatus" class="pi pi-check" style="color: green; font-size: 1.5rem;"></i>
+            <i *ngIf="!AQmember.isLunchStatus" class="pi pi-times" style="color: red; font-size: 1.5rem;"></i>
           </td>
-          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{AQmember.wfhQuota}}%</td>
-          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">{{AQmember.absenceQuota}}</td>
+          <td
+            style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            <i *ngIf="AQmember.isLunchStatus" class="pi pi-check"
+              style="color: green; font-size: 1.5rem;"></i>
+            <i *ngIf="!AQmember.isLunchStatus" class="pi pi-times"
+              style="color: red; font-size: 1.5rem;"></i>
+          </td>
+          <!-- minWFHQuota -->
+          <td *ngIf="AQmember.detailWFHQuota!== null; else elseBlock1"
+            style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{AQmember.detailWFHQuota.minWFHQuota}}%
+          </td>
+          <ng-template #elseBlock1>
+            <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+              Dữ liệu chưa cập nhật
+            </td>
+          </ng-template>
+          <!-- WFHQuota by year-->
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">0</td>
+          <!-- minAbsenceQuota -->
+          <td
+            style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{AQmember.detailAbsenceQuota.minAbsenceQuota}}
+          </td>
+          <!-- AbsenceQuota by year-->
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">0</td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
             <span [class]="AQmember.isActive ? 'member-active' : 'member-inactive'">
               {{AQmember.isActive ? 'Hoạt động' : 'Không hoạt động'}}
             </span>
+          </td>
+          <td
+            style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{AQmember.maSoCCCD}}
+          </td>
+          <td
+            style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{AQmember.address}}
+          </td>
+          <td
+            *ngIf="AQmember.detailContract.contractStartDate !== AQmember.detailContract.contractExpireDate; else elseBlock2"
+            style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{AQmember.detailContract.contractExpireDate | date: 'dd/MM/yyyy'}}
+          </td>
+          <ng-template #elseBlock2>
+            <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+
+            </td>
+          </ng-template>
+          <td
+            style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{AQmember.detailContract.contractType}}
           </td>
         </tr>
       </ng-template>
@@ -151,15 +225,6 @@
 </div>
 
 <div class="sm:flex gap-4 mt-4 w-full lg:w-8">
-  <!-- <div class="card flex-1 p-4">
-    Pie Chart 1
-    <p-chart
-      type="pie"
-      [data]="data_RolePieChart"
-      [options]="role_chartOptions"
-      [style]="{'width': '40%'}">
-    </p-chart>
-  </div> -->
   <div class="card mt-4 sm:mt-0 flex-1">
     <div echarts [options]="pc2_echartsOptions" [extentions]="pc2_echartsExtentions">
     </div>
@@ -171,15 +236,22 @@
   [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
     <div class="formgrid grid">
+
       <!-- First column -->
-      <div class="field col-12 md:col-6">
+      <div class="field col-12 md:col-4">
         <div class="p-field">
           <label for="fullName">Họ tên</label>
-          <input type="text" pInputText id="fullName" [(ngModel)]="aqmember.fullName" required />
+          <input *ngIf="addNewMemberDialog" type="text" pInputText id="fullName" [(ngModel)]="aqmemberInsert.fullName"
+            required />
+          <input *ngIf="editMemberDialog" type="text" pInputText id="fullName" [(ngModel)]="aqmemberUpdate.fullName"
+            required />
         </div>
         <div class="p-field">
           <label for="nickName">Nick Name</label>
-          <input type="text" pInputText id="nickName" [(ngModel)]="aqmember.nickName" required />
+          <input *ngIf="addNewMemberDialog" type="text" pInputText id="nickName" [(ngModel)]="aqmemberInsert.nickName"
+            required />
+          <input *ngIf="editMemberDialog" type="text" pInputText id="nickName" [(ngModel)]="aqmemberUpdate.nickName"
+            required />
         </div>
         <!-- <div class="p-field">
           <label for="birthDate">Ngày sinh</label>
@@ -187,22 +259,123 @@
         <!-- </div> -->
         <div class="p-field">
           <label for="dateformat">Ngày sinh</label>
-          <p-calendar [(ngModel)]="aqmember.birthDate" dateFormat="dd/mm/yy" inputId="dateformat"></p-calendar>
+          <p-calendar *ngIf="addNewMemberDialog" [(ngModel)]="aqmemberInsert.birthDate" dateFormat="dd/mm/yy"
+            inputId="dateformat"></p-calendar>
+          <p-calendar *ngIf="editMemberDialog" [(ngModel)]="aqmemberUpdate.birthDate" dateFormat="dd/mm/yy"
+            inputId="dateformat"></p-calendar>
         </div>
         <div class="p-field">
           <label for="email">Email</label>
-          <input type="email" pInputText id="email" [(ngModel)]="aqmember.email" required />
+          <input *ngIf="addNewMemberDialog" type="email" pInputText id="email" [(ngModel)]="aqmemberInsert.email"
+            required />
+          <input *ngIf="editMemberDialog" type="email" pInputText id="email" [(ngModel)]="aqmemberUpdate.email"
+            required />
         </div>
         <div class="p-field">
           <label for="phone">Điện thoại</label>
-          <input type="text" pInputText id="phone" [(ngModel)]="aqmember.phone" required />
+          <input *ngIf="addNewMemberDialog" type="text" pInputText id="phone" [(ngModel)]="aqmemberInsert.phone"
+            required />
+          <input *ngIf="editMemberDialog" type="text" pInputText id="phone" [(ngModel)]="aqmemberUpdate.phone"
+            required />
         </div>
-        <div class="p-field col-12">
+      </div>
+
+
+      <!-- Second column -->
+      <div class="field col-12 md:col-4">
+        <div class="p-field">
+          <label for="tfsName">Tfs name</label>
+          <input *ngIf="addNewMemberDialog" type="text" pInputText id="tfsName" [(ngModel)]="aqmemberInsert.tfsName"
+            required autofocus />
+          <input *ngIf="editMemberDialog" type="text" pInputText id="tfsName" [(ngModel)]="aqmemberUpdate.tfsName"
+            required autofocus />
+        </div>
+        <div class="p-field">
+          <label for="role">Phòng ban</label>
+          <p-dropdown *ngIf="addNewMemberDialog" [options]="AQRoles" [(ngModel)]="aqmemberInsert.role"
+            optionLabel="role"
+            optionValue="code"></p-dropdown>
+          <p-dropdown *ngIf="editMemberDialog" [options]="AQRoles" [(ngModel)]="aqmemberUpdate.role" optionLabel="role"
+            optionValue="code"></p-dropdown>
+        </div>
+        <div class="p-field">
+          <label for="dateformat">Ngày vào công ty</label>
+          <p-calendar *ngIf="addNewMemberDialog" [(ngModel)]="aqmemberInsert.startDate" dateFormat="dd/mm/yy"
+            inputId="dateformat"></p-calendar>
+          <p-calendar *ngIf="editMemberDialog" [(ngModel)]="aqmemberUpdate.startDate" dateFormat="dd/mm/yy"
+            inputId="dateformat"></p-calendar>
+        </div>
+        <div class="p-field">
+          <label for="wfhQuota">Hạn mức % làm việc online (tối thiểu)</label>
+          <input *ngIf="addNewMemberDialog" type="number" pInputText id="wfhQuota"
+            [(ngModel)]="aqmemberInsert.minWFHQuota" required />
+          <input *ngIf="editMemberDialog" type="number" pInputText id="wfhQuota"
+            [(ngModel)]="aqmemberUpdate.detailWFHQuota.minWFHQuota" required />
+        </div>
+        <div class="p-field">
+          <label for="absenceQuota">Số ngày nghỉ phép/năm (tối thiểu)</label>
+          <input *ngIf="addNewMemberDialog" type="number" pInputText id="absenceQuota"
+            [(ngModel)]="aqmemberInsert.minAbsenceQuota" required />
+          <input *ngIf="editMemberDialog" type="number" pInputText id="absenceQuota"
+            [(ngModel)]="aqmemberUpdate.detailAbsenceQuota.minAbsenceQuota" required />
+        </div>
+      </div>
+
+      <!-- Third column -->
+      <div class="field col-12 md:col-4">
+        <div class="p-field">
+          <label for="maSoCCCD">SỐ CCCD</label>
+          <input *ngIf="addNewMemberDialog" type="text" pInputText id="maSoCCCD" [(ngModel)]="aqmemberInsert.maSoCCCD"
+            required autofocus />
+          <input *ngIf="editMemberDialog" type="text" pInputText id="maSoCCCD" [(ngModel)]="aqmemberUpdate.maSoCCCD"
+            required autofocus />
+        </div>
+        <div class="p-field">
+          <label for="address">Địa chỉ</label>
+          <input *ngIf="addNewMemberDialog" type="text" pInputText id="address" [(ngModel)]="aqmemberInsert.address"
+            required autofocus />
+          <input *ngIf="editMemberDialog" type="text" pInputText id="address" [(ngModel)]="aqmemberUpdate.address"
+            required autofocus />
+        </div>
+        <div class="p-field">
+          <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
+          <p-calendar *ngIf="addNewMemberDialog" [(ngModel)]="detailContractInsert.contractStartDate"
+            dateFormat="dd/mm/yy" inputId="contractStartDate">
+          </p-calendar>
+          <p-calendar *ngIf="editMemberDialog" [(ngModel)]="aqmemberUpdate.detailContract.contractStartDate"
+            dateFormat="dd/mm/yy" inputId="contractStartDate">
+          </p-calendar>
+        </div>
+        <div class="p-field">
+          <label for="contractExpireDate">Ngày kết thúc hợp đồng</label>
+          <p-calendar *ngIf="addNewMemberDialog" [(ngModel)]="detailContractInsert.contractExpireDate"
+            dateFormat="dd/mm/yy"
+            inputId="contractExpireDate"></p-calendar>
+          <p-calendar *ngIf="editMemberDialog" [(ngModel)]="aqmemberUpdate.detailContract.contractExpireDate"
+            dateFormat="dd/mm/yy"
+            inputId="contractExpireDate"></p-calendar>
+        </div>
+        <div class="p-field">
+          <label for="contractType">Loại hợp đồng</label>
+          <input *ngIf="addNewMemberDialog" type="text" pInputText id="contractType"
+            [(ngModel)]="detailContractInsert.contractType"
+            required autofocus />
+          <input *ngIf="editMemberDialog" type="text" pInputText id="contractType"
+            [(ngModel)]="aqmemberUpdate.detailContract.contractType"
+            required autofocus />
+        </div>
+      </div>
+
+      <!-- fourth column below -->
+      <div class="col-12 flex flex-column sm:flex-row">
+
+        <!-- avatar content -->
+        <div *ngIf="addNewMemberDialog" class="p-field col-12 sm:col-6 md:col-4 mb-4">
           <div class="flex flex-column mt-4">
             <!-- add member avatar -->
             <div class="image-container flex flex-row align-items-center justify-content-center">
 
-              <div *ngIf="aqmember.avatar">
+              <div *ngIf="aqmemberInsert.avatar">
                 <label
                   for="fileInput"
                   pButton pRipple type="button"
@@ -213,18 +386,18 @@
 
               <div class="flex flex-column mx-1">
                 <label for="fileInput">
-                  <img [src]="aqmember.avatar ? aqmember.avatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
+                  <img
+                    [src]="aqmemberInsert.avatar ? aqmemberInsert.avatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
                 </label>
                 <input
                   id="fileInput"
                   type="file"
-                  [(ngModel)]="aqmember.avatar"
+                  [(ngModel)]="aqmemberInsert.avatar"
                   class="select-profile-picture"
                   (change)="handleUploadAvatar($event)" hidden />
               </div>
 
-
-              <div *ngIf="aqmember.avatar">
+              <div *ngIf="aqmemberInsert.avatar">
                 <label
                   pButton pRipple type="button"
                   icon="pi pi-trash"
@@ -234,56 +407,91 @@
               </div>
 
             </div>
-
             <!-- show message if no avatar -->
             <div style="height: 5px;">
-              <div *ngIf="!aqmember.avatar" class="text-center">Chưa có ảnh đại diện</div>
+              <div *ngIf="!aqmemberInsert.avatar" class="text-center">Chưa có ảnh đại diện</div>
             </div>
           </div>
         </div>
-      </div>
 
+        <div *ngIf="editMemberDialog" class="p-field col-12 sm:col-6 md:col-4 mb-4">
+          <div class="flex flex-column mt-4">
+            <!-- add member avatar -->
+            <div class="image-container flex flex-row align-items-center justify-content-center">
 
-      <!-- Second column -->
-      <div class="field col-12 md:col-6">
-        <div class="p-field">
-          <label for="tfsName">Tfs name</label>
-          <input type="text" pInputText id="tfsName" [(ngModel)]="aqmember.tfsName" required autofocus />
+              <div *ngIf="aqmemberUpdate.avatar">
+                <label
+                  for="fileInput"
+                  pButton pRipple type="button"
+                  icon="pi pi-image"
+                  class="p-button-rounded p-button-info p-button-text align-items-center hover-button">
+                </label>
+              </div>
+
+              <div class="flex flex-column mx-1">
+                <label for="fileInput">
+                  <img
+                    [src]="aqmemberUpdate.avatar ? aqmemberUpdate.avatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
+                </label>
+                <input
+                  id="fileInput"
+                  type="file"
+                  [(ngModel)]="aqmemberUpdate.avatar"
+                  class="select-profile-picture"
+                  (change)="handleUploadAvatar($event)" hidden />
+              </div>
+
+              <div *ngIf="aqmemberUpdate.avatar">
+                <label
+                  pButton pRipple type="button"
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-danger p-button-text align-items-center hover-button"
+                  (click)="deleteInputImg()">
+                </label>
+              </div>
+
+            </div>
+            <!-- show message if no avatar -->
+            <div style="height: 5px;">
+              <div *ngIf="!aqmemberUpdate.avatar" class="text-center">Chưa có ảnh đại diện</div>
+            </div>
+          </div>
         </div>
-        <div class="p-field">
-          <label for="role">Phòng ban</label>
-          <p-dropdown [options]="AQRoles" [(ngModel)]="aqmember.role" optionLabel="role"
-            optionValue="code"></p-dropdown>
-        </div>
-        <!-- <div class="p-field">
-          <label for="startDate">Ngày vào công ty</label>
-          <input type="date" pInputText id="startDate" [(ngModel)]="aqmember.startDate" required />
-        </div> -->
-        <div class="p-field">
-          <label for="dateformat">Ngày vào công ty</label>
-          <p-calendar [(ngModel)]="aqmember.startDate" dateFormat="dd/mm/yy" inputId="dateformat"></p-calendar>
-        </div>
-        <div class="p-field">
-          <label for="wfhQuota">Hạn mức % làm việc online</label>
-          <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmember.wfhQuota" required />
-        </div>
-        <div class="p-field">
-          <label for="absenceQuota">Số ngày nghỉ phép/năm</label>
-          <input type="number" pInputText id="absenceQuota" [(ngModel)]="aqmember.absenceQuota" required />
-        </div>
-        <div class="p-field-checkbox mt-4">
-          <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isLeader" binary="true" inputId="isLeader"></p-checkbox>
-          <label for="isLeader">Là Leader</label>
-        </div>
-        <div class="p-field-checkbox mt-2">
-          <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isLunch" binary="true" inputId="isLunch"></p-checkbox>
-          <label for="isLunch">Trợ cấp ăn trưa</label>
-        </div>
-        <div class="p-field-checkbox mt-2">
-          <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmember.isActive" binary="true" inputId="isActive"></p-checkbox>
-          <label for="isActive">Đang hoạt động</label>
-        </div>
-      </div>
+
+        <!-- other content -->
+        <div class="p-field col-12 sm:col-6 md:col-8">
+          <div class="p-field-checkbox mt-4 flex flex-column">
+            <div class="col-12">
+              <p-checkbox *ngIf="addNewMemberDialog" class="pb-2 mr-2" [(ngModel)]="aqmemberInsert.isLeader"
+                binary="true"
+                inputId="isLeader"></p-checkbox>
+              <p-checkbox *ngIf="editMemberDialog" class="pb-2 mr-2" [(ngModel)]="aqmemberUpdate.isLeader" binary="true"
+                inputId="isLeader"></p-checkbox>
+              <label for="isLeader">Là Leader</label>
+            </div>
+            <div class="col-12 mt-2">
+              <p-checkbox *ngIf="addNewMemberDialog" class="pb-2 mr-2" [(ngModel)]="aqmemberInsert.isActive"
+                binary="true"
+                inputId="isActive"></p-checkbox>
+              <p-checkbox *ngIf="editMemberDialog" class="pb-2 mr-2" [(ngModel)]="aqmemberUpdate.isActive" binary="true"
+                inputId="isActive"></p-checkbox>
+              <label for="isActive">Đang hoạt động</label>
+            </div>
+            <div class="col-12 mt-2">
+              <p-checkbox *ngIf="addNewMemberDialog" class="pb-2 mr-2" [(ngModel)]="aqmemberInsert.isLunchStatus"
+                binary="true"
+                inputId="isLunch"></p-checkbox>
+              <p-checkbox *ngIf="editMemberDialog" (onChange)="handleIsLunchStatusChange($event)" class="pb-2 mr-2"
+                [(ngModel)]="aqmemberUpdate.isLunchStatus"
+                binary="true"
+                inputId="isLunch"></p-checkbox>
+              <label for="isLunch">Trợ cấp ăn trưa</label>
+            </div>
+          </div>
+        </div> <!-- end of other content column -->
+
+      </div> <!-- end of fourth column -->
+
     </div>
   </ng-template>
 

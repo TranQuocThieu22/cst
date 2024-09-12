@@ -1,4 +1,5 @@
 ﻿using AQFramework.Utilities;
+using educlient.Data;
 using educlient.Models;
 using System;
 using System.Collections.Generic;
@@ -45,29 +46,9 @@ namespace educlient.Models
         public bool isLeader { get; set; }
         public bool isLunch { get; set; }
         public int WFHQuota { get; set; }
-        public int absenceQuota { get; set; }
+        public detailAbsenceQuota detailAbsenceQuota { get; set; }
         public bool isActive { get; set; }
     }
-    public class DsThongTinCaNhanInput
-    {
-        public Guid id { get; set; }
-        public string TFSName { get; set; }
-        public string fullName { get; set; }
-        public string email { get; set; }
-        public string phone { get; set; }
-        public string avatar { get; set; }
-        public DateTime birthDate { get; set; }
-        public DateTime startDate { get; set; }
-        public string nickName { get; set; }
-        public string role { get; set; }
-        public bool isLeader { get; set; }
-        public bool isLunch { get; set; }
-        public int WFHQuota { get; set; }
-        public int absenceQuota { get; set; }
-        public bool isActive { get; set; }
-    }
-
-
 }
 public class DsNgayPhepCaNhanResult : ApiResultBaseDO
 {

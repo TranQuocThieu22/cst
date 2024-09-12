@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AQMember } from './AQMember';
+import {
+  AQMember, AQMemberUpdateDO, AQMemberInsertDO,
+  detailContract
+} from './AQMember';
 import { AQRole } from './AQMember';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -22,7 +25,22 @@ import { TitleComponent, TooltipComponent, LegendComponent } from "echarts/compo
 export class NhanSuAqComponent implements OnInit {
 
   AQmembers: AQMember[];
-  aqmember: AQMember;
+
+  detailContractInsert: detailContract = {
+    contractStartDate: new Date(),
+    contractExpireDate: new Date(),
+    contractDuration: 1,
+    contractType: ""
+  }
+
+  aqmemberInsert: AQMemberInsertDO = {
+    detailContract: this.detailContractInsert
+  }
+
+  detailContractUpdate: detailContract;
+
+  aqmemberUpdate: AQMemberUpdateDO;
+
   addNewMemberDialog: boolean;
   editMemberDialog: boolean;
   deleteMemberDialog: boolean;
@@ -72,19 +90,43 @@ export class NhanSuAqComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]); // read file as data url
       reader.onload = (event) => {
         // called once readAsDataURL is completed
-        this.aqmember.avatar = event.target.result as string;
+        if (this.openAddDialog) this.aqmemberInsert.avatar = event.target.result as string;
+        if (this.openEditDialog) this.aqmemberUpdate.avatar = event.target.result as string;
       };
     }
   }
   deleteInputImg() {
-    this.aqmember.avatar = null;
+    if (this.aqmemberInsert) this.aqmemberInsert.avatar = null;
+    if (this.aqmemberUpdate) this.aqmemberUpdate.avatar = null;
   }
 
   fetchAQMemberData() {
     this.https.get<any>("/api/ThongTinCaNhan").subscribe({
       next: (res: any) => {
-        this.AQmembers = res.data
+        this.AQmembers = res.data;
         this.sortInitData();
+        // this.AQmembers.forEach(member => {
+        //   if (member.detailContract === null) {
+        //     member.detailContract = {
+        //       contractStartDate: new Date(),
+        //       contractExpireDate: new Date(),
+        //       contractDuration: 1
+        //     }
+        //   }
+        //   if (member.detailLunch === null) {
+        //     member.detailLunch = [{
+        //       year: new Date().getFullYear(),
+        //       lunchByMonth: [{
+        //         month: new Date().getMonth() + 1,
+        //         isLunch: false,
+        //         lunchFee: 0,
+        //         note: ""
+        //       }]
+        //     }]
+        //   }
+        // });
+
+        // console.log(this.AQmembers);
       },
       error: (error) => {
         console.log(error);
@@ -95,56 +137,11 @@ export class NhanSuAqComponent implements OnInit {
         this.AQRoles.forEach(role => {
           role.total = this.AQmembers.filter(member => member.role === role.code).length;
         });
-        this.fetchDataPieChart();
         this.fetchDataPC2();
+        console.log(this.AQmembers);
+
       }
     });
-  }
-
-  fetchDataPieChart() {
-    this.data_RolePieChart = {
-      labels: this.AQRoles.map(role => role.role),
-      datasets: [
-        {
-          data: this.AQRoles.map(role => role.total),
-          backgroundColor: [
-            "#b3e5fc",
-            "#ffd8b2",
-            "#8dbca1",
-            "#fe1155",
-            "#0a3d62"
-          ],
-          hoverBackgroundColor: [
-            "#b3e5fc",
-            "#ffd8b2",
-            "#8dbca1",
-            "#fe1155",
-            "#0a3d62"
-          ]
-        }
-      ]
-    };
-
-    this.role_chartOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            color: '#495057'
-          }
-        },
-        labels: {
-          render: 'percentage',
-          fontColor: function (data) {
-            var rgb = hexToRgb(data.dataset.backgroundColor[data.index]);
-            var threshold = 140;
-            var luminance = 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
-            return luminance > threshold ? 'black' : 'white';
-          },
-          precision: 2
-        }
-      }
-    };
-
   }
 
   fetchDataPC2() {
@@ -224,23 +221,50 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   openAddDialog() {
-    this.aqmember = {};
+    this.aqmemberInsert = {
+      detailContract: this.detailContractInsert
+    };
     this.editMemberDialog = false;
     this.addNewMemberDialog = true;
     this.openDialog = true;
   }
 
   openEditDialog(data: any) {
-    this.aqmember = {};
-    this.aqmember = structuredClone(data);
-    this.aqmember = {
-      ...this.aqmember,
+    this.aqmemberUpdate = {};
+    this.aqmemberUpdate = structuredClone(data);
+
+    this.aqmemberUpdate = {
+      ...this.aqmemberUpdate,
       birthDate: new Date(data.birthDate),
-      startDate: new Date(data.startDate)
+      startDate: new Date(data.startDate),
+      detailContract: data.detailContract === null ?
+        {
+          contractStartDate: new Date(),
+          contractExpireDate: new Date(),
+          contractDuration: 0,
+          contractType: ""
+        }
+        : {
+          ...this.aqmemberUpdate.detailContract,
+          contractStartDate: new Date(data.detailContract.contractStartDate),
+          contractExpireDate: new Date(data.detailContract.contractExpireDate)
+        }
     };
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
     this.openDialog = true;
+  }
+
+  handleIsLunchStatusChange(event) {
+    this.aqmemberUpdate.isLunchStatus = event.checked;
+    const currentYear = new Date().getFullYear();
+    const detailLunchCurrentYear = this.aqmemberUpdate.detailLunch.find(item => item.year === currentYear);
+
+    if (detailLunchCurrentYear) {
+      detailLunchCurrentYear.lunchByMonth.forEach(lunchByMonth => {
+        lunchByMonth.isLunch = event.checked;
+      });
+    }
   }
 
   openDeleteDialog(data: any) {
@@ -248,17 +272,17 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   hideDialog() {
+    console.log('close', this.aqmemberInsert);
     this.openDialog = false;
     this.editMemberDialog = false;
     this.addNewMemberDialog = false;
   }
 
   addNewMember() {
-    if (this.aqmember.avatar === undefined || this.aqmember.avatar === '') {
-      this.aqmember.avatar = null;
+    if (this.aqmemberInsert.avatar === undefined || this.aqmemberInsert.avatar === '') {
+      this.aqmemberInsert.avatar = null;
     }
-    // this.aqmember.avatar = "avatar content";
-    let aqmemberArray: AQMember[] = [this.aqmember];
+    let aqmemberArray: AQMemberInsertDO[] = [this.aqmemberInsert];
 
     this.https.post<any>("/api/ThongTinCaNhan", aqmemberArray).subscribe({
       next: (res: any) => {
@@ -276,15 +300,13 @@ export class NhanSuAqComponent implements OnInit {
 
     this.AQmembers = [...this.AQmembers];
     this.addNewMemberDialog = false;
-    this.aqmember = {};
+    this.aqmemberInsert = {};
     this.deleteInputImg();
     this.hideDialog();
   }
 
   updateMember() {
-    console.log(this.aqmember);
-
-    this.https.put<any>("/api/ThongTinCaNhan/" + this.aqmember.id, this.aqmember).subscribe({
+    this.https.put<any>("/api/ThongTinCaNhan/" + this.aqmemberUpdate.id, this.aqmemberUpdate).subscribe({
       next: (res: any) => {
         // console.log(res);
       },
