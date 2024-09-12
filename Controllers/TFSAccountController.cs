@@ -5,9 +5,13 @@ using educlient.Services;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography;
 
 namespace educlient.Controllers
 {
@@ -17,6 +21,8 @@ namespace educlient.Controllers
     {
         private readonly ITFSAccountService _tfsAccountService;
         private readonly IDbLiteContext database;
+
+
 
         public TFSAccountController(ITFSAccountService tfsAccountService, IDbLiteContext dataContext)
         {
@@ -40,10 +46,10 @@ namespace educlient.Controllers
 
                 if (model.username.ToLower() == "admin" && model.password == "12345")
                 {
-                    var data = new DsThongTinCaNhanDataDO()
+                    var data = new LoginReturnData()
                     {
-                        id = Guid.NewGuid(),
-                        TFSName = "admin",
+                        id = 69420,
+                        tfsName = "admin",
                         fullName = "admin",
                         email = "admin",
                         phone = "admin",
@@ -53,40 +59,52 @@ namespace educlient.Controllers
                         nickName = "admin",
                         role = "admin",
                         isLeader = true,
-                        isLunch = true,
-                        WFHQuota = 1,
-                        absenceQuota = 1,
-                        isActive = true
+                        isActive = true,
                     };
 
                     return Ok(data);
                 }
 
-                else if (model.password != null && model.password == "1234")
+                else if (model.username != null && model.password != null)
                 {
+                    var hashedPassword = HashPassword(model.password);
+
                     var AQMemberTable = database.Table<AQMember>();
-                    var data = AQMemberTable.FindOne(x => x.TFSName == model.username);
 
-                    var aqMemberReturn = new AQMemberInput
+                    var userAuthData = AQMemberTable.Query()
+                        .Where(x => x.TFSName == model.username)
+                        .Select(x => new { x.TFSName, x.password, x.id })
+                        .FirstOrDefault();
+
+                    if (userAuthData == null)
                     {
-                        id = data.id,
-                        tfsName = data.TFSName,
-                        fullName = data.fullName,
-                        email = data.email,
-                        phone = data.phone,
-                        avatar = data.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(data.avatar)}" : null,
-                        birthDate = data.birthDate,
-                        startDate = data.startDate,
-                        nickName = data.nickName,
-                        role = data.role,
-                        isLeader = data.isLeader,
-                        isLunch = data.isLunch,
-                        WFHQuota = data.WFHQuota,
-                        absenceQuota = data.absenceQuota,
-                        isActive = data.isActive
-                    };
+                        throw new ArgumentException("Username is incorrect.");
+                    }
+                    else if (!VerifyPassword(model.password, userAuthData.password))
+                    {
+                        throw new ArgumentException("Password is incorrect.");
+                    }
 
-                    return Ok(aqMemberReturn);
+                    var userData = AQMemberTable.Query()
+                        .Where(x => x.TFSName == model.username)
+                        .Select(x => new LoginReturnData
+                        {
+                            id = x.id,
+                            tfsName = x.TFSName,
+                            fullName = x.fullName,
+                            email = x.email,
+                            phone = x.phone,
+                            avatar = x.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(x.avatar)}" : null,
+                            birthDate = x.birthDate,
+                            startDate = x.startDate,
+                            nickName = x.nickName,
+                            role = x.role,
+                            isLeader = x.isLeader,
+                            isActive = x.isActive,
+                        })
+                        .FirstOrDefault();
+
+                    return Ok(userData);
                 }
                 else
                 {
@@ -107,5 +125,58 @@ namespace educlient.Controllers
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
+
+        private static string HashPassword(string pwd)
+        {
+            if (string.IsNullOrEmpty(pwd)) return "";
+            SHA256 sha = new SHA256Managed();
+            var pwdBuff = Encoding.ASCII.GetBytes(pwd);
+            var hashedPwd = sha.TransformFinalBlock(pwdBuff, 0, pwdBuff.Length);
+            var hash = new StringBuilder();
+            foreach (var b in sha.Hash)
+            {
+                hash.Append(string.Format("{0:x2}", b));
+            }
+            sha.Clear();
+            return hash.ToString();
+        }
+
+        private static bool VerifyPassword(string password, string hashedPassword)
+        {
+            // Hash input password
+            string hashedInput = HashPassword(password);
+            // Compare hashed input to stored hash
+            if (hashedInput == hashedPassword)
+            {
+                return true;
+            }
+            return false;
+
+        }
     }
+
+    public class LoginReturnData
+    {
+        public int id { get; set; }
+        public int memberNumber { get; set; }
+        public string tfsName { get; set; }
+        public string fullName { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string avatar { get; set; }
+        public DateTime birthDate { get; set; }
+        public DateTime startDate { get; set; }
+        public string nickName { get; set; }
+        public string role { get; set; }
+        public bool isLeader { get; set; }
+        public int workingYear { get; set; }
+        public bool isActive { get; set; }
+    }
+
+    public class UserData
+    {
+        public string TFSName { get; set; }
+        public string password { get; set; }
+    }
+
 }

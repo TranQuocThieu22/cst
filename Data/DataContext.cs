@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace educlient.Data
 {
@@ -62,6 +63,7 @@ namespace educlient.Data
         [BsonId]
         public int id { get; set; }
         public string TFSName { get; set; }
+        public string password { get; set; }
         public string fullName { get; set; }
         public string email { get; set; }
         public string phone { get; set; }
@@ -71,10 +73,73 @@ namespace educlient.Data
         public string nickName { get; set; }
         public string role { get; set; }
         public bool isLeader { get; set; }
-        public bool isLunch { get; set; }
-        public int WFHQuota { get; set; }
-        public int absenceQuota { get; set; }
+        public bool isLunchStatus { get; set; }
+        public List<detailLunch> detailLunch { get; set; } = new List<detailLunch>
+        {
+            new detailLunch()
+        };
+        public int workingYear { get; set; } = 0;
+        public detailWFHQuota detailWFHQuota { get; set; } = new detailWFHQuota();
+        public detailAbsenceQuota detailAbsenceQuota { get; set; } = new detailAbsenceQuota();
         public bool isActive { get; set; }
+        public string MaSoCCCD { get; set; } = "";
+        public string address { get; set; } = "";
+        public detailContract detailContract { get; set; } = new detailContract();
+    }
+    public class detailContract
+    {
+        public DateTime contractStartDate { get; set; } = DateTime.Now.Date;
+        public DateTime contractExpireDate { get; set; } = DateTime.Now.Date;
+        public int contractDuration { get; set; } = 0;
+        public string contractType { get; set; } = "";
+    }
+    public class detailAbsenceQuota
+    {
+        public int minAbsenceQuota { get; set; } = 0;
+        public List<actualAbsenceQuotaByYear> actualAbsenceQuotaByYear { get; set; } = new List<actualAbsenceQuotaByYear>
+        {
+            new actualAbsenceQuotaByYear()
+        };
+    }
+
+    public class actualAbsenceQuotaByYear
+    {
+        public int year { get; set; } = DateTime.Now.Year;
+        public int absenceQuota { get; set; } = 0;
+    }
+
+    public class detailWFHQuota
+    {
+        public int minWFHQuota { get; set; } = 0;
+        public List<actualWFHQuotaByYear> actualWFHQuotaByYear { get; set; } = new List<actualWFHQuotaByYear> {
+            new actualWFHQuotaByYear()
+        };
+    }
+
+    public class actualWFHQuotaByYear
+    {
+        public int year { get; set; } = DateTime.Now.Year;
+        public int WFHQuota { get; set; } = 0;
+    }
+
+    public class detailLunch
+    {
+        public int year { get; set; } = DateTime.Now.Year;
+        public List<lunchByMonth> lunchByMonth { get; set; } = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
+                            .Select(month => new lunchByMonth
+                            {
+                                month = month,
+                                isLunch = false,
+                            })
+                            .ToList();
+    }
+
+    public class lunchByMonth
+    {
+        public int month { get; set; }
+        public bool isLunch { get; set; }
+        public int lunchFee { get; set; } = 0;
+        public string note { get; set; } = "";
     }
 
     public class DayOff

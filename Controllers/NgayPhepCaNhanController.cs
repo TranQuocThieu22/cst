@@ -302,8 +302,10 @@ namespace educlient.Controllers
                 {
                     fullName = member.fullName,
                     nickName = member.nickName,
-                    absenceQuota = member.absenceQuota,
-                    WFHQuota = member.WFHQuota,
+                    //absenceQuota = member.absenceQuota,
+                    //WFHQuota = member.WFHQuota,
+                    absenceQuota = 0,
+                    WFHQuota = 0,
                     DayOffs = countDayOff,
                     total_wfh = countWorkingOnline
                 };
