@@ -436,7 +436,7 @@ export class AqReportComponent implements OnInit {
     const specificColorIndex = 1;
     this.charts.BieuDoTienDoXyLyCasesDev.chartOptions.series = [
       { name: "Cần xử lý", data: this.CanXuLyListDev },
-      { name: "Số case trong ngày", data: this.soCaseTrongNgayListDev },
+      { name: "Số case đã xử lý", data: this.soCaseTrongNgayListDev },
       { name: "Xử lý trễ", data: this.xuLyTreListDev }
     ];
     this.charts.BieuDoTienDoXyLyCasesDev.chartOptions.xaxis = { categories: this.assignedToListDev };
@@ -449,7 +449,7 @@ export class AqReportComponent implements OnInit {
     }
     this.charts.BieuDoPhanBoThoiGianDev.chartOptions.series = [
       { name: "Số giờ cần xử lý tất cả case", data: this.tgCanXyLyListDev },
-      { name: "Lượng giờ trong ngày", data: this.luongGioTrongNgayListDev }
+      { name: "Số giờ đã xử lý", data: this.luongGioTrongNgayListDev }
     ];
     this.charts.BieuDoPhanBoThoiGianDev.chartOptions.xaxis = { categories: this.assignedToListDev };
   }
@@ -514,7 +514,7 @@ export class AqReportComponent implements OnInit {
   updateBieuDoDEVReport() {
     this.charts.BieuDoDEVReport.chartOptions.series = [
       { name: "Cần xử lý", data: this.CanXuLyListDev },
-      { name: "Số case trong ngày", data: this.soCaseTrongNgayListDev },
+      { name: "Số case đã xử lý", data: this.soCaseTrongNgayListDev },
       { name: "Xử lý trễ", data: this.xuLyTreListDev }
     ];
     this.charts.BieuDoDEVReport.chartOptions.xaxis = { categories: this.assignedToListDev };
