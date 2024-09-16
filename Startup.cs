@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-//using Microsoft.OpenApi.Models;
 using System;
 
 namespace educlient
@@ -56,12 +55,7 @@ namespace educlient
             services.AddSingleton<ITFSAccountService, TFSAccountService>();
             services.AddSingleton<IKetQuaLamViecCaNhan, KetQuaLamViecCaNhan>();
             services.AddSingleton<IBaoCaoTheoChuKyService, BaoCaoTheoChuKyService>();
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
-            //});
-            //services.AddSwaggerGen();
-
+            services.AddSwaggerGen();
         }
 
 
@@ -72,6 +66,12 @@ namespace educlient
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI();
+                //app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+                //{
+                //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                //});
             }
             else
             {
@@ -83,14 +83,6 @@ namespace educlient
             {
                 app.UseSpaStaticFiles();
             }
-            //app.UseSwagger();
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
-            //});
-
-            //app.UseSwagger();
-            //app.UseSwaggerUI();
 
 
 
@@ -115,6 +107,7 @@ namespace educlient
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
         }
     }
 }
