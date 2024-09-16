@@ -1,0 +1,204 @@
+<!-- app.component.html -->
+<p-toolbar styleClass="top-toolbar">
+  <div class="p-toolbar-group-left">
+    <p-button icon="pi pi-bars" (click)="toggleSidebar()" styleClass="p-button-text"></p-button>
+    <span class="app-title">
+      <a routerLink="aq" class="nav-link active" style="font-size: 24px;">AQ Dashboard</a>
+    </span>
+  </div>
+  <div class="p-toolbar-group-right">
+    <p-tieredMenu #menu [model]="items" [popup]="true"></p-tieredMenu>
+    <div class="flex flex-row">
+      <div class="flex flex-column">
+        <div class="flex mr-3 justify-content-end">Hello,&nbsp;<strong>{{userInfo.fullName}}</strong></div>
+        <div class="flex mr-3 justify-content-end">
+          <span #btn class="nav-account-btn" (click)="menu.toggle($event)">
+            Tài khoản
+          </span>
+          &nbsp;|&nbsp;
+          <span class="nav-logout-btn" (click)="logOut()">Đăng xuất</span>
+        </div>
+      </div>
+      <p-avatar
+        size="large"
+        image="{{userInfo.avatar}}"
+        shape="circle"
+        [style]="{'background-color':'#2196F3', 'color': '#ffffff'}">
+      </p-avatar>
+    </div>
+  </div>
+</p-toolbar>
+
+<!-- edit avatar modal -->
+<p-dialog header="Header" [(visible)]="isOpen_EditAvatarDialog" [modal]="true" [style]="{width: '50vw'}"
+  [draggable]="false" [resizable]="false">
+  <div>
+    <!-- start content -->
+    <div class="flex flex-column mt-4">
+      <!-- add member avatar -->
+      <div class="image-container flex flex-row align-items-center justify-content-center">
+
+        <div *ngIf="userAvatar">
+          <label
+            for="fileInput"
+            pButton pRipple type="button"
+            icon="pi pi-image"
+            class="p-button-rounded p-button-info p-button-text align-items-center hover-button">
+          </label>
+        </div>
+
+        <div class="flex flex-column mx-1">
+          <label for="fileInput">
+            <img
+              [src]="userAvatar ? userAvatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
+          </label>
+          <input
+            id="fileInput"
+            type="file"
+            [(ngModel)]="userAvatar"
+            class="select-profile-picture"
+            (change)="handleUploadAvatar($event)" hidden />
+        </div>
+
+        <div *ngIf="userAvatar">
+          <label
+            pButton pRipple type="button"
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-danger p-button-text align-items-center hover-button"
+            (click)="deleteInputImg()">
+          </label>
+        </div>
+
+      </div>
+      <!-- show message if no avatar -->
+      <div style="height: 5px;">
+        <div *ngIf="!userAvatar" class="text-center">Chưa có ảnh đại diện</div>
+      </div>
+    </div>
+
+    <!-- end content-->
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="isOpen_EditAvatarDialog=false" label="Hủy"
+      styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-check" (click)="handleUpdateAvatarAPI()" label="Lưu"
+      styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- edit password modal -->
+<!-- [breakpoints]=" 
+{ 
+    '1200px': '50vw',  
+    '600px': '100vw'
+}"
+[style]="{width: '30vw', height: '50vh'}" -->
+
+<p-dialog
+  header="Đổi mật khẩu"
+  [(visible)]="isOpen_EditPasswordDialog"
+  [modal]="true"
+  [draggable]="true" [resizable]="false"
+  [closeOnEscape]="true"
+  [closable]="true"
+  [breakpoints]=" 
+  { 
+      '1200px': '50vw',  
+      '600px': '100vw'
+  }"
+  [style]="{width: '30vw'}">
+  <div style=" height: fit-content;">
+    <!-- start content -->
+    <div class="flex flex-column mt-4">
+      <div class="flex flex-column">
+        <label>Mật khẩu cũ</label>
+        <p-password
+          [(ngModel)]="oldPassword"
+          [feedback]="false" [toggleMask]="true"
+          [style]="{'width':'100%'}"
+          [inputStyle]="{'width':'100%'}">
+        </p-password>
+      </div>
+      <div class="mt-4 flex flex-column">
+        <label>Mật khẩu mới</label>
+        <p-password
+          [(ngModel)]="newPassword"
+          [toggleMask]="true"
+          [style]="{'width':'100%'}"
+          [inputStyle]="{'width':'100%'}"
+          (ngModelChange)="checkConfirmPassword()">
+        </p-password>
+      </div>
+      <div class="mt-4 flex flex-column">
+        <label>Xác nhận mật khẩu mới</label>
+        <p-password [(ngModel)]="confirmPassword"
+          [feedback]="false" [toggleMask]="true"
+          [style]="{'width':'100%'}"
+          [inputStyle]="{'width':'100%'}"
+          (ngModelChange)="checkConfirmPassword()"
+          [ngClass]="[!isValidConfirmPassword ? 'ng-invalid ng-dirty' : '']">
+        </p-password>
+      </div>
+      <div *ngIf="!isValidConfirmPassword" class="field col-12" style="color: red;">
+        *Mật khẩu xác nhận không khớp
+      </div>
+    </div>
+    <!-- end content-->
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="handleChangePassword()" label="Ok"
+      styleClass="p-button-text">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-sidebar [(visible)]="sidebarVisible" [baseZIndex]="10000">
+  <h3> <a routerLink="aq" class="nav-link active fw-bold fs-4">Danh mục</a></h3>
+  <div class="sidebar-menu">
+    <a pButton class="p-button-text" routerLink="report" routerLinkActive="active-link">
+      <i class="pi pi-chart-line"></i>
+      <span>Báo cáo hằng ngày</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="nhansuaq" routerLinkActive="active-link">
+      <i class="pi pi-users"></i>
+      <span>Nhân sự AQ</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ngaynghichungaq" routerLinkActive="active-link">
+      <i class="pi pi-calendar"></i>
+      <span>Ngày nghỉ chung</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ngaycongtacpaq" routerLinkActive="active-link">
+      <i class="pi pi-send"></i>
+      <span>Ngày công tác</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ngayphepcanhan" routerLinkActive="active-link">
+      <i class="pi pi-calendar-minus"></i>
+      <span>Ngày nghỉ phép</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="lamvieconline" routerLinkActive="active-link">
+      <i class="pi pi-globe"></i>
+      <span>Làm việc online</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="lamviecngoaigio" routerLinkActive="active-link">
+      <i class="pi pi-clock"></i>
+      <span>Làm việc ngoài giờ</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="ketqualamvieccanhan" routerLinkActive="active-link">
+      <i class="pi pi-file"></i>
+      <span>Kết quả làm việc cá nhân</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="baobieuthongke" routerLinkActive="active-link">
+      <i class="pi pi-chart-bar"></i>
+      <span>Báo biểu thống kê</span>
+    </a>
+    <a pButton class="p-button-text" (click)="logOut()">
+      <i class="pi pi-sign-out"></i>
+      <span>Đăng xuất</span>
+    </a>
+  </div>
+</p-sidebar>
+
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
