@@ -267,6 +267,60 @@ namespace educlient.Controllers
             }
         }
 
+
+        [HttpPut("resetPasswordById")]
+        public async Task<IActionResult> RetrievePassword([FromBody] InputResetPasswordById inputData)
+        {
+            if (inputData == null)
+            {
+                throw new ArgumentException("Input data are required.");
+            }
+
+            try
+            {
+                if (inputData.adminPassword == "12345")
+                {
+                    var AQMemberTable = database.Table<AQMember>();
+                    var user = AQMemberTable.Query()
+                        .Where(x => x.TFSName == inputData.username.ToLower())
+                        .Select(x => new
+                        {
+                            x.id
+                        })
+                        .FirstOrDefault();
+
+                    var NhanVienAQ = AQMemberTable.FindById(user.id);
+                    NhanVienAQ.password = HashPassword("1234");
+                    AQMemberTable.Update(NhanVienAQ);
+
+                    return Ok(new
+                    {
+                        message = "Reset password success",
+                        mkmd = "1234"
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Invalid input data"
+                });
+
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized("Login failed");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
         public class LoginReturnData
         {
             public int id { get; set; }
@@ -302,6 +356,12 @@ namespace educlient.Controllers
         public class InputResetPassword
         {
             public string adminPassword { get; set; }
+        }
+
+        public class InputResetPasswordById
+        {
+            public string adminPassword { get; set; }
+            public string username { get; set; }
         }
     }
 }
