@@ -200,8 +200,15 @@
                     <div *ngFor="let member of CommissionDay.memberList; let i = index">
                         <div class="grid mt-2">
                             <div class="col-6">
-                                <p-dropdown [options]="CommissionMemberList" [(ngModel)]="member.id"
-                                    optionLabel="fullName" optionValue="id">
+                                <p-dropdown
+                                    [options]="CommissionMemberList"
+                                    [filter]="true"
+                                    filterBy="fullName"
+                                    [showClear]="true"
+                                    placeholder="Chọn nhân sự"
+                                    [(ngModel)]="member.id"
+                                    optionLabel="fullName"
+                                    optionValue="id">
                                 </p-dropdown>
                             </div>
                             <div class="col-5">

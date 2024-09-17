@@ -230,10 +230,17 @@
             </div>
 
             <div class="field col-12">
-                <label *ngIf="checkIsLeader()" for="memberId">Chọn nhân viên
+                <label *ngIf="checkIsLeader()" for="memberId">Họ tên nhân viên
                 </label>
-                <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="IndividualDayOff.member.id"
-                    optionLabel="fullName" optionValue="id" required>
+                <p-dropdown *ngIf="checkIsLeader()"
+                    [options]="MemberList"
+                    [(ngModel)]="IndividualDayOff.member.id"
+                    optionLabel="fullName"
+                    [filter]="true"
+                    filterBy="fullName"
+                    [showClear]="true"
+                    placeholder="Chọn nhân viên"
+                    optionValue="id">
                 </p-dropdown>
             </div>
             <div *ngIf="checkIsLeader()" class="mt-2">

@@ -145,9 +145,17 @@
             </div>
 
             <div class="field col-12">
-                <label for="reason">Nhân viên</label>
-                <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="WorkingOT.member.id"
-                    optionLabel="fullName" optionValue="id" required>
+                <label *ngIf="checkIsLeader()" for="memberId">Họ tên nhân viên
+                </label>
+                <p-dropdown *ngIf="checkIsLeader()"
+                    [options]="MemberList"
+                    [(ngModel)]="WorkingOT.member.id"
+                    optionLabel="fullName"
+                    [filter]="true"
+                    filterBy="fullName"
+                    [showClear]="true"
+                    placeholder="Chọn nhân viên"
+                    optionValue="id">
                 </p-dropdown>
             </div>
 
