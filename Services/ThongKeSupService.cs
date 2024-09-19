@@ -182,7 +182,7 @@ namespace educlient.Services
                 AND [AQ.DateKQPhanTich] = '{Date}')
                 OR ([System.AssignedTo] IN ('thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thanh <AQ\\thanh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') 
                 AND [Microsoft.VSTS.Common.ResolvedDate] = '{Date}' 
-                AND ([System.State] = 'Đã xử lý' OR [System.State] = 'Đóng case'))
+                AND ([System.State] = 'Đã xử lý' OR [System.State] = 'Đóng case'))
                 OR ([AQ.CaseTester] IN ('thanh <AQ\\thanh>', 'thuannam <AQ\\thuannam>', 'mtien <AQ\\mtien>', 'giaminh <AQ\\duongminh>', 'thuyduong <AQ\\thuyduong>', 'havt <AQ\\havt>') 
                 AND [AQ.DateKQTest] = '{Date}' 
                 AND ([AQ.TestState] = '01 - Đã kiểm tra và kết quả đúng' OR [AQ.TestState] = '02 - Đã kiểm tra và cần thực hiện lại Case'))
