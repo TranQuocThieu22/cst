@@ -2,7 +2,7 @@
     <div class="card p-4">
         <p-toolbar styleClass="mb-4 p-3">
             <p-card *ngIf="checkIsLeader()" header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-                😒 Quản lý làm việc ngoài giờ
+                Quản lý làm việc ngoài giờ
             </p-card>
             <p-card *ngIf="!checkIsLeader()" header="header"
                 style="font-weight: bold; font-size: x-large; color: navy;">
@@ -22,36 +22,37 @@
 
         <p-toolbar styleClass="mb-4 p-3">
             <div class="flex flex-row flex-wrap gap-3">
-                <div class="mt-2">
-                    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
-                        (click)="clear(dt1)">
-                    </button>
+                <div class="flex flex-row gap-1">
+                    <div class="flex align-content-center flex-wrap"><strong>Từ ngày</strong></div>
+                    <p-calendar
+                        [(ngModel)]="filter_datefrom"
+                        dateFormat="dd/mm/yy" dataType="string"
+                        style="width: 135px;"></p-calendar>
                 </div>
-                <span class="p-float-label mt-2">
-                    <input id="float-input" type="text" pInputText [(ngModel)]="filter_datefrom">
-                    <label for="float-input">Lọc từ ngày</label>
-                </span>
-                <span class="p-float-label mt-2">
-                    <input id="float-input" type="text" pInputText [(ngModel)]="filter_dateto">
-                    <label for="float-input">Lọc đến ngày</label>
-                </span>
-                <span class="mt-2">
-                    <!-- <button
-              pButton pRipple type="button"
-              label="Lọc"
-              class="p-button-rounded p-button-info  px-4">
-            </button> -->
-                    <!-- <button pButton pRipple type="button" label="Lọc" class="p-button-outlined p-button-info px-4"></button> -->
-                    <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-info"
+                <div class="flex flex-row gap-1">
+                    <div class="flex align-content-center flex-wrap"><strong>Đến ngày</strong></div>
+                    <p-calendar
+                        [(ngModel)]="filter_dateto"
+                        dateFormat="dd/mm/yy" dataType="string"
+                        style="width: 135px;"></p-calendar>
+                </div>
+                <span class=""><button pButton pRipple type="button" icon="pi pi-search"
+                        class="p-button-rounded p-button-info"
                         (click)="fetchDataFiltered()">
                     </button>
                 </span>
+            </div>
+
+            <div class="flex justify-content-end">
+                <button pButton label="Reset" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(dt1)">
+                </button>
             </div>
         </p-toolbar>
 
         <p-table #dt1 [value]="WorkingOTs" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
             [paginator]="true" [globalFilterFields]="['date', 'time', 'note']"
-            styleClass="p-datatable-gridlines p-datatable-sm" reorderableColumns="true" responsiveLayout="scroll">
+            styleClass="p-datatable-gridlines p-datatable-sm" reorderableColumns="true" responsiveLayout="scroll"
+            sortField="dateFrom" [sortOrder]="-1">
             <!-- dataKey="id" -->
             <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" -->
             <!-- styleClass="p-datatable-customers p-datatable-gridlines" -->

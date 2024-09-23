@@ -124,12 +124,13 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   fetchDayOffsData(input_filter_datefrom?: string, input_filter_dateto?: string) {
+
     let params: any = {};
     if (input_filter_datefrom) {
-      params.query_dateFrom = input_filter_datefrom + ' 00:00:00';
+      params.query_dateFrom = input_filter_datefrom + ' 12:00:00 AM';
     }
     if (input_filter_dateto) {
-      params.query_dateTo = input_filter_dateto + ' 00:00:00';
+      params.query_dateTo = input_filter_dateto + ' 12:00:00 AM';
     }
 
     this.https.get<any>("/api/NgayPhepChung", { params: params }).subscribe({
