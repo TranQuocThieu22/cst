@@ -29,6 +29,7 @@ export class NgayNghiChungComponent implements OnInit {
   };
 
   isValidDateRange: boolean = true;
+  isValidDateRangeFilter: boolean = true;
 
   filter_datefrom: string = '';
   filter_dateto: string = '';
@@ -57,6 +58,19 @@ export class NgayNghiChungComponent implements OnInit {
       }
     }
     this.DayOff.sumDay = diffDays;
+  }
+
+  validateInputDates() {
+    if (this.filter_datefrom && this.filter_dateto) {
+      let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
+      let dateTo = new Date(this.convertDateFormat(this.filter_dateto));
+
+      if (dateFrom > dateTo) {
+        this.isValidDateRangeFilter = false;
+      } else {
+        this.isValidDateRangeFilter = true;
+      }
+    }
   }
 
   fetchDataFiltered() {

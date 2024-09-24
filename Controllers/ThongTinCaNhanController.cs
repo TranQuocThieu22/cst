@@ -265,15 +265,38 @@ namespace educlient.Controllers
             existingRecord.workingYear = inputData.workingYear;
             existingRecord.detailContract = inputData.detailContract;
 
-
             // Update the record in the collection
             AQMemberTable.Update(existingRecord);
 
-            return new ApiResultBaseDO
+            var aqMemberReturn = new AQMemberDTO
+            {
+                TFSName = existingRecord.TFSName,
+                fullName = existingRecord.fullName,
+                email = existingRecord.email,
+                phone = existingRecord.phone,
+                avatar = existingRecord.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(existingRecord.avatar)}" : null,
+                birthDate = existingRecord.birthDate,
+                startDate = existingRecord.startDate,
+                nickName = existingRecord.nickName,
+                role = existingRecord.role,
+                isLeader = existingRecord.isLeader,
+                isLunchStatus = existingRecord.isLunchStatus,
+                detailLunch = existingRecord.detailLunch,
+                detailWFHQuota = existingRecord.detailWFHQuota,
+                detailAbsenceQuota = existingRecord.detailAbsenceQuota,
+                isActive = existingRecord.isActive,
+                maSoCCCD = existingRecord.MaSoCCCD,
+                address = existingRecord.address,
+                workingYear = existingRecord.workingYear,
+                detailContract = existingRecord.detailContract
+            };
+
+            return new UpdateResultDTO
             {
                 message = "Update Success",
                 code = 200,
-                result = true
+                result = true,
+                data = aqMemberReturn
             };
         }
 
@@ -427,6 +450,11 @@ namespace educlient.Controllers
         public string address { get; set; }
         public int workingYear { get; set; }
         public detailContract detailContract { get; set; }
+    }
+
+    public class UpdateResultDTO : ApiResultBaseDO
+    {
+        public AQMemberDTO data { get; set; }
     }
 
     public class AQMemberDTO
