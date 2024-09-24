@@ -217,15 +217,67 @@ namespace educlient.Controllers
                 }
             }).ToList();
 
-            var AQMemberTable = database.Table<AQMember>();
-            AQMemberTable.Insert(aqMembers);
-
-            return new ApiResultBaseDO
+            if (aqMembers.Count == 1)
             {
-                message = "Insert Success",
-                code = 200,
-                result = true
-            };
+                var AQMemberTable = database.Table<AQMember>();
+                var newId = AQMemberTable.Insert(aqMembers[0]);
+                var existingRecord = AQMemberTable.FindById(newId);
+                var aqMember = new AQMemberDTO
+                {
+                    id = existingRecord.id,
+                    TFSName = existingRecord.TFSName,
+                    fullName = existingRecord.fullName,
+                    email = existingRecord.email,
+                    phone = existingRecord.phone,
+                    avatar = existingRecord.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(existingRecord.avatar)}" : null,
+                    birthDate = existingRecord.birthDate,
+                    startDate = existingRecord.startDate,
+                    nickName = existingRecord.nickName,
+                    role = existingRecord.role,
+                    isLeader = existingRecord.isLeader,
+                    isLunchStatus = existingRecord.isLunchStatus,
+                    detailLunch = existingRecord.detailLunch,
+                    detailWFHQuota = existingRecord.detailWFHQuota,
+                    detailAbsenceQuota = existingRecord.detailAbsenceQuota,
+                    isActive = existingRecord.isActive,
+                    maSoCCCD = existingRecord.MaSoCCCD,
+                    address = existingRecord.address,
+                    workingYear = existingRecord.workingYear,
+                    detailContract = existingRecord.detailContract
+                };
+
+                var returnList = new List<AQMemberDTO>();
+
+                returnList.Add(aqMember);
+
+
+                return new InsertResultDTO
+                {
+                    message = "Insert Success",
+                    code = 200,
+                    result = true,
+                    data = returnList,
+                    numberOfNewRecord = 1
+                };
+
+
+            }
+            else
+            {
+                var AQMemberTable = database.Table<AQMember>();
+                var numberOfNewRecord = AQMemberTable.InsertBulk(aqMembers);
+
+                return new InsertResultDTO
+                {
+                    //todo
+                    message = "Insert Success",
+                    code = 200,
+                    result = true,
+                    data = new List<AQMemberDTO>(),
+                    numberOfNewRecord = numberOfNewRecord
+
+                };
+            }
         }
 
         [HttpPut, Route("{id}")]
@@ -270,6 +322,7 @@ namespace educlient.Controllers
 
             var aqMemberReturn = new AQMemberDTO
             {
+                id = existingRecord.id,
                 TFSName = existingRecord.TFSName,
                 fullName = existingRecord.fullName,
                 email = existingRecord.email,
@@ -317,11 +370,12 @@ namespace educlient.Controllers
             }
             AQMemberTable.Delete(id);
 
-            return new ApiResultBaseDO
+            return new DeletetResultDTO
             {
                 message = "Delete Success",
                 code = 200,
-                result = true
+                result = true,
+                id = id
             };
         }
 
@@ -428,6 +482,12 @@ namespace educlient.Controllers
         public detailContract detailContract { get; set; }
     }
 
+    public class InsertResultDTO : ApiResultBaseDO
+    {
+        public List<AQMemberDTO> data { get; set; }
+        public int numberOfNewRecord { get; set; }
+    }
+
     public class AQMemberUpdateDTO
     {
         public int id { get; set; }
@@ -455,6 +515,11 @@ namespace educlient.Controllers
     public class UpdateResultDTO : ApiResultBaseDO
     {
         public AQMemberDTO data { get; set; }
+    }
+
+    public class DeletetResultDTO : ApiResultBaseDO
+    {
+        public int id { get; set; }
     }
 
     public class AQMemberDTO
