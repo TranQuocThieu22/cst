@@ -27,8 +27,10 @@ export class NhanSuAqComponent implements OnInit {
   AQmembers: AQMember[];
 
   detailContractInsert: detailContract = {
-    contractStartDate: new Date(),
-    contractExpireDate: new Date(),
+    // contractStartDate: new Date(new Date().setHours(0, 0, 0, 0)),
+    // contractExpireDate: new Date(new Date().setHours(0, 0, 0, 0)),
+    // contractStartDate: new Date(),
+    // contractExpireDate: new Date(),
     contractDuration: 1,
     contractType: ""
   }
@@ -104,6 +106,9 @@ export class NhanSuAqComponent implements OnInit {
     this.https.get<any>("/api/ThongTinCaNhan").subscribe({
       next: (res: any) => {
         this.AQmembers = res.data;
+        this.AQmembers.forEach(member => {
+        });
+
         this.sortInitData();
         // this.AQmembers.forEach(member => {
         //   if (member.detailContract === null) {
@@ -126,7 +131,6 @@ export class NhanSuAqComponent implements OnInit {
         //   }
         // });
 
-        // console.log(this.AQmembers);
       },
       error: (error) => {
         console.log(error);
@@ -219,6 +223,8 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   openAddDialog() {
+    console.log(this.aqmemberInsert);
+
     this.aqmemberInsert = {
       detailContract: this.detailContractInsert
     };
@@ -237,8 +243,8 @@ export class NhanSuAqComponent implements OnInit {
       startDate: new Date(data.startDate),
       detailContract: data.detailContract === null ?
         {
-          contractStartDate: new Date(),
-          contractExpireDate: new Date(),
+          // contractStartDate: new Date(),
+          // contractExpireDate: new Date(),
           contractDuration: 0,
           contractType: ""
         }
