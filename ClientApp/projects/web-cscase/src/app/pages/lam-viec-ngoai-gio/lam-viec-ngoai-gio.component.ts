@@ -43,9 +43,24 @@ export class LamViecNgoaiGioComponent implements OnInit {
   filter_datefrom: string = '';
   filter_dateto: string = '';
 
+  isValidDateRangeFilter: boolean = true;
+
   openDialog: boolean;
   editWorkingOTDialog: boolean;
   addNewWorkingOTDialog: boolean;
+
+  validateInputDates() {
+    if (this.filter_datefrom && this.filter_dateto) {
+      let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
+      let dateTo = new Date(this.convertDateFormat(this.filter_dateto));
+
+      if (dateFrom > dateTo) {
+        this.isValidDateRangeFilter = false;
+      } else {
+        this.isValidDateRangeFilter = true;
+      }
+    }
+  }
 
   fetchDataFiltered() {
     let input_filter_datefrom = null;

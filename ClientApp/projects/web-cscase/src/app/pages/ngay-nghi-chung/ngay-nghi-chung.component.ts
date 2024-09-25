@@ -29,6 +29,7 @@ export class NgayNghiChungComponent implements OnInit {
   };
 
   isValidDateRange: boolean = true;
+  isValidDateRangeFilter: boolean = true;
 
   filter_datefrom: string = '';
   filter_dateto: string = '';
@@ -57,6 +58,19 @@ export class NgayNghiChungComponent implements OnInit {
       }
     }
     this.DayOff.sumDay = diffDays;
+  }
+
+  validateInputDates() {
+    if (this.filter_datefrom && this.filter_dateto) {
+      let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
+      let dateTo = new Date(this.convertDateFormat(this.filter_dateto));
+
+      if (dateFrom > dateTo) {
+        this.isValidDateRangeFilter = false;
+      } else {
+        this.isValidDateRangeFilter = true;
+      }
+    }
   }
 
   fetchDataFiltered() {
@@ -124,12 +138,13 @@ export class NgayNghiChungComponent implements OnInit {
   }
 
   fetchDayOffsData(input_filter_datefrom?: string, input_filter_dateto?: string) {
+
     let params: any = {};
     if (input_filter_datefrom) {
-      params.query_dateFrom = input_filter_datefrom + ' 00:00:00';
+      params.query_dateFrom = input_filter_datefrom + ' 12:00:00 AM';
     }
     if (input_filter_dateto) {
-      params.query_dateTo = input_filter_dateto + ' 00:00:00';
+      params.query_dateTo = input_filter_dateto + ' 12:00:00 AM';
     }
 
     this.https.get<any>("/api/NgayPhepChung", { params: params }).subscribe({

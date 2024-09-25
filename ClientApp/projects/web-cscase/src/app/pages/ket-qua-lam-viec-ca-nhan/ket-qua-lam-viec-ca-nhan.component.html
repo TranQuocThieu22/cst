@@ -4,35 +4,36 @@
   <div class="card p-4">
     <p-toolbar styleClass="mb-4 p-3">
       <p-card header="header" style="font-weight: bold; font-size: x-large; color: navy;">
-        💯Thống kê kết quả làm việc cá nhân
+        Thống kê kết quả làm việc cá nhân
       </p-card>
     </p-toolbar>
+
+    <p-toolbar styleClass="mb-4 p-3">
+      <div class="flex flex-row flex-wrap gap-3">
+        <p-dropdown [options]="MemberList" [(ngModel)]="selectedMember" optionLabel="fullName" optionValue="tfsName"
+          required>
+        </p-dropdown>
+        <p-calendar [(ngModel)]="dateValue" view="year" dateFormat="yy">
+        </p-calendar>
+        <span class="">
+          <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-info"
+            (click)="FetchKetQua()">
+          </button>
+        </span>
+      </div>
+
+      <div class="flex justify-content-end">
+        <button pButton label="Reset" class="p-button-outlined" icon="pi pi-filter-slash"
+          (click)="clear(dt1)"></button>
+      </div>
+    </p-toolbar>
+
     <p-table #dt1 [value]="caseMetricsList" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
       styleClass="p-datatable-gridlines p-datatable-sm" responsiveLayout="scroll" [globalFilterFields]="['tfsName','fullName','email','phone',
       'birthDate','startDate','nickName','role',
       'isLeader']">
-      <ng-template pTemplate="caption">
-        <div class="flex">
-          <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
-            (click)="clear(dt1)"></button>
-          <div class="mx-4 flex flex-row gap-3">
-            <p-dropdown [options]="MemberList" [(ngModel)]="selectedMember" optionLabel="fullName" optionValue="tfsName"
-              required>
-            </p-dropdown>
-            <p-calendar [(ngModel)]="dateValue" view="year" dateFormat="yy">
-            </p-calendar>
-            <span class="">
-              <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-info"
-                (click)="FetchKetQua()">
-              </button>
-            </span>
-          </div>
-        </div>
-      </ng-template>
-
       <ng-template pTemplate="header">
         <tr>
-
           <th pSortableColumn="weekNumber" style="white-space: nowrap; ;">
             Tuần số
             <p-sortIcon field="weekNumber"></p-sortIcon>

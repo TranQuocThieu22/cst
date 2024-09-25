@@ -27,8 +27,10 @@ export class NhanSuAqComponent implements OnInit {
   AQmembers: AQMember[];
 
   detailContractInsert: detailContract = {
-    contractStartDate: new Date(),
-    contractExpireDate: new Date(),
+    // contractStartDate: new Date(new Date().setHours(0, 0, 0, 0)),
+    // contractExpireDate: new Date(new Date().setHours(0, 0, 0, 0)),
+    // contractStartDate: new Date(),
+    // contractExpireDate: new Date(),
     contractDuration: 1,
     contractType: ""
   }
@@ -104,6 +106,9 @@ export class NhanSuAqComponent implements OnInit {
     this.https.get<any>("/api/ThongTinCaNhan").subscribe({
       next: (res: any) => {
         this.AQmembers = res.data;
+        this.AQmembers.forEach(member => {
+        });
+
         this.sortInitData();
         // this.AQmembers.forEach(member => {
         //   if (member.detailContract === null) {
@@ -126,7 +131,6 @@ export class NhanSuAqComponent implements OnInit {
         //   }
         // });
 
-        // console.log(this.AQmembers);
       },
       error: (error) => {
         console.log(error);
@@ -219,6 +223,8 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   openAddDialog() {
+    console.log(this.aqmemberInsert);
+
     this.aqmemberInsert = {
       detailContract: this.detailContractInsert
     };
@@ -237,8 +243,8 @@ export class NhanSuAqComponent implements OnInit {
       startDate: new Date(data.startDate),
       detailContract: data.detailContract === null ?
         {
-          contractStartDate: new Date(),
-          contractExpireDate: new Date(),
+          // contractStartDate: new Date(),
+          // contractExpireDate: new Date(),
           contractDuration: 0,
           contractType: ""
         }
@@ -283,7 +289,8 @@ export class NhanSuAqComponent implements OnInit {
 
     this.https.post<any>("/api/ThongTinCaNhan", aqmemberArray).subscribe({
       next: (res: any) => {
-        // console.log(res);
+        console.log(res);
+        this.AQmembers.push(res.data[0]);
       },
       error: (error) => {
         console.log(error);
@@ -291,7 +298,8 @@ export class NhanSuAqComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.fetchAQMemberData();
+        console.log(this.AQmembers);
+
       }
     });
 
@@ -303,9 +311,14 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   updateMember() {
+    console.log('before: ', this.AQmembers);
+
     this.https.put<any>("/api/ThongTinCaNhan/" + this.aqmemberUpdate.id, this.aqmemberUpdate).subscribe({
       next: (res: any) => {
-        // console.log(res);
+        const index = this.AQmembers.findIndex(member => member.id === this.aqmemberUpdate.id);
+        if (index !== -1) {
+          this.AQmembers[index] = res.data;
+        }
       },
       error: (error) => {
         console.log(error);
@@ -313,7 +326,6 @@ export class NhanSuAqComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.fetchAQMemberData();
       }
     });
     this.hideDialog();
@@ -337,6 +349,7 @@ export class NhanSuAqComponent implements OnInit {
         this.https.delete<any>("/api/ThongTinCaNhan/" + data.id, data).subscribe({
           next: (res: any) => {
             // console.log(res);
+            this.AQmembers = this.AQmembers.filter(val => val.id !== data.id);
           },
           error: (error) => {
             console.log(error);

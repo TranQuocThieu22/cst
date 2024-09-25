@@ -48,6 +48,8 @@ export class LamViecOnlineComponent implements OnInit {
   filter_datefrom: string = '';
   filter_dateto: string = '';
   isValidDateRange: boolean = true;
+  isValidDateRangeFilter: boolean = true;
+
 
   openDialog: boolean;
   viewWorkingOnlineDialog: boolean;
@@ -76,8 +78,6 @@ export class LamViecOnlineComponent implements OnInit {
     this.fetchUserInfo();
     this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
   }
-
-
 
   checkIsLeader() {
     const user = sessionStorage.getItem('current-user');
@@ -128,6 +128,19 @@ export class LamViecOnlineComponent implements OnInit {
       }
     }
     this.WorkingOnline.sumDay = diffDays;
+  }
+
+  validateInputDates() {
+    if (this.filter_datefrom && this.filter_dateto) {
+      let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
+      let dateTo = new Date(this.convertDateFormat(this.filter_dateto));
+
+      if (dateFrom > dateTo) {
+        this.isValidDateRangeFilter = false;
+      } else {
+        this.isValidDateRangeFilter = true;
+      }
+    }
   }
 
   fetchDataFiltered() {

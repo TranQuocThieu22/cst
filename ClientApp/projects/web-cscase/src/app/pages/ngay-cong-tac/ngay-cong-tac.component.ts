@@ -36,9 +36,12 @@ export class NgayCongTacComponent implements OnInit {
     ...this.CommissionDayInitState
   };
 
+  selectedMemberList = [];
+
   CommissionMemberList: CommissionMember[] = [];
 
   isValidDateRange: boolean = true;
+  isValidDateRangeFilter: boolean = true;
   filter_datefrom: string = '';
   filter_dateto: string = '';
 
@@ -116,12 +119,23 @@ export class NgayCongTacComponent implements OnInit {
     });
   }
 
-  removeMember(data: any) {
-    console.log(data);
 
-    // let processEditData = structuredClone(data);
-    const index = this.CommissionDay.memberList.indexOf(data);
+  removeMember(member: any) {
+    const index = this.CommissionDay.memberList.indexOf(member);
     this.CommissionDay.memberList.splice(index, 1);
+  }
+
+  validateInputDates() {
+    if (this.filter_datefrom && this.filter_dateto) {
+      let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
+      let dateTo = new Date(this.convertDateFormat(this.filter_dateto));
+
+      if (dateFrom > dateTo) {
+        this.isValidDateRangeFilter = false;
+      } else {
+        this.isValidDateRangeFilter = true;
+      }
+    }
   }
 
   fetchDataFiltered() {
@@ -147,6 +161,7 @@ export class NgayCongTacComponent implements OnInit {
   }
 
   openAddDialog() {
+    this.selectedMemberList = [];
     this.fetchMemberCommissionData();
     this.CommissionDay = {
       ...this.CommissionDayInitState,
@@ -171,8 +186,6 @@ export class NgayCongTacComponent implements OnInit {
     this.addNewCommissionDayDialog = false;
     this.editCommissionDayDialog = true;
     this.openDialog = true;
-    console.log(this.CommissionDay);
-
   }
 
   openMemberDialog(data: any) {
@@ -222,7 +235,6 @@ export class NgayCongTacComponent implements OnInit {
         this.CommissionMemberList = [];
         this.CommissionMemberList = [...res.data];
         console.log(this.CommissionMemberList);
-
       },
       error: (error) => {
         console.log(error);
