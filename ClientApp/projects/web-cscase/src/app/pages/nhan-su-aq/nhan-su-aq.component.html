@@ -10,8 +10,8 @@
         </button>
         <input #fileInput type="file" (change)="handleFileInput($event.target.files)" accept=".xls,.xlsx"
           style="display: none" />
-        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportToExcel()" class="mr-2 py-2"
-          pTooltip="XLS" tooltipPosition="bottom">Export</button>
+        <button type="button" pButton pRipple (click)="exportToExcel()" class="mr-2 py-2" pTooltip="XLS"
+          tooltipPosition="bottom">Export</button>
         <button pButton pRipple label="Thêm member" icon="pi pi-user-plus mb-1" class="p-button-success py-2 mr-2"
           (click)="openAddDialog()"></button>
       </ng-template>
