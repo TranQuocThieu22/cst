@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import * as ExcelJS from "exceljs";
+import * as XLSX from "xlsx";
 import { HttpClient } from '@angular/common/http';
 import { IndividualDayOff, Member, IndividualDayOff_API_DO } from './NgayPhepCaNhan';
 import {
@@ -461,5 +463,166 @@ export class NgayPhepCaNhanComponent implements OnInit {
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
     this.fetchIndividualDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
   }
+  exportToExcel() {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("AQ Members");
+    // Define column headers based on AQMember interface
+    worksheet.columns = [
+      // Export headers including missing fields
+      { header: "ID", key: "id", width: 10 },
+      { header: "Approval status", key: "approvalStatus", width: 15 },
+      { header: "Date from", key: "dateFrom", width: 15 },
+      { header: "Date to", key: "dateTo", width: 15 },
+      { header: "Sum day", key: "sumDay", width: 15 },
+      { header: "Full Name", key: "fullName", width: 30 },
+      { header: "Nickname", key: "nickName", width: 15 },
+      { header: "Reason", key: "reason", width: 15 },
+      { header: "Is without pay", key: "isWithoutPay", width: 15 },
+      { header: "Is annual", key: "isAnnual", width: 15 },
+      { header: "note", key: "note", width: 15 },
+      { header: "memberId", key: "memberId", width: 15 },
+    ];
+    this.IndividualDayOffs.forEach((day) => {
+
+
+      worksheet.addRow({
+        id: day.id,
+        fullName: day.member.fullName,
+        nickName: day.member.nickName,
+        dateFrom: day.dateFrom instanceof Date
+          ? day.dateFrom.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(day.dateFrom).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        dateTo: day.dateTo instanceof Date
+          ? day.dateTo.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(day.dateTo).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+
+        sumDay: day.sumDay,
+        reason: day.reason,
+        isAnnual: day.isAnnual,
+        isWithoutPay: day.isWithoutPay,
+        approvalStatus: day.approvalStatus,
+        note: day.note,
+        memberId: day.member.id
+        // Add more properties if necessary
+      });
+    });
+
+    // Save the workbook
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: "application/octet-stream" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "NgayPhepCaNhan.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  importFromExcel(excelData: any) {
+    console.log(this.IndividualDayOffs);
+
+    // Assuming the first row of the excelData is the header
+    const headers = excelData[0]; // Get the headers from the first row
+    const ngayPheps: any[] = []; // Array to hold the transformed AQMember objects
+
+    for (let i = 1; i < excelData.length; i++) {
+      //Start from the second row
+      const row = excelData[i];
+      if (row.length === headers.length) {
+        // Ensure the row length matches the headers
+        const ngayPhep: any = {
+          id: row[0] || null, // Assuming id is in the first column
+          approvalStatus: row[1] || null,
+          dateFrom: row[2] ? this.convertToISOString(row[2]) : null,
+          dateTo: row[3] ? this.convertToISOString(row[3]) : null,
+          sumDay: row[4] || null,
+          fullName: row[5] || null, // Assuming tfsName is in the second column
+          nickName: row[6] || null, // Assuming nickName is in the ninth column
+          reason: row[7] || null,
+          isWithoutPay: row[8] === "TRUE",
+          isAnnual: row[9] === "TRUE",
+          note: row[10] || null,
+          memberId: row[11] || null,
+
+        };
+        ngayPheps.push(ngayPhep);
+      }
+    }
+    console.log(ngayPheps);
+
+    this.addImportNgayPhep(ngayPheps);
+  }
+
+  handleFileInput(files: FileList) {
+    if (files.length > 0) {
+      const file = files.item(0);
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        this.importFromExcel(jsonData);
+      };
+      reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
+    }
+  }
+  addImportNgayPhep(ngayPheps: any) {
+    const req = []
+    ngayPheps.forEach(ngayphep => {
+
+      const body = {
+        id: ngayphep.id,
+        fullName: ngayphep.fullName,
+        nickName: ngayphep.nickName,
+        dateFrom: ngayphep.dateFrom,
+        dateTo: ngayphep.dateTo,
+        sumDay: ngayphep.sumDay,
+        reason: ngayphep.reason,
+        isAnnual: ngayphep.isAnnual,
+        isWithoutPay: ngayphep.isWithoutPay,
+        approvalStatus: ngayphep.approvalStatus,
+        note: ngayphep.note,
+        memberId: ngayphep.memberId
+      };
+      req.push(body)
+    });
+    this.https.post<any>("/api/NgayPhepCaNhan", req).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        this.fetchIndividualDayOffsData();
+
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        console.log(this.IndividualDayOffs);
+      },
+    });
+  }
+  convertToISOString(dateString: string): string {
+    // Assume the input is in "dd/mm/yyyy" format
+    const [day, month, year] = dateString.split('/').map(Number);
+
+    // Create a new Date object (the month in JavaScript is 0-indexed)
+    const date = new Date(year, month - 1, day);
+
+    // Convert to ISO string (this gives UTC format)
+    const isoString = date.toISOString();
+
+    // Adjust the timezone if needed (assuming it's +07:00)
+    const timezoneOffset = "+07:00";
+    const localISOString = isoString.replace('Z', timezoneOffset);
+
+    return localISOString;
+  }
+
+  // Example usage:
+
 
 }

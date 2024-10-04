@@ -6,6 +6,13 @@
                 Quản lý ngày nghỉ phép cá nhân
             </p-card>
             <ng-template pTemplate="left">
+                <button (click)="fileInput.click()" class="btn p-button py-2 mr-2">
+                    Import
+                </button>
+                <input #fileInput type="file" (change)="handleFileInput($event.target.files)" accept=".xls,.xlsx"
+                    style="display: none" />
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportToExcel()"
+                    class="mr-2 py-2" pTooltip="XLS" tooltipPosition="bottom">Export</button>
                 <button pButton pRipple label="Tạo ngày nghỉ phép" icon="pi pi-calendar-plus mb-1"
                     class="p-button-success py-2" (click)="openAddDialog()">
                 </button>
@@ -20,30 +27,23 @@
                     <div class="flex flex-row flex-wrap gap-3">
                         <div class="flex flex-row gap-1">
                             <div class="flex align-content-center flex-wrap"><strong>Từ ngày</strong></div>
-                            <p-calendar
-                                [ngClass]="{'ng-invalid ng-dirty': !isValidDateRangeFilter}"
-                                [(ngModel)]="filter_datefrom"
-                                dateFormat="dd/mm/yy" dataType="string"
-                                [style]="{'width': '135px'}"
-                                (ngModelChange)="validateInputDates()">
+                            <p-calendar [ngClass]="{'ng-invalid ng-dirty': !isValidDateRangeFilter}"
+                                [(ngModel)]="filter_datefrom" dateFormat="dd/mm/yy" dataType="string"
+                                [style]="{'width': '135px'}" (ngModelChange)="validateInputDates()">
                             </p-calendar>
                         </div>
 
                         <div class="flex flex-row gap-1">
                             <div class="flex align-content-center flex-wrap"><strong>Đến ngày</strong></div>
-                            <p-calendar
-                                [ngClass]="{'ng-invalid ng-dirty': !isValidDateRangeFilter}"
-                                [(ngModel)]="filter_dateto"
-                                dateFormat="dd/mm/yy" dataType="string"
-                                [style]="{'width': '135px'}"
-                                (ngModelChange)="validateInputDates()">
+                            <p-calendar [ngClass]="{'ng-invalid ng-dirty': !isValidDateRangeFilter}"
+                                [(ngModel)]="filter_dateto" dateFormat="dd/mm/yy" dataType="string"
+                                [style]="{'width': '135px'}" (ngModelChange)="validateInputDates()">
                             </p-calendar>
                         </div>
 
                         <span class="">
                             <button pButton pRipple type="button" icon="pi pi-search"
-                                class="p-button-rounded p-button-info"
-                                (click)="fetchDataFiltered()"
+                                class="p-button-rounded p-button-info" (click)="fetchDataFiltered()"
                                 [disabled]="!isValidDateRangeFilter">
                             </button>
                         </span>
@@ -64,17 +64,11 @@
 
         </p-toolbar>
 
-        <p-table #dt1
-            [value]="IndividualDayOffs"
-            [rows]="10"
-            [showCurrentPageReport]="true"
+        <p-table #dt1 [value]="IndividualDayOffs" [rows]="10" [showCurrentPageReport]="true"
             [rowsPerPageOptions]="[5,10,25]" [paginator]="true"
-            [globalFilterFields]="['dateFrom', 'dateTo', 'sumDay', 'reason', 'note']"
-            sortField="userName" [sortOrder]="-1"
-            styleClass="p-datatable-gridlines p-datatable-sm"
-            reorderableColumns="true"
-            responsiveLayout="scroll"
-            sortField="dateFrom" [sortOrder]="-1">
+            [globalFilterFields]="['dateFrom', 'dateTo', 'sumDay', 'reason', 'note']" sortField="userName"
+            [sortOrder]="-1" styleClass="p-datatable-gridlines p-datatable-sm" reorderableColumns="true"
+            responsiveLayout="scroll" sortField="dateFrom" [sortOrder]="-1">
             <!-- dataKey="id" -->
             <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" -->
             <!-- styleClass="p-datatable-customers p-datatable-gridlines" -->
@@ -253,10 +247,7 @@
 
             <div class="field col-5 md:col-4">
                 <label for="sumDay">Số lượng ngày nghỉ</label>
-                <input
-                    type="number" step="0.5"
-                    pInputText id="sumDay"
-                    required [(ngModel)]="IndividualDayOff.sumDay" />
+                <input type="number" step="0.5" pInputText id="sumDay" required [(ngModel)]="IndividualDayOff.sumDay" />
             </div>
 
             <div *ngIf="!isValidDateRange" class="field col-12" style="color: red;">
@@ -266,15 +257,9 @@
             <div class="field col-12">
                 <label *ngIf="checkIsLeader()" for="memberId">Họ tên nhân viên
                 </label>
-                <p-dropdown *ngIf="checkIsLeader()"
-                    [options]="MemberList"
-                    [(ngModel)]="IndividualDayOff.member.id"
-                    optionLabel="fullName"
-                    [filter]="true"
-                    filterBy="fullName"
-                    [showClear]="true"
-                    placeholder="Chọn nhân viên"
-                    optionValue="id">
+                <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="IndividualDayOff.member.id"
+                    optionLabel="fullName" [filter]="true" filterBy="fullName" [showClear]="true"
+                    placeholder="Chọn nhân viên" optionValue="id">
                 </p-dropdown>
             </div>
             <div *ngIf="checkIsLeader()" class="mt-2">
@@ -320,9 +305,7 @@
         <!-- icon="pi pi-times" -->
         <button pButton pRipple label="Quay lại" class="p-button-text" (click)="hideDialog()"></button>
         <!-- icon="pi pi-check"  -->
-        <button
-            [disabled]="!isValidDateRange"
-            pButton pRipple label="Tạo ngày nghỉ" class="p-button-text"
+        <button [disabled]="!isValidDateRange" pButton pRipple label="Tạo ngày nghỉ" class="p-button-text"
             (click)="editIndividualDayOffDialog ? updateIndividualDayOff() : addNewIndividualDayOff()"></button>
     </ng-template>
 </p-dialog>

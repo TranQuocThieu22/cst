@@ -89,6 +89,7 @@ namespace educlient.Services
                 'Đóng case', 'Active', 'Inactive', 'Completed', 'Đóng',
                 'Chuẩn bị meeting', 'Đã meeting', 'Closed', 'Đã xử lý'
             )
+            AND [AQ.Module] <> 'AQNC'
              AND [System.State] IN (
                            'Đang xử lý', 'Mở Case'
                         )

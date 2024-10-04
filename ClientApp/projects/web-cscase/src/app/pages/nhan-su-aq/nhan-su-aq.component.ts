@@ -1,29 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import * as ExcelJS from "exceljs";
+import * as XLSX from "xlsx";
+import * as Papa from "papaparse";
+import { Component, OnInit } from "@angular/core";
 import {
-  AQMember, AQMemberUpdateDO, AQMemberInsertDO,
-  detailContract
-} from './AQMember';
-import { AQRole } from './AQMember';
-import { HttpClient } from '@angular/common/http';
+  AQMember,
+  AQMemberUpdateDO,
+  AQMemberInsertDO,
+  detailContract,
+} from "./AQMember";
+import { AQRole } from "./AQMember";
+import { HttpClient } from "@angular/common/http";
 import {
   ConfirmationService,
   MessageService,
-  PrimeNGConfig
+  PrimeNGConfig,
 } from "primeng/api";
-import { Table } from 'primeng/table';
+import { Table } from "primeng/table";
 import { PieChart } from "echarts/charts";
-import { TitleComponent, TooltipComponent, LegendComponent } from "echarts/components";
-
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+} from "echarts/components";
 
 @Component({
-  selector: 'app-nhan-su-aq',
-  templateUrl: './nhan-su-aq.component.html',
-  styleUrls: ['./nhan-su-aq.component.scss']
+  selector: "app-nhan-su-aq",
+  templateUrl: "./nhan-su-aq.component.html",
+  styleUrls: ["./nhan-su-aq.component.scss"],
 })
-
-
 export class NhanSuAqComponent implements OnInit {
-
   AQmembers: AQMember[];
 
   detailContractInsert: detailContract = {
@@ -32,12 +37,12 @@ export class NhanSuAqComponent implements OnInit {
     // contractStartDate: new Date(),
     // contractExpireDate: new Date(),
     contractDuration: 1,
-    contractType: ""
-  }
+    contractType: "",
+  };
 
   aqmemberInsert: AQMemberInsertDO = {
-    detailContract: this.detailContractInsert
-  }
+    detailContract: this.detailContractInsert,
+  };
 
   detailContractUpdate: detailContract;
 
@@ -63,16 +68,21 @@ export class NhanSuAqComponent implements OnInit {
     private https: HttpClient,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private primengConfig: PrimeNGConfig,
+    private primengConfig: PrimeNGConfig
   ) {
     this.AQRoles = [
-      { role: 'Developer', code: '1', total: 0 },
-      { role: 'Support', code: '2', total: 0 },
-      { role: 'Sale', code: '3', total: 0 },
-      { role: 'HR', code: '4', total: 0 },
-      { role: 'BM', code: '5', total: 0 },
+      { role: "Developer", code: "1", total: 0 },
+      { role: "Support", code: "2", total: 0 },
+      { role: "Sale", code: "3", total: 0 },
+      { role: "HR", code: "4", total: 0 },
+      { role: "BM", code: "5", total: 0 },
     ];
-    this.pc2_echartsExtentions = [PieChart, TitleComponent, TooltipComponent, LegendComponent]
+    this.pc2_echartsExtentions = [
+      PieChart,
+      TitleComponent,
+      TooltipComponent,
+      LegendComponent,
+    ];
   }
 
   ngOnInit(): void {
@@ -82,8 +92,8 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   checkIsLeader() {
-    let user = sessionStorage.getItem('current-user');
-    return JSON.parse(user).isLeader
+    let user = sessionStorage.getItem("current-user");
+    return JSON.parse(user).isLeader;
   }
 
   handleUploadAvatar(event) {
@@ -92,8 +102,10 @@ export class NhanSuAqComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]); // read file as data url
       reader.onload = (event) => {
         // called once readAsDataURL is completed
-        if (this.openAddDialog) this.aqmemberInsert.avatar = event.target.result as string;
-        if (this.openEditDialog) this.aqmemberUpdate.avatar = event.target.result as string;
+        if (this.openAddDialog)
+          this.aqmemberInsert.avatar = event.target.result as string;
+        if (this.openEditDialog)
+          this.aqmemberUpdate.avatar = event.target.result as string;
       };
     }
   }
@@ -106,8 +118,7 @@ export class NhanSuAqComponent implements OnInit {
     this.https.get<any>("/api/ThongTinCaNhan").subscribe({
       next: (res: any) => {
         this.AQmembers = res.data;
-        this.AQmembers.forEach(member => {
-        });
+        this.AQmembers.forEach((member) => { });
 
         this.sortInitData();
         // this.AQmembers.forEach(member => {
@@ -130,7 +141,6 @@ export class NhanSuAqComponent implements OnInit {
         //     }]
         //   }
         // });
-
       },
       error: (error) => {
         console.log(error);
@@ -138,80 +148,76 @@ export class NhanSuAqComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.AQRoles.forEach(role => {
-          role.total = this.AQmembers.filter(member => member.role === role.code).length;
+        this.AQRoles.forEach((role) => {
+          role.total = this.AQmembers.filter(
+            (member) => member.role === role.code
+          ).length;
         });
         this.fetchDataPC2();
-      }
+      },
     });
   }
 
   fetchDataPC2() {
     this.pc2_echartsOptions = {
       title: {
-        text: 'Nhân sự AQ',
-        subtext: 'Tỉ lệ và số lượng nhân viên các phòng ban',
-        left: 'center',
+        text: "Nhân sự AQ",
+        subtext: "Tỉ lệ và số lượng nhân viên các phòng ban",
+        left: "center",
         textStyle: {
-          fontFamily: 'Arial, sans-serif',
+          fontFamily: "Arial, sans-serif",
           fontSize: 20,
-          fontWeight: 'bold'
-        }
+          fontWeight: "bold",
+        },
       },
       tooltip: {
-        trigger: 'item',
-        formatter: '{b}: {c} ({d}%)' // Display label, value, and percentage in tooltip
+        trigger: "item",
+        formatter: "{b}: {c} ({d}%)", // Display label, value, and percentage in tooltip
       },
       legend: {
-        orient: 'vertical',
-        bottom: 'bottom'
+        orient: "vertical",
+        bottom: "bottom",
       },
       series: [
         {
-          name: 'Phòng ban',
-          type: 'pie',
-          radius: '50%',
+          name: "Phòng ban",
+          type: "pie",
+          radius: "50%",
           data: this.AQRoles.map((role, index) => ({
             value: role.total,
             name: role.role,
             itemStyle: {
-              color: this.getColor(index) // Call getColor function to get color for each label
+              color: this.getColor(index), // Call getColor function to get color for each label
             },
             label: {
               show: true,
-              formatter: '{b}: {c} ({d}%)' // Display label and percentage in label
+              formatter: "{b}: {c} ({d}%)", // Display label and percentage in label
             },
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                shadowColor: "rgba(0, 0, 0, 0.5)",
               },
               label: {
                 show: true,
-                formatter: '{b}: {c} ({d}%)' // Display label and percentage in emphasis
-              }
-            }
+                formatter: "{b}: {c} ({d}%)", // Display label and percentage in emphasis
+              },
+            },
           })),
-        }
-      ]
+        },
+      ],
     };
   }
 
   getColor(index: number): string {
-    const colors = [
-      "#b3e5fc",
-      "#ffd8b2",
-      "#8dbca1",
-      "#fe1155",
-      "#0a3d62"
-    ];
+    const colors = ["#b3e5fc", "#ffd8b2", "#8dbca1", "#fe1155", "#0a3d62"];
     return colors[index % colors.length];
   }
 
   getRoleName(code: string): string {
-    const roleObj = this.AQRoles.find(role => role.code === code);
-    return roleObj ? roleObj.role : 'Unknown';
+    const roleObj = this.AQRoles.find((role) => role.code === code);
+    return roleObj ? roleObj.role : "Unknown";
   }
 
   sortInitData() {
@@ -226,7 +232,7 @@ export class NhanSuAqComponent implements OnInit {
     console.log(this.aqmemberInsert);
 
     this.aqmemberInsert = {
-      detailContract: this.detailContractInsert
+      detailContract: this.detailContractInsert,
     };
     this.editMemberDialog = false;
     this.addNewMemberDialog = true;
@@ -241,18 +247,23 @@ export class NhanSuAqComponent implements OnInit {
       ...this.aqmemberUpdate,
       birthDate: new Date(data.birthDate),
       startDate: new Date(data.startDate),
-      detailContract: data.detailContract === null ?
-        {
-          // contractStartDate: new Date(),
-          // contractExpireDate: new Date(),
-          contractDuration: 0,
-          contractType: ""
-        }
-        : {
-          ...this.aqmemberUpdate.detailContract,
-          contractStartDate: new Date(data.detailContract.contractStartDate),
-          contractExpireDate: new Date(data.detailContract.contractExpireDate)
-        }
+      detailContract:
+        data.detailContract === null
+          ? {
+            // contractStartDate: new Date(),
+            // contractExpireDate: new Date(),
+            contractDuration: 0,
+            contractType: "",
+          }
+          : {
+            ...this.aqmemberUpdate.detailContract,
+            contractStartDate: new Date(
+              data.detailContract.contractStartDate
+            ),
+            contractExpireDate: new Date(
+              data.detailContract.contractExpireDate
+            ),
+          },
     };
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
@@ -262,10 +273,12 @@ export class NhanSuAqComponent implements OnInit {
   handleIsLunchStatusChange(event) {
     this.aqmemberUpdate.isLunchStatus = event.checked;
     const currentYear = new Date().getFullYear();
-    const detailLunchCurrentYear = this.aqmemberUpdate.detailLunch.find(item => item.year === currentYear);
+    const detailLunchCurrentYear = this.aqmemberUpdate.detailLunch.find(
+      (item) => item.year === currentYear
+    );
 
     if (detailLunchCurrentYear) {
-      detailLunchCurrentYear.lunchByMonth.forEach(lunchByMonth => {
+      detailLunchCurrentYear.lunchByMonth.forEach((lunchByMonth) => {
         lunchByMonth.isLunch = event.checked;
       });
     }
@@ -282,7 +295,10 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   addNewMember() {
-    if (this.aqmemberInsert.avatar === undefined || this.aqmemberInsert.avatar === '') {
+    if (
+      this.aqmemberInsert.avatar === undefined ||
+      this.aqmemberInsert.avatar === ""
+    ) {
       this.aqmemberInsert.avatar = null;
     }
     let aqmemberArray: AQMemberInsertDO[] = [this.aqmemberInsert];
@@ -299,8 +315,7 @@ export class NhanSuAqComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         console.log(this.AQmembers);
-
-      }
+      },
     });
 
     this.AQmembers = [...this.AQmembers];
@@ -311,63 +326,73 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   updateMember() {
-    console.log('before: ', this.AQmembers);
+    console.log("before: ", this.AQmembers);
 
-    this.https.put<any>("/api/ThongTinCaNhan/" + this.aqmemberUpdate.id, this.aqmemberUpdate).subscribe({
-      next: (res: any) => {
-        const index = this.AQmembers.findIndex(member => member.id === this.aqmemberUpdate.id);
-        if (index !== -1) {
-          this.AQmembers[index] = res.data;
-        }
-      },
-      error: (error) => {
-        console.log(error);
-        // Your logic for handling errors
-      },
-      complete: () => {
-        // Your logic for handling the completion event (optional)
-      }
-    });
+    this.https
+      .put<any>(
+        "/api/ThongTinCaNhan/" + this.aqmemberUpdate.id,
+        this.aqmemberUpdate
+      )
+      .subscribe({
+        next: (res: any) => {
+          const index = this.AQmembers.findIndex(
+            (member) => member.id === this.aqmemberUpdate.id
+          );
+          if (index !== -1) {
+            this.AQmembers[index] = res.data;
+          }
+        },
+        error: (error) => {
+          console.log(error);
+          // Your logic for handling errors
+        },
+        complete: () => {
+          // Your logic for handling the completion event (optional)
+        },
+      });
     this.hideDialog();
   }
-
 
   deleteMember(event: Event, data: any) {
     this.confirmationService.confirm({
       target: event.target,
       message: "Xóa bạn này khỏi công ty?",
-      acceptLabel: 'Xóa',
-      rejectLabel: 'Quay lại',
+      acceptLabel: "Xóa",
+      rejectLabel: "Quay lại",
       icon: "pi pi-exclamation-triangle",
       accept: () => {
         this.messageService.add({
           severity: "info",
           summary: "Xóa thành công",
-          detail: "Đã xóa tài khoản khỏi hệ thống"
+          detail: "Đã xóa tài khoản khỏi hệ thống",
         });
 
-        this.https.delete<any>("/api/ThongTinCaNhan/" + data.id, data).subscribe({
-          next: (res: any) => {
-            // console.log(res);
-            this.AQmembers = this.AQmembers.filter(val => val.id !== data.id);
-          },
-          error: (error) => {
-            console.log(error);
-            // Your logic for handling errors
-          },
-          complete: () => {
-            // Your logic for handling the completion event (optional)
-            this.fetchAQMemberData();
-          }
-        });
+        this.https
+          .delete<any>("/api/ThongTinCaNhan/" + data.id, data)
+          .subscribe({
+            next: (res: any) => {
+              // console.log(res);
+              this.AQmembers = this.AQmembers.filter(
+                (val) => val.id !== data.id
+              );
+            },
+            error: (error) => {
+              console.log(error);
+              // Your logic for handling errors
+            },
+            complete: () => {
+              // Your logic for handling the completion event (optional)
+              this.fetchAQMemberData();
+            },
+          });
       },
       reject: () => {
         this.messageService.add({
           severity: "error",
           summary: "Hủy xóa tài khoản",
-          detail: "Hủy xóa tài khoản khỏi hệ thống"
+          detail: "Hủy xóa tài khoản khỏi hệ thống",
         });
-      }
+      },
     });
   }
 
@@ -375,7 +400,208 @@ export class NhanSuAqComponent implements OnInit {
     table.clear();
     this.fetchAQMemberData();
   }
+  exportToExcel() {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("AQ Members");
+    // Define column headers based on AQMember interface
+    worksheet.columns = [
+      // Export headers including missing fields
+      { header: "ID", key: "id", width: 10 },
+      { header: "TFS Name", key: "tfsName", width: 30 },
+      { header: "Full Name", key: "fullName", width: 30 },
+      { header: "Email", key: "email", width: 30 },
+      { header: "Phone", key: "phone", width: 20 },
+      { header: "Avatar", key: "avatar", width: 30 }, // Assuming URL or base64
+      { header: "Birth Date", key: "birthDate", width: 15 },
+      { header: "Start Date", key: "startDate", width: 15 },
+      { header: "Nickname", key: "nickName", width: 15 },
+      { header: "Role", key: "role", width: 15 },
+      { header: "Is Leader", key: "isLeader", width: 10 },
+      { header: "Is Lunch Status", key: "isLunchStatus", width: 15 },
+
+      { header: "Is Active", key: "isActive", width: 10 },
+      { header: "MaSoCCCD", key: "maSoCCCD", width: 20 },
+      { header: "Address", key: "address", width: 30 },
+      { header: "Working Year", key: "workingYear", width: 15 },
+      { header: "Contract Type", key: "contractType", width: 15 },
+      { header: "Contract Duration", key: "contractDuration", width: 15 },
+      { header: "Contract Start Date", key: "contractStartDate", width: 15 },
+      { header: "Contract Expire Date", key: "contractExpireDate", width: 15 },
+    ];
+    this.AQmembers.forEach((member) => {
+      console.log(member.detailContract.contractStartDate);
+
+      worksheet.addRow({
+        id: member.id,
+        tfsName: member.tfsName,
+        fullName: member.fullName,
+        email: member.email,
+        phone: member.phone,
+        avatar: member.avatar,
+        birthDate: member.birthDate instanceof Date
+          ? member.birthDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(member.birthDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        startDate: member.startDate instanceof Date
+          ? member.startDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(member.startDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        nickName: member.nickName,
+        role: member.role,
+        isLeader: member.isLeader,
+        isLunchStatus: member.isLunchStatus,
+        isActive: member.isActive,
+        maSoCCCD: member.maSoCCCD,
+        address: member.address,
+        workingYear: member.workingYear,
+        contractDuration: member.detailContract.contractDuration,
+        contractStartDate: member.detailContract.contractStartDate instanceof Date
+          ? member.detailContract.contractStartDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(member.detailContract.contractStartDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        contractExpireDate: member.detailContract.contractExpireDate instanceof Date
+          ? member.detailContract.contractExpireDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(member.detailContract.contractStartDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        // Add more properties if necessary
+      });
+    });
+
+    // Save the workbook
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: "application/octet-stream" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "AQMembers.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  importFromExcel(excelData: any) {
+    // Assuming the first row of the excelData is the header
+    const headers = excelData[0]; // Get the headers from the first row
+    const members: any[] = []; // Array to hold the transformed AQMember objects
+
+    for (let i = 1; i < excelData.length; i++) {
+      //Start from the second row
+      const row = excelData[i];
+      if (row.length === headers.length) {
+        // Ensure the row length matches the headers
+        const member: any = {
+          id: row[0] || null, // Assuming id is in the first column
+          tfsName: row[1] || null, // Assuming tfsName is in the second column
+          fullName: row[2] || null, // Assuming fullName is in the third column
+          email: row[3] || null, // Assuming email is in the fourth column
+          phone: row[4] || null, // Assuming phone is in the fifth column
+          avatar: row[5] || null, // Assuming avatar URL is in the sixth column
+          birthDate: row[6] ? this.convertToISOString(row[6]) : null, // Assuming birthDate is in the seventh column
+          startDate: row[7] ? this.convertToISOString(row[7]) : null, // Assuming startDate is in the eighth column
+          nickName: row[8] || null, // Assuming nickName is in the ninth column
+          role: row[9] || null, // Assuming role is in the tenth column
+          isLeader: row[10] === "TRUE", // Assuming isLeader is in the eleventh column
+          isLunchStatus: row[11] === "TRUE", // Assuming isLunchStatus is in the twelfth column
+          detailLunch: row[12] ? JSON.parse(row[12]) : [], // Assuming detailLunch is in the thirteenth column
+          detailWFHQuota: row[13] ? JSON.parse(row[13]) : null, // Assuming detailWFHQuota is in the fourteenth column
+          detailAbsenceQuota: row[14] ? JSON.parse(row[14]) : null, // Assuming detailAbsenceQuota is in the fifteenth column
+          isActive: row[15] === "TRUE", // Assuming isActive is in the sixteenth column
+          maSoCCCD: row[16] || null, // Assuming maSoCCCD is in the seventeenth column
+          address: row[17] || null, // Assuming address is in the eighteenth column
+          workingYear: row[18] ? Number(row[18]) : null, // Assuming workingYear is in the nineteenth column
+          contractType: row[19] ? JSON.parse(row[19]) : null, // Assuming detailContract is in the twentieth column
+          contractDuration: row[20] || null, // Assuming detailContract is in the twentieth column
+          contractStartDate: row[21] ? this.convertToISOString(row[21]) : null, // Assuming detailContract is in the twentieth column
+          contractExpireDate: row[22] ? this.convertToISOString(row[22]) : null, // Assuming detailContract is in the twentieth column
+        };
+        members.push(member);
+      }
+    }
+
+    const temptData = [...this.AQmembers, ...members]; // Append new members to the existing array
+    this.addImportMember(members);
+  }
+
+  handleFileInput(files: FileList) {
+    if (files.length > 0) {
+      const file = files.item(0);
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        this.importFromExcel(jsonData);
+      };
+      reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
+    }
+  }
+  addImportMember(members: any) {
+    const req = []
+    members.forEach(member => {
+      const detailContract = {
+        contractType: member.contractType, // Assuming detailContract is in the twentieth column
+
+        contractDuration: member.contractDuration, // Assuming detailContract is in the twentieth column
+        contractStartDate: member.contractStartDate, // Assuming detailContract is in the twentieth column
+        contractExpireDate: member.contractExpireDate, // Assuming detailContract is in the twentieth column
+      }
+      const body = {
+        id: member.id, // Assuming id is in the first column
+        tfsName: member.tfsName, // Assuming tfsName is in the second column
+        fullName: member.fullName, // Assuming fullName is in the third column
+        email: member.email, // Assuming email is in the fourth column
+        phone: member.phone, // Assuming phone is in the fifth column
+        avatar: member.avatar, // Assuming avatar URL is in the sixth column
+        birthDate: member.birthDate, // Assuming birthDate is in the seventh column
+        startDate: member.startDate, // Assuming startDate is in the eighth column
+        nickName: member.nickName, // Assuming nickName is in the ninth column
+        role: member.role, // Assuming role is in the tenth column
+        isLeader: member.isLeader, // Assuming isLeader is in the eleventh column
+        isLunchStatus: member.isLunchStatus, // Assuming isLunchStatus is in the twelfth column
+        // detailLunch: member.detailLunch, // Assuming detailLunch is in the thirteenth column
+        // detailWFHQuota: member.detailWFHQuota, // Assuming detailWFHQuota is in the fourteenth column
+        // detailAbsenceQuota: member.detailAbsenceQuota, // Assuming detailAbsenceQuota is in the fifteenth column
+        isActive: member.isActive, // Assuming isActive is in the sixteenth column
+        maSoCCCD: member.maSoCCCD, // Assuming maSoCCCD is in the seventeenth column
+        address: member.address, // Assuming address is in the eighteenth column
+        // workingYear: member.workingYear, // Assuming workingYear is in the nineteenth column
+        detailContract: detailContract
+      };
+      req.push(body)
+    });
+    this.https.post<any>("/api/ThongTinCaNhan", req).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        this.fetchAQMemberData();
+
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        console.log(this.AQmembers);
+      },
+    });
+  }
+  convertToISOString(dateString: string): string {
+    // Assume the input is in "dd/mm/yyyy" format
+    const [day, month, year] = dateString.split('/').map(Number);
+
+    // Create a new Date object (the month in JavaScript is 0-indexed)
+    const date = new Date(year, month - 1, day);
+
+    // Convert to ISO string (this gives UTC format)
+    const isoString = date.toISOString();
+
+    // Adjust the timezone if needed (assuming it's +07:00)
+    const timezoneOffset = "+07:00";
+    const localISOString = isoString.replace('Z', timezoneOffset);
+
+    return localISOString;
+  }
+
 }
+
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const bigint = parseInt(hex, 16);
@@ -384,4 +610,3 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const b = bigint & 255;
   return { r, g, b };
 }
-
