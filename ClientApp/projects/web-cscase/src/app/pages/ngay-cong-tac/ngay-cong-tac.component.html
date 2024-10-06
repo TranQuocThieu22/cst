@@ -239,6 +239,7 @@
                                     [showClear]="true"
                                     placeholder="Chọn nhân sự"
                                     [(ngModel)]="member.id"
+                                    (onChange)="checkDuplicate(member)"
                                     optionLabel="fullName"
                                     optionValue="id">
                                 </p-dropdown>

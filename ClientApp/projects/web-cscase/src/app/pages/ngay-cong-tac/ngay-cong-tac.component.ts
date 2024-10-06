@@ -125,6 +125,20 @@ export class NgayCongTacComponent implements OnInit {
     this.CommissionDay.memberList.splice(index, 1);
   }
 
+  checkDuplicate(member: any) {
+    const isDuplicate = this.CommissionDay.memberList.some((existingMember: any) => existingMember.id === member.id && existingMember !== member);
+    if (isDuplicate) {
+      this.removeMember(member);
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Trùng nhân viên',
+        detail: 'Nhân viên này đã có trong danh sách công tác.'
+      });
+      return true;
+    }
+    return false;
+  }
+
   validateInputDates() {
     if (this.filter_datefrom && this.filter_dateto) {
       let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
@@ -234,7 +248,6 @@ export class NgayCongTacComponent implements OnInit {
       next: (res: any) => {
         this.CommissionMemberList = [];
         this.CommissionMemberList = [...res.data];
-        console.log(this.CommissionMemberList);
       },
       error: (error) => {
         console.log(error);
