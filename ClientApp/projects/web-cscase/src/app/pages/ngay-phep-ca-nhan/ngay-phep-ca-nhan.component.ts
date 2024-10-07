@@ -470,15 +470,15 @@ export class NgayPhepCaNhanComponent implements OnInit {
     worksheet.columns = [
       // Export headers including missing fields
       { header: "ID", key: "id", width: 10 },
-      { header: "Approval status", key: "approvalStatus", width: 15 },
-      { header: "Date from", key: "dateFrom", width: 15 },
-      { header: "Date to", key: "dateTo", width: 15 },
-      { header: "Sum day", key: "sumDay", width: 15 },
-      { header: "Full Name", key: "fullName", width: 30 },
+      { header: "Trạng thái", key: "approvalStatus", width: 15 },
+      { header: "Ngày bắt đầu", key: "dateFrom", width: 15 },
+      { header: "Ngày kết thúc", key: "dateTo", width: 15 },
+      { header: "Tổng số ngày nghỉ", key: "sumDay", width: 15 },
+      { header: "Họ tên", key: "fullName", width: 30 },
       { header: "Nickname", key: "nickName", width: 15 },
-      { header: "Reason", key: "reason", width: 15 },
-      { header: "Is without pay", key: "isWithoutPay", width: 15 },
-      { header: "Is annual", key: "isAnnual", width: 15 },
+      { header: "Lý do nghỉ", key: "reason", width: 15 },
+      { header: "Nghỉ không lương", key: "isWithoutPay", width: 15 },
+      { header: "Tính vào nghỉ phép năm", key: "isAnnual", width: 15 },
       { header: "note", key: "note", width: 15 },
       { header: "memberId", key: "memberId", width: 15 },
     ];
@@ -498,8 +498,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
         sumDay: day.sumDay,
         reason: day.reason,
-        isAnnual: day.isAnnual,
-        isWithoutPay: day.isWithoutPay,
+        isAnnual: this.convertBooleanToString(day.isAnnual),
+        isWithoutPay: this.convertBooleanToString(day.isWithoutPay),
         approvalStatus: day.approvalStatus,
         note: day.note,
         memberId: day.member.id
@@ -540,8 +540,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
           fullName: row[5] || null, // Assuming tfsName is in the second column
           nickName: row[6] || null, // Assuming nickName is in the ninth column
           reason: row[7] || null,
-          isWithoutPay: row[8] === "TRUE",
-          isAnnual: row[9] === "TRUE",
+          isWithoutPay: row[8] ? this.convertStringToBoolean(row[8]) : false,
+          isAnnual: row[9] ? this.convertStringToBoolean(row[9]) : false,
           note: row[10] || null,
           memberId: row[11] || null,
 
@@ -621,8 +621,12 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
     return localISOString;
   }
-
-  // Example usage:
-
+  convertStringToBoolean(value: string): boolean {
+    // Check if the value is "có" for true, "không" for false, or keep it as it is (if valid boolean)
+    return value.trim().toLowerCase() === 'có' ? true : value.trim().toLowerCase() === 'không' ? false : Boolean(value);
+  }
+  convertBooleanToString(value: boolean): string {
+    return value ? 'có' : 'không';
+  }
 
 }

@@ -408,25 +408,24 @@ export class NhanSuAqComponent implements OnInit {
       // Export headers including missing fields
       { header: "ID", key: "id", width: 10 },
       { header: "TFS Name", key: "tfsName", width: 30 },
-      { header: "Full Name", key: "fullName", width: 30 },
+      { header: "Họ tên", key: "fullName", width: 30 },
       { header: "Email", key: "email", width: 30 },
-      { header: "Phone", key: "phone", width: 20 },
+      { header: "Số điện thoại", key: "phone", width: 20 },
       { header: "Avatar", key: "avatar", width: 30 }, // Assuming URL or base64
-      { header: "Birth Date", key: "birthDate", width: 15 },
-      { header: "Start Date", key: "startDate", width: 15 },
+      { header: "Ngày sinh", key: "birthDate", width: 15 },
+      { header: "Ngày vào công ty", key: "startDate", width: 15 },
       { header: "Nickname", key: "nickName", width: 15 },
-      { header: "Role", key: "role", width: 15 },
-      { header: "Is Leader", key: "isLeader", width: 10 },
-      { header: "Is Lunch Status", key: "isLunchStatus", width: 15 },
-
-      { header: "Is Active", key: "isActive", width: 10 },
-      { header: "MaSoCCCD", key: "maSoCCCD", width: 20 },
-      { header: "Address", key: "address", width: 30 },
-      { header: "Working Year", key: "workingYear", width: 15 },
-      { header: "Contract Type", key: "contractType", width: 15 },
-      { header: "Contract Duration", key: "contractDuration", width: 15 },
-      { header: "Contract Start Date", key: "contractStartDate", width: 15 },
-      { header: "Contract Expire Date", key: "contractExpireDate", width: 15 },
+      { header: "Phòng ban", key: "role", width: 15 },
+      { header: "Leader", key: "isLeader", width: 10 },
+      { header: "Trợ cấp ăn trưa", key: "isLunchStatus", width: 15 },
+      { header: "Trạng thái làm việc", key: "isActive", width: 10 },
+      { header: "Mã số CCCD", key: "maSoCCCD", width: 20 },
+      { header: "Địa chỉ", key: "address", width: 30 },
+      { header: "Thâm niên", key: "workingYear", width: 15 },
+      { header: "Loại hợp đồng", key: "contractType", width: 15 },
+      { header: "Thời hạn hợp đồng", key: "contractDuration", width: 15 },
+      { header: "Ngày bắt đầu hợp đồng", key: "contractStartDate", width: 15 },
+      { header: "Ngày hợp đồng hết hạn", key: "contractExpireDate", width: 15 },
     ];
     this.AQmembers.forEach((member) => {
       console.log(member.detailContract.contractStartDate);
@@ -446,9 +445,9 @@ export class NhanSuAqComponent implements OnInit {
           : new Date(member.startDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
         nickName: member.nickName,
         role: member.role,
-        isLeader: member.isLeader,
-        isLunchStatus: member.isLunchStatus,
-        isActive: member.isActive,
+        isLeader: this.convertBooleanToString(member.isLeader),
+        isLunchStatus: this.convertBooleanToString(member.isLunchStatus),
+        isActive: this.convertBooleanToString(member.isActive),
         maSoCCCD: member.maSoCCCD,
         address: member.address,
         workingYear: member.workingYear,
@@ -483,6 +482,7 @@ export class NhanSuAqComponent implements OnInit {
     for (let i = 1; i < excelData.length; i++) {
       //Start from the second row
       const row = excelData[i];
+
       if (row.length === headers.length) {
         // Ensure the row length matches the headers
         const member: any = {
@@ -496,20 +496,18 @@ export class NhanSuAqComponent implements OnInit {
           startDate: row[7] ? this.convertToISOString(row[7]) : null, // Assuming startDate is in the eighth column
           nickName: row[8] || null, // Assuming nickName is in the ninth column
           role: row[9] || null, // Assuming role is in the tenth column
-          isLeader: row[10] === "TRUE", // Assuming isLeader is in the eleventh column
-          isLunchStatus: row[11] === "TRUE", // Assuming isLunchStatus is in the twelfth column
-          detailLunch: row[12] ? JSON.parse(row[12]) : [], // Assuming detailLunch is in the thirteenth column
-          detailWFHQuota: row[13] ? JSON.parse(row[13]) : null, // Assuming detailWFHQuota is in the fourteenth column
-          detailAbsenceQuota: row[14] ? JSON.parse(row[14]) : null, // Assuming detailAbsenceQuota is in the fifteenth column
-          isActive: row[15] === "TRUE", // Assuming isActive is in the sixteenth column
-          maSoCCCD: row[16] || null, // Assuming maSoCCCD is in the seventeenth column
-          address: row[17] || null, // Assuming address is in the eighteenth column
-          workingYear: row[18] ? Number(row[18]) : null, // Assuming workingYear is in the nineteenth column
-          contractType: row[19] ? JSON.parse(row[19]) : null, // Assuming detailContract is in the twentieth column
-          contractDuration: row[20] || null, // Assuming detailContract is in the twentieth column
-          contractStartDate: row[21] ? this.convertToISOString(row[21]) : null, // Assuming detailContract is in the twentieth column
-          contractExpireDate: row[22] ? this.convertToISOString(row[22]) : null, // Assuming detailContract is in the twentieth column
+          isLeader: this.convertStringToBoolean(row[10]), // Assuming isLeader is in the eleventh column
+          isLunchStatus: this.convertStringToBoolean(row[11]), // Assuming isLunchStatus is in the twelfth column
+          isActive: this.convertStringToBoolean(row[12]), // Assuming isActive is in the sixteenth column
+          maSoCCCD: row[13] || null, // Assuming maSoCCCD is in the seventeenth column
+          address: row[14] || null, // Assuming address is in the eighteenth column
+          workingYear: row[15] ? Number(row[15]) : null, // Assuming workingYear is in the nineteenth column
+          contractType: row[16] ? JSON.parse(row[16]) : null, // Assuming detailContract is in the twentieth column
+          contractDuration: row[17] || null, // Assuming detailContract is in the twentieth column
+          contractStartDate: row[18] ? this.convertToISOString(row[18]) : null, // Assuming detailContract is in the twentieth column
+          contractExpireDate: row[19] ? this.convertToISOString(row[19]) : null, // Assuming detailContract is in the twentieth column
         };
+
         members.push(member);
       }
     }
@@ -600,8 +598,14 @@ export class NhanSuAqComponent implements OnInit {
     return localISOString;
   }
 
+  convertStringToBoolean(value: string): boolean {
+    // Check if the value is "có" for true, "không" for false, or keep it as it is (if valid boolean)
+    return value.trim().toLowerCase() === 'có' ? true : value.trim().toLowerCase() === 'không' ? false : Boolean(value);
+  }
+  convertBooleanToString(value: boolean): string {
+    return value ? 'có' : 'không';
+  }
 }
-
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const bigint = parseInt(hex, 16);
