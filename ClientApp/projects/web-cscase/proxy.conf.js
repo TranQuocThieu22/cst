@@ -2,7 +2,7 @@ const PROXY_CONFIG = [
   {
     context: ["/"],
     // target: "https://cst.aqtech.vn",
-    target: "http://localhost:5000/", // code MainController.cs
+    target: "http://localhost:54383/",
     // target: "https://cst.aqtech.vn:4244/#/",
     secure: false,
     changeOrigin: true,
