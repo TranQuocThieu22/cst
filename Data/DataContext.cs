@@ -181,15 +181,19 @@ namespace educlient.Data
 
     public class IndividualDayOff
     {
-        [BsonId]
+        //[BsonId]
         public int id { get; set; }
         public DateTime dateFrom { get; set; }
         public DateTime dateTo { get; set; }
         public float sumDay { get; set; }
+        public int numberOfDay_whole { get; set; }
+        public int numberOfDay_half { get; set; }
         public int memberId { get; set; }
         public string reason { get; set; }
         public bool isAnnual { get; set; }
+        public int totalIsAnnual { get; set; }
         public bool isWithoutPay { get; set; }
+        public int totalIsWithoutPay { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }

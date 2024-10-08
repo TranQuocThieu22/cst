@@ -100,6 +100,7 @@ namespace educlient.Controllers
 
             var aqMemberReturn = new AQMemberDTO
             {
+                id = aqMember.id,
                 TFSName = aqMember.TFSName,
                 fullName = aqMember.fullName,
                 email = aqMember.email,
@@ -446,6 +447,21 @@ namespace educlient.Controllers
             };
 
         }
+
+        [HttpGet, Route("HanMucNghiPhepNam")]
+        public IndividualDayOffDetailDO GetDetailAbsenceQuota([FromQuery] int userId, [FromQuery] int year)
+        {
+            var AQMemberTable = database.Table<AQMember>();
+            var aqmember = AQMemberTable.FindById(userId);
+            var absenceQuota = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
+            return new IndividualDayOffDetailDO
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = absenceQuota
+            };
+        }
     }
 
 
@@ -578,6 +594,10 @@ namespace educlient.Controllers
         public string data { get; set; }
     }
 
+    public class IndividualDayOffDetailDO : ApiResultBaseDO
+    {
+        public actualAbsenceQuotaByYear data { get; set; }
+    }
 
 
 }

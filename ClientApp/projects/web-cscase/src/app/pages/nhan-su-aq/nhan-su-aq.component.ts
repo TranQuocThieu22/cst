@@ -44,9 +44,16 @@ export class NhanSuAqComponent implements OnInit {
     detailContract: this.detailContractInsert,
   };
 
-  detailContractUpdate: detailContract;
+  aqmemberUpdate: AQMemberUpdateDO = {
+    detailWFHQuota: {},
+    detailAbsenceQuota: {},
+    detailLunch: [],
+    detailContract: {},
+  };
 
-  aqmemberUpdate: AQMemberUpdateDO;
+  isValidUpdateFormData: boolean = true;
+
+  clonedAbsenceQuotas: { [s: string]: any; } = {};
 
   addNewMemberDialog: boolean;
   editMemberDialog: boolean;
@@ -229,8 +236,6 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   openAddDialog() {
-    console.log(this.aqmemberInsert);
-
     this.aqmemberInsert = {
       detailContract: this.detailContractInsert,
     };
@@ -326,8 +331,6 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   updateMember() {
-    console.log("before: ", this.AQmembers);
-
     this.https
       .put<any>(
         "/api/ThongTinCaNhan/" + this.aqmemberUpdate.id,
@@ -600,6 +603,33 @@ export class NhanSuAqComponent implements OnInit {
     return localISOString;
   }
 
+
+  onRowEditInit(absenceQuota: any) {
+    this.clonedAbsenceQuotas[absenceQuota.id] = { ...absenceQuota };
+  }
+
+  onRowEditSave(absenceQuota: any) {
+    if (absenceQuota.absenceQuota >= 0) {
+      delete this.clonedAbsenceQuotas[absenceQuota.id];
+      this.isValidUpdateFormData = true;
+    }
+    else {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Dữ liệu không phù hợp' });
+      this.isValidUpdateFormData = false;
+    }
+  }
+
+  onRowEditCancel(absenceQuota: any, index: number) {
+    this.aqmemberUpdate.detailAbsenceQuota.actualAbsenceQuotaByYear[index] = this.clonedAbsenceQuotas[absenceQuota.id];
+    delete this.clonedAbsenceQuotas[absenceQuota.id];
+  }
+
+
+  updateAllMember() {
+    console.log("clicked");
+
+  }
+
 }
 
 
@@ -610,3 +640,5 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const b = bigint & 255;
   return { r, g, b };
 }
+
+

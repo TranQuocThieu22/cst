@@ -76,6 +76,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { PasswordModule } from 'primeng/password';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
@@ -136,7 +137,8 @@ import { PasswordModule } from 'primeng/password';
     MenubarModule,
     TieredMenuModule,
     SplitButtonModule,
-    PasswordModule
+    PasswordModule,
+    TabViewModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
