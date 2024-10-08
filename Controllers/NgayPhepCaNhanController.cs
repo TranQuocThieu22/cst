@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Linq;
+using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 
 namespace educlient.Controllers
 {
@@ -135,10 +136,14 @@ namespace educlient.Controllers
                 dateFrom = input.dateFrom,
                 dateTo = input.dateTo,
                 sumDay = input.sumDay,
+                numberOfDay_whole = input.numberOfDay_whole,
+                numberOfDay_half = input.numberOfDay_half,
                 memberId = input.memberId,
                 reason = input.reason,
                 isAnnual = input.isAnnual,
+                totalIsAnnual = input.totalIsAnnual,
                 isWithoutPay = input.isWithoutPay,
+                totalIsWithoutPay = input.totalIsWithoutPay,
                 approvalStatus = input.approvalStatus,
                 note = input.note,
             }).ToList();
@@ -155,7 +160,7 @@ namespace educlient.Controllers
         }
 
         [HttpPut, Route("{id}")]
-        public ApiResultBaseDO Update(int id, [FromBody] IndividualDayOffInput inputData)
+        public DayOffUpdateDTO Update(int id, [FromBody] IndividualDayOffInput inputData)
         {
             var IndividualDayOffTable = database.Table<IndividualDayOff>();
 
@@ -173,21 +178,26 @@ namespace educlient.Controllers
             existingRecord.dateFrom = inputData.dateFrom;
             existingRecord.dateTo = inputData.dateTo;
             existingRecord.sumDay = inputData.sumDay;
+            existingRecord.numberOfDay_whole = inputData.numberOfDay_whole;
+            existingRecord.numberOfDay_half = inputData.numberOfDay_half;
             existingRecord.memberId = inputData.memberId;
             existingRecord.reason = inputData.reason;
             existingRecord.isAnnual = inputData.isAnnual;
+            existingRecord.totalIsAnnual = inputData.totalIsAnnual;
             existingRecord.isWithoutPay = inputData.isWithoutPay;
+            existingRecord.totalIsWithoutPay = inputData.totalIsWithoutPay;
             existingRecord.approvalStatus = inputData.approvalStatus;
             existingRecord.note = inputData.note;
 
             // Update the record in the collection
             IndividualDayOffTable.Update(existingRecord);
 
-            return new ApiResultBaseDO
+            return new DayOffUpdateDTO
             {
                 message = "Update Success",
                 code = 200,
-                result = true
+                result = true,
+                data = existingRecord
             };
         }
 
@@ -320,39 +330,122 @@ namespace educlient.Controllers
                 data = resultList
             };
         }
+
+        [HttpGet("HanMucNghiPhepCaNhan")]
+        public HanMucNghiPhepCaNhanResult GetHanMucNghiPhepCaNhan([FromQuery] int year, [FromQuery] int? query_memberId = null)
+        {
+            var resultList = new List<HanMucNghiPhepCaNhan>();
+
+            var AQMemberTable = database.Table<AQMember>();
+            var dayOffsTable = database.Table<IndividualDayOff>();
+
+            var dayOffData = dayOffsTable.Find(x =>
+                    x.memberId == query_memberId &&
+                    x.dateFrom.Year == year &&
+                    x.approvalStatus == "Đã duyệt" &&
+                    x.sumDay != 0
+                    ).ToList();
+
+            var totalDayOff = 0;
+            var totalDayOff_with_permission = 0;
+            var totalDayOff_without_permission = 0;
+            foreach (var dayOff in dayOffData)
+            {
+                totalDayOff += (int)dayOff.numberOfDay_whole;
+
+                if (dayOff.totalIsAnnual > 0)
+                {
+                    totalDayOff_with_permission += (int)dayOff.totalIsAnnual;
+                }
+            }
+
+            totalDayOff_without_permission = totalDayOff - totalDayOff_with_permission;
+
+            var absenceQuotaData = AQMemberTable.FindById(query_memberId).detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
+
+            var absenceQuota = absenceQuotaData == null ? 0 : absenceQuotaData.absenceQuota;
+
+
+            var HanMucNghiPhep = new HanMucNghiPhepCaNhan
+            {
+                year = year,
+                memberId = query_memberId.Value,
+                absenceQuota = absenceQuota,
+                totalDayOff = totalDayOff,
+                totalDayOff_with_permission = totalDayOff_with_permission,
+                totalDayOff_without_permission = totalDayOff_without_permission,
+                absenceQuota_available = absenceQuota - totalDayOff_with_permission,
+            };
+
+            resultList.Add(HanMucNghiPhep);
+
+            return new HanMucNghiPhepCaNhanResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = resultList
+            };
+        }
+
+        public class IndividualDayOffResult : ApiResultBaseDO
+        {
+            public List<IndividualDayOff> data { get; set; }
+        }
+
+
+        public class IndividualDayOffInput
+        {
+            public int id { get; set; }
+            public DateTime dateFrom { get; set; }
+            public DateTime dateTo { get; set; }
+            public float sumDay { get; set; }
+            public int numberOfDay_whole { get; set; }
+            public int numberOfDay_half { get; set; }
+            public int memberId { get; set; }
+            public string reason { get; set; }
+            public bool isAnnual { get; set; }
+            public int totalIsAnnual { get; set; }
+            public bool isWithoutPay { get; set; }
+            public int totalIsWithoutPay { get; set; }
+            public string approvalStatus { get; set; }
+            public string note { get; set; }
+        }
+        public class ThongKePhepNamDataDO
+        {
+            public string fullName { get; set; }
+            public string nickName { get; set; }
+            public int absenceQuota { get; set; }
+            public int WFHQuota { get; set; }
+            public int DayOffs { get; set; }
+            public int total_wfh { get; set; }
+        }
+
+        public class ThongKePhepNamResult : ApiResultBaseDO
+        {
+            public List<ThongKePhepNamDataDO> data { get; set; }
+        }
+
+        public class HanMucNghiPhepCaNhanResult : ApiResultBaseDO
+        {
+            public List<HanMucNghiPhepCaNhan> data { get; set; }
+        }
+
+        public class HanMucNghiPhepCaNhan
+        {
+            public int memberId { get; set; }
+            public int year { get; set; }
+            public int absenceQuota { get; set; }
+            public int totalDayOff { get; set; }
+            public int totalDayOff_with_permission { get; set; }
+            public int totalDayOff_without_permission { get; set; }
+            public int absenceQuota_available { get; set; }
+        }
+
+        public class DayOffUpdateDTO : ApiResultBaseDO
+        {
+            public IndividualDayOff data { get; set; }
+        }
     }
 
-    public class IndividualDayOffResult : ApiResultBaseDO
-    {
-        public List<IndividualDayOff> data { get; set; }
-    }
-
-
-    public class IndividualDayOffInput
-    {
-        public int id { get; set; }
-        public DateTime dateFrom { get; set; }
-        public DateTime dateTo { get; set; }
-        public float sumDay { get; set; }
-        public int memberId { get; set; }
-        public string reason { get; set; }
-        public bool isAnnual { get; set; }
-        public bool isWithoutPay { get; set; }
-        public string approvalStatus { get; set; }
-        public string note { get; set; }
-    }
-    public class ThongKePhepNamDataDO
-    {
-        public string fullName { get; set; }
-        public string nickName { get; set; }
-        public int absenceQuota { get; set; }
-        public int WFHQuota { get; set; }
-        public int DayOffs { get; set; }
-        public int total_wfh { get; set; }
-    }
-
-    public class ThongKePhepNamResult : ApiResultBaseDO
-    {
-        public List<ThongKePhepNamDataDO> data { get; set; }
-    }
 }

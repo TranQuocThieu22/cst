@@ -35,8 +35,12 @@
       ]">
       <ng-template pTemplate="caption">
         <div class="flex justify-content-between flex-wrap">
-          <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
-            (click)="clear(dt1)"></button>
+          <button pButton label="Reset" class="p-button-outlined" icon="pi pi-filter-slash"
+            (click)="clear(dt1)">
+          </button>
+          <!-- <button pButton label="Cập nhật năm" class="p-button-outlined" icon="pi pi-cog"
+            (click)="updateAllMember()">
+          </button> -->
           <span class="p-input-icon-left ml-auto">
             <i class="pi pi-search"></i>
             <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
@@ -243,7 +247,9 @@
               text-align: center;
               vertical-align: middle;
             ">
-            0
+            {{
+            AQmember.detailAbsenceQuota.actualAbsenceQuotaByYear[AQmember.detailAbsenceQuota.actualAbsenceQuotaByYear.length
+            - 1].absenceQuota }}
           </td>
           <td style="
               white-space: nowrap;
@@ -469,173 +475,250 @@
 
 
 <!-- Edit Member Dialog -->
-<p-dialog [(visible)]="editMemberDialog" [style]="{ width: '100%', maxWidth: '1200px' }" header="Chỉnh sửa nhân sự"
-  [modal]="true" styleClass="p-fluid">
-  <!-- <p-tabView>
-    <p-tabPanel header="Thông tin chung"> -->
-  <ng-template pTemplate="content">
-    <div class="formgrid grid">
-      <!-- First column -->
-      <div class="field col-12 md:col-4">
-        <div class="p-field">
-          <label for="fullName">Họ tên</label>
-          <input type="text" pInputText id="fullName" [(ngModel)]="aqmemberUpdate.fullName" required />
-        </div>
-        <div class="p-field">
-          <label for="nickName">Nick Name</label>
-          <input type="text" pInputText id="nickName" [(ngModel)]="aqmemberUpdate.nickName" required />
-        </div>
-        <div class="p-field">
-          <label for="dateformat">Ngày sinh</label>
-          <p-calendar [(ngModel)]="aqmemberUpdate.birthDate" dateFormat="dd/mm/yy"
-            inputId="dateformat"></p-calendar>
-        </div>
-        <div class="p-field">
-          <label for="email">Email</label>
-          <input type="email" pInputText id="email" [(ngModel)]="aqmemberUpdate.email" required />
-        </div>
-        <div class="p-field">
-          <label for="phone">Điện thoại</label>
-          <input type="text" pInputText id="phone" [(ngModel)]="aqmemberUpdate.phone" required />
-        </div>
-      </div>
-
-      <!-- Second column -->
-      <div class="field col-12 md:col-4">
-        <div class="p-field">
-          <label for="tfsName">Tfs name</label>
-          <input type="text" pInputText id="tfsName" [(ngModel)]="aqmemberUpdate.tfsName" required autofocus />
-        </div>
-        <div class="p-field">
-          <label for="role">Phòng ban</label>
-          <p-dropdown [options]="AQRoles" [(ngModel)]="aqmemberUpdate.role" optionLabel="role"
-            optionValue="code"></p-dropdown>
-        </div>
-        <div class="p-field">
-          <label for="dateformat">Ngày vào công ty</label>
-          <p-calendar [(ngModel)]="aqmemberUpdate.startDate" dateFormat="dd/mm/yy"
-            inputId="dateformat"></p-calendar>
-        </div>
-        <div class="p-field">
-          <label for="wfhQuota">Hạn mức % làm việc online (tối thiểu)</label>
-          <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmemberUpdate.detailWFHQuota.minWFHQuota"
-            required />
-        </div>
-        <div class="p-field">
-          <label for="absenceQuota">Số ngày nghỉ phép/năm (tối thiểu)</label>
-          <input type="number" pInputText id="absenceQuota"
-            [(ngModel)]="aqmemberUpdate.detailAbsenceQuota.minAbsenceQuota" required />
-        </div>
-      </div>
-
-      <!-- Third column -->
-      <div class="field col-12 md:col-4">
-        <div class="p-field">
-          <label for="maSoCCCD">SỐ CCCD</label>
-          <input type="text" pInputText id="maSoCCCD" [(ngModel)]="aqmemberUpdate.maSoCCCD" required autofocus />
-        </div>
-        <div class="p-field">
-          <label for="address">Địa chỉ</label>
-          <input type="text" pInputText id="address" [(ngModel)]="aqmemberUpdate.address" required autofocus />
-        </div>
-        <div class="p-field">
-          <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
-          <p-calendar [(ngModel)]="aqmemberUpdate.detailContract.contractStartDate" dateFormat="dd/mm/yy"
-            inputId="contractStartDate"></p-calendar>
-        </div>
-        <div class="p-field">
-          <label for="contractExpireDate">Ngày kết thúc hợp đồng</label>
-          <p-calendar [(ngModel)]="aqmemberUpdate.detailContract.contractExpireDate" dateFormat="dd/mm/yy"
-            inputId="contractExpireDate"></p-calendar>
-        </div>
-        <div class="p-field">
-          <label for="contractType">Loại hợp đồng</label>
-          <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberUpdate.detailContract.contractType"
-            required autofocus />
-        </div>
-      </div>
-
-      <!-- fourth column below -->
-      <div class="col-12 flex flex-column sm:flex-row">
-        <!-- avatar content -->
-        <div class="p-field col-12 sm:col-6 md:col-4 mb-4">
-          <div class="flex flex-column mt-4">
-            <!-- add member avatar -->
-            <div class="image-container flex flex-row align-items-center justify-content-center">
-              <div *ngIf="aqmemberUpdate.avatar">
-                <label for="fileInput" pButton pRipple type="button" icon="pi pi-image"
-                  class="p-button-rounded p-button-info p-button-text align-items-center hover-button">
-                </label>
+<p-dialog
+  [(visible)]="editMemberDialog"
+  [style]="{ width: '100%', maxWidth: '1500px' }"
+  header="Chỉnh sửa thông tin nhân sự"
+  [modal]="true"
+  styleClass="p-fluid">
+  <p-tabView>
+    <p-tabPanel header="Thông tin chung">
+      <ng-template pTemplate="content">
+        <p-scrollPanel
+          [style]="{width: '100%', height: '500px'}"
+          styleClass="custombar1">
+          <div class="formgrid grid">
+            <!-- First column -->
+            <div class="field col-12 md:col-4">
+              <div class="p-field">
+                <label for="fullName">Họ tên</label>
+                <input type="text" pInputText id="fullName" [(ngModel)]="aqmemberUpdate.fullName" required />
               </div>
+              <div class="p-field">
+                <label for="nickName">Nick Name</label>
+                <input type="text" pInputText id="nickName" [(ngModel)]="aqmemberUpdate.nickName" required />
+              </div>
+              <div class="p-field">
+                <label for="dateformat">Ngày sinh</label>
+                <p-calendar [(ngModel)]="aqmemberUpdate.birthDate" dateFormat="dd/mm/yy"
+                  inputId="dateformat"></p-calendar>
+              </div>
+              <div class="p-field">
+                <label for="email">Email</label>
+                <input type="email" pInputText id="email" [(ngModel)]="aqmemberUpdate.email" required />
+              </div>
+              <div class="p-field">
+                <label for="phone">Điện thoại</label>
+                <input type="text" pInputText id="phone" [(ngModel)]="aqmemberUpdate.phone" required />
+              </div>
+            </div>
 
-              <div class="flex flex-column mx-1">
-                <label for="fileInput">
-                  <img [src]="
+            <!-- Second column -->
+            <div class="field col-12 md:col-4">
+              <div class="p-field">
+                <label for="tfsName">Tfs name</label>
+                <input type="text" pInputText id="tfsName" [(ngModel)]="aqmemberUpdate.tfsName" required autofocus />
+              </div>
+              <div class="p-field">
+                <label for="role">Phòng ban</label>
+                <p-dropdown [options]="AQRoles" [(ngModel)]="aqmemberUpdate.role" optionLabel="role"
+                  optionValue="code"></p-dropdown>
+              </div>
+              <div class="p-field">
+                <label for="dateformat">Ngày vào công ty</label>
+                <p-calendar [(ngModel)]="aqmemberUpdate.startDate" dateFormat="dd/mm/yy"
+                  inputId="dateformat"></p-calendar>
+              </div>
+              <div class="p-field">
+                <label for="wfhQuota">Hạn mức % làm việc online (tối thiểu)</label>
+                <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmemberUpdate.detailWFHQuota.minWFHQuota"
+                  required />
+              </div>
+              <div class="p-field">
+                <label for="absenceQuota">Số ngày nghỉ phép/năm (tối thiểu)</label>
+                <input type="number" pInputText id="absenceQuota"
+                  [(ngModel)]="aqmemberUpdate.detailAbsenceQuota.minAbsenceQuota" required />
+              </div>
+            </div>
+
+            <!-- Third column -->
+            <div class="field col-12 md:col-4">
+              <div class="p-field">
+                <label for="maSoCCCD">SỐ CCCD</label>
+                <input type="text" pInputText id="maSoCCCD" [(ngModel)]="aqmemberUpdate.maSoCCCD" required autofocus />
+              </div>
+              <div class="p-field">
+                <label for="address">Địa chỉ</label>
+                <input type="text" pInputText id="address" [(ngModel)]="aqmemberUpdate.address" required autofocus />
+              </div>
+              <div class="p-field">
+                <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
+                <p-calendar [(ngModel)]="aqmemberUpdate.detailContract.contractStartDate" dateFormat="dd/mm/yy"
+                  inputId="contractStartDate"></p-calendar>
+              </div>
+              <div class="p-field">
+                <label for="contractExpireDate">Ngày kết thúc hợp đồng</label>
+                <p-calendar [(ngModel)]="aqmemberUpdate.detailContract.contractExpireDate" dateFormat="dd/mm/yy"
+                  inputId="contractExpireDate"></p-calendar>
+              </div>
+              <div class="p-field">
+                <label for="contractType">Loại hợp đồng</label>
+                <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberUpdate.detailContract.contractType"
+                  required autofocus />
+              </div>
+            </div>
+
+            <!-- fourth column below -->
+            <div class="col-12 flex flex-column sm:flex-row">
+              <!-- avatar content -->
+              <div class="p-field col-12 sm:col-6 md:col-4 mb-4">
+                <div class="flex flex-column mt-4">
+                  <!-- add member avatar -->
+                  <div class="image-container flex flex-row align-items-center justify-content-center">
+                    <div *ngIf="aqmemberUpdate.avatar">
+                      <label for="fileInput" pButton pRipple type="button" icon="pi pi-image"
+                        class="p-button-rounded p-button-info p-button-text align-items-center hover-button">
+                      </label>
+                    </div>
+
+                    <div class="flex flex-column mx-1">
+                      <label for="fileInput">
+                        <img [src]="
                           aqmemberUpdate.avatar
                             ? aqmemberUpdate.avatar
                             : 'https://www.w3schools.com/howto/img_avatar.png'
                         " />
-                </label>
-                <input id="fileInput" type="file" [(ngModel)]="aqmemberUpdate.avatar" class="select-profile-picture"
-                  (change)="handleUploadAvatar($event)" hidden />
+                      </label>
+                      <input id="fileInput" type="file" [(ngModel)]="aqmemberUpdate.avatar"
+                        class="select-profile-picture"
+                        (change)="handleUploadAvatar($event)" hidden />
+                    </div>
+
+                    <div *ngIf="aqmemberUpdate.avatar">
+                      <label pButton pRipple type="button" icon="pi pi-trash"
+                        class="p-button-rounded p-button-danger p-button-text align-items-center hover-button"
+                        (click)="deleteInputImg()">
+                      </label>
+                    </div>
+                  </div>
+                  <!-- show message if no avatar -->
+                  <div style="height: 5px">
+                    <div *ngIf="!aqmemberUpdate.avatar" class="text-center">
+                      Chưa có ảnh đại diện
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div *ngIf="aqmemberUpdate.avatar">
-                <label pButton pRipple type="button" icon="pi pi-trash"
-                  class="p-button-rounded p-button-danger p-button-text align-items-center hover-button"
-                  (click)="deleteInputImg()">
-                </label>
+              <!-- other content -->
+              <div class="p-field col-12 sm:col-6 md:col-8">
+                <div class="p-field-checkbox mt-4 flex flex-column">
+                  <div class="col-12">
+                    <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmemberUpdate.isLeader" binary="true"
+                      inputId="isLeader"></p-checkbox>
+                    <label for="isLeader">Là Leader</label>
+                  </div>
+                  <div class="col-12 mt-2">
+                    <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmemberUpdate.isActive" binary="true"
+                      inputId="isActive"></p-checkbox>
+                    <label for="isActive">Đang hoạt động</label>
+                  </div>
+                  <div class="col-12 mt-2">
+                    <p-checkbox (onChange)="handleIsLunchStatusChange($event)" class="pb-2 mr-2"
+                      [(ngModel)]="aqmemberUpdate.isLunchStatus" binary="true" inputId="isLunch"></p-checkbox>
+                    <label for="isLunch">Trợ cấp ăn trưa</label>
+                  </div>
+                </div>
               </div>
+              <!-- end of other content column -->
             </div>
-            <!-- show message if no avatar -->
-            <div style="height: 5px">
-              <div *ngIf="!aqmemberUpdate.avatar" class="text-center">
-                Chưa có ảnh đại diện
-              </div>
-            </div>
+            <!-- end of fourth column -->
           </div>
-        </div>
-
-        <!-- other content -->
-        <div class="p-field col-12 sm:col-6 md:col-8">
-          <div class="p-field-checkbox mt-4 flex flex-column">
-            <div class="col-12">
-              <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmemberUpdate.isLeader" binary="true"
-                inputId="isLeader"></p-checkbox>
-              <label for="isLeader">Là Leader</label>
-            </div>
-            <div class="col-12 mt-2">
-              <p-checkbox class="pb-2 mr-2" [(ngModel)]="aqmemberUpdate.isActive" binary="true"
-                inputId="isActive"></p-checkbox>
-              <label for="isActive">Đang hoạt động</label>
-            </div>
-            <div class="col-12 mt-2">
-              <p-checkbox (onChange)="handleIsLunchStatusChange($event)" class="pb-2 mr-2"
-                [(ngModel)]="aqmemberUpdate.isLunchStatus" binary="true" inputId="isLunch"></p-checkbox>
-              <label for="isLunch">Trợ cấp ăn trưa</label>
-            </div>
-          </div>
-        </div>
-        <!-- end of other content column -->
-      </div>
-      <!-- end of fourth column -->
-    </div>
-  </ng-template>
-  <!-- </p-tabPanel>
+        </p-scrollPanel>
+      </ng-template>
+    </p-tabPanel>
 
     <p-tabPanel header="Nghỉ phép">
-      Content 2
+      <ng-template pTemplate="content">
+        <p-scrollPanel
+          [style]="{width: '100%', height: '500px'}"
+          styleClass="custombar1">
+
+
+          <p-table
+            [value]="aqmemberUpdate.detailAbsenceQuota.actualAbsenceQuotaByYear"
+            dataKey="year"
+            styleClass="p-datatable-sm"
+            editMode="row"
+            [tableStyle]="{'min-width': '50rem'}">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:20%">Năm</th>
+                <th style="width:20%">Hạn mức nghỉ phép (ngày/năm)</th>
+                <th style="width:20%"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-absenceQuota let-editing="editing" let-ri="rowIndex">
+              <tr [pEditableRow]="absenceQuota">
+                <td>
+                  {{absenceQuota.year}}
+                </td>
+                <td>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input pInputText type="text" [(ngModel)]="absenceQuota.absenceQuota" required>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{absenceQuota.absenceQuota}}
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
+                <td>
+                  <div class="flex align-items-center justify-content-center gap-2">
+                    <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                      (click)="onRowEditInit(absenceQuota)" class="p-button-rounded p-button-text"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                      (click)="onRowEditSave(absenceQuota)"
+                      class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                      (click)="onRowEditCancel(absenceQuota, ri)"
+                      class="p-button-rounded p-button-text p-button-danger"></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+        </p-scrollPanel>
+      </ng-template>
     </p-tabPanel>
 
     <p-tabPanel header="Ăn trưa">
-      Content 3
+      <ng-template pTemplate="content">
+        <p-scrollPanel
+          [style]="{width: '100%', height: '500px'}"
+          styleClass="custombar1">
+          Chức năng đang được phát triển
+        </p-scrollPanel>
+      </ng-template>
     </p-tabPanel>
-  </p-tabView> -->
+  </p-tabView>
 
   <!-- edit member button -->
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Lưu" icon="pi pi-check" class="p-button-text" (click)="updateMember()"></button>
+    <div>
+      <div *ngIf="!isValidUpdateFormData" class="field col-12" style="color: red;">
+        *Kiểm tra lại dữ liệu
+      </div>
+      <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+      <button
+        [disabled]="!isValidUpdateFormData"
+        pButton pRipple
+        label="Lưu" icon="pi pi-check"
+        class="p-button-text"
+        (click)="updateMember()">
+      </button>
+    </div>
   </ng-template>
 </p-dialog>
 
