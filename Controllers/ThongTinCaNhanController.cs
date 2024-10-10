@@ -448,6 +448,161 @@ namespace educlient.Controllers
 
         }
 
+
+        [HttpPost, Route("AnnualAQDataStatus")]
+        public ApiResultBaseDO CreateAnnualAQDataStatus([FromBody] AnnualAQDataStatusInput inputData)
+        {
+            var annualAQDataStatusTable = database.Table<AnnualAQDataStatus>();
+            var annualAQDataStatus = annualAQDataStatusTable.Query().Where(x => x.year == inputData.year).FirstOrDefault();
+
+            if (annualAQDataStatus == null)
+            {
+                annualAQDataStatus = new AnnualAQDataStatus
+                {
+                    year = inputData.year,
+                    isSetup = false,
+                    numberOfSetup = 0
+                };
+                annualAQDataStatusTable.Insert(annualAQDataStatus);
+            }
+            else
+            {
+                return new ApiResultBaseDO
+                {
+                    message = "Duplicate year input",
+                    code = 200,
+                    result = true
+                };
+            }
+
+            return new ApiResultBaseDO
+            {
+                message = "Success",
+                code = 200,
+                result = true
+            };
+        }
+
+        [HttpGet, Route("AnnualAQDataStatus")]
+        public AnnualAQDataStatusResult GetAnnualAQDataStatus([FromQuery] int year)
+        {
+            var currentYear = DateTime.Now.Year;
+            if (year < 2024 || year >= 2026)
+            {
+                return new AnnualAQDataStatusResult
+                {
+                    message = "No data",
+                    code = 200,
+                    result = true,
+                };
+            }
+
+            var annualAQDataStatusTable = database.Table<AnnualAQDataStatus>();
+            var annualAQDataStatus = annualAQDataStatusTable.Query().Where(x => x.year == year).FirstOrDefault();
+
+            if (annualAQDataStatus == null)
+            {
+                return new AnnualAQDataStatusResult
+                {
+                    message = "Return new status instance",
+                    code = 200,
+                    result = true,
+                    data = new AnnualAQDataStatus
+                    {
+                        year = year,
+                        isSetup = false,
+                        numberOfSetup = 0
+                    }
+                };
+            }
+
+            return new AnnualAQDataStatusResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = annualAQDataStatus
+            };
+        }
+
+        [HttpGet, Route("AnnualAQData")]
+        public AQAnnualDataResult GetAnnualAQData([FromQuery] int year)
+        {
+            var currentYear = DateTime.Now.Year;
+            if (year < 2024 || year >= 2026)
+            {
+                return new AQAnnualDataResult
+                {
+                    message = "No data",
+                    code = 200,
+                    result = true,
+                };
+            }
+
+            var AQMemberTable = database.Table<AQMember>();
+            var annualAQDataStatusTable = database.Table<AnnualAQDataStatus>();
+
+            var annualAQDataStatus = annualAQDataStatusTable.Query().Where(x => x.year == year).FirstOrDefault();
+            if (annualAQDataStatus == null)
+            {
+                var NhanVienAQTempList = AQMemberTable.Query().Where(x => x.isActive == true).ToList();
+
+                var dataList_previousYear = NhanVienAQTempList.Select(member => new MemberAnnualData
+                {
+                    id = member.id,
+                    fullName = member.fullName,
+                    isActive = member.isActive,
+                    workingYear = member.workingYear,
+                    absenceQuotaBase = member.detailAbsenceQuota.minAbsenceQuota,
+                    absenceQuotaBaseCurrent = member.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year - 1).absenceQuota,
+                    wfhQuotaBase = member.detailWFHQuota.minWFHQuota,
+                    wfhQuotaBaseCurrent = member.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(x => x.year == year - 1).WFHQuota,
+                    lunchPayment = member.detailLunch.FirstOrDefault(x => x.year == year - 1).lunchByMonth.FirstOrDefault(x => x.month == 12).isLunch ? member.detailLunch.FirstOrDefault(x => x.year == year - 1).lunchByMonth.FirstOrDefault(x => x.month == 12).lunchFee : 0,
+                }).ToList();
+
+                return new AQAnnualDataResult
+                {
+                    message = "Success",
+                    code = 200,
+                    result = true,
+                    data = new AQAnnualData
+                    {
+                        year = year,
+                        memberAnnualDataList = dataList_previousYear
+                    }
+                };
+            }
+
+            var NhanVienAQ = AQMemberTable.Query().Where(x => x.isActive == true).ToList();
+
+            var dataList = NhanVienAQ.Select(member => new MemberAnnualData
+            {
+                id = member.id,
+                fullName = member.fullName,
+                isActive = member.isActive,
+                workingYear = member.workingYear,
+                absenceQuotaBase = member.detailAbsenceQuota.minAbsenceQuota,
+                absenceQuotaBaseCurrent = member.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year).absenceQuota,
+                wfhQuotaBase = member.detailWFHQuota.minWFHQuota,
+                wfhQuotaBaseCurrent = member.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(x => x.year == year).WFHQuota,
+                lunchPayment = member.detailLunch.FirstOrDefault(x => x.year == year).lunchByMonth.FirstOrDefault(x => x.month == 12).isLunch ? member.detailLunch.FirstOrDefault(x => x.year == year).lunchByMonth.FirstOrDefault(x => x.month == 12).lunchFee : 0,
+            }).ToList();
+
+            return new AQAnnualDataResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = new AQAnnualData
+                {
+                    year = year,
+                    memberAnnualDataList = dataList
+                }
+            };
+
+        }
+
+
         [HttpGet, Route("HanMucNghiPhepNam")]
         public IndividualDayOffDetailDO GetDetailAbsenceQuota([FromQuery] int userId, [FromQuery] int year)
         {
@@ -600,8 +755,59 @@ namespace educlient.Controllers
     }
 
 
+    public class AnnualAQDataStatusInput
+    {
+        public int year { get; set; }
+    }
+
+    public class AnnualAQDataStatusResult : ApiResultBaseDO
+    {
+        public AnnualAQDataStatus data { get; set; }
+    }
+
+    public class AQAnnualDataResult : ApiResultBaseDO
+    {
+        public AQAnnualData data { get; set; }
+    }
+
+    public class AQAnnualData
+    {
+        public int year { get; set; }
+        public List<MemberAnnualData> memberAnnualDataList { get; set; }
+
+    }
+
+    public class MemberAnnualData
+    {
+        public int id { get; set; }
+        public string fullName { get; set; }
+        public bool isActive { get; set; }
+        public int workingYear { get; set; }
+        public int absenceQuotaBase { get; set; }
+        public int absenceQuotaBaseCurrent { get; set; }
+        public int wfhQuotaBase { get; set; }
+        public int wfhQuotaBaseCurrent { get; set; }
+        public int lunchPayment { get; set; }
+
+    }
+
+    public class AQAnnualDataInput
+    {
+        public int year { get; set; }
+        public int numberOfSetup { get; set; }
+        public List<MemberAnnualData> memberAnnualDataList { get; set; }
+    }
+
+    public class MemberAnnualDataInput
+    {
+        public int id { get; set; }
+
+        public int workingYear { get; set; }
+        public int absenceQuotaBaseCurrent { get; set; }
+        public int wfhQuotaBaseCurrent { get; set; }
+
+        public int lunchPayment { get; set; }
+    }
+
+
 }
-
-
-
-

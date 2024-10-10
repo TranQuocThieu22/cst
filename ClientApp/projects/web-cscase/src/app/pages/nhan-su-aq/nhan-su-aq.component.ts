@@ -31,11 +31,13 @@ import {
 export class NhanSuAqComponent implements OnInit {
   AQmembers: AQMember[];
 
+  selectedYearInput: any;
+  AQAnnualDataStatus: any = null;
+  selectedYearInputCardView: any;
+  AQAnnualDataStatusCardView: any = null;
+  AQAnnualData: any = [];
+
   detailContractInsert: detailContract = {
-    // contractStartDate: new Date(new Date().setHours(0, 0, 0, 0)),
-    // contractExpireDate: new Date(new Date().setHours(0, 0, 0, 0)),
-    // contractStartDate: new Date(),
-    // contractExpireDate: new Date(),
     contractDuration: 1,
     contractType: "",
   };
@@ -54,11 +56,14 @@ export class NhanSuAqComponent implements OnInit {
   isValidUpdateFormData: boolean = true;
 
   clonedAbsenceQuotas: { [s: string]: any; } = {};
+  cloneAnnualDataLists: { [s: string]: any; } = {};
 
   addNewMemberDialog: boolean;
   editMemberDialog: boolean;
   deleteMemberDialog: boolean;
   openDialog: boolean;
+  changeYearDialog: boolean;
+  updateAnnualDialog: boolean;
 
   dt_filter: any;
   AQRoles: AQRole[];
@@ -101,6 +106,11 @@ export class NhanSuAqComponent implements OnInit {
   checkIsLeader() {
     let user = sessionStorage.getItem("current-user");
     return JSON.parse(user).isLeader;
+  }
+
+  checkIsHR() {
+    let user = sessionStorage.getItem("current-user");
+    return JSON.parse(user).role === "4" || JSON.parse(user).role === "admin";
   }
 
   handleUploadAvatar(event) {
@@ -297,6 +307,7 @@ export class NhanSuAqComponent implements OnInit {
     this.openDialog = false;
     this.editMemberDialog = false;
     this.addNewMemberDialog = false;
+    this.updateAnnualDialog = false;
   }
 
   addNewMember() {
@@ -623,18 +634,100 @@ export class NhanSuAqComponent implements OnInit {
   }
 
 
-  updateAllMember() {
-    console.log("clicked");
+  openUpdateAnnualDialog() {
+    this.updateAnnualDialog = true;
+    this.selectedYearInput = new Date();
+    this.selectedYearInput.setHours(0, 0, 0, 0);
+    this.selectedYearInputCardView = this.selectedYearInput;
+    this.handleFetchAQDataStatus(true);
+    this.handleFetchAQAnnualData(true);
+  }
+
+  updateAnnualData() {
+    console.log(this.AQAnnualData);
+    // console.log("clicked");
+  }
+
+  handleFetchAQDataStatus(isInit?: boolean) {
+    const params = {
+      year: this.selectedYearInput.getFullYear(),
+    };
+
+    this.https.get<any>("/api/ThongTinCaNhan/AnnualAQDataStatus", { params: params }).subscribe({
+      next: (res: any) => {
+        if (res.data === null) {
+          this.AQAnnualDataStatus = null;
+          return;
+        }
+        this.AQAnnualDataStatus = res.data
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.selectedYearInputCardView = this.selectedYearInput;
+        this.AQAnnualDataStatusCardView = this.AQAnnualDataStatus;
+      },
+    });
 
   }
-  
-    convertStringToBoolean(value: string): boolean {
+
+  handleFetchAQAnnualData(isInit?: boolean) {
+    const params = {
+      year: this.selectedYearInput.getFullYear(),
+    };
+    this.https.get<any>("/api/ThongTinCaNhan/AnnualAQData", { params: params }).subscribe({
+      next: (res: any) => {
+        if (res.data === null) {
+          this.AQAnnualData = [];
+          return;
+        }
+        this.AQAnnualData = res.data.memberAnnualDataList
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      },
+    });
+
+    this.changeYearDialog = false;
+  }
+
+  showChangeYearDialog() {
+    this.changeYearDialog = true;
+  }
+
+  onRowEditAnnualDataInit(annualMemberData: any) {
+    this.cloneAnnualDataLists[annualMemberData.id] = { ...annualMemberData };
+  }
+
+  onRowEditAnnualDataSave(annualMemberData: any) {
+    // if (annualMemberData.price > 0) {
+    delete this.cloneAnnualDataLists[annualMemberData.id];
+    // }  
+    // else {
+    //     this.messageService.add({severity:'error', summary: 'Error', detail:'Invalid Price'});
+    // }
+  }
+
+  onRowEditAnnualDataCancel(annualMemberData: any, index: number) {
+    this.cloneAnnualDataLists[index] = this.cloneAnnualDataLists[annualMemberData.id];
+    delete this.cloneAnnualDataLists[annualMemberData.id];
+  }
+
+  convertStringToBoolean(value: string): boolean {
     // Check if the value is "có" for true, "không" for false, or keep it as it is (if valid boolean)
     return value.trim().toLowerCase() === 'có' ? true : value.trim().toLowerCase() === 'không' ? false : Boolean(value);
   }
   convertBooleanToString(value: boolean): string {
     return value ? 'có' : 'không';
   }
+
 
 }
 

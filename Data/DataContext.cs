@@ -58,6 +58,15 @@ namespace educlient.Data
         public string reviewcase { get; set; }
     }
 
+    public class AnnualAQDataStatus
+    {
+        [BsonId]
+        public int id { get; set; }
+        public int year { get; set; }
+        public bool isSetup { get; set; }
+        public int numberOfSetup { get; set; }
+    }
+
     public class AQMember
     {
         [BsonId]

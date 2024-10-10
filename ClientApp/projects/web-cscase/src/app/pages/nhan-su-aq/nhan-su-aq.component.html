@@ -5,15 +5,38 @@
         Danh sách nhân sự AQ
       </p-card>
       <ng-template *ngIf="checkIsLeader()" pTemplate="left">
-        <button (click)="fileInput.click()" class="btn p-button py-2 mr-2">
-          Import
-        </button>
-        <input #fileInput type="file" (change)="handleFileInput($event.target.files)" accept=".xls,.xlsx"
-          style="display: none" />
-        <button type="button" pButton pRipple (click)="exportToExcel()" class="mr-2 py-2" pTooltip="XLS"
-          tooltipPosition="bottom">Export</button>
-        <button pButton pRipple label="Thêm member" icon="pi pi-user-plus mb-1" class="p-button-success py-2 mr-2"
-          (click)="openAddDialog()"></button>
+        <div>
+          <button (click)="fileInput.click()" class="btn p-button py-2 mr-2">
+            Import
+          </button>
+          <input #fileInput type="file" (change)="handleFileInput($event.target.files)" accept=".xls,.xlsx"
+            style="display: none" />
+          <button type="button" pButton pRipple (click)="exportToExcel()" class="mr-2 py-2" pTooltip="XLS"
+            tooltipPosition="bottom">Export
+          </button>
+
+          <p-button
+            *ngIf="checkIsHR()"
+            label="Hợp đồng hết hạn" icon="pi pi-users"
+            styleClass="p-button-outlined p-button-warning py-2 mr-2"
+            badge="8" badgeClass="p-badge-danger">
+          </p-button>
+
+          <button
+            pButton label="Cập nhật thường niên"
+            class="p-button-secondary py-2 mr-2"
+            style="white-space: nowrap;"
+            icon="pi pi-cog"
+            (click)="openUpdateAnnualDialog()">
+          </button>
+          <button
+            pButton pRipple label="Thêm member"
+            icon="pi pi-user-plus mb-1"
+            class="p-button-success py-2 mr-2"
+            style="white-space: nowrap;"
+            (click)="openAddDialog()">
+          </button>
+        </div>
       </ng-template>
     </p-toolbar>
 
@@ -38,9 +61,6 @@
           <button pButton label="Reset" class="p-button-outlined" icon="pi pi-filter-slash"
             (click)="clear(dt1)">
           </button>
-          <!-- <button pButton label="Cập nhật năm" class="p-button-outlined" icon="pi pi-cog"
-            (click)="updateAllMember()">
-          </button> -->
           <span class="p-input-icon-left ml-auto">
             <i class="pi pi-search"></i>
             <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
@@ -335,7 +355,8 @@
         </div>
         <div class="p-field">
           <label for="dateformat">Ngày sinh</label>
-          <p-calendar [(ngModel)]="aqmemberInsert.birthDate" dateFormat="dd/mm/yy" inputId="dateformat"></p-calendar>
+          <p-calendar appendTo="body" [(ngModel)]="aqmemberInsert.birthDate" dateFormat="dd/mm/yy"
+            inputId="dateformat"></p-calendar>
         </div>
         <div class="p-field">
           <label for="email">Email</label>
@@ -360,7 +381,8 @@
         </div>
         <div class="p-field">
           <label for="dateformat">Ngày vào công ty</label>
-          <p-calendar [(ngModel)]="aqmemberInsert.startDate" dateFormat="dd/mm/yy" inputId="dateformat"></p-calendar>
+          <p-calendar appendTo="body" [(ngModel)]="aqmemberInsert.startDate" dateFormat="dd/mm/yy"
+            inputId="dateformat"></p-calendar>
         </div>
         <div class="p-field">
           <label for="wfhQuota">Hạn mức % làm việc online (tối thiểu)</label>
@@ -384,12 +406,12 @@
         </div>
         <div class="p-field">
           <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
-          <p-calendar [(ngModel)]="detailContractInsert.contractStartDate" dateFormat="dd/mm/yy"
+          <p-calendar appendTo="body" [(ngModel)]="detailContractInsert.contractStartDate" dateFormat="dd/mm/yy"
             inputId="contractStartDate"></p-calendar>
         </div>
         <div class="p-field">
           <label for="contractExpireDate">Ngày kết thúc hợp đồng</label>
-          <p-calendar [(ngModel)]="detailContractInsert.contractExpireDate" dateFormat="dd/mm/yy"
+          <p-calendar appendTo="body" [(ngModel)]="detailContractInsert.contractExpireDate" dateFormat="dd/mm/yy"
             inputId="contractExpireDate"></p-calendar>
         </div>
         <div class="p-field">
@@ -500,7 +522,7 @@
               </div>
               <div class="p-field">
                 <label for="dateformat">Ngày sinh</label>
-                <p-calendar [(ngModel)]="aqmemberUpdate.birthDate" dateFormat="dd/mm/yy"
+                <p-calendar appendTo="body" [(ngModel)]="aqmemberUpdate.birthDate" dateFormat="dd/mm/yy"
                   inputId="dateformat"></p-calendar>
               </div>
               <div class="p-field">
@@ -526,7 +548,7 @@
               </div>
               <div class="p-field">
                 <label for="dateformat">Ngày vào công ty</label>
-                <p-calendar [(ngModel)]="aqmemberUpdate.startDate" dateFormat="dd/mm/yy"
+                <p-calendar appendTo="body" [(ngModel)]="aqmemberUpdate.startDate" dateFormat="dd/mm/yy"
                   inputId="dateformat"></p-calendar>
               </div>
               <div class="p-field">
@@ -553,12 +575,14 @@
               </div>
               <div class="p-field">
                 <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
-                <p-calendar [(ngModel)]="aqmemberUpdate.detailContract.contractStartDate" dateFormat="dd/mm/yy"
+                <p-calendar appendTo="body" [(ngModel)]="aqmemberUpdate.detailContract.contractStartDate"
+                  dateFormat="dd/mm/yy"
                   inputId="contractStartDate"></p-calendar>
               </div>
               <div class="p-field">
                 <label for="contractExpireDate">Ngày kết thúc hợp đồng</label>
-                <p-calendar [(ngModel)]="aqmemberUpdate.detailContract.contractExpireDate" dateFormat="dd/mm/yy"
+                <p-calendar appendTo="body" [(ngModel)]="aqmemberUpdate.detailContract.contractExpireDate"
+                  dateFormat="dd/mm/yy"
                   inputId="contractExpireDate"></p-calendar>
               </div>
               <div class="p-field">
@@ -725,3 +749,174 @@
 <!-- delete member popup -->
 <p-toast></p-toast>
 <p-confirmPopup></p-confirmPopup>
+
+<!-- update annual dialog -->
+
+<p-dialog [(visible)]="updateAnnualDialog" [style]="{ width: '100%', maxWidth: '1000px' }" header="Cập nhật thường niên"
+  [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="formgrid grid">
+
+      <div class="field col-12">
+        <div class="flex flex-column">
+          <span class="">Dữ liệu năm:
+            <strong
+              (click)="showChangeYearDialog()"
+              style="cursor: pointer;">
+              {{selectedYearInputCardView.getFullYear()}}
+            </strong>
+            <span
+              (click)="showChangeYearDialog()"
+              style="cursor: pointer; text-decoration: underline;">
+              (chọn dữ liệu năm khác)
+            </span>
+
+            <p-dialog
+              header="Chọn dữ liệu năm"
+              [contentStyle]="{'overflow': 'visible'}"
+              [(visible)]=" changeYearDialog"
+              [modal]="true"
+              [style]="{ width: '400px' }"
+              [draggable]="false" [resizable]="false">
+              <div class="field col-12">
+                <p-calendar
+                  appendTo="body"
+                  [(ngModel)]="selectedYearInput"
+                  view="year" dateFormat="yy"
+                  inputId="yearpicker"
+                  [style]="{'width':'100vw'}"
+                  [inputStyle]="{'width':'12rem'}">
+                </p-calendar>
+              </div>
+
+              <ng-template pTemplate="footer">
+                <p-button
+                  icon="pi pi-check"
+                  (click)="handleFetchAQAnnualData(false); handleFetchAQDataStatus(false)" label="Ok"
+                  styleClass="p-button-text"></p-button>
+              </ng-template>
+            </p-dialog>
+          </span>
+
+          <div class="flex justify-content-between flex-wrap">
+            <div class="flex flex-column">
+
+              <span *ngIf="AQAnnualDataStatusCardView !== null; else noDataBlock2">
+                <div class="">
+                  <span class="">Trạng thái:
+                    <strong
+                      [style.color]="AQAnnualDataStatusCardView.isSetup ? 'green' : 'orange'">
+                      {{AQAnnualDataStatusCardView.isSetup ? 'Đã cập nhật' : 'Chưa cập nhật'}}
+                    </strong>
+                  </span>
+                </div>
+                <div class="">
+                  <span class="">Số lần cập nhật: <strong>{{AQAnnualDataStatusCardView.numberOfSetup}}</strong></span>
+                </div>
+              </span>
+              <ng-template #noDataBlock2>
+                <span class="">Trạng thái: <strong style="color: red;">Không có dữ liệu</strong></span>
+                <span class="">Số lần cập nhật: <strong style="color: red;">Không có dữ liệu</strong></span>
+              </ng-template>
+
+            </div>
+            <div>
+              <span class="">Tổng thành viên hoạt động: <strong>{{AQAnnualData.length}}</strong></span>
+            </div>
+          </div>
+
+          <div class="flex justify-content-center mt-4">
+            <p-table
+              [value]="AQAnnualData"
+              styleClass="p-datatable-sm p-datatable-gridlines"
+              editMode="row"
+              dataKey="id">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="white-space: wrap; width:20%" class="text-center">Họ và tên</th>
+                  <th style="white-space: wrap; width:20%" class="text-center">Tổng số năm làm việc</th>
+                  <th style="white-space: wrap; width:20%" class="text-center">
+                    Hạn mức nghỉ phép
+                  </th>
+                  <th style="white-space: wrap; width:20%" class="text-center">
+                    Hạn mức làm việc online
+                  </th>
+                  <th style="white-space: wrap; width:20%" class="text-center">Ăn trưa</th>
+                  <th style="white-space: wrap; width:20%" class="text-center"></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-member let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="member">
+                  <td class="text-center">{{member.fullName}}</td>
+                  <td>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <input pInputText type="number" [(ngModel)]="member.workingYear"
+                          required>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{member.workingYear}}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+                  <td>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <input pInputText type="number" [(ngModel)]="member.absenceQuotaBaseCurrent" required>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{member.absenceQuotaBaseCurrent}}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+                  <td>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <input pInputText type="number" [(ngModel)]="member.wfhQuotaBaseCurrent" required>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{member.wfhQuotaBaseCurrent}}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+                  <td class="text-center">{{member.lunchPayment}}</td>
+                  <td>
+                    <div class="flex align-items-center justify-content-center gap-2">
+                      <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                        (click)="onRowEditAnnualDataInit(member)" class="p-button-rounded p-button-text"></button>
+                      <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                        (click)="onRowEditAnnualDataSave(member)"
+                        class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                      <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                        (click)="onRowEditAnnualDataCancel(member, ri)"
+                        class="p-button-rounded p-button-text p-button-danger"></button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="100">
+                    Không có dữ liệu
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </ng-template>
+
+  <!-- add member button -->
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button
+      pButton pRipple label="Cập nhật"
+      icon="pi pi-check" class="p-button-text"
+      (click)="updateAnnualData()">
+    </button>
+  </ng-template>
+</p-dialog>
