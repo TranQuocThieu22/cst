@@ -602,6 +602,181 @@ namespace educlient.Controllers
 
         }
 
+        [HttpPatch, Route("AnnualAQData")]
+        public ApiResultBaseDO UpdateAnnualAQData([FromBody] AQAnnualDataInput inputData)
+        {
+            var currentYear = inputData.year;
+            var existingAnnualAQDataStatus = database.Table<AnnualAQDataStatus>().FindOne(x => x.year == currentYear);
+            var annualAQDataStatusTable = database.Table<AnnualAQDataStatus>();
+
+            if (existingAnnualAQDataStatus == null)
+            {
+                var newAnnualAQDataStatus = new AnnualAQDataStatus
+                {
+                    year = currentYear,
+                    isSetup = true,
+                    numberOfSetup = 1
+                };
+                annualAQDataStatusTable.Insert(newAnnualAQDataStatus);
+
+                foreach (var member in inputData.memberAnnualDataList)
+                {
+                    // Find the corresponding member in the AQMember table
+                    var existingMember = database.Table<AQMember>().FindOne(x => x.id == member.id);
+
+                    if (existingMember != null)
+                    {
+                        // Update the fields of the member
+                        existingMember.workingYear = member.workingYear;
+                        existingMember.detailWFHQuota.actualWFHQuotaByYear.Add(new actualWFHQuotaByYear
+                        {
+                            year = currentYear,
+                            WFHQuota = member.wfhQuotaBaseCurrent
+                        });
+                        existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.Add(new actualAbsenceQuotaByYear
+                        {
+                            year = currentYear,
+                            absenceQuota = member.absenceQuotaBaseCurrent
+                        });
+                        existingMember.detailLunch.Add(new detailLunch
+                        {
+                            year = currentYear,
+                            lunchByMonth = member.lunchPayment == 0 ?
+                            Enumerable.Range(1, 12).Select(month => new lunchByMonth
+                            {
+                                month = month,
+                                isLunch = false,
+                                lunchFee = 0,
+                                note = ""
+                            }).ToList()
+                            :
+                            Enumerable.Range(1, 12).Select(month => new lunchByMonth
+                            {
+                                month = month,
+                                isLunch = true,
+                                lunchFee = member.lunchPayment,
+                                note = ""
+                            }).ToList()
+                        });
+
+                        // Save the changes to the database
+                        database.Table<AQMember>().Update(existingMember);
+                    }
+                }
+            }
+
+            else
+            {
+                foreach (var member in inputData.memberAnnualDataList)
+                {
+                    // Find the corresponding member in the AQMember table
+                    var existingMember = database.Table<AQMember>().FindOne(x => x.id == member.id);
+
+                    if (existingMember != null)
+                    {
+                        existingMember.detailWFHQuota.actualWFHQuotaByYear.RemoveAll(item => item.year == currentYear);
+                        existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.RemoveAll(item => item.year == currentYear);
+
+                        // Update the fields of the member
+                        existingMember.workingYear = member.workingYear;
+                        // Find the actualWFHQuotaByYear for the specified year
+                        var existingActualWFHQuota = existingMember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(a => a.year == currentYear);
+
+                        if (existingActualWFHQuota != null)
+                        {
+                            // Update the existing actualWFHQuotaByYear with new data
+                            existingActualWFHQuota.WFHQuota = member.wfhQuotaBaseCurrent;
+                        }
+                        else
+                        {
+                            // Add a new actualWFHQuotaByYear for the specified year
+                            existingMember.detailWFHQuota.actualWFHQuotaByYear.Add(new actualWFHQuotaByYear
+                            {
+                                year = currentYear,
+                                WFHQuota = member.wfhQuotaBaseCurrent
+                            });
+                        }
+
+                        var existingActualAbsenceQuota = existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(a => a.year == currentYear);
+
+                        if (existingActualAbsenceQuota != null)
+                        {
+                            // Update the existing actualWFHQuotaByYear with new data
+                            existingActualAbsenceQuota.absenceQuota = member.absenceQuotaBaseCurrent;
+                        }
+                        else
+                        {
+                            // Add a new actualWFHQuotaByYear for the specified year
+                            existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.Add(new actualAbsenceQuotaByYear
+                            {
+                                year = currentYear,
+                                absenceQuota = member.absenceQuotaBaseCurrent
+                            });
+                        }
+                        existingMember.detailLunch.RemoveAll(lunch => lunch.year == currentYear);
+
+                        var existingData = existingMember.detailLunch.FirstOrDefault(lunch => lunch.year == currentYear);
+                        if (existingData != null)
+                        {
+                            existingData.lunchByMonth = member.lunchPayment == 0 ?
+                                Enumerable.Range(1, 12).Select(month => new lunchByMonth
+                                {
+                                    month = month,
+                                    isLunch = false,
+                                    lunchFee = 0,
+                                    note = ""
+                                }).ToList()
+                                :
+                                Enumerable.Range(1, 12).Select(month => new lunchByMonth
+                                {
+                                    month = month,
+                                    isLunch = true,
+                                    lunchFee = member.lunchPayment,
+                                    note = ""
+                                }).ToList();
+                        }
+                        else
+                        {
+                            existingMember.detailLunch.Add(new detailLunch
+                            {
+                                year = currentYear,
+                                lunchByMonth = member.lunchPayment == 0 ?
+                                    Enumerable.Range(1, 12).Select(month => new lunchByMonth
+                                    {
+                                        month = month,
+                                        isLunch = false,
+                                        lunchFee = 0,
+                                        note = ""
+                                    }).ToList()
+                                    :
+                                    Enumerable.Range(1, 12).Select(month => new lunchByMonth
+                                    {
+                                        month = month,
+                                        isLunch = true,
+                                        lunchFee = member.lunchPayment,
+                                        note = ""
+                                    }).ToList()
+                            });
+                        }
+
+                        // Save the changes to the database
+                        database.Table<AQMember>().Update(existingMember);
+                    }
+                }
+            }
+
+            existingAnnualAQDataStatus.isSetup = true;
+            existingAnnualAQDataStatus.numberOfSetup += 1;
+            database.Table<AnnualAQDataStatus>().Update(existingAnnualAQDataStatus);
+            return new ApiResultBaseDO
+            {
+                message = "Update Success",
+                code = 200,
+                result = true
+            };
+
+        }
+
 
         [HttpGet, Route("HanMucNghiPhepNam")]
         public IndividualDayOffDetailDO GetDetailAbsenceQuota([FromQuery] int userId, [FromQuery] int year)
@@ -795,7 +970,7 @@ namespace educlient.Controllers
     {
         public int year { get; set; }
         public int numberOfSetup { get; set; }
-        public List<MemberAnnualData> memberAnnualDataList { get; set; }
+        public List<MemberAnnualDataInput> memberAnnualDataList { get; set; }
     }
 
     public class MemberAnnualDataInput

@@ -65,6 +65,8 @@ export class NhanSuAqComponent implements OnInit {
   changeYearDialog: boolean;
   updateAnnualDialog: boolean;
 
+  disableAutoUpdate: boolean = false;
+
   dt_filter: any;
   AQRoles: AQRole[];
 
@@ -308,6 +310,7 @@ export class NhanSuAqComponent implements OnInit {
     this.editMemberDialog = false;
     this.addNewMemberDialog = false;
     this.updateAnnualDialog = false;
+    this.disableAutoUpdate = false;
   }
 
   addNewMember() {
@@ -321,7 +324,6 @@ export class NhanSuAqComponent implements OnInit {
 
     this.https.post<any>("/api/ThongTinCaNhan", aqmemberArray).subscribe({
       next: (res: any) => {
-        console.log(res);
         this.AQmembers.push(res.data[0]);
       },
       error: (error) => {
@@ -385,7 +387,6 @@ export class NhanSuAqComponent implements OnInit {
           .delete<any>("/api/ThongTinCaNhan/" + data.id, data)
           .subscribe({
             next: (res: any) => {
-              // console.log(res);
               this.AQmembers = this.AQmembers.filter(
                 (val) => val.id !== data.id
               );
@@ -581,7 +582,6 @@ export class NhanSuAqComponent implements OnInit {
     });
     this.https.post<any>("/api/ThongTinCaNhan", req).subscribe({
       next: (res: any) => {
-        console.log(res);
         this.fetchAQMemberData();
 
       },
@@ -643,9 +643,35 @@ export class NhanSuAqComponent implements OnInit {
     this.handleFetchAQAnnualData(true);
   }
 
-  updateAnnualData() {
-    console.log(this.AQAnnualData);
-    // console.log("clicked");
+  updateAnnualDataAuto() {
+    this.AQAnnualData.forEach((item: any) => {
+      item.workingYear += 1;
+      item.absenceQuotaBaseCurrent = item.absenceQuotaBase + Math.floor(item.workingYear / 5);
+      item.wfhQuotaBaseCurrent = item.wfhQuotaBase + Math.floor(item.workingYear / 5);
+    });
+    this.disableAutoUpdate = true;
+  }
+
+  submitAnnualData() {
+    let inputData = {
+      year: this.selectedYearInput.getFullYear(),
+      numberOfSetup: this.AQAnnualDataStatus.numberOfSetup,
+      memberAnnualDataList: this.AQAnnualData,
+    }
+    this.https.patch<any>("/api/ThongTinCaNhan/AnnualAQData", inputData).subscribe({
+      next: (res: any) => {
+
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.handleFetchAQDataStatus();
+        this.handleFetchAQAnnualData();
+      },
+    });
   }
 
   handleFetchAQDataStatus(isInit?: boolean) {

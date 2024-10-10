@@ -251,7 +251,9 @@
               text-align: center;
               vertical-align: middle;
             ">
-            0
+            {{
+            AQmember.detailWFHQuota.actualWFHQuotaByYear[AQmember.detailWFHQuota.actualWFHQuotaByYear.length
+            - 1].wfhQuota }}
           </td>
           <!-- minAbsenceQuota -->
           <td style="
@@ -825,7 +827,7 @@
             </div>
           </div>
 
-          <div class="flex justify-content-center mt-4">
+          <div class="flex justify-content-center mt-2">
             <p-table
               [value]="AQAnnualData"
               styleClass="p-datatable-sm p-datatable-gridlines"
@@ -842,7 +844,7 @@
                     Hạn mức làm việc online
                   </th>
                   <th style="white-space: wrap; width:20%" class="text-center">Ăn trưa</th>
-                  <th style="white-space: wrap; width:20%" class="text-center"></th>
+                  <th style="white-space: wrap; width:20%" class="text-center"> </th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-member let-editing="editing" let-ri="rowIndex">
@@ -912,11 +914,23 @@
 
   <!-- add member button -->
   <ng-template pTemplate="footer">
+    <div class="flex justify-content-center flex-wrap">
+      <button
+        *ngIf="AQAnnualData.length > 0"
+        pButton pRipple type="button"
+        [disabled]="disableAutoUpdate || AQAnnualDataStatusCardView.isSetup"
+        label="Cập nhật tự động"
+        class="w-15rem h-2rem"
+        styleClass="p-button-sm"
+        (click)="updateAnnualDataAuto()">
+      </button>
+    </div>
     <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button
-      pButton pRipple label="Cập nhật"
+      *ngIf="AQAnnualData.length > 0"
+      pButton pRipple label="Xác nhận"
       icon="pi pi-check" class="p-button-text"
-      (click)="updateAnnualData()">
+      (click)="submitAnnualData()">
     </button>
   </ng-template>
 </p-dialog>
