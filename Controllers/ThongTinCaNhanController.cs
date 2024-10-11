@@ -487,7 +487,7 @@ namespace educlient.Controllers
         public AnnualAQDataStatusResult GetAnnualAQDataStatus([FromQuery] int year)
         {
             var currentYear = DateTime.Now.Year;
-            if (year < 2024 || year >= 2026)
+            if (year < 2024 || year > currentYear)
             {
                 return new AnnualAQDataStatusResult
                 {
@@ -529,7 +529,7 @@ namespace educlient.Controllers
         public AQAnnualDataResult GetAnnualAQData([FromQuery] int year)
         {
             var currentYear = DateTime.Now.Year;
-            if (year < 2024 || year >= 2026)
+            if (year < 2024 || year > currentYear)
             {
                 return new AQAnnualDataResult
                 {
