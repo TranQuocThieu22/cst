@@ -792,6 +792,74 @@ namespace educlient.Controllers
                 data = absenceQuota
             };
         }
+
+        [HttpGet, Route("SL_HopDongSapHetHan")]
+        public CountNearExpiredContract GetCountNearExpiredContract()
+        {
+            DateTime today = DateTime.Today;
+            DateTime thirtyDaysFromNow = today.AddDays(30);
+            var AQMemberTable = database.Table<AQMember>();
+
+            var memberList = AQMemberTable.Query().Where(
+                x => x.isActive == true &&
+                x.detailContract.contractExpireDate >= today && x.detailContract.contractExpireDate <= thirtyDaysFromNow
+                ).ToList();
+
+            return new CountNearExpiredContract
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = memberList.Count
+            };
+
+        }
+
+        [HttpGet, Route("HopDongSapHetHan")]
+        public AQMembersResult GetListNearExpiredContract()
+        {
+            DateTime today = DateTime.Today;
+            DateTime thirtyDaysFromNow = today.AddDays(31);
+            var AQMemberTable = database.Table<AQMember>();
+
+            var memberList = AQMemberTable.Query().Where(
+                x => x.isActive == true &&
+                x.detailContract.contractExpireDate >= today && x.detailContract.contractExpireDate <= thirtyDaysFromNow
+                ).ToList();
+
+            var memberReturnList = memberList.Select(member => new AQMemberDTO
+            {
+                id = member.id,
+                TFSName = member.TFSName,
+                fullName = member.fullName,
+                email = member.email,
+                phone = member.phone,
+                avatar = member.avatar != null ? $"data:image/png;base64,{Convert.ToBase64String(member.avatar)}" : null,
+                birthDate = member.birthDate,
+                startDate = member.startDate,
+                nickName = member.nickName,
+                role = member.role,
+                isLeader = member.isLeader,
+                isLunchStatus = member.isLunchStatus,
+                detailLunch = member.detailLunch,
+                detailWFHQuota = member.detailWFHQuota,
+                detailAbsenceQuota = member.detailAbsenceQuota,
+                isActive = member.isActive,
+                maSoCCCD = member.MaSoCCCD,
+                address = member.address,
+                workingYear = member.workingYear,
+                detailContract = member.detailContract
+            }).ToList();
+
+
+            return new AQMembersResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = memberReturnList
+            };
+        }
     }
 
 
@@ -943,6 +1011,11 @@ namespace educlient.Controllers
     public class AQAnnualDataResult : ApiResultBaseDO
     {
         public AQAnnualData data { get; set; }
+    }
+
+    public class CountNearExpiredContract : ApiResultBaseDO
+    {
+        public int data { get; set; }
     }
 
     public class AQAnnualData

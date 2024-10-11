@@ -17,9 +17,10 @@
 
           <p-button
             *ngIf="checkIsHR()"
-            label="Hợp đồng hết hạn" icon="pi pi-users"
+            label="Hợp đồng sắp hết hạn" icon="pi pi-users"
             styleClass="p-button-outlined p-button-warning py-2 mr-2"
-            badge="8" badgeClass="p-badge-danger">
+            badge="{{totalNearExpiredContract}}" badgeClass="p-badge-danger"
+            (click)="fetchListNearExpiredContract()">
           </p-button>
 
           <button

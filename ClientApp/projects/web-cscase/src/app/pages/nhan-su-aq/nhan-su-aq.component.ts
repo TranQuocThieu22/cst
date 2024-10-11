@@ -31,6 +31,8 @@ import {
 export class NhanSuAqComponent implements OnInit {
   AQmembers: AQMember[];
 
+  totalNearExpiredContract: number = 0;
+
   selectedYearInput: any;
   AQAnnualDataStatus: any = null;
   selectedYearInputCardView: any;
@@ -103,6 +105,7 @@ export class NhanSuAqComponent implements OnInit {
     this.constructor;
     this.primengConfig.ripple = true;
     this.fetchAQMemberData();
+    this.fetchCountNearExpiredContract()
   }
 
   checkIsLeader() {
@@ -133,33 +136,57 @@ export class NhanSuAqComponent implements OnInit {
     if (this.aqmemberUpdate) this.aqmemberUpdate.avatar = null;
   }
 
-  fetchAQMemberData() {
-    this.https.get<any>("/api/ThongTinCaNhan").subscribe({
-      next: (res: any) => {
-        this.AQmembers = res.data;
-        this.AQmembers.forEach((member) => { });
+  fetchAQMemberData(filterNearExpiredContract?: boolean) {
+    if (filterNearExpiredContract) {
+      this.https.get<any>("/api/ThongTinCaNhan/HopDongSapHetHan").subscribe({
+        next: (res: any) => {
+          this.AQmembers = res.data;
+          this.AQmembers.forEach((member) => { });
+          this.sortInitData();
+        },
+        error: (error) => {
+          console.log(error);
+          // Your logic for handling errors
+        },
+        complete: () => {
+          // Your logic for handling the completion event (optional)
+          this.AQRoles.forEach((role) => {
+            role.total = this.AQmembers.filter(
+              (member) => member.role === role.code
+            ).length;
+          });
+          this.fetchDataPC2();
+        },
+      });
+    }
+    else {
+      this.https.get<any>("/api/ThongTinCaNhan").subscribe({
+        next: (res: any) => {
+          this.AQmembers = res.data;
+          this.AQmembers.forEach((member) => { });
+          this.sortInitData();
+        },
+        error: (error) => {
+          console.log(error);
+          // Your logic for handling errors
+        },
+        complete: () => {
+          // Your logic for handling the completion event (optional)
+          this.AQRoles.forEach((role) => {
+            role.total = this.AQmembers.filter(
+              (member) => member.role === role.code
+            ).length;
+          });
+          this.fetchDataPC2();
+        },
+      });
+    }
+  }
 
-        this.sortInitData();
-        // this.AQmembers.forEach(member => {
-        //   if (member.detailContract === null) {
-        //     member.detailContract = {
-        //       contractStartDate: new Date(),
-        //       contractExpireDate: new Date(),
-        //       contractDuration: 1
-        //     }
-        //   }
-        //   if (member.detailLunch === null) {
-        //     member.detailLunch = [{
-        //       year: new Date().getFullYear(),
-        //       lunchByMonth: [{
-        //         month: new Date().getMonth() + 1,
-        //         isLunch: false,
-        //         lunchFee: 0,
-        //         note: ""
-        //       }]
-        //     }]
-        //   }
-        // });
+  fetchCountNearExpiredContract() {
+    this.https.get<any>("/api/ThongTinCaNhan/SL_HopDongSapHetHan").subscribe({
+      next: (res: any) => {
+        this.totalNearExpiredContract = res.data;
       },
       error: (error) => {
         console.log(error);
@@ -167,14 +194,12 @@ export class NhanSuAqComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.AQRoles.forEach((role) => {
-          role.total = this.AQmembers.filter(
-            (member) => member.role === role.code
-          ).length;
-        });
-        this.fetchDataPC2();
       },
     });
+  }
+
+  fetchListNearExpiredContract() {
+    this.fetchAQMemberData(true);
   }
 
   fetchDataPC2() {
@@ -414,6 +439,7 @@ export class NhanSuAqComponent implements OnInit {
   clear(table: Table) {
     table.clear();
     this.fetchAQMemberData();
+    this.fetchCountNearExpiredContract();
   }
   exportToExcel() {
     const workbook = new ExcelJS.Workbook();
