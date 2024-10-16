@@ -882,7 +882,16 @@
                       </ng-template>
                     </p-cellEditor>
                   </td>
-                  <td class="text-center">{{member.lunchPayment}}</td>
+                  <td class="text-center">
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <input pInputText type="number" [(ngModel)]="member.lunchPayment" required>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{member.lunchPayment}}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
                   <td>
                     <div class="flex align-items-center justify-content-center gap-2">
                       <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
