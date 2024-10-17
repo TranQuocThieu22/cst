@@ -26,6 +26,7 @@
     <PackageReference Include="MongoDB.Bson" Version="2.21.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.DirectoryServices" Version="5.0.0" />
   </ItemGroup>
