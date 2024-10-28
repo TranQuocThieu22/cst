@@ -957,10 +957,23 @@ namespace educlient.Controllers
     }
 
     public class detailInput
-    {        public int userId { get; set; }        public int year { get; set; }        public int data { get; set; }    }
-    public class detailAbsenceQuotaDO : ApiResultBaseDO    {        public actualAbsenceQuotaByYear data { get; set; }    }
-    public class detailWFHQuotaDO : ApiResultBaseDO    {        public actualWFHQuotaByYear data { get; set; }    }
-    public class detailLunchDataDO : ApiResultBaseDO    {        public detailLunch data { get; set; }    }
+    {
+        public int userId { get; set; }
+        public int year { get; set; }
+        public int data { get; set; }
+    }
+    public class detailAbsenceQuotaDO : ApiResultBaseDO
+    {
+        public actualAbsenceQuotaByYear data { get; set; }
+    }
+    public class detailWFHQuotaDO : ApiResultBaseDO
+    {
+        public actualWFHQuotaByYear data { get; set; }
+    }
+    public class detailLunchDataDO : ApiResultBaseDO
+    {
+        public detailLunch data { get; set; }
+    }
     public class AQMembersResult : ApiResultBaseDO
     {
         public List<AQMemberDTO> data { get; set; }
@@ -1156,4 +1169,3 @@ namespace educlient.Controllers
     }
 
 
-}
