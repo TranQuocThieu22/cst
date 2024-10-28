@@ -1,17 +1,11 @@
 ﻿using educlient.Data;
-using educlient.Models;
 using LiteDB;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
-using System.Net;
-using System.Net.Mail;
 using System.Security.Cryptography;
+using System.Text;
 
 
 namespace educlient.Controllers
@@ -446,9 +440,111 @@ namespace educlient.Controllers
             };
 
         }
+        [HttpPut, Route("detailWFHQuotaByYear/update")]
+        public detailWFHQuotaDO GetdetailWFHQuotaByYear(detailInput data)
+        {
+            var AQMemberTable = database.Table<AQMember>();
+            var aqmember = AQMemberTable.FindById(data.userId);
+
+
+            aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault().WFHQuota = data.data;
+            AQMemberTable.Update(aqmember);
+            return new detailWFHQuotaDO
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault()
+            };
+        }
+
+        [HttpGet, Route("detailWFHQuotaByYear")]
+        public detailWFHQuotaDO GetdetailWFHQuotaByYear([FromQuery] int userId, [FromQuery] int year)
+        {
+            var AQMemberTable = database.Table<AQMember>();
+            var aqmember = AQMemberTable.FindById(userId);
+
+            var detailLunch = aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(x => x.year == year);
+            return new detailWFHQuotaDO
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = detailLunch
+            };
+        }
+        [HttpPut, Route("detailAbsenceQuotaByYear/update")]
+        public detailAbsenceQuotaDO GetdetailAbsenceQuotaByYear(detailInput data)
+        {
+            var AQMemberTable = database.Table<AQMember>();
+            var aqmember = AQMemberTable.FindById(data.userId);
+
+
+
+            aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault().absenceQuota = data.data;
+            AQMemberTable.Update(aqmember);
+            return new detailAbsenceQuotaDO
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault()
+            };
+        }
+        [HttpGet, Route("detailAbsenceQuotaByYear")]
+        public detailAbsenceQuotaDO GetdetailAbsenceQuotaByYear([FromQuery] int userId, [FromQuery] int year)
+        {
+            var AQMemberTable = database.Table<AQMember>();
+            var aqmember = AQMemberTable.FindById(userId);
+
+            var detailLunch = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
+            return new detailAbsenceQuotaDO
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = detailLunch
+            };
+        }
+        //[HttpPut, Route("DetailLunch/update")]
+        //public detailLunchDataDO GetDetailLunch(detailInput data)
+        //{
+        //    var AQMemberTable = database.Table<AQMember>();
+        //    var aqmember = AQMemberTable.FindById(data.userId);
+        //    aqmember.detailLunch.FirstOrDefault().year = data.data;
+        //    AQMemberTable.Update(aqmember);
+
+        //    return new detailLunchDataDO
+        //    {
+        //        message = "Success",
+        //        code = 200,
+        //        result = true,
+        //        data = aqmember.detailLunch.FirstOrDefault()
+        //    };
+        //}
+        [HttpGet, Route("DetailLunch")]
+        public detailLunchDataDO GetDetailLunch([FromQuery] int userId, [FromQuery] int year)
+        {
+            var AQMemberTable = database.Table<AQMember>();
+            var aqmember = AQMemberTable.FindById(userId);
+
+            var detailLunch = aqmember.detailLunch.FirstOrDefault(x => x.year == year);
+            return new detailLunchDataDO
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = detailLunch
+            };
+        }
+
     }
 
-
+    public class detailInput
+    {        public int userId { get; set; }        public int year { get; set; }        public int data { get; set; }    }
+    public class detailAbsenceQuotaDO : ApiResultBaseDO    {        public actualAbsenceQuotaByYear data { get; set; }    }
+    public class detailWFHQuotaDO : ApiResultBaseDO    {        public actualWFHQuotaByYear data { get; set; }    }
+    public class detailLunchDataDO : ApiResultBaseDO    {        public detailLunch data { get; set; }    }
     public class AQMembersResult : ApiResultBaseDO
     {
         public List<AQMemberDTO> data { get; set; }

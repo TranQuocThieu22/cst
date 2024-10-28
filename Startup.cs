@@ -55,7 +55,7 @@ namespace educlient
             services.AddSingleton<ITFSAccountService, TFSAccountService>();
             services.AddSingleton<IKetQuaLamViecCaNhan, KetQuaLamViecCaNhan>();
             services.AddSingleton<IBaoCaoTheoChuKyService, BaoCaoTheoChuKyService>();
-            services.AddSwaggerGen();
+            //services.AddSwaggerGen();
         }
 
 
@@ -66,8 +66,8 @@ namespace educlient
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                //app.UseSwagger();
+                //app.UseSwaggerUI();
                 //app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
                 //{
                 //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
