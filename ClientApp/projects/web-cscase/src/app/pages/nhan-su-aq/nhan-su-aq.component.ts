@@ -31,11 +31,15 @@ import {
 export class NhanSuAqComponent implements OnInit {
   AQmembers: AQMember[];
 
+  totalNearExpiredContract: number = 0;
+
+  selectedYearInput: any;
+  AQAnnualDataStatus: any = null;
+  selectedYearInputCardView: any;
+  AQAnnualDataStatusCardView: any = null;
+  AQAnnualData: any = [];
+
   detailContractInsert: detailContract = {
-    // contractStartDate: new Date(new Date().setHours(0, 0, 0, 0)),
-    // contractExpireDate: new Date(new Date().setHours(0, 0, 0, 0)),
-    // contractStartDate: new Date(),
-    // contractExpireDate: new Date(),
     contractDuration: 1,
     contractType: "",
   };
@@ -44,14 +48,26 @@ export class NhanSuAqComponent implements OnInit {
     detailContract: this.detailContractInsert,
   };
 
-  detailContractUpdate: detailContract;
+  aqmemberUpdate: AQMemberUpdateDO = {
+    detailWFHQuota: {},
+    detailAbsenceQuota: {},
+    detailLunch: [],
+    detailContract: {},
+  };
 
-  aqmemberUpdate: AQMemberUpdateDO;
+  isValidUpdateFormData: boolean = true;
+
+  clonedAbsenceQuotas: { [s: string]: any; } = {};
+  cloneAnnualDataLists: { [s: string]: any; } = {};
 
   addNewMemberDialog: boolean;
   editMemberDialog: boolean;
   deleteMemberDialog: boolean;
   openDialog: boolean;
+  changeYearDialog: boolean;
+  updateAnnualDialog: boolean;
+
+  disableAutoUpdate: boolean = false;
 
   dt_filter: any;
   AQRoles: AQRole[];
@@ -89,11 +105,17 @@ export class NhanSuAqComponent implements OnInit {
     this.constructor;
     this.primengConfig.ripple = true;
     this.fetchAQMemberData();
+    this.fetchCountNearExpiredContract()
   }
 
   checkIsLeader() {
     let user = sessionStorage.getItem("current-user");
     return JSON.parse(user).isLeader;
+  }
+
+  checkIsHR() {
+    let user = sessionStorage.getItem("current-user");
+    return JSON.parse(user).role === "4" || JSON.parse(user).role === "admin";
   }
 
   handleUploadAvatar(event) {
@@ -114,33 +136,57 @@ export class NhanSuAqComponent implements OnInit {
     if (this.aqmemberUpdate) this.aqmemberUpdate.avatar = null;
   }
 
-  fetchAQMemberData() {
-    this.https.get<any>("/api/ThongTinCaNhan").subscribe({
-      next: (res: any) => {
-        this.AQmembers = res.data;
-        this.AQmembers.forEach((member) => { });
+  fetchAQMemberData(filterNearExpiredContract?: boolean) {
+    if (filterNearExpiredContract) {
+      this.https.get<any>("/api/ThongTinCaNhan/HopDongSapHetHan").subscribe({
+        next: (res: any) => {
+          this.AQmembers = res.data;
+          this.AQmembers.forEach((member) => { });
+          this.sortInitData();
+        },
+        error: (error) => {
+          console.log(error);
+          // Your logic for handling errors
+        },
+        complete: () => {
+          // Your logic for handling the completion event (optional)
+          this.AQRoles.forEach((role) => {
+            role.total = this.AQmembers.filter(
+              (member) => member.role === role.code
+            ).length;
+          });
+          this.fetchDataPC2();
+        },
+      });
+    }
+    else {
+      this.https.get<any>("/api/ThongTinCaNhan").subscribe({
+        next: (res: any) => {
+          this.AQmembers = res.data;
+          this.AQmembers.forEach((member) => { });
+          this.sortInitData();
+        },
+        error: (error) => {
+          console.log(error);
+          // Your logic for handling errors
+        },
+        complete: () => {
+          // Your logic for handling the completion event (optional)
+          this.AQRoles.forEach((role) => {
+            role.total = this.AQmembers.filter(
+              (member) => member.role === role.code
+            ).length;
+          });
+          this.fetchDataPC2();
+        },
+      });
+    }
+  }
 
-        this.sortInitData();
-        // this.AQmembers.forEach(member => {
-        //   if (member.detailContract === null) {
-        //     member.detailContract = {
-        //       contractStartDate: new Date(),
-        //       contractExpireDate: new Date(),
-        //       contractDuration: 1
-        //     }
-        //   }
-        //   if (member.detailLunch === null) {
-        //     member.detailLunch = [{
-        //       year: new Date().getFullYear(),
-        //       lunchByMonth: [{
-        //         month: new Date().getMonth() + 1,
-        //         isLunch: false,
-        //         lunchFee: 0,
-        //         note: ""
-        //       }]
-        //     }]
-        //   }
-        // });
+  fetchCountNearExpiredContract() {
+    this.https.get<any>("/api/ThongTinCaNhan/SL_HopDongSapHetHan").subscribe({
+      next: (res: any) => {
+        this.totalNearExpiredContract = res.data;
       },
       error: (error) => {
         console.log(error);
@@ -148,14 +194,12 @@ export class NhanSuAqComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.AQRoles.forEach((role) => {
-          role.total = this.AQmembers.filter(
-            (member) => member.role === role.code
-          ).length;
-        });
-        this.fetchDataPC2();
       },
     });
+  }
+
+  fetchListNearExpiredContract() {
+    this.fetchAQMemberData(true);
   }
 
   fetchDataPC2() {
@@ -229,8 +273,6 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   openAddDialog() {
-    console.log(this.aqmemberInsert);
-
     this.aqmemberInsert = {
       detailContract: this.detailContractInsert,
     };
@@ -292,6 +334,8 @@ export class NhanSuAqComponent implements OnInit {
     this.openDialog = false;
     this.editMemberDialog = false;
     this.addNewMemberDialog = false;
+    this.updateAnnualDialog = false;
+    this.disableAutoUpdate = false;
   }
 
   addNewMember() {
@@ -305,7 +349,6 @@ export class NhanSuAqComponent implements OnInit {
 
     this.https.post<any>("/api/ThongTinCaNhan", aqmemberArray).subscribe({
       next: (res: any) => {
-        console.log(res);
         this.AQmembers.push(res.data[0]);
       },
       error: (error) => {
@@ -326,8 +369,6 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   updateMember() {
-    console.log("before: ", this.AQmembers);
-
     this.https
       .put<any>(
         "/api/ThongTinCaNhan/" + this.aqmemberUpdate.id,
@@ -371,7 +412,6 @@ export class NhanSuAqComponent implements OnInit {
           .delete<any>("/api/ThongTinCaNhan/" + data.id, data)
           .subscribe({
             next: (res: any) => {
-              // console.log(res);
               this.AQmembers = this.AQmembers.filter(
                 (val) => val.id !== data.id
               );
@@ -399,6 +439,7 @@ export class NhanSuAqComponent implements OnInit {
   clear(table: Table) {
     table.clear();
     this.fetchAQMemberData();
+    this.fetchCountNearExpiredContract();
   }
   exportToExcel() {
     const workbook = new ExcelJS.Workbook();
@@ -567,7 +608,6 @@ export class NhanSuAqComponent implements OnInit {
     });
     this.https.post<any>("/api/ThongTinCaNhan", req).subscribe({
       next: (res: any) => {
-        console.log(res);
         this.fetchAQMemberData();
 
       },
@@ -598,6 +638,140 @@ export class NhanSuAqComponent implements OnInit {
     return localISOString;
   }
 
+
+  onRowEditInit(absenceQuota: any) {
+    this.clonedAbsenceQuotas[absenceQuota.id] = { ...absenceQuota };
+  }
+
+  onRowEditSave(absenceQuota: any) {
+    if (absenceQuota.absenceQuota >= 0) {
+      delete this.clonedAbsenceQuotas[absenceQuota.id];
+      this.isValidUpdateFormData = true;
+    }
+    else {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Dữ liệu không phù hợp' });
+      this.isValidUpdateFormData = false;
+    }
+  }
+
+  onRowEditCancel(absenceQuota: any, index: number) {
+    this.aqmemberUpdate.detailAbsenceQuota.actualAbsenceQuotaByYear[index] = this.clonedAbsenceQuotas[absenceQuota.id];
+    delete this.clonedAbsenceQuotas[absenceQuota.id];
+  }
+
+
+  openUpdateAnnualDialog() {
+    this.updateAnnualDialog = true;
+    this.selectedYearInput = new Date();
+    this.selectedYearInput.setHours(0, 0, 0, 0);
+    this.selectedYearInputCardView = this.selectedYearInput;
+    this.handleFetchAQDataStatus(true);
+    this.handleFetchAQAnnualData(true);
+  }
+
+  updateAnnualDataAuto() {
+    this.AQAnnualData.forEach((item: any) => {
+      item.workingYear += 1;
+      item.absenceQuotaBaseCurrent = item.absenceQuotaBase + Math.floor(item.workingYear / 5);
+      item.wfhQuotaBaseCurrent = item.wfhQuotaBase + Math.floor(item.workingYear / 5);
+    });
+    this.disableAutoUpdate = true;
+  }
+
+  submitAnnualData() {
+    let inputData = {
+      year: this.selectedYearInput.getFullYear(),
+      numberOfSetup: this.AQAnnualDataStatus.numberOfSetup,
+      memberAnnualDataList: this.AQAnnualData,
+    }
+    this.https.patch<any>("/api/ThongTinCaNhan/AnnualAQData", inputData).subscribe({
+      next: (res: any) => {
+
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.handleFetchAQDataStatus();
+        this.handleFetchAQAnnualData();
+      },
+    });
+  }
+
+  handleFetchAQDataStatus(isInit?: boolean) {
+    const params = {
+      year: this.selectedYearInput.getFullYear(),
+    };
+
+    this.https.get<any>("/api/ThongTinCaNhan/AnnualAQDataStatus", { params: params }).subscribe({
+      next: (res: any) => {
+        if (res.data === null) {
+          this.AQAnnualDataStatus = null;
+          return;
+        }
+        this.AQAnnualDataStatus = res.data
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.selectedYearInputCardView = this.selectedYearInput;
+        this.AQAnnualDataStatusCardView = this.AQAnnualDataStatus;
+      },
+    });
+
+  }
+
+  handleFetchAQAnnualData(isInit?: boolean) {
+    const params = {
+      year: this.selectedYearInput.getFullYear(),
+    };
+    this.https.get<any>("/api/ThongTinCaNhan/AnnualAQData", { params: params }).subscribe({
+      next: (res: any) => {
+        if (res.data === null) {
+          this.AQAnnualData = [];
+          return;
+        }
+        this.AQAnnualData = res.data.memberAnnualDataList
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      },
+    });
+
+    this.changeYearDialog = false;
+  }
+
+  showChangeYearDialog() {
+    this.changeYearDialog = true;
+  }
+
+  onRowEditAnnualDataInit(annualMemberData: any) {
+    this.cloneAnnualDataLists[annualMemberData.id] = { ...annualMemberData };
+  }
+
+  onRowEditAnnualDataSave(annualMemberData: any) {
+    // if (annualMemberData.price > 0) {
+    delete this.cloneAnnualDataLists[annualMemberData.id];
+    // }  
+    // else {
+    //     this.messageService.add({severity:'error', summary: 'Error', detail:'Invalid Price'});
+    // }
+  }
+
+  onRowEditAnnualDataCancel(annualMemberData: any, index: number) {
+    this.cloneAnnualDataLists[index] = this.cloneAnnualDataLists[annualMemberData.id];
+    delete this.cloneAnnualDataLists[annualMemberData.id];
+  }
+
   convertStringToBoolean(value: string): boolean {
     // Check if the value is "có" for true, "không" for false, or keep it as it is (if valid boolean)
     return value.trim().toLowerCase() === 'có' ? true : value.trim().toLowerCase() === 'không' ? false : Boolean(value);
@@ -605,6 +779,8 @@ export class NhanSuAqComponent implements OnInit {
   convertBooleanToString(value: boolean): string {
     return value ? 'có' : 'không';
   }
+
+
 }
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
@@ -614,3 +790,5 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const b = bigint & 255;
   return { r, g, b };
 }
+
+

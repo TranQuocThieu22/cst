@@ -39,7 +39,9 @@ export class NgayPhepCaNhanComponent implements OnInit {
       nickName: ''
     },
     isAnnual: false,
+    totalIsAnnual: 0,
     isWithoutPay: false,
+    totalIsWithoutPay: 0,
     approvalStatus: 'Chưa duyệt',
     reason: '',
     note: ''
@@ -62,6 +64,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
   addNewIndividualDayOffDialog: boolean;
 
   userInfo: any = {};
+
+  ThongTinNghiPhepCaNhan: any = [];
 
   constructor(
     private https: HttpClient,
@@ -132,6 +136,18 @@ export class NgayPhepCaNhanComponent implements OnInit {
       }
     }
     this.IndividualDayOff.sumDay = diffDays;
+    this.handleHalfDay();
+  }
+
+  handleHalfDay() {
+    if (this.IndividualDayOff.sumDay && !Number.isInteger(this.IndividualDayOff.sumDay)) {
+      this.IndividualDayOff.numberOfDay_whole = Math.floor(this.IndividualDayOff.sumDay);
+      this.IndividualDayOff.numberOfDay_half = 1;
+    }
+    else {
+      this.IndividualDayOff.numberOfDay_whole = this.IndividualDayOff.sumDay;
+      this.IndividualDayOff.numberOfDay_half = 0;
+    }
   }
 
   validateInputDates() {
@@ -167,16 +183,26 @@ export class NgayPhepCaNhanComponent implements OnInit {
   openViewDialog(data: any) {
     this.viewIndividualDayOffDialog = true;
     this.IndividualDayOff = { ...data };
-    console.log(this.IndividualDayOff);
-
   }
 
   openAddDialog() {
+    if (this.userInfo) {
+      if (Object.keys(this.userInfo).length !== 0) {
+        this.fetchIndividualAbsenceQuota(this.userInfo.id)
+        this.IndividualDayOff.member.id = this.userInfo.id;
+      }
+    }
     this.isValidDateRange = true;
     this.fetchMemberListData();
     this.IndividualDayOff = {
       ...this.IndividualDayOffInitState
     };
+    this.IndividualDayOff.member = {
+      id: 0,
+      fullName: '',
+      nickName: ''
+    };
+    this.ThongTinNghiPhepCaNhan = [];
     this.resetCalendarSelection();
     this.sumDay();
     this.editIndividualDayOffDialog = false;
@@ -185,6 +211,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   openEditDialog(data: any) {
+    this.fetchIndividualAbsenceQuota(data.member.id);
     this.isValidDateRange = true;
     this.IndividualDayOff = {};
     this.IndividualDayOff = { ...data };
@@ -232,6 +259,30 @@ export class NgayPhepCaNhanComponent implements OnInit {
       dateB.setHours(0, 0, 0, 0);
       return dateB.getTime() - dateA.getTime();
     });
+  }
+
+  fetchIndividualAbsenceQuota(userId: number) {
+    if (userId === null) {
+      this.ThongTinNghiPhepCaNhan = [];
+      return;
+    }
+    let currentYear = new Date().getFullYear();
+    let params: any = {
+      query_memberId: userId,
+      year: currentYear
+    };
+    this.https.get<any>("/api/NgayPhepCaNhan/HanMucNghiPhepCaNhan", { params: params }).subscribe({
+      next: (res: any) => {
+        this.ThongTinNghiPhepCaNhan = res.data;
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      }
+    })
   }
 
 
@@ -368,7 +419,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   updateIndividualDayOff() {
     let IndividualDayOffData: any = structuredClone(this.IndividualDayOff);
-
+    let updateItemId = this.IndividualDayOff.id;
     let user = JSON.parse(sessionStorage.getItem('current-user'));
 
     if (!user.isLeader) {
@@ -386,6 +437,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
     this.https.put<any>("/api/NgayPhepCaNhan/" + this.IndividualDayOff.id, IndividualDayOffData).subscribe({
       next: (res: any) => {
         //todo
+
       },
       error: (error) => {
         console.log(error);
@@ -393,10 +445,36 @@ export class NgayPhepCaNhanComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.fetchIndividualDayOffsData();
+        this.fetchDayOffById(updateItemId)
       }
     });
     this.hideDialog();
+  }
+
+  fetchDayOffById(id: number) {
+    this.https.get<any>(`/api/NgayPhepCaNhan/${id}`).subscribe({
+      next: (res: any) => {
+        const index = this.IndividualDayOffs.findIndex(item => item.id === id);
+        const member = this.MemberList.find((m: Member) => m.id === res.data[0].memberId);
+        res.data[0].member = {
+          id: member.id,
+          fullName: member.fullName,
+          nickName: member.nickName
+        };
+        delete res.data[0].memberId;
+
+        const updatedIndividualDayOffs = [...this.IndividualDayOffs];
+        updatedIndividualDayOffs[index] = structuredClone(res.data[0]);
+        this.IndividualDayOffs = updatedIndividualDayOffs;
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      }
+    });
   }
 
   deleteIndividualDayOff(event: Event, data: any) {
@@ -451,7 +529,10 @@ export class NgayPhepCaNhanComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        this.fetchIndividualDayOffsData();
+        const record = this.IndividualDayOffs.find((item) => item.id === id);
+        if (record) {
+          record.approvalStatus = approvalStatus;
+        }
       }
     });
 
@@ -520,8 +601,6 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   importFromExcel(excelData: any) {
-    console.log(this.IndividualDayOffs);
-
     // Assuming the first row of the excelData is the header
     const headers = excelData[0]; // Get the headers from the first row
     const ngayPheps: any[] = []; // Array to hold the transformed AQMember objects
@@ -549,7 +628,6 @@ export class NgayPhepCaNhanComponent implements OnInit {
         ngayPheps.push(ngayPhep);
       }
     }
-    console.log(ngayPheps);
 
     this.addImportNgayPhep(ngayPheps);
   }
@@ -569,6 +647,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
       reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
     }
   }
+
   addImportNgayPhep(ngayPheps: any) {
     const req = []
     ngayPheps.forEach(ngayphep => {
@@ -591,7 +670,6 @@ export class NgayPhepCaNhanComponent implements OnInit {
     });
     this.https.post<any>("/api/NgayPhepCaNhan", req).subscribe({
       next: (res: any) => {
-        console.log(res);
         this.fetchIndividualDayOffsData();
 
       },

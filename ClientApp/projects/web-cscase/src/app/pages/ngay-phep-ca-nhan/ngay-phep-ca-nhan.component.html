@@ -233,31 +233,84 @@
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày bắt đầu</label>
                 <p-calendar [(ngModel)]="IndividualDayOff.dateFrom" [showIcon]="true" inputId="icon"
-                    dateFormat="dd/mm/yy" (ngModelChange)="sumDay()">
+                    dateFormat="dd/mm/yy" (ngModelChange)="sumDay();">
                 </p-calendar>
             </div>
-
             <div class="field col-12 md:col-4">
                 <label for="icon">Ngày kết thúc</label>
-                <p-calendar [(ngModel)]="IndividualDayOff.dateTo" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy"
-                    (ngModelChange)="sumDay()">
+                <p-calendar [(ngModel)]="IndividualDayOff.dateTo" [showIcon]="true" inputId="icon"
+                    dateFormat="dd/mm/yy"
+                    (ngModelChange)="sumDay();">
                 </p-calendar>
             </div>
-
-
-            <div class="field col-5 md:col-4">
-                <label for="sumDay">Số lượng ngày nghỉ</label>
-                <input type="number" step="0.5" pInputText id="sumDay" required [(ngModel)]="IndividualDayOff.sumDay" />
+            <div class="field col-12 md:col-4">
+                <label for="sumDay">Tổng số lượng ngày nghỉ</label>
+                <input type="number" step="0.5" pInputText id="sumDay"
+                    required
+                    [(ngModel)]="IndividualDayOff.sumDay"
+                    (ngModelChange)="handleHalfDay()" />
             </div>
 
             <div *ngIf="!isValidDateRange" class="field col-12" style="color: red;">
                 *khoảng thời gian không hợp lệ
             </div>
 
-            <div class="field col-12">
+            <div class="field col-12 md:col-6">
+                <label for="numberOfDay_whole">Số lượng ngày nghỉ (trọn ngày)</label>
+                <input type="number" step="1" pInputText
+                    id="numberOfDay_whole" required [(ngModel)]="IndividualDayOff.numberOfDay_whole" />
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label for="numberOfDay_half">Số lượng ngày nghỉ (nửa ngày)</label>
+                <input type="number" step="1" pInputText
+                    id="numberOfDay_half" required [(ngModel)]="IndividualDayOff.numberOfDay_half" />
+            </div>
+
+            <div class="col-12 md:col-6">
+                <label for="isAnnual">Tính vào nghỉ phép năm</label>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <p-checkbox
+                            [(ngModel)]="IndividualDayOff.isAnnual"
+                            binary="true"
+                            inputId="isAnnual">
+                        </p-checkbox>
+                    </span>
+                    <input
+                        type="number" step="1"
+                        pInputText
+                        [(ngModel)]="IndividualDayOff.totalIsAnnual"
+                        placeholder=" số lượng ngày">
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <label for="isWithoutPay">Nghỉ không lương</label>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <p-checkbox
+                            [(ngModel)]="IndividualDayOff.isWithoutPay"
+                            binary="true"
+                            inputId="isWithoutPay">
+                        </p-checkbox>
+                    </span>
+                    <input
+                        type="number" step="1"
+                        pInputText
+                        [(ngModel)]="IndividualDayOff.totalIsWithoutPay"
+                        placeholder=" số lượng ngày">
+                </div>
+            </div>
+
+
+            <div class="field col-12 mt-3">
                 <label *ngIf="checkIsLeader()" for="memberId">Họ tên nhân viên
                 </label>
-                <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="IndividualDayOff.member.id"
+                <p-dropdown *ngIf="checkIsLeader()"
+                    [options]="MemberList"
+                    [(ngModel)]="IndividualDayOff.member.id"
+                    (onChange)="fetchIndividualAbsenceQuota(IndividualDayOff.member.id)"
                     optionLabel="fullName" [filter]="true" filterBy="fullName" [showClear]="true"
                     placeholder="Chọn nhân viên" optionValue="id">
                 </p-dropdown>
@@ -265,18 +318,75 @@
             <div *ngIf="checkIsLeader()" class="mt-2">
             </div>
 
-            <div class="p-field-checkbox flex flex-row col-12 sm:col-5 md:col-4">
-                <p-checkbox class="pb-2 mr-2" [(ngModel)]="IndividualDayOff.isAnnual" binary="true" inputId="isAnnual">
-                </p-checkbox>
-                <label for="isAnnual">Tính vào nghỉ phép năm</label>
+            <div *ngIf="ThongTinNghiPhepCaNhan.length > 0" class="field col-12">
+                <div class="flex flex-column">
+                    <span class="">Hạn mức nghỉ phép cá nhân {{ThongTinNghiPhepCaNhan[0].year}}</span>
+                    <div class="flex justify-content-center mt-2">
+                        <p-table [value]="ThongTinNghiPhepCaNhan" styleClass="p-datatable-sm p-datatable-gridlines">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="white-space: wrap; width:20%" class="text-center">Hạn mức nghỉ phép</th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">Tổng ngày đã nghỉ</th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">
+                                        Tổng ngày đã nghỉ có phép
+                                    </th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">
+                                        Tổng ngày đã nghỉ không phép
+                                    </th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">Hạn mức còn lại</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-member>
+                                <tr>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].absenceQuota}}</td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].totalDayOff}}
+                                    </td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].totalDayOff_with_permission}}
+                                    </td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].totalDayOff_without_permission}}
+                                    </td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].absenceQuota_available}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
             </div>
 
-            <div class="p-field-checkbox flex flex-row col-12 sm:col-5 md:col-4">
-                <p-checkbox class="pb-2 mr-2" [(ngModel)]="IndividualDayOff.isWithoutPay" binary="true"
-                    inputId="isWithoutPay">
-                </p-checkbox>
-                <label for="isWithoutPay">Nghỉ không lương</label>
-            </div>
+            <ng-template #hanmuccanhan_elseblock>
+                <div class="flex flex-column">
+                    <span class="">Hạn mức nghỉ phép cá nhân {{ThongTinNghiPhepCaNhan[0].year}}</span>
+                    <div class="flex justify-content-center mt-2">
+                        <p-table [value]="ThongTinNghiPhepCaNhan" styleClass="p-datatable-sm p-datatable-gridlines">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="white-space: wrap; width:20%" class="text-center">Hạn mức nghỉ phép</th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">Tổng ngày đã nghỉ</th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">
+                                        Tổng ngày đã nghỉ có phép
+                                    </th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">
+                                        Tổng ngày đã nghỉ không phép
+                                    </th>
+                                    <th style="white-space: wrap; width:20%" class="text-center">Hạn mức còn lại</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-member>
+                                <tr>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].absenceQuota}}</td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].totalDayOff}}
+                                    </td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].totalDayOff_with_permission}}
+                                    </td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].totalDayOff_without_permission}}
+                                    </td>
+                                    <td class="text-center">{{ThongTinNghiPhepCaNhan[0].absenceQuota_available}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-template>
 
             <div class="field col-12 mt-2">
                 <label for="reason">Lí do nghỉ phép</label>
@@ -305,7 +415,9 @@
         <!-- icon="pi pi-times" -->
         <button pButton pRipple label="Quay lại" class="p-button-text" (click)="hideDialog()"></button>
         <!-- icon="pi pi-check"  -->
-        <button [disabled]="!isValidDateRange" pButton pRipple label="Tạo ngày nghỉ" class="p-button-text"
+        <button [disabled]="!isValidDateRange" pButton pRipple
+            [label]="editIndividualDayOffDialog ? 'Lưu chỉnh sửa' : 'Tạo ngày nghỉ'"
+            class="p-button-text"
             (click)="editIndividualDayOffDialog ? updateIndividualDayOff() : addNewIndividualDayOff()"></button>
     </ng-template>
 </p-dialog>
