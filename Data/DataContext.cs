@@ -200,9 +200,9 @@ namespace educlient.Data
         public int memberId { get; set; }
         public string reason { get; set; }
         public bool isAnnual { get; set; }
-        public int totalIsAnnual { get; set; }
+        public float totalIsAnnual { get; set; }
         public bool isWithoutPay { get; set; }
-        public int totalIsWithoutPay { get; set; }
+        public float totalIsWithoutPay { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }

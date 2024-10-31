@@ -98,7 +98,7 @@ namespace educlient.Controllers
             };
         }
 
-
+       
         [HttpGet, Route("{id}")]
         public IndividualDayOffResult GetById(int id)
         {
@@ -157,7 +157,59 @@ namespace educlient.Controllers
                 result = true
             };
         }
+        [HttpPut, Route("chuyenData")]
+        public object ApiFixData()
+        {
+            var individualDayOffTable = database.Table<IndividualDayOff>();
+            var dateList = individualDayOffTable.Query().Select(x => new
+            {
+                x.numberOfDay_half,
+                x.numberOfDay_whole,
+                x.sumDay,
+                x.totalIsAnnual,
+                x.totalIsWithoutPay,
+                x.isWithoutPay,
+                x.isAnnual,
+                x.id
+            }).ToList();
+            foreach (var item in dateList)
+            {
+                float totalAnnual = 0;
+                float totalIsWithoutPay = 0;
+                var numberOfDayHalf = 0;
+                if (item.sumDay % 1 != 0) // Check if sumDay is a float with a fractional part
+                {
+                    numberOfDayHalf += 1; // Increment numberOfDay_half by 1
+                }
 
+                if (item.isAnnual)
+                {
+                    totalAnnual = (float)item.sumDay;
+                }
+                else if(item.isWithoutPay){
+                    totalIsWithoutPay= (float)item.sumDay;
+                }
+                var numberOfDayTotal = (int)item.sumDay;
+              
+                var existingRecord = individualDayOffTable.FindById(item.id);
+                try
+                {
+                    existingRecord.numberOfDay_whole = numberOfDayTotal;
+                    existingRecord.numberOfDay_half = numberOfDayHalf;
+                    existingRecord.totalIsAnnual = totalAnnual;
+                    existingRecord.totalIsWithoutPay = totalIsWithoutPay;
+                    individualDayOffTable.Update(existingRecord);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+            Console.WriteLine("done");
+            return dateList;
+        }
+       
         [HttpPut, Route("{id}")]
         public DayOffUpdateDTO Update(int id, [FromBody] IndividualDayOffInput inputData)
         {
@@ -345,16 +397,17 @@ namespace educlient.Controllers
                     x.sumDay != 0
                     ).ToList();
 
-            var totalDayOff = 0;
-            var totalDayOff_with_permission = 0;
-            var totalDayOff_without_permission = 0;
+            float totalDayOff = 0;
+            float totalDayOff_with_permission = 0;
+            float totalDayOff_without_permission = 0;
             foreach (var dayOff in dayOffData)
             {
-                totalDayOff += (int)dayOff.numberOfDay_whole;
+                totalDayOff += dayOff.numberOfDay_whole;
+                totalDayOff += dayOff.numberOfDay_half * 0.5f;
 
                 if (dayOff.totalIsAnnual > 0)
                 {
-                    totalDayOff_with_permission += (int)dayOff.totalIsAnnual;
+                    totalDayOff_with_permission += dayOff.totalIsAnnual;
                 }
             }
 
@@ -404,9 +457,9 @@ namespace educlient.Controllers
             public int memberId { get; set; }
             public string reason { get; set; }
             public bool isAnnual { get; set; }
-            public int totalIsAnnual { get; set; }
+            public float totalIsAnnual { get; set; }
             public bool isWithoutPay { get; set; }
-            public int totalIsWithoutPay { get; set; }
+            public float totalIsWithoutPay { get; set; }
             public string approvalStatus { get; set; }
             public string note { get; set; }
         }
@@ -435,10 +488,10 @@ namespace educlient.Controllers
             public int memberId { get; set; }
             public int year { get; set; }
             public int absenceQuota { get; set; }
-            public int totalDayOff { get; set; }
-            public int totalDayOff_with_permission { get; set; }
-            public int totalDayOff_without_permission { get; set; }
-            public int absenceQuota_available { get; set; }
+            public float totalDayOff { get; set; }
+            public float totalDayOff_with_permission { get; set; }
+            public float totalDayOff_without_permission { get; set; }
+            public float absenceQuota_available { get; set; }
         }
 
         public class DayOffUpdateDTO : ApiResultBaseDO
