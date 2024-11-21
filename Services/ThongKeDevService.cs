@@ -105,7 +105,9 @@ namespace educlient.Services
                     'tiepnhandev <AQ\\tiepnhandev>',
                     'dien <AQ\\dien>',
                     'admin <AQ\\admin>',
-                    'root <AQ\\root>'
+                    'root <AQ\\root>',
+                    'thuan <AQ\\thuan>',
+                    'dien <AQ\\dien>'
                 )
             ORDER BY [System.AssignedTo]""}}";
         }
