@@ -67,6 +67,8 @@ export class NhanSuAqComponent implements OnInit {
   readonly pc2_echartsExtentions: any[];
   pc2_echartsOptions: object = {};
 
+  isLoading: boolean = false;
+
   constructor(
     private https: HttpClient,
     private confirmationService: ConfirmationService,
@@ -124,6 +126,7 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   fetchAQMemberData(filterNearExpiredContract?: boolean) {
+    this.isLoading = true;
     if (filterNearExpiredContract) {
       this.https.get<any>("/api/ThongTinCaNhan/HopDongSapHetHan").subscribe({
         next: (res: any) => {
@@ -144,6 +147,7 @@ export class NhanSuAqComponent implements OnInit {
             ).length;
           });
           this.fetchDataPC2();
+          this.isLoading = false;
         },
       });
     }
@@ -167,6 +171,7 @@ export class NhanSuAqComponent implements OnInit {
             ).length;
           });
           this.fetchDataPC2();
+          this.isLoading = false;
         },
       });
     }
@@ -637,14 +642,14 @@ export class NhanSuAqComponent implements OnInit {
     this.handleFetchAQAnnualData(true);
   }
 
-  updateAnnualDataAuto() {
-    this.AQAnnualData.forEach((item: any) => {
-      item.workingYear += 1;
-      item.absenceQuotaBaseCurrent = item.absenceQuotaBase + Math.floor(item.workingYear / 5);
-      item.wfhQuotaBaseCurrent = item.wfhQuotaBase + Math.floor(item.workingYear / 5);
-    });
-    this.disableAutoUpdate = true;
-  }
+  // updateAnnualDataAuto() {
+  //   this.AQAnnualData.forEach((item: any) => {
+  //     item.workingYear += 1;
+  //     item.absenceQuotaBaseCurrent = item.absenceQuotaBase + Math.floor(item.workingYear / 5);
+  //     item.wfhQuotaBaseCurrent = item.wfhQuotaBase + Math.floor(item.workingYear / 5);
+  //   });
+  //   this.disableAutoUpdate = true;
+  // }
 
   submitAnnualData() {
     let inputData = {
@@ -664,6 +669,8 @@ export class NhanSuAqComponent implements OnInit {
         // Your logic for handling the completion event (optional)
         this.handleFetchAQDataStatus();
         this.handleFetchAQAnnualData();
+        this.hideDialog();
+        this.fetchAQMemberData();
       },
     });
   }
