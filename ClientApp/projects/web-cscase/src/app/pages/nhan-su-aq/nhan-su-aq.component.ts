@@ -6,7 +6,6 @@ import {
   AQMember,
   AQMemberUpdateDO,
   AQMemberInsertDO,
-  detailContract,
 } from "./AQMember";
 import { AQRole } from "./AQMember";
 import { HttpClient } from "@angular/common/http";
@@ -39,21 +38,9 @@ export class NhanSuAqComponent implements OnInit {
   AQAnnualDataStatusCardView: any = null;
   AQAnnualData: any = [];
 
-  detailContractInsert: detailContract = {
-    contractDuration: 1,
-    contractType: "",
-  };
+  aqmemberInsert: AQMemberInsertDO = {};
 
-  aqmemberInsert: AQMemberInsertDO = {
-    detailContract: this.detailContractInsert,
-  };
-
-  aqmemberUpdate: AQMemberUpdateDO = {
-    detailWFHQuota: {},
-    detailAbsenceQuota: {},
-    detailLunch: [],
-    detailContract: {},
-  };
+  aqmemberUpdate: AQMemberUpdateDO = {};
 
   isValidUpdateFormData: boolean = true;
 
@@ -79,6 +66,8 @@ export class NhanSuAqComponent implements OnInit {
   //pie chart 2
   readonly pc2_echartsExtentions: any[];
   pc2_echartsOptions: object = {};
+
+  isLoading: boolean = false;
 
   constructor(
     private https: HttpClient,
@@ -110,7 +99,7 @@ export class NhanSuAqComponent implements OnInit {
 
   checkIsLeader() {
     let user = sessionStorage.getItem("current-user");
-    return JSON.parse(user).isLeader;
+    return JSON.parse(user!).isLeader;
   }
 
   checkIsHR() {
@@ -137,6 +126,7 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   fetchAQMemberData(filterNearExpiredContract?: boolean) {
+    this.isLoading = true;
     if (filterNearExpiredContract) {
       this.https.get<any>("/api/ThongTinCaNhan/HopDongSapHetHan").subscribe({
         next: (res: any) => {
@@ -149,6 +139,7 @@ export class NhanSuAqComponent implements OnInit {
           // Your logic for handling errors
         },
         complete: () => {
+
           // Your logic for handling the completion event (optional)
           this.AQRoles.forEach((role) => {
             role.total = this.AQmembers.filter(
@@ -156,6 +147,7 @@ export class NhanSuAqComponent implements OnInit {
             ).length;
           });
           this.fetchDataPC2();
+          this.isLoading = false;
         },
       });
     }
@@ -171,6 +163,7 @@ export class NhanSuAqComponent implements OnInit {
           // Your logic for handling errors
         },
         complete: () => {
+          console.log('checkBE: ', this.AQmembers);
           // Your logic for handling the completion event (optional)
           this.AQRoles.forEach((role) => {
             role.total = this.AQmembers.filter(
@@ -178,6 +171,7 @@ export class NhanSuAqComponent implements OnInit {
             ).length;
           });
           this.fetchDataPC2();
+          this.isLoading = false;
         },
       });
     }
@@ -273,9 +267,7 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   openAddDialog() {
-    this.aqmemberInsert = {
-      detailContract: this.detailContractInsert,
-    };
+    this.aqmemberInsert = {};
     this.editMemberDialog = false;
     this.addNewMemberDialog = true;
     this.openDialog = true;
@@ -289,23 +281,8 @@ export class NhanSuAqComponent implements OnInit {
       ...this.aqmemberUpdate,
       birthDate: new Date(data.birthDate),
       startDate: new Date(data.startDate),
-      detailContract:
-        data.detailContract === null
-          ? {
-            // contractStartDate: new Date(),
-            // contractExpireDate: new Date(),
-            contractDuration: 0,
-            contractType: "",
-          }
-          : {
-            ...this.aqmemberUpdate.detailContract,
-            contractStartDate: new Date(
-              data.detailContract.contractStartDate
-            ),
-            contractExpireDate: new Date(
-              data.detailContract.contractExpireDate
-            ),
-          },
+      contractStartDate: new Date(data.contractStartDate),
+      contractExpireDate: new Date(data.contractExpireDate),
     };
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
@@ -314,16 +291,16 @@ export class NhanSuAqComponent implements OnInit {
 
   handleIsLunchStatusChange(event) {
     this.aqmemberUpdate.isLunchStatus = event.checked;
-    const currentYear = new Date().getFullYear();
-    const detailLunchCurrentYear = this.aqmemberUpdate.detailLunch.find(
-      (item) => item.year === currentYear
-    );
+    // const currentYear = new Date().getFullYear();
+    // const detailLunchCurrentYear = this.aqmemberUpdate.detailLunch.find(
+    //   (item) => item.year === currentYear
+    // );
 
-    if (detailLunchCurrentYear) {
-      detailLunchCurrentYear.lunchByMonth.forEach((lunchByMonth) => {
-        lunchByMonth.isLunch = event.checked;
-      });
-    }
+    // if (detailLunchCurrentYear) {
+    //   detailLunchCurrentYear.lunchByMonth.forEach((lunchByMonth) => {
+    //     lunchByMonth.isLunch = event.checked;
+    //   });
+    // }
   }
 
   openDeleteDialog(data: any) {
@@ -441,6 +418,7 @@ export class NhanSuAqComponent implements OnInit {
     this.fetchAQMemberData();
     this.fetchCountNearExpiredContract();
   }
+
   exportToExcel() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("AQ Members");
@@ -464,13 +442,10 @@ export class NhanSuAqComponent implements OnInit {
       { header: "Địa chỉ", key: "address", width: 30 },
       { header: "Thâm niên", key: "workingYear", width: 15 },
       { header: "Loại hợp đồng", key: "contractType", width: 15 },
-      { header: "Thời hạn hợp đồng", key: "contractDuration", width: 15 },
       { header: "Ngày bắt đầu hợp đồng", key: "contractStartDate", width: 15 },
       { header: "Ngày hợp đồng hết hạn", key: "contractExpireDate", width: 15 },
     ];
     this.AQmembers.forEach((member) => {
-      console.log(member.detailContract.contractStartDate);
-
       worksheet.addRow({
         id: member.id,
         tfsName: member.tfsName,
@@ -492,14 +467,13 @@ export class NhanSuAqComponent implements OnInit {
         maSoCCCD: member.maSoCCCD,
         address: member.address,
         workingYear: member.workingYear,
-        contractDuration: member.detailContract.contractDuration,
-        contractStartDate: member.detailContract.contractStartDate instanceof Date
-          ? member.detailContract.contractStartDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
-          : new Date(member.detailContract.contractStartDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-        contractExpireDate: member.detailContract.contractExpireDate instanceof Date
-          ? member.detailContract.contractExpireDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
-          : new Date(member.detailContract.contractStartDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-        // Add more properties if necessary
+        contractType: member.contractType,
+        contractStartDate: member.contractStartDate instanceof Date
+          ? member.contractStartDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(member.contractStartDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        contractExpireDate: member.contractExpireDate instanceof Date
+          ? member.contractExpireDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(member.contractExpireDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
       });
     });
 
@@ -544,7 +518,6 @@ export class NhanSuAqComponent implements OnInit {
           address: row[14] || null, // Assuming address is in the eighteenth column
           workingYear: row[15] ? Number(row[15]) : null, // Assuming workingYear is in the nineteenth column
           contractType: row[16] ? JSON.parse(row[16]) : null, // Assuming detailContract is in the twentieth column
-          contractDuration: row[17] || null, // Assuming detailContract is in the twentieth column
           contractStartDate: row[18] ? this.convertToISOString(row[18]) : null, // Assuming detailContract is in the twentieth column
           contractExpireDate: row[19] ? this.convertToISOString(row[19]) : null, // Assuming detailContract is in the twentieth column
         };
@@ -577,7 +550,6 @@ export class NhanSuAqComponent implements OnInit {
     members.forEach(member => {
       const detailContract = {
         contractType: member.contractType, // Assuming detailContract is in the twentieth column
-
         contractDuration: member.contractDuration, // Assuming detailContract is in the twentieth column
         contractStartDate: member.contractStartDate, // Assuming detailContract is in the twentieth column
         contractExpireDate: member.contractExpireDate, // Assuming detailContract is in the twentieth column
@@ -655,7 +627,8 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   onRowEditCancel(absenceQuota: any, index: number) {
-    this.aqmemberUpdate.detailAbsenceQuota.actualAbsenceQuotaByYear[index] = this.clonedAbsenceQuotas[absenceQuota.id];
+    // this.aqmemberUpdate.detailAbsenceQuota.actualAbsenceQuotaByYear[index] = this.clonedAbsenceQuotas[absenceQuota.id];
+    this.aqmemberUpdate.minAbsenceQuota = this.clonedAbsenceQuotas[absenceQuota.id];
     delete this.clonedAbsenceQuotas[absenceQuota.id];
   }
 
@@ -669,14 +642,14 @@ export class NhanSuAqComponent implements OnInit {
     this.handleFetchAQAnnualData(true);
   }
 
-  updateAnnualDataAuto() {
-    this.AQAnnualData.forEach((item: any) => {
-      item.workingYear += 1;
-      item.absenceQuotaBaseCurrent = item.absenceQuotaBase + Math.floor(item.workingYear / 5);
-      item.wfhQuotaBaseCurrent = item.wfhQuotaBase + Math.floor(item.workingYear / 5);
-    });
-    this.disableAutoUpdate = true;
-  }
+  // updateAnnualDataAuto() {
+  //   this.AQAnnualData.forEach((item: any) => {
+  //     item.workingYear += 1;
+  //     item.absenceQuotaBaseCurrent = item.absenceQuotaBase + Math.floor(item.workingYear / 5);
+  //     item.wfhQuotaBaseCurrent = item.wfhQuotaBase + Math.floor(item.workingYear / 5);
+  //   });
+  //   this.disableAutoUpdate = true;
+  // }
 
   submitAnnualData() {
     let inputData = {
@@ -696,6 +669,8 @@ export class NhanSuAqComponent implements OnInit {
         // Your logic for handling the completion event (optional)
         this.handleFetchAQDataStatus();
         this.handleFetchAQAnnualData();
+        this.hideDialog();
+        this.fetchAQMemberData();
       },
     });
   }
