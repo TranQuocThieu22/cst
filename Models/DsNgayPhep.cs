@@ -44,9 +44,10 @@ namespace educlient.Models
         public string nickName { get; set; }
         public string role { get; set; }
         public bool isLeader { get; set; }
-        public bool isLunch { get; set; }
-        public int WFHQuota { get; set; }
-        public detailAbsenceQuota detailAbsenceQuota { get; set; }
+        public bool isLunchStatus { get; set; }
+        public int minWFHQuota { get; set; }
+        //public detailAbsenceQuota detailAbsenceQuota { get; set; }
+        public int minAbsenceQuota { get; set; }
         public bool isActive { get; set; }
     }
 }

@@ -117,45 +117,41 @@
             Trợ cấp ăn trưa
             <p-sortIcon field="isLunch"></p-sortIcon>
           </th>
-          <th pSortableColumn="isLunch" style="white-space: nowrap">
-            Trợ cấp ăn trưa (tháng hiện tại)
-            <p-sortIcon field="isLunch"></p-sortIcon>
+          <th pSortableColumn="minWFHQuota" style="white-space: nowrap">
+            Hạn mức WFH<br>(%/năm)
+            <p-sortIcon field="minWFHQuota"></p-sortIcon>
           </th>
-          <th pSortableColumn="wfhQuota" style="white-space: nowrap">
-            Hạn mức % làm việc online/năm (tối thiểu)
-            <p-sortIcon field="wfhQuota"></p-sortIcon>
+          <th pSortableColumn="additionalWFHQuota" style="white-space: nowrap">
+            Hạn mức WFH<br>(tăng thêm)
+            <p-sortIcon field="additionalWFHQuota"></p-sortIcon>
           </th>
-          <th pSortableColumn="wfhQuota" style="white-space: nowrap">
-            Hạn mức % làm việc online/năm (năm hiện tại)
-            <p-sortIcon field="wfhQuota"></p-sortIcon>
+          <th pSortableColumn="minAbsenceQuota" style="white-space: nowrap; width: 10rem">
+            Số ngày nghỉ phép<br>(số ngày/năm)
+            <p-sortIcon field="minAbsenceQuota"></p-sortIcon>
           </th>
-          <th pSortableColumn="absenceQuota" style="white-space: nowrap">
-            Số ngày nghỉ phép/năm (tối thiểu)
-            <p-sortIcon field="absenceQuota"></p-sortIcon>
-          </th>
-          <th pSortableColumn="absenceQuota" style="white-space: nowrap">
-            Số ngày nghỉ phép/năm (năm hiện tại)
-            <p-sortIcon field="absenceQuota"></p-sortIcon>
+          <th pSortableColumn="additionalAbsenceQuota" style="white-space: nowrap">
+            Số ngày nghỉ phép<br>(tăng thêm)
+            <p-sortIcon field="additionalAbsenceQuota"></p-sortIcon>
           </th>
           <th pSortableColumn="isActive" style="white-space: nowrap">
             Trạng thái làm việc
             <p-sortIcon field="isActive"></p-sortIcon>
           </th>
-          <th pSortableColumn="isActive" style="white-space: nowrap">
+          <th pSortableColumn="maSoCCCD" style="white-space: nowrap">
             Mã số CCCD
-            <p-sortIcon field="isActive"></p-sortIcon>
+            <p-sortIcon field="maSoCCCD"></p-sortIcon>
           </th>
-          <th pSortableColumn="isActive" style="white-space: nowrap">
+          <th pSortableColumn="address" style="white-space: nowrap">
             Địa chỉ
-            <p-sortIcon field="isActive"></p-sortIcon>
+            <p-sortIcon field="address"></p-sortIcon>
           </th>
-          <th pSortableColumn="isActive" style="white-space: nowrap">
+          <th pSortableColumn="contractExpireDate" style="white-space: nowrap">
             Thời hạn hợp đồng
-            <p-sortIcon field="isActive"></p-sortIcon>
+            <p-sortIcon field="contractExpireDate"></p-sortIcon>
           </th>
-          <th pSortableColumn="isActive" style="white-space: nowrap">
+          <th pSortableColumn="contractType" style="white-space: nowrap">
             Loại hợp đồng
-            <p-sortIcon field="isActive"></p-sortIcon>
+            <p-sortIcon field="contractType"></p-sortIcon>
           </th>
         </tr>
       </ng-template>
@@ -221,64 +217,19 @@
             <i *ngIf="AQmember.isLunchStatus" class="pi pi-check" style="color: green; font-size: 1.5rem"></i>
             <i *ngIf="!AQmember.isLunchStatus" class="pi pi-times" style="color: red; font-size: 1.5rem"></i>
           </td>
-          <td style="
-              white-space: nowrap;
-              text-align: center;
-              vertical-align: middle;
-            ">
-            <i *ngIf="AQmember.isLunchStatus" class="pi pi-check" style="color: green; font-size: 1.5rem"></i>
-            <i *ngIf="!AQmember.isLunchStatus" class="pi pi-times" style="color: red; font-size: 1.5rem"></i>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{ AQmember.minWFHQuota }}
           </td>
-          <!-- minWFHQuota -->
-          <td *ngIf="AQmember.detailWFHQuota !== null; else elseBlock1" style="
-              white-space: nowrap;
-              text-align: center;
-              vertical-align: middle;
-            ">
-            {{ AQmember.detailWFHQuota.minWFHQuota }}%
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{ AQmember.additionalWFHQuota }}
           </td>
-          <ng-template #elseBlock1>
-            <td style="
-                white-space: nowrap;
-                text-align: center;
-                vertical-align: middle;
-              ">
-              Dữ liệu chưa cập nhật
-            </td>
-          </ng-template>
-          <!-- WFHQuota by year-->
-          <td style="
-              white-space: nowrap;
-              text-align: center;
-              vertical-align: middle;
-            ">
-            {{
-            AQmember.detailWFHQuota.actualWFHQuotaByYear[AQmember.detailWFHQuota.actualWFHQuotaByYear.length
-            - 1].wfhQuota }}
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{ AQmember.minAbsenceQuota }}
           </td>
-          <!-- minAbsenceQuota -->
-          <td style="
-              white-space: nowrap;
-              text-align: center;
-              vertical-align: middle;
-            ">
-            {{ AQmember.detailAbsenceQuota.minAbsenceQuota }}
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{ AQmember.additionalAbsenceQuota }}
           </td>
-          <!-- AbsenceQuota by year-->
-          <td style="
-              white-space: nowrap;
-              text-align: center;
-              vertical-align: middle;
-            ">
-            {{
-            AQmember.detailAbsenceQuota.actualAbsenceQuotaByYear[AQmember.detailAbsenceQuota.actualAbsenceQuotaByYear.length
-            - 1].absenceQuota }}
-          </td>
-          <td style="
-              white-space: nowrap;
-              text-align: center;
-              vertical-align: middle;
-            ">
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
             <span [class]="AQmember.isActive ? 'member-active' : 'member-inactive'">
               {{ AQmember.isActive ? "Hoạt động" : "Không hoạt động" }}
             </span>
@@ -297,32 +248,19 @@
             ">
             {{ AQmember.address }}
           </td>
-          <td *ngIf="
-              AQmember.detailContract.contractStartDate !==
-                AQmember.detailContract.contractExpireDate;
-              else elseBlock2
-            " style="
-              white-space: nowrap;
-              text-align: center;
-              vertical-align: middle;
-            ">
-            {{
-            AQmember.detailContract.contractExpireDate | date : "dd/MM/yyyy"
-            }}
-          </td>
-          <ng-template #elseBlock2>
-            <td style="
-                white-space: nowrap;
-                text-align: center;
-                vertical-align: middle;
-              "></td>
-          </ng-template>
           <td style="
               white-space: nowrap;
               text-align: center;
               vertical-align: middle;
             ">
-            {{ AQmember.detailContract.contractType }}
+            {{ AQmember.contractExpireDate | date : "dd/MM/yyyy" }}
+          </td>
+          <td style="
+              white-space: nowrap;
+              text-align: center;
+              vertical-align: middle;
+            ">
+            {{ AQmember.contractType }}
           </td>
         </tr>
       </ng-template>
@@ -409,17 +347,21 @@
         </div>
         <div class="p-field">
           <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
-          <p-calendar appendTo="body" [(ngModel)]="detailContractInsert.contractStartDate" dateFormat="dd/mm/yy"
+          <p-calendar appendTo="body"
+            dateFormat="dd/mm/yy"
+            [(ngModel)]="aqmemberInsert.contractStartDate"
             inputId="contractStartDate"></p-calendar>
         </div>
         <div class="p-field">
           <label for="contractExpireDate">Ngày kết thúc hợp đồng</label>
-          <p-calendar appendTo="body" [(ngModel)]="detailContractInsert.contractExpireDate" dateFormat="dd/mm/yy"
+          <p-calendar appendTo="body"
+            dateFormat="dd/mm/yy"
+            [(ngModel)]="aqmemberInsert.contractExpireDate"
             inputId="contractExpireDate"></p-calendar>
         </div>
         <div class="p-field">
           <label for="contractType">Loại hợp đồng</label>
-          <input type="text" pInputText id="contractType" [(ngModel)]="detailContractInsert.contractType" required
+          <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberInsert.contractType" required
             autofocus />
         </div>
       </div>
@@ -556,13 +498,15 @@
               </div>
               <div class="p-field">
                 <label for="wfhQuota">Hạn mức % làm việc online (tối thiểu)</label>
-                <input type="number" pInputText id="wfhQuota" [(ngModel)]="aqmemberUpdate.detailWFHQuota.minWFHQuota"
+                <input type="number" pInputText id="minWFHQuota"
+                  [(ngModel)]="aqmemberUpdate.minWFHQuota"
                   required />
               </div>
               <div class="p-field">
                 <label for="absenceQuota">Số ngày nghỉ phép/năm (tối thiểu)</label>
-                <input type="number" pInputText id="absenceQuota"
-                  [(ngModel)]="aqmemberUpdate.detailAbsenceQuota.minAbsenceQuota" required />
+                <input type="number" pInputText id="minAbsenceQuota"
+                  [(ngModel)]="aqmemberUpdate.minAbsenceQuota"
+                  required />
               </div>
             </div>
 
@@ -578,19 +522,21 @@
               </div>
               <div class="p-field">
                 <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
-                <p-calendar appendTo="body" [(ngModel)]="aqmemberUpdate.detailContract.contractStartDate"
+                <p-calendar appendTo="body"
                   dateFormat="dd/mm/yy"
+                  [(ngModel)]="aqmemberUpdate.contractStartDate"
                   inputId="contractStartDate"></p-calendar>
               </div>
               <div class="p-field">
                 <label for="contractExpireDate">Ngày kết thúc hợp đồng</label>
-                <p-calendar appendTo="body" [(ngModel)]="aqmemberUpdate.detailContract.contractExpireDate"
+                <p-calendar appendTo="body"
                   dateFormat="dd/mm/yy"
+                  [(ngModel)]="aqmemberUpdate.contractExpireDate"
                   inputId="contractExpireDate"></p-calendar>
               </div>
               <div class="p-field">
                 <label for="contractType">Loại hợp đồng</label>
-                <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberUpdate.detailContract.contractType"
+                <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberUpdate.contractType"
                   required autofocus />
               </div>
             </div>
@@ -670,10 +616,9 @@
         <p-scrollPanel
           [style]="{width: '100%', height: '500px'}"
           styleClass="custombar1">
-
-
-          <p-table
-            [value]="aqmemberUpdate.detailAbsenceQuota.actualAbsenceQuotaByYear"
+          Chức năng đang được phát triển
+          <!-- <p-table
+            [value]="aqmemberUpdate.absenceQuota"
             dataKey="year"
             styleClass="p-datatable-sm"
             editMode="row"
@@ -714,7 +659,7 @@
                 </td>
               </tr>
             </ng-template>
-          </p-table>
+          </p-table> -->
 
         </p-scrollPanel>
       </ng-template>

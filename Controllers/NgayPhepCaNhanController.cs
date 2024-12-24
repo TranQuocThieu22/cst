@@ -98,7 +98,7 @@ namespace educlient.Controllers
             };
         }
 
-       
+
         [HttpGet, Route("{id}")]
         public IndividualDayOffResult GetById(int id)
         {
@@ -186,11 +186,12 @@ namespace educlient.Controllers
                 {
                     totalAnnual = (float)item.sumDay;
                 }
-                else if(item.isWithoutPay){
-                    totalIsWithoutPay= (float)item.sumDay;
+                else if (item.isWithoutPay)
+                {
+                    totalIsWithoutPay = (float)item.sumDay;
                 }
                 var numberOfDayTotal = (int)item.sumDay;
-              
+
                 var existingRecord = individualDayOffTable.FindById(item.id);
                 try
                 {
@@ -209,7 +210,7 @@ namespace educlient.Controllers
             Console.WriteLine("done");
             return dateList;
         }
-       
+
         [HttpPut, Route("{id}")]
         public DayOffUpdateDTO Update(int id, [FromBody] IndividualDayOffInput inputData)
         {
@@ -413,20 +414,22 @@ namespace educlient.Controllers
 
             totalDayOff_without_permission = totalDayOff - totalDayOff_with_permission;
 
-            var absenceQuotaData = AQMemberTable.FindById(query_memberId).detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
+            var minAbsenceQuota = AQMemberTable.FindById(query_memberId).additionalAbsenceQuota;
+            var additionalAbsenceQuota = AQMemberTable.FindById(query_memberId).additionalAbsenceQuota;
 
-            var absenceQuota = absenceQuotaData == null ? 0 : absenceQuotaData.absenceQuota;
+            //var absenceQuota = absenceQuotaData == null ? 0 : absenceQuotaData.absenceQuota;
 
 
             var HanMucNghiPhep = new HanMucNghiPhepCaNhan
             {
                 year = year,
                 memberId = query_memberId.Value,
-                absenceQuota = absenceQuota,
+                minAbsenceQuota = minAbsenceQuota,
+                additionalAbsenceQuota = additionalAbsenceQuota,
                 totalDayOff = totalDayOff,
                 totalDayOff_with_permission = totalDayOff_with_permission,
                 totalDayOff_without_permission = totalDayOff_without_permission,
-                absenceQuota_available = absenceQuota - totalDayOff_with_permission,
+                //absenceQuota_available = absenceQuota - totalDayOff_with_permission,
             };
 
             resultList.Add(HanMucNghiPhep);
@@ -487,11 +490,11 @@ namespace educlient.Controllers
         {
             public int memberId { get; set; }
             public int year { get; set; }
-            public int absenceQuota { get; set; }
+            public int minAbsenceQuota { get; set; }
+            public int additionalAbsenceQuota { get; set; }
             public float totalDayOff { get; set; }
             public float totalDayOff_with_permission { get; set; }
             public float totalDayOff_without_permission { get; set; }
-            public float absenceQuota_available { get; set; }
         }
 
         public class DayOffUpdateDTO : ApiResultBaseDO

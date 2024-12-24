@@ -11,14 +11,17 @@ export interface AQMember {
   role?: string;
   isLeader?: boolean;
   isLunchStatus?: boolean;
-  detailLunch?: detailLunch[];
-  detailWFHQuota?: detailWFHQuota;
-  detailAbsenceQuota?: detailAbsenceQuota;
+  minWFHQuota?: number;
+  additionalWFHQuota?: number;
+  minAbsenceQuota?: number;
+  additionalAbsenceQuota?: number;
   isActive?: boolean;
   maSoCCCD?: string;
   address?: string;
   workingYear?: number;
-  detailContract?: detailContract;
+  contractStartDate?: Date | string;
+  contractExpireDate?: Date | string;
+  contractType?: string;
 }
 
 export interface AQRole {
@@ -44,8 +47,9 @@ export interface AQMemberInsertDO {
   isActive?: boolean;
   maSoCCCD?: string;
   address?: string;
-  workingYears?: number;
-  detailContract?: detailContract;
+  contractStartDate?: Date | string;
+  contractExpireDate?: Date | string;
+  contractType?: string;
 }
 
 export interface AQMemberUpdateDO {
@@ -61,51 +65,12 @@ export interface AQMemberUpdateDO {
   role?: string;
   isLeader?: boolean;
   isLunchStatus?: boolean;
-  detailLunch?: detailLunch[];
-  detailWFHQuota?: detailWFHQuota;
-  detailAbsenceQuota?: detailAbsenceQuota;
+  minWFHQuota?: number;
+  minAbsenceQuota?: number;
   isActive?: boolean;
   maSoCCCD?: string;
   address?: string;
-  workingYear?: number;
-  detailContract?: detailContract;
-}
-
-export interface detailContract {
   contractStartDate?: Date | string;
   contractExpireDate?: Date | string;
-  contractDuration?: number;
   contractType?: string;
-}
-
-export interface detailLunch {
-  year?: number;
-  lunchByMonth?: lunchByMonth[];
-}
-
-export interface lunchByMonth {
-  month?: number;
-  isLunch?: boolean;
-  lunchFee?: number;
-  note?: string;
-}
-
-export interface detailWFHQuota {
-  minWFHQuota?: number;
-  actualWFHQuotaByYear?: actualWFHQuotaByYear[];
-}
-
-export interface actualWFHQuotaByYear {
-  year?: number;
-  WFHQuota?: number;
-}
-
-export interface detailAbsenceQuota {
-  minAbsenceQuota?: number;
-  actualAbsenceQuotaByYear?: actualAbsenceQuotaByYear;
-}
-
-export interface actualAbsenceQuotaByYear {
-  year?: number;
-  absenceQuota?: number;
 }
