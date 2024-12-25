@@ -194,15 +194,11 @@ namespace educlient.Data
     {
         [BsonId]
         public int id { get; set; }
-        //public DateTime dateFrom { get; set; }
-        //public DateTime dateTo { get; set; }
         public DateTime date { get; set; }
         public int memberId { get; set; }
         public string reason { get; set; }
-        public bool isHalfDayOff { get; set; }
+        public int periodType { get; set; }
         public int dayOffType { get; set; }
-        public bool useMinAbsenceQuota { get; set; }
-        public bool useAdditionalAbsenceQuota { get; set; }
         public bool isDayOffWithPayment { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }

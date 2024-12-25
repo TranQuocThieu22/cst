@@ -137,10 +137,8 @@ namespace educlient.Controllers
                 date = input.date,
                 memberId = input.memberId,
                 reason = input.reason,
-                isHalfDayOff = input.isHalfDayOff,
+                periodType = input.periodType,
                 dayOffType = input.dayOffType,
-                useMinAbsenceQuota = input.useMinAbsenceQuota,
-                useAdditionalAbsenceQuota = input.useAdditionalAbsenceQuota,
                 isDayOffWithPayment = input.isDayOffWithPayment,
                 approvalStatus = input.approvalStatus,
                 note = input.note,
@@ -229,11 +227,9 @@ namespace educlient.Controllers
             // Update the existing record with new values
             existingRecord.date = inputData.date;
             existingRecord.memberId = inputData.memberId;
-            existingRecord.isHalfDayOff = inputData.isHalfDayOff;
+            existingRecord.periodType = inputData.periodType;
             existingRecord.dayOffType = inputData.dayOffType;
             existingRecord.reason = inputData.reason;
-            existingRecord.useMinAbsenceQuota = inputData.useMinAbsenceQuota;
-            existingRecord.useAdditionalAbsenceQuota = inputData.useAdditionalAbsenceQuota;
             existingRecord.isDayOffWithPayment = inputData.isDayOffWithPayment;
             existingRecord.approvalStatus = inputData.approvalStatus;
             existingRecord.note = inputData.note;
@@ -386,30 +382,45 @@ namespace educlient.Controllers
             var AQMemberTable = database.Table<AQMember>();
             var dayOffsTable = database.Table<IndividualDayOff>();
 
+            int minAbsenceQuota = AQMemberTable.FindById(query_memberId).minAbsenceQuota;
+            int additionalAbsenceQuota = AQMemberTable.FindById(query_memberId).additionalAbsenceQuota;
+            float totalDayOff = 0;
+            float totalDayOff_with_permission = 0;
+            float totalDayOff_without_permission = 0;
+            float totalDayOff_fullType1 = 0;
+            float totalDayOff_fullType2 = 0;
+            float totalDayOff_halfType1 = 0;
+            float totalDayOff_halfType2 = 0;
+            float totalDayOff_type3_4 = 0;
+            float usedMinAbsenceQuota = 0;
+            float usedAdditionalAbsenceQuota = 0;
+            float remainMinAbsenceQuota = 0;
+            float remainAdditionalAbsenceQuota = 0;
+
             var dayOffData = dayOffsTable.Find(x =>
                     x.memberId == query_memberId &&
                     x.date.Year == year &&
                     x.approvalStatus == "Đã duyệt"
                     ).ToList();
 
-            float totalDayOff = 0;
-            float totalDayOff_with_permission = 0;
-            float totalDayOff_without_permission = 0;
-            //foreach (var dayOff in dayOffData)
-            //{
-            //    totalDayOff += dayOff.numberOfDay_whole;
-            //    totalDayOff += dayOff.numberOfDay_half * 0.5f;
+            totalDayOff = dayOffData.Count;
 
-            //    if (dayOff.totalIsAnnual > 0)
-            //    {
-            //        totalDayOff_with_permission += dayOff.totalIsAnnual;
-            //    }
-            //}
+            foreach (var dayOff in dayOffData)
+            {
+                totalDayOff_with_permission += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? 1 : 0;
+                totalDayOff_fullType1 += (dayOff.periodType == 1 && dayOff.dayOffType == 1) ? 1 : 0;
+                totalDayOff_fullType2 += (dayOff.periodType == 1 && dayOff.dayOffType == 2) ? 1 : 0;
+                totalDayOff_halfType1 += ((dayOff.periodType == 2 || dayOff.periodType == 3) && dayOff.dayOffType == 1) ? 1 : 0;
+                totalDayOff_halfType2 += ((dayOff.periodType == 2 || dayOff.periodType == 3) && dayOff.dayOffType == 2) ? 1 : 0;
+                totalDayOff_type3_4 += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? 1 : 0;
+            }
+
+            usedMinAbsenceQuota = (float)(totalDayOff_fullType1 + totalDayOff_halfType1 * 0.5);
+            usedAdditionalAbsenceQuota = (float)(totalDayOff_fullType2 + totalDayOff_halfType2 * 0.5);
+            remainMinAbsenceQuota = minAbsenceQuota - usedMinAbsenceQuota;
+            remainAdditionalAbsenceQuota = additionalAbsenceQuota - usedAdditionalAbsenceQuota;
 
             totalDayOff_without_permission = totalDayOff - totalDayOff_with_permission;
-
-            var minAbsenceQuota = AQMemberTable.FindById(query_memberId).minAbsenceQuota;
-            var additionalAbsenceQuota = AQMemberTable.FindById(query_memberId).additionalAbsenceQuota;
 
             var HanMucNghiPhep = new HanMucNghiPhepCaNhan
             {
@@ -418,8 +429,12 @@ namespace educlient.Controllers
                 minAbsenceQuota = minAbsenceQuota,
                 additionalAbsenceQuota = additionalAbsenceQuota,
                 totalDayOff = totalDayOff,
-                totalDayOff_with_permission = totalDayOff_with_permission,
-                totalDayOff_without_permission = totalDayOff_without_permission,
+                totalDayOffFullType1 = totalDayOff_fullType1,
+                totalDayOffFullType2 = totalDayOff_fullType2,
+                usedAdditionalAbsenceQuota = usedAdditionalAbsenceQuota,
+                usedMinAbsenceQuota = usedMinAbsenceQuota,
+                remainAdditionalAbsenceQuota = remainAdditionalAbsenceQuota,
+                remainMinAbsenceQuota = remainMinAbsenceQuota,
             };
 
             resultList.Add(HanMucNghiPhep);
@@ -445,10 +460,8 @@ namespace educlient.Controllers
             public DateTime date { get; set; }
             public int memberId { get; set; }
             public string reason { get; set; }
-            public bool isHalfDayOff { get; set; }
+            public int periodType { get; set; }
             public int dayOffType { get; set; }
-            public bool useMinAbsenceQuota { get; set; }
-            public bool useAdditionalAbsenceQuota { get; set; }
             public bool isDayOffWithPayment { get; set; }
             public string approvalStatus { get; set; }
             public string note { get; set; }
@@ -480,8 +493,16 @@ namespace educlient.Controllers
             public int minAbsenceQuota { get; set; }
             public int additionalAbsenceQuota { get; set; }
             public float totalDayOff { get; set; }
-            public float totalDayOff_with_permission { get; set; }
-            public float totalDayOff_without_permission { get; set; }
+            public float totalDayOffFullType1 { get; set; }
+            public float totalDayOffFullType2 { get; set; }
+
+            public float totalDayOffHalfType1 { get; set; }
+            public float totalDayOffHalfType2 { get; set; }
+            public float totalDayOffType3_4 { get; set; }
+            public float usedMinAbsenceQuota { get; set; }
+            public float usedAdditionalAbsenceQuota { get; set; }
+            public float remainMinAbsenceQuota { get; set; }
+            public float remainAdditionalAbsenceQuota { get; set; }
         }
 
         public class DayOffUpdateDTO : ApiResultBaseDO
