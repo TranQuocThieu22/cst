@@ -23,7 +23,7 @@ namespace educlient.Controllers
             // Get the tables
             var membersTable = database.Table<AQMember>();
             var dayOffsTable = database.Table<IndividualDayOff>();
-            var workingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var workingOnlineTable = database.Table<WorkingOnlineDay>();
             var commissionTable = database.Table<Commission>();
             var aqDayOffTable = database.Table<DayOff>();
 
@@ -57,17 +57,16 @@ namespace educlient.Controllers
 
                 var wfhData = workingOnlineTable.Find(x =>
                     x.memberId == member.id &&
-                    x.dateFrom.Year == year &&
-                    x.dateFrom.Month == month &&
-                    x.approvalStatus == "Đã duyệt" &&
-                    x.sumDay > 0
+                    x.date.Year == year &&
+                    x.date.Month == month &&
+                    x.approvalStatus == "Đã duyệt"
                     ).ToList();
 
                 var countWorkingOnline = 0;
-                foreach (var wfhday in wfhData)
-                {
-                    countWorkingOnline += (int)wfhday.sumDay;
-                }
+                //foreach (var wfhday in wfhData)
+                //{
+                //    countWorkingOnline += (int)wfhday.sumDay;
+                //}
 
                 var commissionData = commissionTable.Find(x =>
                     x.memberList.Where(m => m.id == member.id).Any() &&

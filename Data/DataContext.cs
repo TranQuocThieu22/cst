@@ -204,15 +204,15 @@ namespace educlient.Data
         public string note { get; set; }
     }
 
-    public class WorkingOnlineDataDO
+    public class WorkingOnlineDay
     {
         [BsonId]
         public int id { get; set; }
-        public DateTime dateFrom { get; set; }
-        public DateTime dateTo { get; set; }
-        public float sumDay { get; set; }
+        public DateTime date { get; set; }
         public int memberId { get; set; }
         public string reason { get; set; }
+        public int periodType { get; set; }
+        public int dayOffType { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }

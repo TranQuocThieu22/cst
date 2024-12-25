@@ -20,9 +20,9 @@ namespace educlient.Controllers
         [HttpGet]
         public WorkingOnlineResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, [FromQuery] int? query_memberId = null)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
-            List<WorkingOnlineDataDO> resultData;
+            List<WorkingOnlineDay> resultData;
 
             if (query_memberId.HasValue)
             {
@@ -31,10 +31,11 @@ namespace educlient.Controllers
                 {
                     resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
-                        ((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
-                        (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value))
+                        (x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value)
+                    //((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                    //(x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value))
                     ).ToList();
                 }
                 else if (query_dateFrom.HasValue)
@@ -42,7 +43,7 @@ namespace educlient.Controllers
                     // Only dateFrom is provided
                     resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
-                        x.dateFrom >= query_dateFrom.Value
+                        x.date >= query_dateFrom.Value
                     ).ToList();
                 }
                 else if (query_dateTo.HasValue)
@@ -50,7 +51,7 @@ namespace educlient.Controllers
                     // Only dateTo is provided
                     resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
-                        x.dateTo <= query_dateTo.Value
+                        x.date <= query_dateTo.Value
                     ).ToList();
                 }
                 else
@@ -65,21 +66,22 @@ namespace educlient.Controllers
                 if (query_dateFrom.HasValue && query_dateTo.HasValue)
                 {
                     resultData = WorkingOnlineTable.Find(x =>
-                        (x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
-                        (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
+                    (x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value)
+                    //(x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                    //(x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
                     ).ToList();
                 }
                 else if (query_dateFrom.HasValue)
                 {
                     // Only dateFrom is provided
-                    resultData = WorkingOnlineTable.Find(x => x.dateFrom >= query_dateFrom.Value).ToList();
+                    resultData = WorkingOnlineTable.Find(x => x.date >= query_dateFrom.Value).ToList();
                 }
                 else if (query_dateTo.HasValue)
                 {
                     // Only dateTo is provided
-                    resultData = WorkingOnlineTable.Find(x => x.dateTo <= query_dateTo.Value).ToList();
+                    resultData = WorkingOnlineTable.Find(x => x.date <= query_dateTo.Value).ToList();
                 }
                 else
                 {
@@ -101,9 +103,9 @@ namespace educlient.Controllers
         [HttpGet, Route("{id}")]
         public WorkingOnlineResult GetById(int id)
         {
-            List<WorkingOnlineDataDO> returnData = new List<WorkingOnlineDataDO>();
+            List<WorkingOnlineDay> returnData = new List<WorkingOnlineDay>();
 
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var resultData = WorkingOnlineTable.FindById(id);
             if (resultData == null)
@@ -130,18 +132,18 @@ namespace educlient.Controllers
         [HttpPost]
         public ApiResultBaseDO Insert([FromBody] WorkingOnlineInput[] inputData)
         {
-            var insertData = inputData.Select(input => new WorkingOnlineDataDO
+            var insertData = inputData.Select(input => new WorkingOnlineDay
             {
-                dateFrom = input.dateFrom,
-                dateTo = input.dateTo,
-                sumDay = input.sumDay,
+                date = input.date,
                 memberId = input.memberId,
                 reason = input.reason,
+                periodType = input.periodType,
+                dayOffType = input.dayOffType,
                 approvalStatus = input.approvalStatus,
                 note = input.note,
             }).ToList();
 
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
             WorkingOnlineTable.Insert(insertData);
 
             return new ApiResultBaseDO
@@ -155,7 +157,7 @@ namespace educlient.Controllers
         [HttpPut, Route("{id}")]
         public ApiResultBaseDO Update(int id, [FromBody] WorkingOnlineInput inputData)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var existingRecord = WorkingOnlineTable.FindById(id);
             if (existingRecord == null)
@@ -168,11 +170,11 @@ namespace educlient.Controllers
             }
 
             // Update the existing record with new values
-            existingRecord.dateFrom = inputData.dateFrom;
-            existingRecord.dateTo = inputData.dateTo;
-            existingRecord.sumDay = inputData.sumDay;
+            existingRecord.date = inputData.date;
             existingRecord.memberId = inputData.memberId;
             existingRecord.reason = inputData.reason;
+            existingRecord.periodType = inputData.periodType;
+            existingRecord.dayOffType = inputData.dayOffType;
             existingRecord.approvalStatus = inputData.approvalStatus;
             existingRecord.note = inputData.note;
 
@@ -190,7 +192,7 @@ namespace educlient.Controllers
         [HttpDelete, Route("{id}")]
         public ApiResultBaseDO Delete(int id)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var existingRecord = WorkingOnlineTable.FindById(id);
             if (existingRecord == null)
@@ -215,7 +217,7 @@ namespace educlient.Controllers
         [HttpPut, Route("DuyetLamViecOnline")]
         public ApiResultBaseDO ApproveWorkingOnline([FromBody] ApprovalInput inputData)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var existingRecord = WorkingOnlineTable.FindById(inputData.id);
             if (existingRecord == null)
@@ -244,16 +246,16 @@ namespace educlient.Controllers
 
     public class WorkingOnlineResult : ApiResultBaseDO
     {
-        public List<WorkingOnlineDataDO> data { get; set; }
+        public List<WorkingOnlineDay> data { get; set; }
     }
 
     public class WorkingOnlineInput
     {
         public int id { get; set; }
-        public DateTime dateFrom { get; set; }
-        public DateTime dateTo { get; set; }
-        public float sumDay { get; set; }
+        public DateTime date { get; set; }
         public int memberId { get; set; }
+        public int periodType { get; set; }
+        public int dayOffType { get; set; }
         public string reason { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }

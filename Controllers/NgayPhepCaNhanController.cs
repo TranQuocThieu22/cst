@@ -307,7 +307,7 @@ namespace educlient.Controllers
             // Get the tables
             var membersTable = database.Table<AQMember>();
             var dayOffsTable = database.Table<IndividualDayOff>();
-            var workingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var workingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var membersData = membersTable.FindAll().ToList();
             if (membersData == null)
@@ -339,16 +339,15 @@ namespace educlient.Controllers
 
                 var wfhData = workingOnlineTable.Find(x =>
                     x.memberId == member.id &&
-                    x.dateFrom.Year == year &&
-                    x.approvalStatus == "Đã duyệt" &&
-                    x.sumDay != 0
+                    x.date.Year == year &&
+                    x.approvalStatus == "Đã duyệt"
                     ).ToList();
 
                 var countWorkingOnline = 0;
-                foreach (var wfhday in wfhData)
-                {
-                    countWorkingOnline += (int)wfhday.sumDay;
-                }
+                //foreach (var wfhday in wfhData)
+                //{
+                //    countWorkingOnline += (int)wfhday.sumDay;
+                //}
 
                 // Combine member data with their day-off data
                 var resultData = new ThongKePhepNamDataDO
