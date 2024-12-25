@@ -6,13 +6,13 @@
                 Quản lý ngày nghỉ phép cá nhân
             </p-card>
             <ng-template pTemplate="left">
-                <button (click)="fileInput.click()" class="btn p-button py-2 mr-2">
+                <!-- <button (click)="fileInput.click()" class="btn p-button py-2 mr-2">
                     Import
                 </button>
                 <input #fileInput type="file" (change)="handleFileInput($event.target.files)" accept=".xls,.xlsx"
                     style="display: none" />
                 <button type="button" pButton pRipple (click)="exportToExcel()" class="mr-2 py-2" pTooltip="XLS"
-                    tooltipPosition="bottom">Export</button>
+                    tooltipPosition="bottom">Export</button> -->
                 <button pButton pRipple label="Tạo ngày nghỉ phép" icon="pi pi-calendar-plus mb-1"
                     class="p-button-success py-2" (click)="openAddDialog()">
                 </button>
@@ -169,9 +169,9 @@
                         {{IndividualDayOff.reason}}
                     </td>
                     <td style="white-space: nowrap; text-align: left; width: 100px;">
-                        <span *ngIf="IndividualDayOff.periodType === 0">Cả ngày</span>
-                        <span *ngIf="IndividualDayOff.periodType === 1">Sáng</span>
-                        <span *ngIf="IndividualDayOff.periodType === 2">Chiều</span>
+                        <span *ngIf="IndividualDayOff.periodType === 1">Cả ngày</span>
+                        <span *ngIf="IndividualDayOff.periodType === 2">Sáng</span>
+                        <span *ngIf="IndividualDayOff.periodType === 3">Chiều</span>
                     </td>
                     <td style="white-space: nowrap; text-align: left; width: 100px;">
                         <span *ngIf="IndividualDayOff.dayOffType === 1">Hạn mức ngày phép cơ bản</span>
@@ -250,7 +250,7 @@
                                     <th colspan="2" rowspan="4">
                                         Hạn mức<br>ngày phép
                                     </th>
-                                    <th colspan="6">
+                                    <th style="text-align: center;" colspan="6">
                                         Số ngày đã nghỉ
                                     </th>
                                     <th colspan="2" rowspan="4">
@@ -275,10 +275,10 @@
                                 <tr>
                                     <th style="white-space: wrap; width:8%">Cơ bản</th>
                                     <th style="white-space: wrap; width:8%">Tăng thêm</th>
-                                    <th style="white-space: wrap; width:8%">HMCB</th>
-                                    <th style="white-space: wrap; width:8%">HMTT</th>
-                                    <th style="white-space: wrap; width:8%">HMCB</th>
-                                    <th style="white-space: wrap; width:8%">HMTT</th>
+                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
+                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
+                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
+                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
                                     <th style="white-space: wrap; width:8%">Cơ bản</th>
                                     <th style="white-space: wrap; width:8%">Tăng thêm</th>
                                     <th style="white-space: wrap; width:8%">Cơ bản</th>

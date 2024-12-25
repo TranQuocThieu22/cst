@@ -77,7 +77,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   ngOnInit() {
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-    this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    // this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.filter_dateto = new Date(new Date().getFullYear(), 11, 31).toLocaleDateString('en-GB');
     this.fetchIndividualDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
     this.resetCalendarSelection();
     // this.sumDay();
@@ -213,9 +214,11 @@ export class NgayPhepCaNhanComponent implements OnInit {
     this.fetchIndividualAbsenceQuota(data.member.id);
     this.isValidDateRange = true;
     this.IndividualDayOff = {};
-    this.IndividualDayOff = { ...data };
-    // this.IndividualDayOff.dateFrom = new Date(data.dateFrom);
-    // this.IndividualDayOff.dateTo = new Date(data.dateTo);
+    this.IndividualDayOff = {
+      ...data,
+      date: new Date(data.date),
+    };
+
     this.addNewIndividualDayOffDialog = false;
     this.editIndividualDayOffDialog = true;
     this.openDialog = true;
