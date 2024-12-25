@@ -212,7 +212,7 @@ namespace educlient.Data
         public int memberId { get; set; }
         public string reason { get; set; }
         public int periodType { get; set; }
-        public int dayOffType { get; set; }
+        public int wfhType { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }

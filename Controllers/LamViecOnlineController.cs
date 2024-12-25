@@ -138,7 +138,7 @@ namespace educlient.Controllers
                 memberId = input.memberId,
                 reason = input.reason,
                 periodType = input.periodType,
-                dayOffType = input.dayOffType,
+                wfhType = input.wfhType,
                 approvalStatus = input.approvalStatus,
                 note = input.note,
             }).ToList();
@@ -174,7 +174,7 @@ namespace educlient.Controllers
             existingRecord.memberId = inputData.memberId;
             existingRecord.reason = inputData.reason;
             existingRecord.periodType = inputData.periodType;
-            existingRecord.dayOffType = inputData.dayOffType;
+            existingRecord.wfhType = inputData.wfhType;
             existingRecord.approvalStatus = inputData.approvalStatus;
             existingRecord.note = inputData.note;
 
@@ -255,7 +255,7 @@ namespace educlient.Controllers
         public DateTime date { get; set; }
         public int memberId { get; set; }
         public int periodType { get; set; }
-        public int dayOffType { get; set; }
+        public int wfhType { get; set; }
         public string reason { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }

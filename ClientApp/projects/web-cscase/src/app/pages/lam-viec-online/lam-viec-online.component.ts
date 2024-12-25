@@ -25,19 +25,20 @@ export class LamViecOnlineComponent implements OnInit {
     { label: 'Từ chối', value: 'Từ chối' }
   ]
 
+  WFHPeriod = [
+    { value: 1, label: 'Cả ngày' },
+    { value: 2, label: 'Sáng' },
+    { value: 3, label: 'Chiều' },
+  ];
+
   WorkingOnlines: WorkingOnline[];
   WorkingOnlineInitState = {
-    dateFrom: '',
-    dateTo: '',
-    sumDay: 0,
     member: {
       id: 0,
       fullName: '',
       nickName: ''
     },
     approvalStatus: 'Chưa duyệt',
-    reason: '',
-    note: ''
   };
   WorkingOnline: WorkingOnline = {
     ...this.WorkingOnlineInitState
@@ -72,7 +73,7 @@ export class LamViecOnlineComponent implements OnInit {
     this.filter_dateto = new Date().toLocaleDateString('en-GB');
     this.fetchWorkingOnlinesData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
     this.resetCalendarSelection();
-    this.sumDay();
+    // this.sumDay();
 
     this.primengConfig.ripple = true;
     this.fetchUserInfo();
@@ -108,27 +109,27 @@ export class LamViecOnlineComponent implements OnInit {
     });
   }
 
-  sumDay() {
-    const date1 = new Date(this.WorkingOnline.dateFrom);
-    const date2 = new Date(this.WorkingOnline.dateTo);
-    let diffDays = 0;
+  // sumDay() {
+  //   const date1 = new Date(this.WorkingOnline.dateFrom);
+  //   const date2 = new Date(this.WorkingOnline.dateTo);
+  //   let diffDays = 0;
 
-    if (date1 > date2) {
-      this.isValidDateRange = false;
-      this.WorkingOnline.sumDay = 0;
-      return;
-    }
-    else {
-      while (date1 <= date2) {
-        this.isValidDateRange = true;
-        if (date1.getDay() !== 0 && date1.getDay() !== 6) {
-          diffDays++;
-        }
-        date1.setDate(date1.getDate() + 1);
-      }
-    }
-    this.WorkingOnline.sumDay = diffDays;
-  }
+  //   if (date1 > date2) {
+  //     this.isValidDateRange = false;
+  //     this.WorkingOnline.sumDay = 0;
+  //     return;
+  //   }
+  //   else {
+  //     while (date1 <= date2) {
+  //       this.isValidDateRange = true;
+  //       if (date1.getDay() !== 0 && date1.getDay() !== 6) {
+  //         diffDays++;
+  //       }
+  //       date1.setDate(date1.getDate() + 1);
+  //     }
+  //   }
+  //   this.WorkingOnline.sumDay = diffDays;
+  // }
 
   validateInputDates() {
     if (this.filter_datefrom && this.filter_dateto) {
@@ -174,7 +175,7 @@ export class LamViecOnlineComponent implements OnInit {
       ...this.WorkingOnlineInitState
     };
     this.resetCalendarSelection();
-    this.sumDay();
+    // this.sumDay();
     this.editWorkingOnlineDialog = false;
     this.addNewWorkingOnlineDialog = true;
     this.openDialog = true;
@@ -185,8 +186,9 @@ export class LamViecOnlineComponent implements OnInit {
     this.fetchMemberListData();
     this.WorkingOnline = {};
     this.WorkingOnline = { ...data };
-    this.WorkingOnline.dateFrom = new Date(data.dateFrom);
-    this.WorkingOnline.dateTo = new Date(data.dateTo);
+    // this.WorkingOnline.dateFrom = new Date(data.dateFrom);
+    // this.WorkingOnline.dateTo = new Date(data.dateTo);
+    this.WorkingOnline.date = new Date(data.date);
     this.addNewWorkingOnlineDialog = false;
     this.editWorkingOnlineDialog = true;
     this.openDialog = true;
@@ -222,19 +224,19 @@ export class LamViecOnlineComponent implements OnInit {
     });
   }
 
-  calculateData(): any {
-    const memberTotalWorkingOnlines = {};
-    this.WorkingOnlines.forEach((WorkingOnline: WorkingOnline) => {
-      const memberName = WorkingOnline.member.fullName;
-      if (memberTotalWorkingOnlines.hasOwnProperty(memberName)) {
-        memberTotalWorkingOnlines[memberName] += WorkingOnline.sumDay;
-      } else {
-        memberTotalWorkingOnlines[memberName] = WorkingOnline.sumDay;
-      }
-    });
+  // calculateData(): any {
+  //   const memberTotalWorkingOnlines = {};
+  //   this.WorkingOnlines.forEach((WorkingOnline: WorkingOnline) => {
+  //     const memberName = WorkingOnline.member.fullName;
+  //     if (memberTotalWorkingOnlines.hasOwnProperty(memberName)) {
+  //       memberTotalWorkingOnlines[memberName] += WorkingOnline.sumDay;
+  //     } else {
+  //       memberTotalWorkingOnlines[memberName] = WorkingOnline.sumDay;
+  //     }
+  //   });
 
-    return memberTotalWorkingOnlines;
-  }
+  //   return memberTotalWorkingOnlines;
+  // }
 
   chartData(data) {
     const xAxisData = Object.keys(data);
@@ -265,8 +267,8 @@ export class LamViecOnlineComponent implements OnInit {
 
   sortInitData() {
     this.WorkingOnlines.sort((a, b) => {
-      const dateA = new Date(a.dateFrom);
-      const dateB = new Date(b.dateFrom);
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
       dateA.setHours(0, 0, 0, 0);
       dateB.setHours(0, 0, 0, 0);
       return dateB.getTime() - dateA.getTime();
@@ -313,7 +315,7 @@ export class LamViecOnlineComponent implements OnInit {
         WorkingOnline.member.nickName = foundMember.nickName;
       }
     });
-    this.chartData(this.calculateData());
+    // this.chartData(this.calculateData());
   }
 
 
@@ -326,10 +328,12 @@ export class LamViecOnlineComponent implements OnInit {
   }
 
   resetCalendarSelection() {
-    this.WorkingOnline.dateFrom = new Date();
-    this.WorkingOnline.dateFrom.setHours(0, 0, 0, 0);
-    this.WorkingOnline.dateTo = new Date();
-    this.WorkingOnline.dateTo.setHours(0, 0, 0, 0);
+    // this.WorkingOnline.dateFrom = new Date();
+    // this.WorkingOnline.dateFrom.setHours(0, 0, 0, 0);
+    // this.WorkingOnline.dateTo = new Date();
+    // this.WorkingOnline.dateTo.setHours(0, 0, 0, 0);
+    this.WorkingOnline.date = new Date();
+    this.WorkingOnline.date.setHours(0, 0, 0, 0);
   }
 
   addNewWorkingOnline() {
