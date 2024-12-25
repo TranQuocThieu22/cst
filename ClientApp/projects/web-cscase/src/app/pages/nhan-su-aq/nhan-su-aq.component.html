@@ -6,14 +6,14 @@
       </p-card>
       <ng-template *ngIf="checkIsLeader()" pTemplate="left">
         <div>
-          <button (click)="fileInput.click()" class="btn p-button py-2 mr-2">
+          <!-- <button (click)="fileInput.click()" class="btn p-button py-2 mr-2">
             Import
           </button>
           <input #fileInput type="file" (change)="handleFileInput($event.target.files)" accept=".xls,.xlsx"
             style="display: none" />
           <button type="button" pButton pRipple (click)="exportToExcel()" class="mr-2 py-2" pTooltip="XLS"
             tooltipPosition="bottom">Export
-          </button>
+          </button> -->
 
           <p-button
             *ngIf="checkIsHR()"

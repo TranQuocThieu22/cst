@@ -44,17 +44,16 @@ namespace educlient.Controllers
                 // Find day-off data for each member by year
                 var dayOffData = dayOffsTable.Find(x =>
                     x.memberId == member.id &&
-                    x.dateFrom.Year == year &&
-                    x.dateFrom.Month == month &&
-                    x.approvalStatus == "Đã duyệt" &&
-                    x.sumDay > 0.5
+                    x.date.Year == year &&
+                    x.date.Month == month &&
+                    x.approvalStatus == "Đã duyệt"
                     ).ToList();
 
                 var countDayOff = 0;
-                foreach (var dayOff in dayOffData)
-                {
-                    countDayOff += (int)dayOff.sumDay;
-                }
+                //foreach (var dayOff in dayOffData)
+                //{
+                //    countDayOff += (int)dayOff.sumDay;
+                //}
 
                 var wfhData = workingOnlineTable.Find(x =>
                     x.memberId == member.id &&
@@ -201,17 +200,16 @@ namespace educlient.Controllers
             // Find day-off data for each member by year
             var dayOffData = dayOffsTable.Find(x =>
                 x.memberId == query_memberId &&
-                x.dateFrom.Year == year &&
-                x.dateFrom.Month == month &&
-                x.approvalStatus == "Đã duyệt" &&
-                x.sumDay > 0.5
+                x.date.Year == year &&
+                x.date.Month == month &&
+                x.approvalStatus == "Đã duyệt"
                 ).ToList();
 
             var countDayOff = 0;
-            foreach (var dayOff in dayOffData)
-            {
-                countDayOff += (int)dayOff.sumDay;
-            }
+            //foreach (var dayOff in dayOffData)
+            //{
+            //    countDayOff += (int)dayOff.sumDay;
+            //}
 
             var aqDayOffData = aqDayOffTable.Find(x =>
                 x.dateFrom.Year == year &&
