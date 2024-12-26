@@ -57,6 +57,8 @@ export class LamViecOnlineComponent implements OnInit {
   editWorkingOnlineDialog: boolean;
   addNewWorkingOnlineDialog: boolean;
 
+  wfhIndividualInfo: any = [];
+
   userInfo: any = {};
 
   constructor(
@@ -174,6 +176,7 @@ export class LamViecOnlineComponent implements OnInit {
     this.WorkingOnline = {
       ...this.WorkingOnlineInitState
     };
+    this.wfhIndividualInfo = [];
     this.resetCalendarSelection();
     // this.sumDay();
     this.editWorkingOnlineDialog = false;
@@ -273,6 +276,30 @@ export class LamViecOnlineComponent implements OnInit {
       dateB.setHours(0, 0, 0, 0);
       return dateB.getTime() - dateA.getTime();
     });
+  }
+
+  fetchIndividualWfhQuota(userId: number) {
+    if (userId === null) {
+      this.wfhIndividualInfo = [];
+      return;
+    }
+    let currentYear = new Date().getFullYear();
+    let params: any = {
+      query_memberId: userId,
+      year: currentYear
+    };
+    this.https.get<any>("/api/LamViecOnline/HanMucLamViecOnlineCaNhan", { params: params }).subscribe({
+      next: (res: any) => {
+        this.wfhIndividualInfo = res.data;
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+      }
+    })
   }
 
   convertType(res: any): void {

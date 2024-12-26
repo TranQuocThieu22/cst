@@ -222,6 +222,7 @@
                 <p-dropdown *ngIf="checkIsLeader()"
                     [options]="MemberList"
                     [(ngModel)]="WorkingOnline.member.id"
+                    (onChange)="fetchIndividualWfhQuota(WorkingOnline.member.id)"
                     optionLabel="fullName"
                     [filter]="true"
                     filterBy="fullName"
@@ -232,6 +233,108 @@
             </div>
             <div *ngIf="checkIsLeader()" class="mt-2">
             </div>
+
+            <div *ngIf="wfhIndividualInfo.length > 0" class="field col-12">
+                <div class="flex flex-column">
+                    <span class="">Hạn mức làm việc online cá nhân {{wfhIndividualInfo[0].year}}</span>
+                    <div class="flex justify-content-center mt-2">
+                        <p-table
+                            [value]="wfhIndividualInfo"
+                            styleClass="p-datatable-sm p-datatable-gridlines">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th colspan="2" rowspan="4">
+                                        Hạn mức<br>ngày làm online
+                                    </th>
+                                    <th style="text-align: center;" colspan="6">
+                                        Số ngày đã làm online
+                                    </th>
+                                    <th colspan="2" rowspan="4">
+                                        Hạn mức đã sử dụng
+                                    </th>
+                                    <th colspan="2" rowspan="4">
+                                        Hạn mức<br>còn lại
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; width:10%" rowspan="4">Tổng cộng</th>
+                                    <th style="text-align: center;" colspan="5">Phân loại</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center;" colspan="4">Có tính phép</th>
+                                    <th style="text-align: center; width:10%" rowspan="3">Không tính phép</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center;" colspan="2">Cả ngày</th>
+                                    <th style="text-align: center;" colspan="2">Nửa buổi</th>
+                                </tr>
+                                <tr>
+                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
+                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
+                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
+                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
+                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
+                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
+                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
+                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
+                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
+                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
+                                </tr>
+
+                            </ng-template>
+                            <ng-template pTemplate="body" let-member>
+                                <tr>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].minWfhQuota}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].additionalWfhQuota}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].totalWorkOnlineDay}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].totalWorkOnlineDayFullType1}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].totalWorkOnlineDayFullType2}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].totalWorkOnlineDayHalfType1}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].totalWorkOnlineDayHalfType2}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].totalWorkOnlineDayType3_4}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].usedMinWfhQuota}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].usedAdditionalWfhQuota}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].remainMinWfhQuota}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{wfhIndividualInfo[0].remainAdditionalWfhQuota}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #hanmuccanhan_elseblock>
+                <div class="flex flex-column">
+                    <span class="">Hạn mức nghỉ phép cá nhân {{wfhIndividualInfo[0].year}}</span>
+                    <div class="flex justify-content-center mt-2">
+                        Không có dữ liệu
+                    </div>
+                </div>
+            </ng-template>
 
             <div class="field mt-2 col-12 sm:col-6 md:col-4">
                 <p-dropdown

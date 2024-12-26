@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using static educlient.Controllers.NgayPhepCaNhanController;
 
 namespace educlient.Controllers
 {
@@ -242,6 +243,84 @@ namespace educlient.Controllers
                 result = true
             };
         }
+
+        [HttpGet("HanMucLamViecOnlineCaNhan")]
+        public HanMucLamViecOnlineCaNhanResult GetHanMucLamViecOnlineCaNhan([FromQuery] int year, [FromQuery] int? query_memberId = null)
+        {
+            var resultList = new List<HanMucLamViecOnlineCaNhan>();
+
+            var AQMemberTable = database.Table<AQMember>();
+            var workingOnlineTable = database.Table<WorkingOnlineDay>();
+
+            int minWfhQuota = AQMemberTable.FindById(query_memberId).minWFHQuota;
+            int additionalWfhQuota = AQMemberTable.FindById(query_memberId).additionalWFHQuota;
+            float totalWorkingOnlineDay = 0;
+            float totalWorkingOnlineDay_with_permission = 0;
+            float totalWorkingOnlineDay_without_permission = 0;
+            float totalWorkingOnlineDay_fullType1 = 0;
+            float totalWorkingOnlineDay_fullType2 = 0;
+            float totalWorkingOnlineDay_halfType1 = 0;
+            float totalWorkingOnlineDay_halfType2 = 0;
+            float totalWorkingOnlineDay_type3_4 = 0;
+            float usedMinWfhQuota = 0;
+            float usedAdditionalWfhQuota = 0;
+            float remainMinWfhQuota = 0;
+            float remainAdditionalWfhQuota = 0;
+
+            var workingOnlineDayData = workingOnlineTable.Find(x =>
+                    x.memberId == query_memberId &&
+                    x.date.Year == year &&
+                    x.approvalStatus == "Đã duyệt"
+                    ).ToList();
+
+            totalWorkingOnlineDay = workingOnlineDayData.Count;
+
+            foreach (var workingOnlineDay in workingOnlineDayData)
+            {
+                totalWorkingOnlineDay_with_permission += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+                totalWorkingOnlineDay_fullType1 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 1) ? 1 : 0;
+                totalWorkingOnlineDay_fullType2 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 2) ? 1 : 0;
+                totalWorkingOnlineDay_halfType1 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 1) ? 1 : 0;
+                totalWorkingOnlineDay_halfType2 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 2) ? 1 : 0;
+                totalWorkingOnlineDay_type3_4 += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+            }
+
+            usedMinWfhQuota = (float)(totalWorkingOnlineDay_fullType1 + totalWorkingOnlineDay_halfType1 * 0.5);
+            usedAdditionalWfhQuota = (float)(totalWorkingOnlineDay_fullType2 + totalWorkingOnlineDay_halfType2 * 0.5);
+            remainMinWfhQuota = minWfhQuota - usedMinWfhQuota;
+            remainAdditionalWfhQuota = additionalWfhQuota - usedAdditionalWfhQuota;
+
+            totalWorkingOnlineDay_without_permission = totalWorkingOnlineDay - totalWorkingOnlineDay_with_permission;
+
+            var HanMucLamViecOnline = new HanMucLamViecOnlineCaNhan
+            {
+                year = year,
+                memberId = query_memberId.Value,
+                minWfhQuota = minWfhQuota,
+                additionalWfhQuota = additionalWfhQuota,
+                totalWorkOnlineDay = totalWorkingOnlineDay,
+                totalWorkOnlineDayFullType1 = totalWorkingOnlineDay_fullType1,
+                totalWorkOnlineDayFullType2 = totalWorkingOnlineDay_fullType2,
+                totalWorkOnlineDayHalfType1 = totalWorkingOnlineDay_halfType1,
+                totalWorkOnlineDayHalfType2 = totalWorkingOnlineDay_halfType2,
+                totalWorkOnlineDayType3_4 = totalWorkingOnlineDay_type3_4,
+                usedAdditionalWfhQuota = usedAdditionalWfhQuota,
+                usedMinWfhQuota = usedMinWfhQuota,
+                remainAdditionalWfhQuota = remainAdditionalWfhQuota,
+                remainMinWfhQuota = remainMinWfhQuota,
+            };
+
+            resultList.Add(HanMucLamViecOnline);
+
+            return new HanMucLamViecOnlineCaNhanResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = resultList
+            };
+        }
+
     }
 
     public class WorkingOnlineResult : ApiResultBaseDO
@@ -259,6 +338,30 @@ namespace educlient.Controllers
         public string reason { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
+    }
+
+    public class HanMucLamViecOnlineCaNhanResult : ApiResultBaseDO
+    {
+        public List<HanMucLamViecOnlineCaNhan> data { get; set; }
+    }
+
+    public class HanMucLamViecOnlineCaNhan
+    {
+        public int memberId { get; set; }
+        public int year { get; set; }
+        public int minWfhQuota { get; set; }
+        public int additionalWfhQuota { get; set; }
+        public float totalWorkOnlineDay { get; set; }
+        public float totalWorkOnlineDayFullType1 { get; set; }
+        public float totalWorkOnlineDayFullType2 { get; set; }
+
+        public float totalWorkOnlineDayHalfType1 { get; set; }
+        public float totalWorkOnlineDayHalfType2 { get; set; }
+        public float totalWorkOnlineDayType3_4 { get; set; }
+        public float usedMinWfhQuota { get; set; }
+        public float usedAdditionalWfhQuota { get; set; }
+        public float remainMinWfhQuota { get; set; }
+        public float remainAdditionalWfhQuota { get; set; }
     }
 
 }
