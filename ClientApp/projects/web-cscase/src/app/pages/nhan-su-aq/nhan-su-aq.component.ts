@@ -71,6 +71,12 @@ export class NhanSuAqComponent implements OnInit {
 
   isLoading: boolean = false;
 
+  EmployeeTypeList = [
+    { value: 1, label: 'Chính thức' },
+    { value: 2, label: 'Thử việc' },
+    { value: 3, label: 'Thực tập sinh' },
+  ];
+
   constructor(
     private https: HttpClient,
     private confirmationService: ConfirmationService,

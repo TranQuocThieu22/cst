@@ -68,6 +68,7 @@ namespace educlient.Controllers
                 additionalAbsenceQuota = member.additionalAbsenceQuota,
                 minWFHQuota = member.minWFHQuota,
                 additionalWFHQuota = member.additionalWFHQuota,
+                employeeType = member.employeeType
             }).ToList();
 
             return new AQMembersResult
@@ -121,6 +122,7 @@ namespace educlient.Controllers
                 additionalAbsenceQuota = aqMember.additionalAbsenceQuota,
                 minWFHQuota = aqMember.minWFHQuota,
                 additionalWFHQuota = aqMember.additionalWFHQuota,
+                employeeType = aqMember.employeeType
             };
 
             returnData.Add(aqMemberReturn);
@@ -162,6 +164,7 @@ namespace educlient.Controllers
                 contractStartDate = input.contractStartDate,
                 contractExpireDate = input.contractExpireDate,
                 contractType = input.contractType,
+                employeeType = input.employeeType
             }).ToList();
 
             if (aqMembers.Count == 1)
@@ -192,6 +195,7 @@ namespace educlient.Controllers
                     contractStartDate = existingRecord.contractStartDate,
                     contractExpireDate = existingRecord.contractExpireDate,
                     contractType = existingRecord.contractType,
+                    employeeType = existingRecord.employeeType
                 };
 
                 var returnList = new List<AQMemberDTO>();
@@ -261,6 +265,7 @@ namespace educlient.Controllers
             existingRecord.contractStartDate = inputData.contractStartDate;
             existingRecord.contractExpireDate = inputData.contractExpireDate;
             existingRecord.contractType = inputData.contractType;
+            existingRecord.employeeType = inputData.employeeType;
 
             // Update the record in the collection
             AQMemberTable.Update(existingRecord);
@@ -288,7 +293,8 @@ namespace educlient.Controllers
                 workingYear = existingRecord.workingYear,
                 contractStartDate = existingRecord.contractStartDate,
                 contractExpireDate = existingRecord.contractExpireDate,
-                contractType = existingRecord.contractType
+                contractType = existingRecord.contractType,
+                employeeType = existingRecord.employeeType
             };
 
             return new UpdateResultDTO
@@ -393,106 +399,6 @@ namespace educlient.Controllers
             };
 
         }
-        //[HttpPut, Route("detailWFHQuotaByYear/update")]
-        //public detailWFHQuotaDO GetdetailWFHQuotaByYear(detailInput data)
-        //{
-        //    var AQMemberTable = database.Table<AQMember>();
-        //    var aqmember = AQMemberTable.FindById(data.userId);
-
-
-        //    aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault().WFHQuota = data.data;
-        //    AQMemberTable.Update(aqmember);
-        //    return new detailWFHQuotaDO
-        //    {
-        //        message = "Success",
-        //        code = 200,
-        //        result = true,
-        //        data = aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault()
-        //    };
-        //}
-
-        //[HttpGet, Route("detailWFHQuotaByYear")]
-        //public detailWFHQuotaDO GetdetailWFHQuotaByYear([FromQuery] int userId, [FromQuery] int year)
-        //{
-        //    var AQMemberTable = database.Table<AQMember>();
-        //    var aqmember = AQMemberTable.FindById(userId);
-
-        //    var detailLunch = aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(x => x.year == year);
-        //    return new detailWFHQuotaDO
-        //    {
-        //        message = "Success",
-        //        code = 200,
-        //        result = true,
-        //        data = detailLunch
-        //    };
-        //}
-
-        //[HttpPut, Route("detailAbsenceQuotaByYear/update")]
-        //public detailAbsenceQuotaDO GetdetailAbsenceQuotaByYear(detailInput data)
-        //{
-        //    var AQMemberTable = database.Table<AQMember>();
-        //    var aqmember = AQMemberTable.FindById(data.userId);
-
-        //    aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault().absenceQuota = data.data;
-        //    AQMemberTable.Update(aqmember);
-        //    return new detailAbsenceQuotaDO
-        //    {
-        //        message = "Success",
-        //        code = 200,
-        //        result = true,
-        //        data = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault()
-        //    };
-        //}
-
-        //[HttpGet, Route("detailAbsenceQuotaByYear")]
-        //public detailAbsenceQuotaDO GetdetailAbsenceQuotaByYear([FromQuery] int userId, [FromQuery] int year)
-        //{
-        //    var AQMemberTable = database.Table<AQMember>();
-        //    var aqmember = AQMemberTable.FindById(userId);
-
-        //    var detailLunch = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
-        //    return new detailAbsenceQuotaDO
-        //    {
-        //        message = "Success",
-        //        code = 200,
-        //        result = true,
-        //        data = detailLunch
-        //    };
-        //}
-
-        //[HttpPut, Route("DetailLunch/update")]
-        //public detailLunchDataDO GetDetailLunch(detailInput data)
-        //{
-        //    var AQMemberTable = database.Table<AQMember>();
-        //    var aqmember = AQMemberTable.FindById(data.userId);
-        //    aqmember.detailLunch.FirstOrDefault().year = data.data;
-        //    AQMemberTable.Update(aqmember);
-
-        //    return new detailLunchDataDO
-        //    {
-        //        message = "Success",
-        //        code = 200,
-        //        result = true,
-        //        data = aqmember.detailLunch.FirstOrDefault()
-        //    };
-        //}
-
-        //[HttpGet, Route("DetailLunch")]
-        //public detailLunchDataDO GetDetailLunch([FromQuery] int userId, [FromQuery] int year)
-        //{
-        //    var AQMemberTable = database.Table<AQMember>();
-        //    var aqmember = AQMemberTable.FindById(userId);
-
-        //    var detailLunch = aqmember.detailLunch.FirstOrDefault(x => x.year == year);
-        //    return new detailLunchDataDO
-        //    {
-        //        message = "Success",
-        //        code = 200,
-        //        result = true,
-        //        data = detailLunch
-        //    };
-        //}
-
 
         [HttpPost, Route("AnnualAQDataStatus")]
         public ApiResultBaseDO CreateAnnualAQDataStatus([FromBody] AnnualAQDataStatusInput inputData)
@@ -793,7 +699,8 @@ namespace educlient.Controllers
                 workingYear = member.workingYear,
                 contractStartDate = member.contractStartDate,
                 contractExpireDate = member.contractExpireDate,
-                contractType = member.contractType
+                contractType = member.contractType,
+                employeeType = member.employeeType
             }).ToList();
 
 
@@ -859,6 +766,7 @@ public class AQMemberInsertDTO
     public DateTime? contractStartDate { get; set; } = null;
     public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
+    public int employeeType { get; set; }
 }
 
 public class InsertResultDTO : ApiResultBaseDO
@@ -889,6 +797,7 @@ public class AQMemberUpdateDTO
     public DateTime? contractStartDate { get; set; } = null;
     public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
+    public int employeeType { get; set; }
 }
 
 public class UpdateResultDTO : ApiResultBaseDO
@@ -926,6 +835,7 @@ public class AQMemberDTO
     public DateTime? contractStartDate { get; set; } = null;
     public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
+    public int employeeType { get; set; }
 }
 
 public class MemberCommission

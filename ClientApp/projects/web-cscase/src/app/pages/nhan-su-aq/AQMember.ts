@@ -22,6 +22,7 @@ export interface AQMember {
   contractStartDate?: Date | string;
   contractExpireDate?: Date | string;
   contractType?: string;
+  employeeType?: number;
 }
 
 export interface AQRole {
@@ -50,6 +51,7 @@ export interface AQMemberInsertDO {
   contractStartDate?: Date | string;
   contractExpireDate?: Date | string;
   contractType?: string;
+  employeeType?: number;
 }
 
 export interface AQMemberUpdateDO {
@@ -73,4 +75,5 @@ export interface AQMemberUpdateDO {
   contractStartDate?: Date | string;
   contractExpireDate?: Date | string;
   contractType?: string;
+  employeeType?: number;
 }

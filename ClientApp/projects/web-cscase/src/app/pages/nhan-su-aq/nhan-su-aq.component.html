@@ -158,6 +158,10 @@
             Loại hợp đồng
             <p-sortIcon field="contractType"></p-sortIcon>
           </th>
+          <th pSortableColumn="employeeType" style="white-space: nowrap; min-width: 10rem">
+            Cấp nhân viên
+            <p-sortIcon field="employeeType"></p-sortIcon>
+          </th>
         </tr>
       </ng-template>
       <ng-template let-i="rowIndex" let-line pTemplate="rowexpansion"></ng-template>
@@ -271,6 +275,11 @@
             ">
             {{ AQmember.contractType }}
           </td>
+          <td style="white-space: nowrap; text-align: left; width: 100px;">
+            <span *ngIf="AQmember.employeeType === 1">Chính thức</span>
+            <span *ngIf="AQmember.employeeType === 2">Thử việc</span>
+            <span *ngIf="AQmember.employeeType === 3">Thực tập sinh</span>
+          </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
@@ -315,6 +324,15 @@
         <div class="p-field">
           <label for="phone">Điện thoại</label>
           <input type="text" pInputText id="phone" [(ngModel)]="aqmemberInsert.phone" required />
+        </div>
+        <div class="p-field">
+          <label for="phone">Cấp nhân viên</label>
+          <p-dropdown
+            [options]="EmployeeTypeList"
+            [(ngModel)]="aqmemberInsert.employeeType"
+            optionLabel="label" [showClear]="true"
+            placeholder="Chọn cấp nhân viên" optionValue="value">
+          </p-dropdown>
         </div>
       </div>
 
@@ -492,6 +510,15 @@
               <div class="p-field">
                 <label for="phone">Điện thoại</label>
                 <input type="text" pInputText id="phone" [(ngModel)]="aqmemberUpdate.phone" required />
+              </div>
+              <div class="p-field">
+                <label for="phone">Cấp nhân viên</label>
+                <p-dropdown
+                  [options]="EmployeeTypeList"
+                  [(ngModel)]="aqmemberUpdate.employeeType"
+                  optionLabel="label" [showClear]="true"
+                  placeholder="Chọn cấp nhân viên" optionValue="value">
+                </p-dropdown>
               </div>
             </div>
 
