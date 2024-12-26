@@ -42,6 +42,8 @@ export class NhanSuAqComponent implements OnInit {
 
   aqmemberUpdate: AQMemberUpdateDO = {};
 
+  displayWFHQuotaPercent: number = 0;
+
   isValidUpdateFormData: boolean = true;
 
   clonedAbsenceQuotas: { [s: string]: any; } = {};
@@ -271,6 +273,7 @@ export class NhanSuAqComponent implements OnInit {
     this.editMemberDialog = false;
     this.addNewMemberDialog = true;
     this.openDialog = true;
+    this.displayWFHQuotaPercent = 0;
   }
 
   openEditDialog(data: any) {
@@ -284,6 +287,7 @@ export class NhanSuAqComponent implements OnInit {
       contractStartDate: new Date(data.contractStartDate),
       contractExpireDate: new Date(data.contractExpireDate),
     };
+    this.updateWFHPercentWhenUpdate();
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
     this.openDialog = true;
@@ -753,6 +757,38 @@ export class NhanSuAqComponent implements OnInit {
   }
   convertBooleanToString(value: boolean): string {
     return value ? 'có' : 'không';
+  }
+
+  updateWFHPercent() {
+    const currentYear = new Date().getFullYear();
+    const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
+    if (this.aqmemberInsert.minWFHQuota !== undefined) {
+      this.displayWFHQuotaPercent = parseFloat(((this.aqmemberInsert.minWFHQuota / totalDaysOfYear) * 100).toFixed(2));
+    }
+  }
+
+  updateWFHQuota() {
+    const currentYear = new Date().getFullYear();
+    const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
+    if (this.displayWFHQuotaPercent !== undefined) {
+      this.aqmemberInsert.minWFHQuota = parseFloat(((this.displayWFHQuotaPercent / 100) * totalDaysOfYear).toFixed(2));
+    }
+  }
+
+  updateWFHPercentWhenUpdate() {
+    const currentYear = new Date().getFullYear();
+    const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
+    if (this.aqmemberUpdate.minWFHQuota !== undefined) {
+      this.displayWFHQuotaPercent = parseFloat(((this.aqmemberUpdate.minWFHQuota / totalDaysOfYear) * 100).toFixed(2));
+    }
+  }
+
+  updateWFHQuotaWhenUpdate() {
+    const currentYear = new Date().getFullYear();
+    const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
+    if (this.displayWFHQuotaPercent !== undefined) {
+      this.aqmemberUpdate.minWFHQuota = parseFloat(((this.displayWFHQuotaPercent / 100) * totalDaysOfYear).toFixed(2));
+    }
   }
 
 
