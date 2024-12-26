@@ -119,11 +119,15 @@
             <p-sortIcon field="isLunch"></p-sortIcon>
           </th>
           <th pSortableColumn="minWFHQuota" style="white-space: nowrap">
-            Hạn mức WFH<br>(%/năm)
+            Hạn mức online<br>(%/năm)
+            <p-sortIcon field="minWFHQuota"></p-sortIcon>
+          </th>
+          <th pSortableColumn="minWFHQuota" style="white-space: nowrap">
+            Hạn mức online<br>(ngày/năm)
             <p-sortIcon field="minWFHQuota"></p-sortIcon>
           </th>
           <th pSortableColumn="additionalWFHQuota" style="white-space: nowrap">
-            Hạn mức WFH<br>(tăng thêm)
+            Hạn mức online<br>(tăng thêm)
             <p-sortIcon field="additionalWFHQuota"></p-sortIcon>
           </th>
           <th pSortableColumn="minAbsenceQuota" style="white-space: nowrap; width: 10rem">
@@ -217,6 +221,9 @@
             ">
             <i *ngIf="AQmember.isLunchStatus" class="pi pi-check" style="color: green; font-size: 1.5rem"></i>
             <i *ngIf="!AQmember.isLunchStatus" class="pi pi-times" style="color: red; font-size: 1.5rem"></i>
+          </td>
+          <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+            {{ displayWFHPercent(AQmember.minWFHQuota) }}%
           </td>
           <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
             {{ AQmember.minWFHQuota }}

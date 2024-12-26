@@ -165,7 +165,6 @@ export class NhanSuAqComponent implements OnInit {
           // Your logic for handling errors
         },
         complete: () => {
-          console.log('checkBE: ', this.AQmembers);
           // Your logic for handling the completion event (optional)
           this.AQRoles.forEach((role) => {
             role.total = this.AQmembers.filter(
@@ -786,6 +785,14 @@ export class NhanSuAqComponent implements OnInit {
     const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
     if (this.displayWFHQuotaPercent !== undefined) {
       this.aqmemberUpdate.minWFHQuota = parseFloat(((this.displayWFHQuotaPercent / 100) * totalDaysOfYear).toFixed(2));
+    }
+  }
+
+  displayWFHPercent(wfhQuota: number) {
+    const currentYear = new Date().getFullYear();
+    const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
+    if (wfhQuota !== undefined) {
+      return parseFloat(((wfhQuota / totalDaysOfYear) * 100).toFixed(2));
     }
   }
 
