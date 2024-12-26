@@ -283,8 +283,8 @@ export class NhanSuAqComponent implements OnInit {
       ...this.aqmemberUpdate,
       birthDate: new Date(data.birthDate),
       startDate: new Date(data.startDate),
-      contractStartDate: new Date(data.contractStartDate),
-      contractExpireDate: new Date(data.contractExpireDate),
+      contractStartDate: data.contractStartDate === null ? null : new Date(data.contractStartDate),
+      contractExpireDate: data.contractExpireDate === null ? null : new Date(data.contractExpireDate),
     };
     this.updateWFHPercentWhenUpdate();
     this.addNewMemberDialog = false;
@@ -760,7 +760,7 @@ export class NhanSuAqComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
     if (this.aqmemberInsert.minWFHQuota !== undefined) {
-      this.displayWFHQuotaPercent = parseFloat(((this.aqmemberInsert.minWFHQuota / totalDaysOfYear) * 100).toFixed(2));
+      this.displayWFHQuotaPercent = Math.round((this.aqmemberInsert.minWFHQuota / totalDaysOfYear) * 100);
     }
   }
 
@@ -768,7 +768,7 @@ export class NhanSuAqComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
     if (this.displayWFHQuotaPercent !== undefined) {
-      this.aqmemberInsert.minWFHQuota = parseFloat(((this.displayWFHQuotaPercent / 100) * totalDaysOfYear).toFixed(2));
+      this.aqmemberInsert.minWFHQuota = Math.round((this.displayWFHQuotaPercent / 100) * totalDaysOfYear);
     }
   }
 
@@ -776,7 +776,7 @@ export class NhanSuAqComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
     if (this.aqmemberUpdate.minWFHQuota !== undefined) {
-      this.displayWFHQuotaPercent = parseFloat(((this.aqmemberUpdate.minWFHQuota / totalDaysOfYear) * 100).toFixed(2));
+      this.displayWFHQuotaPercent = Math.round((this.aqmemberUpdate.minWFHQuota / totalDaysOfYear) * 100);
     }
   }
 
@@ -784,7 +784,7 @@ export class NhanSuAqComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
     if (this.displayWFHQuotaPercent !== undefined) {
-      this.aqmemberUpdate.minWFHQuota = parseFloat(((this.displayWFHQuotaPercent / 100) * totalDaysOfYear).toFixed(2));
+      this.aqmemberUpdate.minWFHQuota = Math.round((this.displayWFHQuotaPercent / 100) * totalDaysOfYear);
     }
   }
 
@@ -792,7 +792,7 @@ export class NhanSuAqComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
     if (wfhQuota !== undefined) {
-      return parseFloat(((wfhQuota / totalDaysOfYear) * 100).toFixed(2));
+      return Math.round((wfhQuota / totalDaysOfYear) * 100);
     }
   }
 

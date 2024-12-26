@@ -162,7 +162,6 @@ namespace educlient.Controllers
                 contractStartDate = input.contractStartDate,
                 contractExpireDate = input.contractExpireDate,
                 contractType = input.contractType,
-
             }).ToList();
 
             if (aqMembers.Count == 1)
@@ -857,8 +856,8 @@ public class AQMemberInsertDTO
     public string address { get; set; }
     public int minWFHQuota { get; set; }
     public int minAbsenceQuota { get; set; }
-    public DateTime contractStartDate { get; set; }
-    public DateTime contractExpireDate { get; set; }
+    public DateTime? contractStartDate { get; set; } = null;
+    public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
 }
 
@@ -887,8 +886,8 @@ public class AQMemberUpdateDTO
     public bool isActive { get; set; }
     public string maSoCCCD { get; set; }
     public string address { get; set; }
-    public DateTime contractStartDate { get; set; }
-    public DateTime contractExpireDate { get; set; }
+    public DateTime? contractStartDate { get; set; } = null;
+    public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
 }
 
@@ -924,8 +923,8 @@ public class AQMemberDTO
     public bool isActive { get; set; }
     public string maSoCCCD { get; set; }
     public string address { get; set; }
-    public DateTime contractStartDate { get; set; }
-    public DateTime contractExpireDate { get; set; }
+    public DateTime? contractStartDate { get; set; } = null;
+    public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
 }
 

@@ -261,7 +261,8 @@
               text-align: center;
               vertical-align: middle;
             ">
-            {{ AQmember.contractExpireDate | date : "dd/MM/yyyy" }}
+            {{ AQmember.contractExpireDate ? (AQmember.contractExpireDate | date : "dd/MM/yyyy") : 'Không có thời hạn'
+            }}
           </td>
           <td style="
               white-space: nowrap;
@@ -360,6 +361,11 @@
           <input type="text" pInputText id="address" [(ngModel)]="aqmemberInsert.address" required autofocus />
         </div>
         <div class="p-field">
+          <label for="contractType">Loại hợp đồng</label>
+          <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberInsert.contractType" required
+            autofocus />
+        </div>
+        <div class="p-field">
           <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
           <p-calendar appendTo="body"
             dateFormat="dd/mm/yy"
@@ -372,11 +378,6 @@
             dateFormat="dd/mm/yy"
             [(ngModel)]="aqmemberInsert.contractExpireDate"
             inputId="contractExpireDate"></p-calendar>
-        </div>
-        <div class="p-field">
-          <label for="contractType">Loại hợp đồng</label>
-          <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberInsert.contractType" required
-            autofocus />
         </div>
       </div>
 
@@ -545,6 +546,11 @@
                 <input type="text" pInputText id="address" [(ngModel)]="aqmemberUpdate.address" required autofocus />
               </div>
               <div class="p-field">
+                <label for="contractType">Loại hợp đồng</label>
+                <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberUpdate.contractType"
+                  required autofocus />
+              </div>
+              <div class="p-field">
                 <label for="contractStartDate">Ngày bắt đầu hợp đồng</label>
                 <p-calendar appendTo="body"
                   dateFormat="dd/mm/yy"
@@ -557,11 +563,6 @@
                   dateFormat="dd/mm/yy"
                   [(ngModel)]="aqmemberUpdate.contractExpireDate"
                   inputId="contractExpireDate"></p-calendar>
-              </div>
-              <div class="p-field">
-                <label for="contractType">Loại hợp đồng</label>
-                <input type="text" pInputText id="contractType" [(ngModel)]="aqmemberUpdate.contractType"
-                  required autofocus />
               </div>
             </div>
 

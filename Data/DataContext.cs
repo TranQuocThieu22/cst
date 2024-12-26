@@ -91,8 +91,8 @@ namespace educlient.Data
         public bool isActive { get; set; }
         public string MaSoCCCD { get; set; }
         public string address { get; set; }
-        public DateTime contractStartDate { get; set; }
-        public DateTime contractExpireDate { get; set; }
+        public DateTime? contractStartDate { get; set; } = null;
+        public DateTime? contractExpireDate { get; set; } = null;
         public string contractType { get; set; }
     }
 
