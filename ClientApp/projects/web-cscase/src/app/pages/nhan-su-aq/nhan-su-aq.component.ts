@@ -327,7 +327,7 @@ export class NhanSuAqComponent implements OnInit {
       this.aqmemberInsert.avatar = null;
     }
     let aqmemberArray: AQMemberInsertDO[] = [this.aqmemberInsert];
-
+    this.isLoading = true;
     this.https.post<any>("/api/ThongTinCaNhan", aqmemberArray).subscribe({
       next: (res: any) => {
         this.AQmembers.push(res.data[0]);
@@ -338,7 +338,7 @@ export class NhanSuAqComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        console.log(this.AQmembers);
+        this.isLoading = false;
       },
     });
 
@@ -350,28 +350,25 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   updateMember() {
-    this.https
-      .put<any>(
-        "/api/ThongTinCaNhan/" + this.aqmemberUpdate.id,
-        this.aqmemberUpdate
-      )
-      .subscribe({
-        next: (res: any) => {
-          const index = this.AQmembers.findIndex(
-            (member) => member.id === this.aqmemberUpdate.id
-          );
-          if (index !== -1) {
-            this.AQmembers[index] = res.data;
-          }
-        },
-        error: (error) => {
-          console.log(error);
-          // Your logic for handling errors
-        },
-        complete: () => {
-          // Your logic for handling the completion event (optional)
-        },
-      });
+    this.isLoading = true;
+    this.https.put<any>("/api/ThongTinCaNhan/" + this.aqmemberUpdate.id, this.aqmemberUpdate).subscribe({
+      next: (res: any) => {
+        const index = this.AQmembers.findIndex(
+          (member) => member.id === this.aqmemberUpdate.id
+        );
+        if (index !== -1) {
+          this.AQmembers[index] = res.data;
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        // Your logic for handling errors
+      },
+      complete: () => {
+        // Your logic for handling the completion event (optional)
+        this.isLoading = false;
+      },
+    });
     this.hideDialog();
   }
 
@@ -389,6 +386,7 @@ export class NhanSuAqComponent implements OnInit {
           detail: "Đã xóa tài khoản khỏi hệ thống",
         });
 
+        this.isLoading = true;
         this.https
           .delete<any>("/api/ThongTinCaNhan/" + data.id, data)
           .subscribe({
