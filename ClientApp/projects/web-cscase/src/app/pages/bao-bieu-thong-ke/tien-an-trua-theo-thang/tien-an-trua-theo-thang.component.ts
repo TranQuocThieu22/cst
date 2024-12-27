@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
 import { HttpClient } from '@angular/common/http';
 import { LunchPaymentReport } from './tien-an-trua-DT'
+import { Table } from 'primeng/table';
 @Component({
   selector: 'app-tien-an-trua-theo-thang',
   templateUrl: './tien-an-trua-theo-thang.component.html',
@@ -17,6 +18,7 @@ export class TienAnTruaTheoThangComponent implements OnInit {
 
   summary_lunch_report: any = {}
 
+  isLoading: boolean = false;
 
   constructor(
     private https: HttpClient
@@ -34,6 +36,7 @@ export class TienAnTruaTheoThangComponent implements OnInit {
 
 
   fetchLunchPaymentReport(selectedMonthYear?: any) {
+    this.isLoading = true;
     let params: any = {};
     if (selectedMonthYear) {
       params = {
@@ -45,6 +48,7 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     this.https.get<any>("/api/BaoBieuThongKe/ThongKeTinhTienAnTrua", { params: params }).subscribe({
       next: (res: any) => {
         this.AQLunchPaymentReport = res.data;
+        console.log(res.data);
       },
       error: (error) => {
         console.log(error);
@@ -53,6 +57,7 @@ export class TienAnTruaTheoThangComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.handleAfterFetchLunchReportData();
+        this.isLoading = false;
       }
     });
   }
@@ -76,20 +81,32 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     const TotalWorkingDay = daysInMonth - totalWeekendDays;
 
     this.AQLunchPaymentReport.forEach((member) => {
-      member.actual_workingDay = TotalWorkingDay - member.total_IndividualDayOff - member.total_WorkingOnline - member.total_CommissionDay - member.total_AQDayOff;
+      member.office_workingDay = TotalWorkingDay - member.total_IndividualDayOff - member.total_WorkingOnline - member.total_CommissionDay_full - member.total_CommissionDay_half - member.total_AQDayOff;
     });
     return Promise.resolve();
   }
 
   calculateSummary(): void {
     const summary_data = {
-      total_IndividualDayOff: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_IndividualDayOff, 0),
-      total_WorkingOnline: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_WorkingOnline, 0),
-      total_CommissionDay: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay, 0),
-      total_AQDayOff: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_AQDayOff, 0),
-      total_AQActual_workingDay: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.actual_workingDay, 0)
+      sum_total_IndividualDayOff: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_IndividualDayOff, 0),
+      sum_total_IndividualDayOff_full: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_IndividualDayOff_full, 0),
+      sum_total_IndividualDayOff_half: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_IndividualDayOff_half, 0),
+      sum_total_WorkingOnline: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_WorkingOnline, 0),
+      sum_total_WorkingOnline_full: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_WorkingOnline_full, 0),
+      sum_total_WorkingOnline_half: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_WorkingOnline_half, 0),
+      sum_total_CommissionDay_full: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay_full, 0),
+      sum_total_CommissionDay_half: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay_half, 0),
+      sum_total_AQDayOff: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_AQDayOff, 0),
+      sum_total_Office_workingDay: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.office_workingDay, 0),
     };
     this.summary_lunch_report = summary_data;
+    // this.summary_lunch_report = {
+    //   total_IndividualDayOff: 0,
+    //   total_WorkingOnline: 0,
+    //   total_CommissionDay: 0,
+    //   total_AQDayOff: 0,
+    //   total_AQActual_workingDay: 0,
+    // }
   }
 
   exportExcel(type: string) {
@@ -145,5 +162,10 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 
+  clear(table: Table) {
+    table.clear();
+    this.selectedMonthYear = new Date();
+    this.fetchLunchPaymentReport(this.selectedMonthYear);
+  }
 }
 

@@ -8,7 +8,8 @@
             Thống kê tính tiền ăn trưa theo tháng
         </p-card>
         <!-- data table -->
-        <p-table #dt
+        <p-table #dt1
+            [loading]="isLoading"
             [value]="AQLunchPaymentReport"
             [rows]="5"
             [showCurrentPageReport]="true"
@@ -28,9 +29,10 @@
                         <div class="">
                             <button
                                 pButton
-                                label="Clear"
+                                label="Refresh"
                                 class="p-button-outlined"
-                                icon="pi pi-filter-slash">
+                                icon="pi pi-filter-slash"
+                                (click)="clear(dt1)">
                             </button>
                         </div>
                         <span class="p-float-label">
@@ -69,55 +71,121 @@
             </ng-template>
             <ng-template pTemplate="header">
                 <tr>
-                    <th style="white-space: nowrap; min-width:10rem"
-                        class="text-center">
+                    <!-- <th style="white-space: nowrap; min-width:10rem"
+                        class="text-center"
+                        rowspan="2">
                         Nick name
-                    </th>
+                    </th> -->
                     <th style="white-space: nowrap; min-width:10rem"
-                        class="text-center">
+                        class="text-center"
+                        rowspan="2">
                         Tên đầy đủ
                     </th>
-                    <th style="white-space: wrap; min-width:10rem"
-                        class="text-center">
-                        Tổng số ngày phép (trọn ngày)
+                    <th style="white-space: nowrap; min-width:5rem"
+                        class="text-center"
+                        rowspan="2">
+                        Cấp nhân viên
                     </th>
-                    <th style="white-space: wrap; min-width:10rem"
-                        class="text-center">
-                        Tổng số ngày online (trọn ngày)
+                    <th style="white-space: wrap;"
+                        class="text-center"
+                        colspan="3">
+                        Số ngày nghỉ
                     </th>
-                    <th style="white-space: wrap; min-width:10rem"
-                        class="text-center">
-                        Tổng số ngày công tác (trọn ngày)
+                    <th style="white-space: wrap;"
+                        class="text-center"
+                        colspan="3">
+                        Số ngày làm online
                     </th>
-                    <th style="white-space: wrap; min-width:10rem"
-                        class="text-center">
-                        Tổng số ngày nghỉ chung (nếu có)
+                    <th style="white-space: wrap;"
+                        class="text-center"
+                        colspan="2">
+                        Số ngày công tác
                     </th>
-                    <th style="white-space: wrap; min-width:10rem"
+                    <th style="white-space: wrap; width:7rem"
+                        class="text-center"
+                        rowspan="2">
+                        Số ngày nghỉ chung
+                    </th>
+                    <th style="white-space: wrap; width:7rem"
+                        class="text-center"
+                        rowspan="2">
+                        Tổng số ngày đi làm
+                    </th>
+                    <th style="white-space: wrap; "
+                        class="text-center"
+                        rowspan="2">
+                        Tiền ăn trưa
+                    </th>
+                </tr>
+                <tr>
+                    <th style="white-space: wrap; min-width:8rem"
                         class="text-center">
-                        Số ngày còn lại
+                        Tổng cộng
+                    </th>
+                    <th style="white-space: wrap; min-width:8rem"
+                        class="text-center">
+                        Trọn ngày
+                    </th>
+                    <th style="white-space: wrap; min-width:8rem"
+                        class="text-center">
+                        Nửa ngày
+                    </th>
+                    <th style="white-space: wrap; min-width:8rem"
+                        class="text-center">
+                        Tổng cộng
+                    </th>
+                    <th style="white-space: wrap; min-width:8rem"
+                        class="text-center">
+                        Trọn ngày
+                    </th>
+                    <th style="white-space: wrap; min-width:8rem"
+                        class="text-center">
+                        Nửa ngày
+                    </th>
+
+                    <th style="white-space: wrap; min-width:8rem"
+                        class="text-center">
+                        Trọn ngày
+                    </th>
+                    <th style="white-space: wrap; min-width:8rem"
+                        class="text-center">
+                        Nửa ngày
                     </th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-AQMember>
                 <tr [pSelectableRow]="AQMember">
-                    <td style="text-align: center;">{{AQMember.nickName}}</td>
+                    <!-- <td style="text-align: center;">{{AQMember.nickName}}</td> -->
                     <td style="text-align: center;">{{AQMember.fullName}}</td>
+                    <td style="text-align: center; max-width: fit-content;">
+                        {{AQMember.employeeType === 1 ? 'Chính thức' : AQMember.employeeType === 2 ? 'Thử việc' : 'Thực
+                        tập sinh'}}
+                    </td>
                     <td style="text-align: center;">{{AQMember.total_IndividualDayOff}}</td>
+                    <td style="text-align: center;">{{AQMember.total_IndividualDayOff_full}}</td>
+                    <td style="text-align: center;">{{AQMember.total_IndividualDayOff_half}}</td>
                     <td style="text-align: center;">{{AQMember.total_WorkingOnline}}</td>
-                    <td style="text-align: center;">{{AQMember.total_CommissionDay}}</td>
+                    <td style="text-align: center;">{{AQMember.total_WorkingOnline_full}}</td>
+                    <td style="text-align: center;">{{AQMember.total_WorkingOnline_half}}</td>
+                    <td style="text-align: center;">{{AQMember.total_CommissionDay_full}}</td>
+                    <td style="text-align: center;">{{AQMember.total_CommissionDay_half}}</td>
                     <td style="text-align: center;">{{AQMember.total_AQDayOff}}</td>
-                    <td style="text-align: center;">{{AQMember.actual_workingDay}}</td>
+                    <td style="text-align: center;">{{AQMember.office_workingDay}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="footer">
                 <tr>
-                    <td colspan="2" style="text-align: center;">Tổng cộng:</td>
-                    <td style="text-align: center;">{{summary_lunch_report.total_IndividualDayOff}}</td>
-                    <td style="text-align: center;">{{summary_lunch_report.total_WorkingOnline}}</td>
-                    <td style="text-align: center;">{{summary_lunch_report.total_CommissionDay}}</td>
-                    <td style="text-align: center;">{{summary_lunch_report.total_AQDayOff}}</td>
-                    <td style="text-align: center;">{{summary_lunch_report.total_AQActual_workingDay}}</td>
+                    <td colspan="11" style="text-align: center;">Tổng cộng toàn bộ thành viên:</td>
+                    <!-- <td style="text-align: center;">{{summary_lunch_report.sum_total_IndividualDayOff}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_IndividualDayOff_full}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_IndividualDayOff_half}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_WorkingOnline}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_WorkingOnline_full}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_WorkingOnline_half}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_CommissionDay_full}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_CommissionDay_half}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_AQDayOff}}</td> -->
+                    <td style="text-align: center;">{{summary_lunch_report.sum_total_Office_workingDay}}</td>
                 </tr>
             </ng-template>
         </p-table>

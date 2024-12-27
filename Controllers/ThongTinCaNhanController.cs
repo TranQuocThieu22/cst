@@ -652,7 +652,8 @@ namespace educlient.Controllers
 
             var memberList = AQMemberTable.Query().Where(
                 x => x.isActive == true &&
-                x.contractExpireDate >= today && x.contractExpireDate <= thirtyDaysFromNow
+                x.contractExpireDate >= today &&
+                x.contractExpireDate <= thirtyDaysFromNow
                 ).ToList();
 
             return new CountNearExpiredContract
