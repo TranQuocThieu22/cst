@@ -54,6 +54,26 @@
                                 (click)="fetchFilteredLunchPaymentReport()">
                             </button>
                         </span>
+                        <span class="p-float-label">
+                            <p-inputNumber inputId="lunchPaymentType1" [(ngModel)]="lunchPaymentType1"></p-inputNumber>
+                            <label for="inputnumber">Nhân viên chính thức</label>
+                        </span>
+                        <span class="p-float-label">
+                            <p-inputNumber inputId="lunchPaymentType2" [(ngModel)]="lunchPaymentType2"></p-inputNumber>
+                            <label for="inputnumber">Nhân viên thử việc</label>
+                        </span>
+                        <span class="p-float-label">
+                            <p-inputNumber inputId="lunchPaymentType3" [(ngModel)]="lunchPaymentType3"></p-inputNumber>
+                            <label for="inputnumber">Thực tập sinh</label>
+                        </span>
+                        <span>
+                            <button
+                                pButton type="button"
+                                label="Tổng kết tiền ăn trưa"
+                                class="p-button-outlined"
+                                (click)="calculateEachMemberActualWorkingDayAndPayment()">
+                            </button>
+                        </span>
                     </div>
                     <div class="mt-3 mb-2">
                         <button type="button" pButton pRipple icon="pi pi-file-excel"
@@ -171,6 +191,7 @@
                     <td style="text-align: center;">{{AQMember.total_CommissionDay_half}}</td>
                     <td style="text-align: center;">{{AQMember.total_AQDayOff}}</td>
                     <td style="text-align: center;">{{AQMember.office_workingDay}}</td>
+                    <td style="text-align: center;">{{AQMember.lunchPayment | currency: 'VND'}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="footer">
@@ -186,6 +207,7 @@
                     <td style="text-align: center;">{{summary_lunch_report.sum_total_CommissionDay_half}}</td>
                     <td style="text-align: center;">{{summary_lunch_report.sum_total_AQDayOff}}</td> -->
                     <td style="text-align: center;">{{summary_lunch_report.sum_total_Office_workingDay}}</td>
+                    <td style="text-align: center;">{{summary_lunch_report.sum_lunchPayment | currency: 'VND'}}</td>
                 </tr>
             </ng-template>
         </p-table>

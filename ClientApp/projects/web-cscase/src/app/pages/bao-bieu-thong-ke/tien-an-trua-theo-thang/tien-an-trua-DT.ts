@@ -3,6 +3,7 @@ export interface LunchPaymentReport {
     id: number;
     fullName?: string;
     nickName?: string;
+    employeeType?: number;
     total_IndividualDayOff?: number;
     total_WorkingOnline?: number;
     total_IndividualDayOff_full?: number;
@@ -13,4 +14,5 @@ export interface LunchPaymentReport {
     total_CommissionDay_half?: number;
     total_AQDayOff?: number;
     office_workingDay?: number;
+    lunchPayment?: number;
 }

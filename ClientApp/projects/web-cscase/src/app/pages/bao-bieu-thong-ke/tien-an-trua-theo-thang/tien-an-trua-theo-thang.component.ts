@@ -18,6 +18,11 @@ export class TienAnTruaTheoThangComponent implements OnInit {
 
   summary_lunch_report: any = {}
 
+  lunchPaymentType1: number = 40000;
+  lunchPaymentType2: number = 20000;
+  lunchPaymentType3: number = 20000;
+
+
   isLoading: boolean = false;
 
   constructor(
@@ -63,11 +68,11 @@ export class TienAnTruaTheoThangComponent implements OnInit {
   }
 
   async handleAfterFetchLunchReportData(): Promise<void> {
-    await this.calculateEachMemberActualWorkingDay();
+    await this.calculateEachMemberActualWorkingDayAndPayment();
     this.calculateSummary();
   }
 
-  calculateEachMemberActualWorkingDay(): Promise<void> {
+  calculateEachMemberActualWorkingDayAndPayment(): Promise<void> {
     const daysInMonth = new Date(this.selectedMonthYear.getFullYear(), this.selectedMonthYear.getMonth() + 1, 0).getDate();
     const weekends = ['Saturday', 'Sunday'];
     let totalWeekendDays = 0;
@@ -82,6 +87,20 @@ export class TienAnTruaTheoThangComponent implements OnInit {
 
     this.AQLunchPaymentReport.forEach((member) => {
       member.office_workingDay = TotalWorkingDay - member.total_IndividualDayOff - member.total_WorkingOnline - member.total_CommissionDay_full - member.total_CommissionDay_half - member.total_AQDayOff;
+      switch (member.employeeType) {
+        case 1:
+          member.lunchPayment = member.office_workingDay * this.lunchPaymentType1;
+          break;
+        case 2:
+          member.lunchPayment = member.office_workingDay * this.lunchPaymentType2;
+          break;
+        case 3:
+          member.lunchPayment = member.office_workingDay * this.lunchPaymentType3;
+          break;
+        default:
+          member.lunchPayment = 0;
+          break;
+      }
     });
     return Promise.resolve();
   }
@@ -98,6 +117,7 @@ export class TienAnTruaTheoThangComponent implements OnInit {
       sum_total_CommissionDay_half: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay_half, 0),
       sum_total_AQDayOff: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.total_AQDayOff, 0),
       sum_total_Office_workingDay: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.office_workingDay, 0),
+      sum_lunchPayment: this.AQLunchPaymentReport.reduce((acc, report) => acc + report.lunchPayment, 0),
     };
     this.summary_lunch_report = summary_data;
     // this.summary_lunch_report = {
@@ -166,6 +186,10 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     table.clear();
     this.selectedMonthYear = new Date();
     this.fetchLunchPaymentReport(this.selectedMonthYear);
+    this.lunchPaymentType1 = 40000;
+    this.lunchPaymentType2 = 20000;
+    this.lunchPaymentType3 = 20000;
+    this.calculateEachMemberActualWorkingDayAndPayment();
   }
 }
 
