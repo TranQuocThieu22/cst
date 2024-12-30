@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using static educlient.Controllers.NgayPhepCaNhanController;
 
 namespace educlient.Controllers
 {
@@ -20,9 +21,9 @@ namespace educlient.Controllers
         [HttpGet]
         public WorkingOnlineResult GetAll([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, [FromQuery] int? query_memberId = null)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
-            List<WorkingOnlineDataDO> resultData;
+            List<WorkingOnlineDay> resultData;
 
             if (query_memberId.HasValue)
             {
@@ -31,10 +32,11 @@ namespace educlient.Controllers
                 {
                     resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
-                        ((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
-                        (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value))
+                        (x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value)
+                    //((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                    //(x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value))
                     ).ToList();
                 }
                 else if (query_dateFrom.HasValue)
@@ -42,7 +44,7 @@ namespace educlient.Controllers
                     // Only dateFrom is provided
                     resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
-                        x.dateFrom >= query_dateFrom.Value
+                        x.date >= query_dateFrom.Value
                     ).ToList();
                 }
                 else if (query_dateTo.HasValue)
@@ -50,7 +52,7 @@ namespace educlient.Controllers
                     // Only dateTo is provided
                     resultData = WorkingOnlineTable.Find(x =>
                         x.memberId == query_memberId.Value &&
-                        x.dateTo <= query_dateTo.Value
+                        x.date <= query_dateTo.Value
                     ).ToList();
                 }
                 else
@@ -65,21 +67,22 @@ namespace educlient.Controllers
                 if (query_dateFrom.HasValue && query_dateTo.HasValue)
                 {
                     resultData = WorkingOnlineTable.Find(x =>
-                        (x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
-                        (x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
-                        (x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
+                    (x.date >= query_dateFrom.Value && x.date <= query_dateTo.Value)
+                    //(x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateFrom.Value && x.dateTo >= query_dateTo.Value) ||
+                    //(x.dateFrom <= query_dateTo.Value && x.dateTo >= query_dateFrom.Value) ||
+                    //(x.dateTo >= query_dateFrom.Value && x.dateFrom <= query_dateTo.Value)
                     ).ToList();
                 }
                 else if (query_dateFrom.HasValue)
                 {
                     // Only dateFrom is provided
-                    resultData = WorkingOnlineTable.Find(x => x.dateFrom >= query_dateFrom.Value).ToList();
+                    resultData = WorkingOnlineTable.Find(x => x.date >= query_dateFrom.Value).ToList();
                 }
                 else if (query_dateTo.HasValue)
                 {
                     // Only dateTo is provided
-                    resultData = WorkingOnlineTable.Find(x => x.dateTo <= query_dateTo.Value).ToList();
+                    resultData = WorkingOnlineTable.Find(x => x.date <= query_dateTo.Value).ToList();
                 }
                 else
                 {
@@ -101,9 +104,9 @@ namespace educlient.Controllers
         [HttpGet, Route("{id}")]
         public WorkingOnlineResult GetById(int id)
         {
-            List<WorkingOnlineDataDO> returnData = new List<WorkingOnlineDataDO>();
+            List<WorkingOnlineDay> returnData = new List<WorkingOnlineDay>();
 
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var resultData = WorkingOnlineTable.FindById(id);
             if (resultData == null)
@@ -130,18 +133,18 @@ namespace educlient.Controllers
         [HttpPost]
         public ApiResultBaseDO Insert([FromBody] WorkingOnlineInput[] inputData)
         {
-            var insertData = inputData.Select(input => new WorkingOnlineDataDO
+            var insertData = inputData.Select(input => new WorkingOnlineDay
             {
-                dateFrom = input.dateFrom,
-                dateTo = input.dateTo,
-                sumDay = input.sumDay,
+                date = input.date,
                 memberId = input.memberId,
                 reason = input.reason,
+                periodType = input.periodType,
+                wfhType = input.wfhType,
                 approvalStatus = input.approvalStatus,
                 note = input.note,
             }).ToList();
 
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
             WorkingOnlineTable.Insert(insertData);
 
             return new ApiResultBaseDO
@@ -155,7 +158,7 @@ namespace educlient.Controllers
         [HttpPut, Route("{id}")]
         public ApiResultBaseDO Update(int id, [FromBody] WorkingOnlineInput inputData)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var existingRecord = WorkingOnlineTable.FindById(id);
             if (existingRecord == null)
@@ -168,11 +171,11 @@ namespace educlient.Controllers
             }
 
             // Update the existing record with new values
-            existingRecord.dateFrom = inputData.dateFrom;
-            existingRecord.dateTo = inputData.dateTo;
-            existingRecord.sumDay = inputData.sumDay;
+            existingRecord.date = inputData.date;
             existingRecord.memberId = inputData.memberId;
             existingRecord.reason = inputData.reason;
+            existingRecord.periodType = inputData.periodType;
+            existingRecord.wfhType = inputData.wfhType;
             existingRecord.approvalStatus = inputData.approvalStatus;
             existingRecord.note = inputData.note;
 
@@ -190,7 +193,7 @@ namespace educlient.Controllers
         [HttpDelete, Route("{id}")]
         public ApiResultBaseDO Delete(int id)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var existingRecord = WorkingOnlineTable.FindById(id);
             if (existingRecord == null)
@@ -215,7 +218,7 @@ namespace educlient.Controllers
         [HttpPut, Route("DuyetLamViecOnline")]
         public ApiResultBaseDO ApproveWorkingOnline([FromBody] ApprovalInput inputData)
         {
-            var WorkingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var WorkingOnlineTable = database.Table<WorkingOnlineDay>();
 
             var existingRecord = WorkingOnlineTable.FindById(inputData.id);
             if (existingRecord == null)
@@ -240,23 +243,125 @@ namespace educlient.Controllers
                 result = true
             };
         }
+
+        [HttpGet("HanMucLamViecOnlineCaNhan")]
+        public HanMucLamViecOnlineCaNhanResult GetHanMucLamViecOnlineCaNhan([FromQuery] int year, [FromQuery] int? query_memberId = null)
+        {
+            var resultList = new List<HanMucLamViecOnlineCaNhan>();
+
+            var AQMemberTable = database.Table<AQMember>();
+            var workingOnlineTable = database.Table<WorkingOnlineDay>();
+
+            int minWfhQuota = AQMemberTable.FindById(query_memberId).minWFHQuota;
+            int additionalWfhQuota = AQMemberTable.FindById(query_memberId).additionalWFHQuota;
+            float totalWorkingOnlineDay = 0;
+            float totalWorkingOnlineDay_with_permission = 0;
+            float totalWorkingOnlineDay_without_permission = 0;
+            float totalWorkingOnlineDay_fullType1 = 0;
+            float totalWorkingOnlineDay_fullType2 = 0;
+            float totalWorkingOnlineDay_halfType1 = 0;
+            float totalWorkingOnlineDay_halfType2 = 0;
+            float totalWorkingOnlineDay_type3_4 = 0;
+            float usedMinWfhQuota = 0;
+            float usedAdditionalWfhQuota = 0;
+            float remainMinWfhQuota = 0;
+            float remainAdditionalWfhQuota = 0;
+
+            var workingOnlineDayData = workingOnlineTable.Find(x =>
+                    x.memberId == query_memberId &&
+                    x.date.Year == year &&
+                    x.approvalStatus == "Đã duyệt"
+                    ).ToList();
+
+            totalWorkingOnlineDay = workingOnlineDayData.Count;
+
+            foreach (var workingOnlineDay in workingOnlineDayData)
+            {
+                totalWorkingOnlineDay_with_permission += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+                totalWorkingOnlineDay_fullType1 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 1) ? 1 : 0;
+                totalWorkingOnlineDay_fullType2 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 2) ? 1 : 0;
+                totalWorkingOnlineDay_halfType1 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 1) ? 1 : 0;
+                totalWorkingOnlineDay_halfType2 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 2) ? 1 : 0;
+                totalWorkingOnlineDay_type3_4 += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+            }
+
+            usedMinWfhQuota = (float)(totalWorkingOnlineDay_fullType1 + totalWorkingOnlineDay_halfType1 * 0.5);
+            usedAdditionalWfhQuota = (float)(totalWorkingOnlineDay_fullType2 + totalWorkingOnlineDay_halfType2 * 0.5);
+            remainMinWfhQuota = minWfhQuota - usedMinWfhQuota;
+            remainAdditionalWfhQuota = additionalWfhQuota - usedAdditionalWfhQuota;
+
+            totalWorkingOnlineDay_without_permission = totalWorkingOnlineDay - totalWorkingOnlineDay_with_permission;
+
+            var HanMucLamViecOnline = new HanMucLamViecOnlineCaNhan
+            {
+                year = year,
+                memberId = query_memberId.Value,
+                minWfhQuota = minWfhQuota,
+                additionalWfhQuota = additionalWfhQuota,
+                totalWorkOnlineDay = totalWorkingOnlineDay,
+                totalWorkOnlineDayFullType1 = totalWorkingOnlineDay_fullType1,
+                totalWorkOnlineDayFullType2 = totalWorkingOnlineDay_fullType2,
+                totalWorkOnlineDayHalfType1 = totalWorkingOnlineDay_halfType1,
+                totalWorkOnlineDayHalfType2 = totalWorkingOnlineDay_halfType2,
+                totalWorkOnlineDayType3_4 = totalWorkingOnlineDay_type3_4,
+                usedAdditionalWfhQuota = usedAdditionalWfhQuota,
+                usedMinWfhQuota = usedMinWfhQuota,
+                remainAdditionalWfhQuota = remainAdditionalWfhQuota,
+                remainMinWfhQuota = remainMinWfhQuota,
+            };
+
+            resultList.Add(HanMucLamViecOnline);
+
+            return new HanMucLamViecOnlineCaNhanResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = resultList
+            };
+        }
+
     }
 
     public class WorkingOnlineResult : ApiResultBaseDO
     {
-        public List<WorkingOnlineDataDO> data { get; set; }
+        public List<WorkingOnlineDay> data { get; set; }
     }
 
     public class WorkingOnlineInput
     {
         public int id { get; set; }
-        public DateTime dateFrom { get; set; }
-        public DateTime dateTo { get; set; }
-        public float sumDay { get; set; }
+        public DateTime date { get; set; }
         public int memberId { get; set; }
+        public int periodType { get; set; }
+        public int wfhType { get; set; }
         public string reason { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
+    }
+
+    public class HanMucLamViecOnlineCaNhanResult : ApiResultBaseDO
+    {
+        public List<HanMucLamViecOnlineCaNhan> data { get; set; }
+    }
+
+    public class HanMucLamViecOnlineCaNhan
+    {
+        public int memberId { get; set; }
+        public int year { get; set; }
+        public int minWfhQuota { get; set; }
+        public int additionalWfhQuota { get; set; }
+        public float totalWorkOnlineDay { get; set; }
+        public float totalWorkOnlineDayFullType1 { get; set; }
+        public float totalWorkOnlineDayFullType2 { get; set; }
+
+        public float totalWorkOnlineDayHalfType1 { get; set; }
+        public float totalWorkOnlineDayHalfType2 { get; set; }
+        public float totalWorkOnlineDayType3_4 { get; set; }
+        public float usedMinWfhQuota { get; set; }
+        public float usedAdditionalWfhQuota { get; set; }
+        public float remainMinWfhQuota { get; set; }
+        public float remainAdditionalWfhQuota { get; set; }
     }
 
 }

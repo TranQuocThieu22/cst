@@ -1,10 +1,10 @@
 export interface WorkingOnline {
     id?: number;
-    dateFrom?: Date | string;
-    dateTo?: Date | string;
-    sumDay?: number;
+    date?: Date | string;
     member?: Member;
     reason?: string;
+    periodType?: number;
+    wfhType?: number;
     approvalStatus?: string;
     note?: string;
 }
@@ -17,11 +17,11 @@ export interface Member {
 
 export interface WorkingOnline_API_DO {
     id?: number;
-    dateFrom?: Date | string;
-    dateTo?: Date | string;
-    sumDay?: number;
+    date?: Date | string;
     memberId?: number;
     reason?: string;
+    periodType?: number;
+    wfhType?: number;
     approvalStatus?: string;
     note?: string;
 }

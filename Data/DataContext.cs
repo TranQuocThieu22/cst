@@ -83,73 +83,76 @@ namespace educlient.Data
         public string role { get; set; }
         public bool isLeader { get; set; }
         public bool isLunchStatus { get; set; }
-        public List<detailLunch> detailLunch { get; set; } = new List<detailLunch>
-        {
-            new detailLunch()
-        };
         public int workingYear { get; set; } = 0;
-        public detailWFHQuota detailWFHQuota { get; set; } = new detailWFHQuota();
-        public detailAbsenceQuota detailAbsenceQuota { get; set; } = new detailAbsenceQuota();
+        public int minWFHQuota { get; set; }
+        public int additionalWFHQuota { get; set; } = 0;
+        public int minAbsenceQuota { get; set; }
+        public int additionalAbsenceQuota { get; set; } = 0;
         public bool isActive { get; set; }
-        public string MaSoCCCD { get; set; } = "";
-        public string address { get; set; } = "";
-        public detailContract detailContract { get; set; } = new detailContract();
-    }
-    public class detailContract
-    {
-        public DateTime contractStartDate { get; set; } = DateTime.Now.Date;
-        public DateTime contractExpireDate { get; set; } = DateTime.Now.Date;
-        public int contractDuration { get; set; } = 0;
-        public string contractType { get; set; } = "";
-    }
-    public class detailAbsenceQuota
-    {
-        public int minAbsenceQuota { get; set; } = 0;
-        public List<actualAbsenceQuotaByYear> actualAbsenceQuotaByYear { get; set; } = new List<actualAbsenceQuotaByYear>
-        {
-            new actualAbsenceQuotaByYear()
-        };
+        public string MaSoCCCD { get; set; }
+        public string address { get; set; }
+        public DateTime? contractStartDate { get; set; } = null;
+        public DateTime? contractExpireDate { get; set; } = null;
+        public string contractType { get; set; }
+        public int employeeType { get; set; }
     }
 
-    public class actualAbsenceQuotaByYear
-    {
-        public int year { get; set; } = DateTime.Now.Year;
-        public int absenceQuota { get; set; } = 0;
-    }
+    //public class detailContract
+    //{
+    //    public DateTime contractStartDate { get; set; } = DateTime.Now.Date;
+    //    public DateTime contractExpireDate { get; set; } = DateTime.Now.Date;
+    //    public int contractDuration { get; set; } = 0;
+    //    public string contractType { get; set; } = "";
+    //}
 
-    public class detailWFHQuota
-    {
-        public int minWFHQuota { get; set; } = 0;
-        public List<actualWFHQuotaByYear> actualWFHQuotaByYear { get; set; } = new List<actualWFHQuotaByYear> {
-            new actualWFHQuotaByYear()
-        };
-    }
+    //public class detailAbsenceQuota
+    //{
+    //    public int minAbsenceQuota { get; set; } = 0;
+    //    public List<actualAbsenceQuotaByYear> actualAbsenceQuotaByYear { get; set; } = new List<actualAbsenceQuotaByYear>
+    //    {
+    //        new actualAbsenceQuotaByYear()
+    //    };
+    //}
 
-    public class actualWFHQuotaByYear
-    {
-        public int year { get; set; } = DateTime.Now.Year;
-        public int WFHQuota { get; set; } = 0;
-    }
+    //public class actualAbsenceQuotaByYear
+    //{
+    //    public int year { get; set; } = DateTime.Now.Year;
+    //    public int absenceQuota { get; set; } = 0;
+    //}
 
-    public class detailLunch
-    {
-        public int year { get; set; } = DateTime.Now.Year;
-        public List<lunchByMonth> lunchByMonth { get; set; } = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
-                            .Select(month => new lunchByMonth
-                            {
-                                month = month,
-                                isLunch = false,
-                            })
-                            .ToList();
-    }
+    //public class detailWFHQuota
+    //{
+    //    public int minWFHQuota { get; set; } = 0;
+    //    public List<actualWFHQuotaByYear> actualWFHQuotaByYear { get; set; } = new List<actualWFHQuotaByYear> {
+    //        new actualWFHQuotaByYear()
+    //    };
+    //}
 
-    public class lunchByMonth
-    {
-        public int month { get; set; }
-        public bool isLunch { get; set; }
-        public int lunchFee { get; set; } = 0;
-        public string note { get; set; } = "";
-    }
+    //public class actualWFHQuotaByYear
+    //{
+    //    public int year { get; set; } = DateTime.Now.Year;
+    //    public int WFHQuota { get; set; } = 0;
+    //}
+
+    //public class detailLunch
+    //{
+    //    public int year { get; set; } = DateTime.Now.Year;
+    //    public List<lunchByMonth> lunchByMonth { get; set; } = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
+    //                        .Select(month => new lunchByMonth
+    //                        {
+    //                            month = month,
+    //                            isLunch = false,
+    //                        })
+    //                        .ToList();
+    //}
+
+    //public class lunchByMonth
+    //{
+    //    public int month { get; set; }
+    //    public bool isLunch { get; set; }
+    //    public int lunchFee { get; set; } = 0;
+    //    public string note { get; set; } = "";
+    //}
 
     public class DayOff
     {
@@ -190,32 +193,27 @@ namespace educlient.Data
 
     public class IndividualDayOff
     {
-        //[BsonId]
+        [BsonId]
         public int id { get; set; }
-        public DateTime dateFrom { get; set; }
-        public DateTime dateTo { get; set; }
-        public float sumDay { get; set; }
-        public int numberOfDay_whole { get; set; }
-        public int numberOfDay_half { get; set; }
+        public DateTime date { get; set; }
         public int memberId { get; set; }
         public string reason { get; set; }
-        public bool isAnnual { get; set; }
-        public float totalIsAnnual { get; set; }
-        public bool isWithoutPay { get; set; }
-        public float totalIsWithoutPay { get; set; }
+        public int periodType { get; set; }
+        public int dayOffType { get; set; }
+        public bool isDayOffWithPayment { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }
 
-    public class WorkingOnlineDataDO
+    public class WorkingOnlineDay
     {
         [BsonId]
         public int id { get; set; }
-        public DateTime dateFrom { get; set; }
-        public DateTime dateTo { get; set; }
-        public float sumDay { get; set; }
+        public DateTime date { get; set; }
         public int memberId { get; set; }
         public string reason { get; set; }
+        public int periodType { get; set; }
+        public int wfhType { get; set; }
         public string approvalStatus { get; set; }
         public string note { get; set; }
     }

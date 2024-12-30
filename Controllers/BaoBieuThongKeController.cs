@@ -18,12 +18,23 @@ namespace educlient.Controllers
         }
 
         [HttpGet("ThongKeTinhTienAnTrua")]
-        public ThongKeTinhTienAnTruaResult ThongKeTinhTienAnTrua([FromQuery] int year, [FromQuery] int month, [FromQuery] int? query_memberId = null)
+        public ThongKeTinhTienAnTruaResult ThongKeTinhTienAnTrua([FromQuery] int year, [FromQuery] int month)
         {
-            // Get the tables
+            int total_IndividualDayOff = 0;
+            int total_WorkingOnline = 0;
+            int total_IndividualDayOff_full = 0;
+            int total_IndividualDayOff_half = 0;
+            int total_WorkingOnline_full = 0;
+            int total_WorkingOnline_half = 0;
+            int total_CommissionDay_full = 0;
+            int total_CommissionDay_half = 0;
+            int total_AQDayOff = 0;
+
+            var resultList = new List<ThongKeTinhTienAnTruaDataDO>();
+
             var membersTable = database.Table<AQMember>();
             var dayOffsTable = database.Table<IndividualDayOff>();
-            var workingOnlineTable = database.Table<WorkingOnlineDataDO>();
+            var workingOnlineTable = database.Table<WorkingOnlineDay>();
             var commissionTable = database.Table<Commission>();
             var aqDayOffTable = database.Table<DayOff>();
 
@@ -38,68 +49,110 @@ namespace educlient.Controllers
                     data = null
                 };
             }
-            var resultList = new List<ThongKeTinhTienAnTruaDataDO>();
+
             foreach (var member in membersData)
             {
-                // Find day-off data for each member by year
-                var dayOffData = dayOffsTable.Find(x =>
+                // Find day-off data for each member by month-year
+                total_IndividualDayOff_full = dayOffsTable.Find(x =>
                     x.memberId == member.id &&
-                    x.dateFrom.Year == year &&
-                    x.dateFrom.Month == month &&
+                    x.date.Year == year &&
+                    x.date.Month == month &&
                     x.approvalStatus == "Đã duyệt" &&
-                    x.sumDay > 0.5
-                    ).ToList();
+                    x.periodType == 1
+                    ).ToList().Count;
 
-                var countDayOff = 0;
-                foreach (var dayOff in dayOffData)
-                {
-                    countDayOff += (int)dayOff.sumDay;
-                }
-
-                var wfhData = workingOnlineTable.Find(x =>
+                total_IndividualDayOff_half = dayOffsTable.Find(x =>
                     x.memberId == member.id &&
-                    x.dateFrom.Year == year &&
-                    x.dateFrom.Month == month &&
+                    x.date.Year == year &&
+                    x.date.Month == month &&
                     x.approvalStatus == "Đã duyệt" &&
-                    x.sumDay > 0
-                    ).ToList();
+                    x.periodType == 2 || x.periodType == 3
+                    ).ToList().Count;
 
-                var countWorkingOnline = 0;
-                foreach (var wfhday in wfhData)
-                {
-                    countWorkingOnline += (int)wfhday.sumDay;
-                }
+                total_IndividualDayOff = total_IndividualDayOff_full + total_IndividualDayOff_half;
+
+                // Find wfh data for each member by month-year
+                total_WorkingOnline_full = workingOnlineTable.Find(x =>
+                    x.memberId == member.id &&
+                    x.date.Year == year &&
+                    x.date.Month == month &&
+                    x.approvalStatus == "Đã duyệt" &&
+                    x.periodType == 1
+                    ).ToList().Count;
+
+                total_WorkingOnline_half = workingOnlineTable.Find(x =>
+                    x.memberId == member.id &&
+                    x.date.Year == year &&
+                    x.date.Month == month &&
+                    x.approvalStatus == "Đã duyệt" &&
+                    x.periodType == 2 || x.periodType == 3
+                    ).ToList().Count;
+
+                total_WorkingOnline = total_WorkingOnline_full + total_WorkingOnline_half;
 
                 var commissionData = commissionTable.Find(x =>
                     x.memberList.Where(m => m.id == member.id).Any() &&
-                    x.dateFrom.Year == year &&
-                    x.dateFrom.Month == month
+                    (x.dateFrom.Year == year &&
+                    x.dateFrom.Month == month)
                     ).ToList();
 
-                float countCommission = 0;
-                commissionData.ForEach(d => countCommission += d.sumDay);
-
-                var aqDayOffData = aqDayOffTable.Find(x =>
-                    x.dateFrom.Year == year &&
-                    x.dateFrom.Month == month
-                    ).ToList();
-                var countaqDayOff = 0;
-                foreach (var aqDayOff in aqDayOffData)
+                foreach (var data in commissionData)
                 {
-                    countaqDayOff += (int)aqDayOff.sumDay;
+                    if (data.sumDay == 0.5)
+                    {
+                        total_CommissionDay_half += 1;
+                    }
+                    else
+                    {
+                        DateTime startDate = data.dateFrom;
+                        DateTime endDate = data.dateTo;
+                        // If the record spans across different months
+                        if (startDate.Month != endDate.Month || startDate.Year != endDate.Year)
+                        {
+                            // Calculate the days in the first month only
+                            DateTime monthStart = new DateTime(startDate.Year, startDate.Month, 1);
+                            DateTime monthEnd = monthStart.AddMonths(1).AddDays(-1);
+                            DateTime endOfFirstMonth = endDate < monthEnd ? endDate : monthEnd;
+
+                            if (startDate <= endOfFirstMonth)
+                            {
+                                int daysInFirstMonth = (endOfFirstMonth - startDate).Days + 1;
+                                total_CommissionDay_full += daysInFirstMonth;
+                            }
+                        }
+                        else
+                        {
+                            // If the record is within the same month
+                            total_CommissionDay_full += (int)data.sumDay;
+                        }
+                    }
                 }
 
+                var AQDayOffData = aqDayOffTable.Find(x =>
+                    x.dateFrom.Year == year &&
+                    x.dateFrom.Month == month
+                    ).ToList();
 
-                // Combine member data with their day-off data
+                foreach (var AQDayOff in AQDayOffData)
+                {
+                    total_AQDayOff += (int)AQDayOff.sumDay;
+                }
+
                 var resultData = new ThongKeTinhTienAnTruaDataDO
                 {
                     id = member.id,
                     fullName = member.fullName,
                     nickName = member.nickName,
-                    total_IndividualDayOff = countDayOff,
-                    total_WorkingOnline = countWorkingOnline,
-                    total_CommissionDay = countCommission,
-                    total_AQDayOff = countaqDayOff
+                    employeeType = member.employeeType,
+                    total_IndividualDayOff = total_IndividualDayOff,
+                    total_WorkingOnline = total_WorkingOnline,
+                    total_IndividualDayOff_full = total_IndividualDayOff_full,
+                    total_IndividualDayOff_half = total_IndividualDayOff_half,
+                    total_WorkingOnline_full = total_WorkingOnline_full,
+                    total_WorkingOnline_half = total_WorkingOnline_half,
+                    total_CommissionDay_full = total_CommissionDay_full,
+                    total_CommissionDay_half = total_CommissionDay_half,
+                    total_AQDayOff = total_AQDayOff
                 };
 
                 resultList.Add(resultData);
@@ -201,17 +254,16 @@ namespace educlient.Controllers
             // Find day-off data for each member by year
             var dayOffData = dayOffsTable.Find(x =>
                 x.memberId == query_memberId &&
-                x.dateFrom.Year == year &&
-                x.dateFrom.Month == month &&
-                x.approvalStatus == "Đã duyệt" &&
-                x.sumDay > 0.5
+                x.date.Year == year &&
+                x.date.Month == month &&
+                x.approvalStatus == "Đã duyệt"
                 ).ToList();
 
             var countDayOff = 0;
-            foreach (var dayOff in dayOffData)
-            {
-                countDayOff += (int)dayOff.sumDay;
-            }
+            //foreach (var dayOff in dayOffData)
+            //{
+            //    countDayOff += (int)dayOff.sumDay;
+            //}
 
             var aqDayOffData = aqDayOffTable.Find(x =>
                 x.dateFrom.Year == year &&
@@ -249,10 +301,17 @@ namespace educlient.Controllers
             public int id { get; set; }
             public string fullName { get; set; }
             public string nickName { get; set; }
-            public float total_IndividualDayOff { get; set; }
-            public float total_WorkingOnline { get; set; }
-            public float total_CommissionDay { get; set; }
-            public float total_AQDayOff { get; set; }
+            public int employeeType { get; set; }
+            public int total_IndividualDayOff { get; set; }
+            public int total_WorkingOnline { get; set; }
+            public int total_IndividualDayOff_full { get; set; }
+            public int total_IndividualDayOff_half { get; set; }
+            public int total_WorkingOnline_full { get; set; }
+            public int total_WorkingOnline_half { get; set; }
+            public int total_CommissionDay_full { get; set; }
+            public int total_CommissionDay_half { get; set; }
+
+            public int total_AQDayOff { get; set; }
         }
 
         public class ThongKeTinhTienAnTruaResult : ApiResultBaseDO

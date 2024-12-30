@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 
 
 namespace educlient.Controllers
@@ -56,14 +57,18 @@ namespace educlient.Controllers
                 role = member.role,
                 isLeader = member.isLeader,
                 isLunchStatus = member.isLunchStatus,
-                detailLunch = member.detailLunch,
-                detailWFHQuota = member.detailWFHQuota,
-                detailAbsenceQuota = member.detailAbsenceQuota,
                 isActive = member.isActive,
                 maSoCCCD = member.MaSoCCCD,
                 address = member.address,
                 workingYear = member.workingYear,
-                detailContract = member.detailContract
+                contractStartDate = member.contractStartDate,
+                contractExpireDate = member.contractExpireDate,
+                contractType = member.contractType,
+                minAbsenceQuota = member.minAbsenceQuota,
+                additionalAbsenceQuota = member.additionalAbsenceQuota,
+                minWFHQuota = member.minWFHQuota,
+                additionalWFHQuota = member.additionalWFHQuota,
+                employeeType = member.employeeType
             }).ToList();
 
             return new AQMembersResult
@@ -106,14 +111,18 @@ namespace educlient.Controllers
                 role = aqMember.role,
                 isLeader = aqMember.isLeader,
                 isLunchStatus = aqMember.isLunchStatus,
-                detailLunch = aqMember.detailLunch,
-                detailWFHQuota = aqMember.detailWFHQuota,
-                detailAbsenceQuota = aqMember.detailAbsenceQuota,
                 isActive = aqMember.isActive,
                 maSoCCCD = aqMember.MaSoCCCD,
                 address = aqMember.address,
                 workingYear = aqMember.workingYear,
-                detailContract = aqMember.detailContract
+                contractStartDate = aqMember.contractStartDate,
+                contractExpireDate = aqMember.contractExpireDate,
+                contractType = aqMember.contractType,
+                minAbsenceQuota = aqMember.minAbsenceQuota,
+                additionalAbsenceQuota = aqMember.additionalAbsenceQuota,
+                minWFHQuota = aqMember.minWFHQuota,
+                additionalWFHQuota = aqMember.additionalWFHQuota,
+                employeeType = aqMember.employeeType
             };
 
             returnData.Add(aqMemberReturn);
@@ -146,70 +155,16 @@ namespace educlient.Controllers
                 nickName = input.nickName,
                 role = input.role,
                 isLeader = input.isLeader,
-                isLunchStatus = input.isLunchStatus,
                 isActive = input.isActive,
+                isLunchStatus = input.isLunchStatus,
                 address = input.address,
                 MaSoCCCD = input.maSoCCCD,
-                workingYear = 0,
-                detailContract = new detailContract
-                {
-                    contractStartDate = input.detailContract.contractStartDate,
-                    contractExpireDate = input.detailContract.contractExpireDate,
-                    contractDuration = input.detailContract.contractDuration,
-                    contractType = input.detailContract.contractType,
-                },
-                detailAbsenceQuota = new detailAbsenceQuota
-                {
-                    minAbsenceQuota = input.minAbsenceQuota,
-                    actualAbsenceQuotaByYear = new List<actualAbsenceQuotaByYear> {
-                        new actualAbsenceQuotaByYear
-                        {
-                            year = DateTime.Now.Year,
-                            absenceQuota = input.minAbsenceQuota
-                        }
-                    }
-                },
-                detailWFHQuota = new detailWFHQuota
-                {
-                    minWFHQuota = input.minWFHQuota,
-                    actualWFHQuotaByYear = new List<actualWFHQuotaByYear>
-                    {
-                        new actualWFHQuotaByYear
-                        {
-                            year = DateTime.Now.Year,
-                            WFHQuota = input.minWFHQuota
-                        }
-                    }
-                },
-                detailLunch = input.isLunchStatus == true ? new List<detailLunch> {
-                    new detailLunch
-                    {
-                        year = DateTime.Now.Year,
-                        lunchByMonth = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
-                            .Select(month => new lunchByMonth
-                            {
-                                month = month,
-                                isLunch = true
-                            })
-                            .ToList()
-                    }
-                }
-                :
-                new List<detailLunch> {
-                    new detailLunch
-                    {
-                        year = DateTime.Now.Year,
-                        lunchByMonth = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
-                            .Select(month => new lunchByMonth
-                            {
-                                month = month,
-                                isLunch = false,
-                                note = ""
-
-                            })
-                            .ToList()
-                    }
-                }
+                minAbsenceQuota = input.minAbsenceQuota,
+                minWFHQuota = input.minWFHQuota,
+                contractStartDate = input.contractStartDate,
+                contractExpireDate = input.contractExpireDate,
+                contractType = input.contractType,
+                employeeType = input.employeeType
             }).ToList();
 
             if (aqMembers.Count == 1)
@@ -231,20 +186,21 @@ namespace educlient.Controllers
                     role = existingRecord.role,
                     isLeader = existingRecord.isLeader,
                     isLunchStatus = existingRecord.isLunchStatus,
-                    detailLunch = existingRecord.detailLunch,
-                    detailWFHQuota = existingRecord.detailWFHQuota,
-                    detailAbsenceQuota = existingRecord.detailAbsenceQuota,
                     isActive = existingRecord.isActive,
                     maSoCCCD = existingRecord.MaSoCCCD,
+                    minAbsenceQuota = existingRecord.minAbsenceQuota,
+                    minWFHQuota = existingRecord.minWFHQuota,
                     address = existingRecord.address,
                     workingYear = existingRecord.workingYear,
-                    detailContract = existingRecord.detailContract
+                    contractStartDate = existingRecord.contractStartDate,
+                    contractExpireDate = existingRecord.contractExpireDate,
+                    contractType = existingRecord.contractType,
+                    employeeType = existingRecord.employeeType
                 };
 
                 var returnList = new List<AQMemberDTO>();
 
                 returnList.Add(aqMember);
-
 
                 return new InsertResultDTO
                 {
@@ -254,8 +210,6 @@ namespace educlient.Controllers
                     data = returnList,
                     numberOfNewRecord = 1
                 };
-
-
             }
             else
             {
@@ -303,18 +257,20 @@ namespace educlient.Controllers
             existingRecord.role = inputData.role;
             existingRecord.isLeader = inputData.isLeader;
             existingRecord.isLunchStatus = inputData.isLunchStatus;
-            existingRecord.detailLunch = inputData.detailLunch;
-            existingRecord.detailWFHQuota = inputData.detailWFHQuota;
-            existingRecord.detailAbsenceQuota = inputData.detailAbsenceQuota;
+            existingRecord.minAbsenceQuota = inputData.minAbsenceQuota;
+            existingRecord.minWFHQuota = inputData.minWFHQuota;
             existingRecord.isActive = inputData.isActive;
             existingRecord.address = inputData.address;
             existingRecord.MaSoCCCD = inputData.maSoCCCD;
-            existingRecord.workingYear = inputData.workingYear;
-            existingRecord.detailContract = inputData.detailContract;
+            existingRecord.contractStartDate = inputData.contractStartDate;
+            existingRecord.contractExpireDate = inputData.contractExpireDate;
+            existingRecord.contractType = inputData.contractType;
+            existingRecord.employeeType = inputData.employeeType;
 
             // Update the record in the collection
             AQMemberTable.Update(existingRecord);
 
+            //return updated record
             var aqMemberReturn = new AQMemberDTO
             {
                 id = existingRecord.id,
@@ -329,14 +285,16 @@ namespace educlient.Controllers
                 role = existingRecord.role,
                 isLeader = existingRecord.isLeader,
                 isLunchStatus = existingRecord.isLunchStatus,
-                detailLunch = existingRecord.detailLunch,
-                detailWFHQuota = existingRecord.detailWFHQuota,
-                detailAbsenceQuota = existingRecord.detailAbsenceQuota,
+                minAbsenceQuota = existingRecord.minAbsenceQuota,
+                minWFHQuota = existingRecord.minWFHQuota,
                 isActive = existingRecord.isActive,
                 maSoCCCD = existingRecord.MaSoCCCD,
                 address = existingRecord.address,
                 workingYear = existingRecord.workingYear,
-                detailContract = existingRecord.detailContract
+                contractStartDate = existingRecord.contractStartDate,
+                contractExpireDate = existingRecord.contractExpireDate,
+                contractType = existingRecord.contractType,
+                employeeType = existingRecord.employeeType
             };
 
             return new UpdateResultDTO
@@ -441,104 +399,6 @@ namespace educlient.Controllers
             };
 
         }
-        [HttpPut, Route("detailWFHQuotaByYear/update")]
-        public detailWFHQuotaDO GetdetailWFHQuotaByYear(detailInput data)
-        {
-            var AQMemberTable = database.Table<AQMember>();
-            var aqmember = AQMemberTable.FindById(data.userId);
-
-
-            aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault().WFHQuota = data.data;
-            AQMemberTable.Update(aqmember);
-            return new detailWFHQuotaDO
-            {
-                message = "Success",
-                code = 200,
-                result = true,
-                data = aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault()
-            };
-        }
-
-        [HttpGet, Route("detailWFHQuotaByYear")]
-        public detailWFHQuotaDO GetdetailWFHQuotaByYear([FromQuery] int userId, [FromQuery] int year)
-        {
-            var AQMemberTable = database.Table<AQMember>();
-            var aqmember = AQMemberTable.FindById(userId);
-
-            var detailLunch = aqmember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(x => x.year == year);
-            return new detailWFHQuotaDO
-            {
-                message = "Success",
-                code = 200,
-                result = true,
-                data = detailLunch
-            };
-        }
-        [HttpPut, Route("detailAbsenceQuotaByYear/update")]
-        public detailAbsenceQuotaDO GetdetailAbsenceQuotaByYear(detailInput data)
-        {
-            var AQMemberTable = database.Table<AQMember>();
-            var aqmember = AQMemberTable.FindById(data.userId);
-
-
-
-            aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault().absenceQuota = data.data;
-            AQMemberTable.Update(aqmember);
-            return new detailAbsenceQuotaDO
-            {
-                message = "Success",
-                code = 200,
-                result = true,
-                data = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault()
-            };
-        }
-        [HttpGet, Route("detailAbsenceQuotaByYear")]
-        public detailAbsenceQuotaDO GetdetailAbsenceQuotaByYear([FromQuery] int userId, [FromQuery] int year)
-        {
-            var AQMemberTable = database.Table<AQMember>();
-            var aqmember = AQMemberTable.FindById(userId);
-
-            var detailLunch = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
-            return new detailAbsenceQuotaDO
-            {
-                message = "Success",
-                code = 200,
-                result = true,
-                data = detailLunch
-            };
-        }
-        //[HttpPut, Route("DetailLunch/update")]
-        //public detailLunchDataDO GetDetailLunch(detailInput data)
-        //{
-        //    var AQMemberTable = database.Table<AQMember>();
-        //    var aqmember = AQMemberTable.FindById(data.userId);
-        //    aqmember.detailLunch.FirstOrDefault().year = data.data;
-        //    AQMemberTable.Update(aqmember);
-
-        //    return new detailLunchDataDO
-        //    {
-        //        message = "Success",
-        //        code = 200,
-        //        result = true,
-        //        data = aqmember.detailLunch.FirstOrDefault()
-        //    };
-        //}
-        [HttpGet, Route("DetailLunch")]
-        public detailLunchDataDO GetDetailLunch([FromQuery] int userId, [FromQuery] int year)
-        {
-            var AQMemberTable = database.Table<AQMember>();
-            var aqmember = AQMemberTable.FindById(userId);
-
-            var detailLunch = aqmember.detailLunch.FirstOrDefault(x => x.year == year);
-            return new detailLunchDataDO
-            {
-                message = "Success",
-                code = 200,
-                result = true,
-                data = detailLunch
-            };
-        }
-
 
         [HttpPost, Route("AnnualAQDataStatus")]
         public ApiResultBaseDO CreateAnnualAQDataStatus([FromBody] AnnualAQDataStatusInput inputData)
@@ -620,7 +480,7 @@ namespace educlient.Controllers
         public AQAnnualDataResult GetAnnualAQData([FromQuery] int year)
         {
             var currentYear = DateTime.Now.Year;
-            if (year < 2024 || year > currentYear)
+            if (year < 2024 || year > currentYear + 1)
             {
                 return new AQAnnualDataResult
                 {
@@ -644,11 +504,10 @@ namespace educlient.Controllers
                     fullName = member.fullName,
                     isActive = member.isActive,
                     workingYear = member.workingYear,
-                    absenceQuotaBase = member.detailAbsenceQuota.minAbsenceQuota,
-                    absenceQuotaBaseCurrent = member.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year - 1).absenceQuota,
-                    wfhQuotaBase = member.detailWFHQuota.minWFHQuota,
-                    wfhQuotaBaseCurrent = member.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(x => x.year == year - 1).WFHQuota,
-                    lunchPayment = member.detailLunch.FirstOrDefault(x => x.year == year - 1).lunchByMonth.FirstOrDefault(x => x.month == 12).isLunch ? member.detailLunch.FirstOrDefault(x => x.year == year - 1).lunchByMonth.FirstOrDefault(x => x.month == 12).lunchFee : 0,
+                    minAbsenceQuota = member.minAbsenceQuota,
+                    additionalAbsenceQuota = member.additionalAbsenceQuota,
+                    minWFHQuota = member.minWFHQuota,
+                    additionalWFHQuota = member.additionalWFHQuota
                 }).ToList();
 
                 return new AQAnnualDataResult
@@ -672,11 +531,10 @@ namespace educlient.Controllers
                 fullName = member.fullName,
                 isActive = member.isActive,
                 workingYear = member.workingYear,
-                absenceQuotaBase = member.detailAbsenceQuota.minAbsenceQuota,
-                absenceQuotaBaseCurrent = member.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year).absenceQuota,
-                wfhQuotaBase = member.detailWFHQuota.minWFHQuota,
-                wfhQuotaBaseCurrent = member.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(x => x.year == year).WFHQuota,
-                lunchPayment = member.detailLunch.FirstOrDefault(x => x.year == year).lunchByMonth.FirstOrDefault(x => x.month == 12).isLunch ? member.detailLunch.FirstOrDefault(x => x.year == year).lunchByMonth.FirstOrDefault(x => x.month == 12).lunchFee : 0,
+                minAbsenceQuota = member.minAbsenceQuota,
+                additionalAbsenceQuota = member.additionalAbsenceQuota,
+                minWFHQuota = member.minWFHQuota,
+                additionalWFHQuota = member.additionalWFHQuota
             }).ToList();
 
             return new AQAnnualDataResult
@@ -719,36 +577,9 @@ namespace educlient.Controllers
                     {
                         // Update the fields of the member
                         existingMember.workingYear = member.workingYear;
-                        existingMember.detailWFHQuota.actualWFHQuotaByYear.Add(new actualWFHQuotaByYear
-                        {
-                            year = currentYear,
-                            WFHQuota = member.wfhQuotaBaseCurrent
-                        });
-                        existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.Add(new actualAbsenceQuotaByYear
-                        {
-                            year = currentYear,
-                            absenceQuota = member.absenceQuotaBaseCurrent
-                        });
-                        existingMember.detailLunch.Add(new detailLunch
-                        {
-                            year = currentYear,
-                            lunchByMonth = member.lunchPayment == 0 ?
-                            Enumerable.Range(1, 12).Select(month => new lunchByMonth
-                            {
-                                month = month,
-                                isLunch = false,
-                                lunchFee = 0,
-                                note = ""
-                            }).ToList()
-                            :
-                            Enumerable.Range(1, 12).Select(month => new lunchByMonth
-                            {
-                                month = month,
-                                isLunch = true,
-                                lunchFee = member.lunchPayment,
-                                note = ""
-                            }).ToList()
-                        });
+                        existingMember.additionalWFHQuota = member.additionalWFHQuota;
+                        existingMember.additionalAbsenceQuota = member.additionalAbsenceQuota;
+                        existingMember.isLunchStatus = member.isLunchStatus;
 
                         // Save the changes to the database
                         database.Table<AQMember>().Update(existingMember);
@@ -765,90 +596,11 @@ namespace educlient.Controllers
 
                     if (existingMember != null)
                     {
-                        existingMember.detailWFHQuota.actualWFHQuotaByYear.RemoveAll(item => item.year == currentYear);
-                        existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.RemoveAll(item => item.year == currentYear);
-
                         // Update the fields of the member
                         existingMember.workingYear = member.workingYear;
-                        // Find the actualWFHQuotaByYear for the specified year
-                        var existingActualWFHQuota = existingMember.detailWFHQuota.actualWFHQuotaByYear.FirstOrDefault(a => a.year == currentYear);
-
-                        if (existingActualWFHQuota != null)
-                        {
-                            // Update the existing actualWFHQuotaByYear with new data
-                            existingActualWFHQuota.WFHQuota = member.wfhQuotaBaseCurrent;
-                        }
-                        else
-                        {
-                            // Add a new actualWFHQuotaByYear for the specified year
-                            existingMember.detailWFHQuota.actualWFHQuotaByYear.Add(new actualWFHQuotaByYear
-                            {
-                                year = currentYear,
-                                WFHQuota = member.wfhQuotaBaseCurrent
-                            });
-                        }
-
-                        var existingActualAbsenceQuota = existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(a => a.year == currentYear);
-
-                        if (existingActualAbsenceQuota != null)
-                        {
-                            // Update the existing actualWFHQuotaByYear with new data
-                            existingActualAbsenceQuota.absenceQuota = member.absenceQuotaBaseCurrent;
-                        }
-                        else
-                        {
-                            // Add a new actualWFHQuotaByYear for the specified year
-                            existingMember.detailAbsenceQuota.actualAbsenceQuotaByYear.Add(new actualAbsenceQuotaByYear
-                            {
-                                year = currentYear,
-                                absenceQuota = member.absenceQuotaBaseCurrent
-                            });
-                        }
-                        existingMember.detailLunch.RemoveAll(lunch => lunch.year == currentYear);
-
-                        var existingData = existingMember.detailLunch.FirstOrDefault(lunch => lunch.year == currentYear);
-                        if (existingData != null)
-                        {
-                            existingData.lunchByMonth = member.lunchPayment == 0 ?
-                                Enumerable.Range(1, 12).Select(month => new lunchByMonth
-                                {
-                                    month = month,
-                                    isLunch = false,
-                                    lunchFee = 0,
-                                    note = ""
-                                }).ToList()
-                                :
-                                Enumerable.Range(1, 12).Select(month => new lunchByMonth
-                                {
-                                    month = month,
-                                    isLunch = true,
-                                    lunchFee = member.lunchPayment,
-                                    note = ""
-                                }).ToList();
-                        }
-                        else
-                        {
-                            existingMember.detailLunch.Add(new detailLunch
-                            {
-                                year = currentYear,
-                                lunchByMonth = member.lunchPayment == 0 ?
-                                    Enumerable.Range(1, 12).Select(month => new lunchByMonth
-                                    {
-                                        month = month,
-                                        isLunch = false,
-                                        lunchFee = 0,
-                                        note = ""
-                                    }).ToList()
-                                    :
-                                    Enumerable.Range(1, 12).Select(month => new lunchByMonth
-                                    {
-                                        month = month,
-                                        isLunch = true,
-                                        lunchFee = member.lunchPayment,
-                                        note = ""
-                                    }).ToList()
-                            });
-                        }
+                        existingMember.additionalWFHQuota = member.additionalWFHQuota;
+                        existingMember.additionalAbsenceQuota = member.additionalAbsenceQuota;
+                        existingMember.isLunchStatus = member.isLunchStatus;
 
                         // Save the changes to the database
                         database.Table<AQMember>().Update(existingMember);
@@ -874,7 +626,14 @@ namespace educlient.Controllers
         {
             var AQMemberTable = database.Table<AQMember>();
             var aqmember = AQMemberTable.FindById(userId);
-            var absenceQuota = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
+            //var absenceQuota = aqmember.detailAbsenceQuota.actualAbsenceQuotaByYear.FirstOrDefault(x => x.year == year);
+
+            var absenceQuota = new absenceQuota
+            {
+                minAbsenceQuota = aqmember.minAbsenceQuota,
+                additionalAbsenceQuota = aqmember.additionalAbsenceQuota
+            };
+
             return new IndividualDayOffDetailDO
             {
                 message = "Success",
@@ -893,7 +652,8 @@ namespace educlient.Controllers
 
             var memberList = AQMemberTable.Query().Where(
                 x => x.isActive == true &&
-                x.detailContract.contractExpireDate >= today && x.detailContract.contractExpireDate <= thirtyDaysFromNow
+                x.contractExpireDate >= today &&
+                x.contractExpireDate <= thirtyDaysFromNow
                 ).ToList();
 
             return new CountNearExpiredContract
@@ -915,7 +675,7 @@ namespace educlient.Controllers
 
             var memberList = AQMemberTable.Query().Where(
                 x => x.isActive == true &&
-                x.detailContract.contractExpireDate >= today && x.detailContract.contractExpireDate <= thirtyDaysFromNow
+                x.contractExpireDate >= today && x.contractExpireDate <= thirtyDaysFromNow
                 ).ToList();
 
             var memberReturnList = memberList.Select(member => new AQMemberDTO
@@ -932,14 +692,16 @@ namespace educlient.Controllers
                 role = member.role,
                 isLeader = member.isLeader,
                 isLunchStatus = member.isLunchStatus,
-                detailLunch = member.detailLunch,
-                detailWFHQuota = member.detailWFHQuota,
-                detailAbsenceQuota = member.detailAbsenceQuota,
+                minAbsenceQuota = member.minAbsenceQuota,
+                minWFHQuota = member.minWFHQuota,
                 isActive = member.isActive,
                 maSoCCCD = member.MaSoCCCD,
                 address = member.address,
                 workingYear = member.workingYear,
-                detailContract = member.detailContract
+                contractStartDate = member.contractStartDate,
+                contractExpireDate = member.contractExpireDate,
+                contractType = member.contractType,
+                employeeType = member.employeeType
             }).ToList();
 
 
@@ -954,218 +716,226 @@ namespace educlient.Controllers
     }
 
 
-    }
+}
 
-    public class detailInput
-    {
-        public int userId { get; set; }
-        public int year { get; set; }
-        public int data { get; set; }
-    }
-    public class detailAbsenceQuotaDO : ApiResultBaseDO
-    {
-        public actualAbsenceQuotaByYear data { get; set; }
-    }
-    public class detailWFHQuotaDO : ApiResultBaseDO
-    {
-        public actualWFHQuotaByYear data { get; set; }
-    }
-    public class detailLunchDataDO : ApiResultBaseDO
-    {
-        public detailLunch data { get; set; }
-    }
-    public class AQMembersResult : ApiResultBaseDO
-    {
-        public List<AQMemberDTO> data { get; set; }
-    }
+public class detailInput
+{
+    public int userId { get; set; }
+    public int year { get; set; }
+    public int data { get; set; }
+}
+//public class detailAbsenceQuotaDO : ApiResultBaseDO
+//{
+//    public actualAbsenceQuotaByYear data { get; set; }
+//}
+//public class detailWFHQuotaDO : ApiResultBaseDO
+//{
+//    public actualWFHQuotaByYear data { get; set; }
+//}
+//public class detailLunchDataDO : ApiResultBaseDO
+//{
+//    public detailLunch data { get; set; }
+//}
+public class AQMembersResult : ApiResultBaseDO
+{
+    public List<AQMemberDTO> data { get; set; }
+}
 
-    public class MemberCommissionList : ApiResultBaseDO
-    {
-        public List<MemberCommission> data { get; set; }
-    }
+public class MemberCommissionList : ApiResultBaseDO
+{
+    public List<MemberCommission> data { get; set; }
+}
 
-    public class AQMemberInsertDTO
-    {
-        public string TFSName { get; set; }
-        public string fullName { get; set; }
-        public string email { get; set; }
-        public string phone { get; set; }
-        public string avatar { get; set; }
-        public DateTime birthDate { get; set; }
-        public DateTime startDate { get; set; }
-        public string nickName { get; set; }
-        public string role { get; set; }
-        public bool isLeader { get; set; }
-        public bool isLunchStatus { get; set; }
-        public int lunchFee { get; set; }
-        public int minWFHQuota { get; set; }
-        public int minAbsenceQuota { get; set; }
-        public bool isActive { get; set; }
-        public string maSoCCCD { get; set; }
-        public string address { get; set; }
-        public int workingYear { get; set; }
-        public detailContract detailContract { get; set; }
-    }
+public class AQMemberInsertDTO
+{
+    public string TFSName { get; set; }
+    public string fullName { get; set; }
+    public string email { get; set; }
+    public string phone { get; set; }
+    public string avatar { get; set; }
+    public DateTime birthDate { get; set; }
+    public DateTime startDate { get; set; }
+    public string nickName { get; set; }
+    public string role { get; set; }
+    public bool isLeader { get; set; }
+    public bool isLunchStatus { get; set; }
+    public bool isActive { get; set; }
+    public string maSoCCCD { get; set; }
+    public string address { get; set; }
+    public int minWFHQuota { get; set; }
+    public int minAbsenceQuota { get; set; }
+    public DateTime? contractStartDate { get; set; } = null;
+    public DateTime? contractExpireDate { get; set; } = null;
+    public string contractType { get; set; }
+    public int employeeType { get; set; }
+}
 
-    public class InsertResultDTO : ApiResultBaseDO
-    {
-        public List<AQMemberDTO> data { get; set; }
-        public int numberOfNewRecord { get; set; }
-    }
+public class InsertResultDTO : ApiResultBaseDO
+{
+    public List<AQMemberDTO> data { get; set; }
+    public int numberOfNewRecord { get; set; }
+}
 
-    public class AQMemberUpdateDTO
-    {
-        public int id { get; set; }
-        public string TFSName { get; set; }
-        public string fullName { get; set; }
-        public string email { get; set; }
-        public string phone { get; set; }
-        public string avatar { get; set; }
-        public DateTime birthDate { get; set; }
-        public DateTime startDate { get; set; }
-        public string nickName { get; set; }
-        public string role { get; set; }
-        public bool isLeader { get; set; }
-        public bool isLunchStatus { get; set; }
-        public List<detailLunch> detailLunch { get; set; }
-        public detailWFHQuota detailWFHQuota { get; set; }
-        public detailAbsenceQuota detailAbsenceQuota { get; set; }
-        public bool isActive { get; set; }
-        public string maSoCCCD { get; set; }
-        public string address { get; set; }
-        public int workingYear { get; set; }
-        public detailContract detailContract { get; set; }
-    }
+public class AQMemberUpdateDTO
+{
+    public int id { get; set; }
+    public string TFSName { get; set; }
+    public string fullName { get; set; }
+    public string email { get; set; }
+    public string phone { get; set; }
+    public string avatar { get; set; }
+    public DateTime birthDate { get; set; }
+    public DateTime startDate { get; set; }
+    public string nickName { get; set; }
+    public string role { get; set; }
+    public bool isLeader { get; set; }
+    public bool isLunchStatus { get; set; }
+    public int minWFHQuota { get; set; }
+    public int minAbsenceQuota { get; set; }
+    public bool isActive { get; set; }
+    public string maSoCCCD { get; set; }
+    public string address { get; set; }
+    public DateTime? contractStartDate { get; set; } = null;
+    public DateTime? contractExpireDate { get; set; } = null;
+    public string contractType { get; set; }
+    public int employeeType { get; set; }
+}
 
-    public class UpdateResultDTO : ApiResultBaseDO
-    {
-        public AQMemberDTO data { get; set; }
-    }
+public class UpdateResultDTO : ApiResultBaseDO
+{
+    public AQMemberDTO data { get; set; }
+}
 
-    public class DeletetResultDTO : ApiResultBaseDO
-    {
-        public int id { get; set; }
-    }
+public class DeletetResultDTO : ApiResultBaseDO
+{
+    public int id { get; set; }
+}
 
-    public class AQMemberDTO
-    {
-        public int id { get; set; }
-        public string TFSName { get; set; }
-        public string fullName { get; set; }
-        public string email { get; set; }
-        public string phone { get; set; }
-        public string avatar { get; set; }
-        public DateTime birthDate { get; set; }
-        public DateTime startDate { get; set; }
-        public string nickName { get; set; }
-        public string role { get; set; }
-        public bool isLeader { get; set; }
-        public bool isLunchStatus { get; set; }
-        public List<detailLunch> detailLunch { get; set; }
-        public int workingYear { get; set; }
-        public detailWFHQuota detailWFHQuota { get; set; }
-        public detailAbsenceQuota detailAbsenceQuota { get; set; }
-        public bool isActive { get; set; }
-        public string maSoCCCD { get; set; }
-        public string address { get; set; }
-        public detailContract detailContract { get; set; }
-    }
+public class AQMemberDTO
+{
+    public int id { get; set; }
+    public string TFSName { get; set; }
+    public string fullName { get; set; }
+    public string email { get; set; }
+    public string phone { get; set; }
+    public string avatar { get; set; }
+    public DateTime birthDate { get; set; }
+    public DateTime startDate { get; set; }
+    public string nickName { get; set; }
+    public string role { get; set; }
+    public bool isLeader { get; set; }
+    public bool isLunchStatus { get; set; }
+    public int workingYear { get; set; }
+    public int minWFHQuota { get; set; }
+    public int additionalWFHQuota { get; set; }
+    public int minAbsenceQuota { get; set; }
+    public int additionalAbsenceQuota { get; set; }
+    public bool isActive { get; set; }
+    public string maSoCCCD { get; set; }
+    public string address { get; set; }
+    public DateTime? contractStartDate { get; set; } = null;
+    public DateTime? contractExpireDate { get; set; } = null;
+    public string contractType { get; set; }
+    public int employeeType { get; set; }
+}
 
-    public class MemberCommission
-    {
-        public int id { get; set; }
-        public string fullName { get; set; }
-        public string nickName { get; set; }
-    }
+public class MemberCommission
+{
+    public int id { get; set; }
+    public string fullName { get; set; }
+    public string nickName { get; set; }
+}
 
-    public class MemberTFSList : ApiResultBaseDO
-    {
-        public List<MemberTFS> data { get; set; }
-    }
-
-
-    public class MemberTFS
-    {
-        public int id { get; set; }
-        public string TFSName { get; set; }
-        public string fullName { get; set; }
-        public string nickName { get; set; }
-    }
-
-    public class UserAvatarDTO
-    {
-        public int id { get; set; }
-        public string avatar { get; set; }
-    }
-
-    public class ResponeUpdateUserAvatar : ApiResultBaseDO
-    {
-        public string data { get; set; }
-    }
-
-    public class IndividualDayOffDetailDO : ApiResultBaseDO
-    {
-        public actualAbsenceQuotaByYear data { get; set; }
-    }
+public class MemberTFSList : ApiResultBaseDO
+{
+    public List<MemberTFS> data { get; set; }
+}
 
 
-    public class AnnualAQDataStatusInput
-    {
-        public int year { get; set; }
-    }
+public class MemberTFS
+{
+    public int id { get; set; }
+    public string TFSName { get; set; }
+    public string fullName { get; set; }
+    public string nickName { get; set; }
+}
 
-    public class AnnualAQDataStatusResult : ApiResultBaseDO
-    {
-        public AnnualAQDataStatus data { get; set; }
-    }
+public class UserAvatarDTO
+{
+    public int id { get; set; }
+    public string avatar { get; set; }
+}
 
-    public class AQAnnualDataResult : ApiResultBaseDO
-    {
-        public AQAnnualData data { get; set; }
-    }
+public class ResponeUpdateUserAvatar : ApiResultBaseDO
+{
+    public string data { get; set; }
+}
 
-    public class CountNearExpiredContract : ApiResultBaseDO
-    {
-        public int data { get; set; }
-    }
+public class IndividualDayOffDetailDO : ApiResultBaseDO
+{
+    public absenceQuota data { get; set; }
+}
 
-    public class AQAnnualData
-    {
-        public int year { get; set; }
-        public List<MemberAnnualData> memberAnnualDataList { get; set; }
+public class absenceQuota
+{
+    public int minAbsenceQuota { get; set; }
+    public int additionalAbsenceQuota { get; set; }
+}
 
-    }
 
-    public class MemberAnnualData
-    {
-        public int id { get; set; }
-        public string fullName { get; set; }
-        public bool isActive { get; set; }
-        public int workingYear { get; set; }
-        public int absenceQuotaBase { get; set; }
-        public int absenceQuotaBaseCurrent { get; set; }
-        public int wfhQuotaBase { get; set; }
-        public int wfhQuotaBaseCurrent { get; set; }
-        public int lunchPayment { get; set; }
+public class AnnualAQDataStatusInput
+{
+    public int year { get; set; }
+}
 
-    }
+public class AnnualAQDataStatusResult : ApiResultBaseDO
+{
+    public AnnualAQDataStatus data { get; set; }
+}
 
-    public class AQAnnualDataInput
-    {
-        public int year { get; set; }
-        public int numberOfSetup { get; set; }
-        public List<MemberAnnualDataInput> memberAnnualDataList { get; set; }
-    }
+public class AQAnnualDataResult : ApiResultBaseDO
+{
+    public AQAnnualData data { get; set; }
+}
 
-    public class MemberAnnualDataInput
-    {
-        public int id { get; set; }
+public class CountNearExpiredContract : ApiResultBaseDO
+{
+    public int data { get; set; }
+}
 
-        public int workingYear { get; set; }
-        public int absenceQuotaBaseCurrent { get; set; }
-        public int wfhQuotaBaseCurrent { get; set; }
+public class AQAnnualData
+{
+    public int year { get; set; }
+    public List<MemberAnnualData> memberAnnualDataList { get; set; }
 
-        public int lunchPayment { get; set; }
-    }
+}
+
+public class MemberAnnualData
+{
+    public int id { get; set; }
+    public string fullName { get; set; }
+    public bool isActive { get; set; }
+    public int workingYear { get; set; }
+    public int minWFHQuota { get; set; }
+    public int additionalWFHQuota { get; set; }
+    public int minAbsenceQuota { get; set; }
+    public int additionalAbsenceQuota { get; set; }
+}
+
+public class AQAnnualDataInput
+{
+    public int year { get; set; }
+    public int numberOfSetup { get; set; }
+    public List<MemberAnnualDataInput> memberAnnualDataList { get; set; }
+}
+
+public class MemberAnnualDataInput
+{
+    public int id { get; set; }
+    public int workingYear { get; set; }
+    public int additionalWFHQuota { get; set; }
+    public int additionalAbsenceQuota { get; set; }
+    public bool isLunchStatus { get; set; }
+}
 
 

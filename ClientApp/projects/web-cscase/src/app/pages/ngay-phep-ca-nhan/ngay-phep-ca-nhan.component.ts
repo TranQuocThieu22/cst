@@ -30,27 +30,24 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   IndividualDayOffs: IndividualDayOff[];
   IndividualDayOffInitState = {
-    dateFrom: '',
-    dateTo: '',
-    sumDay: 0,
     member: {
       id: 0,
       fullName: '',
       nickName: ''
     },
-    isAnnual: false,
-    totalIsAnnual: 0,
-    isWithoutPay: false,
-    totalIsWithoutPay: 0,
     approvalStatus: 'Chưa duyệt',
-    reason: '',
-    note: ''
   };
   IndividualDayOff: IndividualDayOff = {
     ...this.IndividualDayOffInitState
   };
 
   MemberList: Member[] = [];
+
+  DayOffPeriod = [
+    { value: 1, label: 'Cả ngày' },
+    { value: 2, label: 'Sáng' },
+    { value: 3, label: 'Chiều' },
+  ];
 
   filter_datefrom: string = '';
   filter_dateto: string = '';
@@ -67,6 +64,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   ThongTinNghiPhepCaNhan: any = [];
 
+  selectedQuotaType: string;
+
   constructor(
     private https: HttpClient,
     private confirmationService: ConfirmationService,
@@ -78,14 +77,15 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   ngOnInit() {
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-    this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    // this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.filter_dateto = new Date(new Date().getFullYear(), 11, 31).toLocaleDateString('en-GB');
     this.fetchIndividualDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
     this.resetCalendarSelection();
-    this.sumDay();
-
+    // this.sumDay();
     this.primengConfig.ripple = true;
     this.fetchUserInfo();
     this.chartExtension = [BarChart, TitleComponent, TooltipComponent, LegendComponent, ToolboxComponent, GridComponent, VisualMapComponent];
+    this.selectedQuotaType = '0';
   }
 
   checkIsLeader() {
@@ -116,52 +116,52 @@ export class NgayPhepCaNhanComponent implements OnInit {
     });
   }
 
-  sumDay() {
-    const date1 = new Date(this.IndividualDayOff.dateFrom);
-    const date2 = new Date(this.IndividualDayOff.dateTo);
-    let diffDays = 0;
+  // sumDay() {
+  //   const date1 = new Date(this.IndividualDayOff.dateFrom);
+  //   const date2 = new Date(this.IndividualDayOff.dateTo);
+  //   let diffDays = 0;
 
-    if (date1 > date2) {
-      this.isValidDateRange = false;
-      this.IndividualDayOff.sumDay = 0;
-      return;
-    }
-    else {
-      while (date1 <= date2) {
-        this.isValidDateRange = true;
-        if (date1.getDay() !== 0 && date1.getDay() !== 6) {
-          diffDays++;
-        }
-        date1.setDate(date1.getDate() + 1);
-      }
-    }
-    this.IndividualDayOff.sumDay = diffDays;
-    this.handleHalfDay();
-  }
+  //   if (date1 > date2) {
+  //     this.isValidDateRange = false;
+  //     this.IndividualDayOff.sumDay = 0;
+  //     return;
+  //   }
+  //   else {
+  //     while (date1 <= date2) {
+  //       this.isValidDateRange = true;
+  //       if (date1.getDay() !== 0 && date1.getDay() !== 6) {
+  //         diffDays++;
+  //       }
+  //       date1.setDate(date1.getDate() + 1);
+  //     }
+  //   }
+  //   this.IndividualDayOff.sumDay = diffDays;
+  //   this.handleHalfDay();
+  // }
 
-  handleHalfDay() {
-    if (this.IndividualDayOff.sumDay && !Number.isInteger(this.IndividualDayOff.sumDay)) {
-      this.IndividualDayOff.numberOfDay_whole = Math.floor(this.IndividualDayOff.sumDay);
-      this.IndividualDayOff.numberOfDay_half = 1;
-    }
-    else {
-      this.IndividualDayOff.numberOfDay_whole = this.IndividualDayOff.sumDay;
-      this.IndividualDayOff.numberOfDay_half = 0;
-    }
-  }
+  // handleHalfDay() {
+  //   if (this.IndividualDayOff.sumDay && !Number.isInteger(this.IndividualDayOff.sumDay)) {
+  //     this.IndividualDayOff.numberOfDay_whole = Math.floor(this.IndividualDayOff.sumDay);
+  //     this.IndividualDayOff.numberOfDay_half = 1;
+  //   }
+  //   else {
+  //     this.IndividualDayOff.numberOfDay_whole = this.IndividualDayOff.sumDay;
+  //     this.IndividualDayOff.numberOfDay_half = 0;
+  //   }
+  // }
 
-  validateInputDates() {
-    if (this.filter_datefrom && this.filter_dateto) {
-      let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
-      let dateTo = new Date(this.convertDateFormat(this.filter_dateto));
+  // validateInputDates() {
+  //   if (this.filter_datefrom && this.filter_dateto) {
+  //     let dateFrom = new Date(this.convertDateFormat(this.filter_datefrom));
+  //     let dateTo = new Date(this.convertDateFormat(this.filter_dateto));
 
-      if (dateFrom > dateTo) {
-        this.isValidDateRangeFilter = false;
-      } else {
-        this.isValidDateRangeFilter = true;
-      }
-    }
-  }
+  //     if (dateFrom > dateTo) {
+  //       this.isValidDateRangeFilter = false;
+  //     } else {
+  //       this.isValidDateRangeFilter = true;
+  //     }
+  //   }
+  // }
 
   fetchDataFiltered() {
     let input_filter_datefrom = null;
@@ -204,7 +204,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
     };
     this.ThongTinNghiPhepCaNhan = [];
     this.resetCalendarSelection();
-    this.sumDay();
+    // this.sumDay();
     this.editIndividualDayOffDialog = false;
     this.addNewIndividualDayOffDialog = true;
     this.openDialog = true;
@@ -214,9 +214,11 @@ export class NgayPhepCaNhanComponent implements OnInit {
     this.fetchIndividualAbsenceQuota(data.member.id);
     this.isValidDateRange = true;
     this.IndividualDayOff = {};
-    this.IndividualDayOff = { ...data };
-    this.IndividualDayOff.dateFrom = new Date(data.dateFrom);
-    this.IndividualDayOff.dateTo = new Date(data.dateTo);
+    this.IndividualDayOff = {
+      ...data,
+      date: new Date(data.date),
+    };
+
     this.addNewIndividualDayOffDialog = false;
     this.editIndividualDayOffDialog = true;
     this.openDialog = true;
@@ -253,8 +255,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
 
   sortInitData() {
     this.IndividualDayOffs.sort((a, b) => {
-      const dateA = new Date(a.dateFrom);
-      const dateB = new Date(b.dateFrom);
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
       dateA.setHours(0, 0, 0, 0);
       dateB.setHours(0, 0, 0, 0);
       return dateB.getTime() - dateA.getTime();
@@ -286,18 +288,18 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
 
-  calculateData(): any {
-    const memberTotalDayOffs = {};
-    this.IndividualDayOffs.forEach((individualDayOff: IndividualDayOff) => {
-      const memberName = individualDayOff.member.fullName;
-      if (memberTotalDayOffs.hasOwnProperty(memberName)) {
-        memberTotalDayOffs[memberName] += individualDayOff.sumDay;
-      } else {
-        memberTotalDayOffs[memberName] = individualDayOff.sumDay;
-      }
-    });
-    return memberTotalDayOffs;
-  }
+  // calculateData(): any {
+  //   const memberTotalDayOffs = {};
+  //   this.IndividualDayOffs.forEach((individualDayOff: IndividualDayOff) => {
+  //     const memberName = individualDayOff.member.fullName;
+  //     if (memberTotalDayOffs.hasOwnProperty(memberName)) {
+  //       memberTotalDayOffs[memberName] += individualDayOff.sumDay;
+  //     } else {
+  //       memberTotalDayOffs[memberName] = individualDayOff.sumDay;
+  //     }
+  //   });
+  //   return memberTotalDayOffs;
+  // }
 
   chartData(data) {
     const xAxisData = Object.keys(data);
@@ -367,7 +369,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
         individualdayoff.member.nickName = foundMember.nickName;
       }
     });
-    this.chartData(this.calculateData());
+    // this.chartData(this.calculateData());
     this.sortInitData();
   }
 
@@ -380,10 +382,8 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   resetCalendarSelection() {
-    this.IndividualDayOff.dateFrom = new Date();
-    this.IndividualDayOff.dateFrom.setHours(0, 0, 0, 0);
-    this.IndividualDayOff.dateTo = new Date();
-    this.IndividualDayOff.dateTo.setHours(0, 0, 0, 0);
+    this.IndividualDayOff.date = new Date();
+    this.IndividualDayOff.date.setHours(0, 0, 0, 0);
   }
 
   addNewIndividualDayOff() {
@@ -396,6 +396,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
         item.memberId = item.member.id;
       }
       delete item.member;
+      item.dayOffType = Number(item.dayOffType);
     });
 
     this.https.post<any>("/api/NgayPhepCaNhan", IndividualDayOffArray).subscribe({
@@ -570,17 +571,10 @@ export class NgayPhepCaNhanComponent implements OnInit {
         id: day.id,
         fullName: day.member.fullName,
         nickName: day.member.nickName,
-        dateFrom: day.dateFrom instanceof Date
-          ? day.dateFrom.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
-          : new Date(day.dateFrom).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-        dateTo: day.dateTo instanceof Date
-          ? day.dateTo.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
-          : new Date(day.dateTo).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-
-        sumDay: day.sumDay,
+        date: day.date instanceof Date
+          ? day.date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : new Date(day.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
         reason: day.reason,
-        isAnnual: this.convertBooleanToString(day.isAnnual),
-        isWithoutPay: this.convertBooleanToString(day.isWithoutPay),
         approvalStatus: day.approvalStatus,
         note: day.note,
         memberId: day.member.id
@@ -679,7 +673,6 @@ export class NgayPhepCaNhanComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        console.log(this.IndividualDayOffs);
       },
     });
   }

@@ -46,7 +46,7 @@ namespace educlient.Controllers
                 // Here you might generate a JWT token or set up a session
                 //return Ok(new { message = "Login successful", user = winAccount });
 
-                if (model.username.ToLower() == "admin" && model.password == "12345")
+                if (model.username.ToLower() == "admin" && model.password == "244466666")
                 {
                     var data = new LoginReturnData()
                     {

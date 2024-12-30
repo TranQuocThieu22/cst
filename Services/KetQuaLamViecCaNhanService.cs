@@ -1320,12 +1320,11 @@ namespace educlient.Services
                 .Select(x => new IndividualDayOff
                 {
                     id = x.id,
-                    dateFrom = x.dateFrom,
-                    dateTo = x.dateTo,
+                    //dateFrom = x.dateFrom,
+                    //dateTo = x.dateTo,
+                    date = x.date,
                     memberId = x.memberId,
                     reason = x.reason,
-                    isAnnual = x.isAnnual,
-                    isWithoutPay = x.isWithoutPay,
                     note = x.note
                 })
                 .ToList() ?? new List<IndividualDayOff>();

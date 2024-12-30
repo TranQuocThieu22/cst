@@ -4,8 +4,7 @@
     <p-card
       header="header"
       class="mb-2"
-      style="font-weight: bold; font-size: x-large; color: navy"
-    >
+      style="font-weight: bold; font-size: x-large; color: navy">
       Thống kê tính nghỉ phép năm
     </p-card>
     <!-- data table -->
@@ -22,8 +21,7 @@
       [tableStyle]="{ 'min-width': '50rem' }"
       styleClass="p-datatable-gridlines p-datatable-sm"
       reorderableColumns="true"
-      responsiveLayout="scroll"
-    >
+      responsiveLayout="scroll">
       <!-- toolbar -->
       <ng-template pTemplate="caption">
         <div class="flex justify-content-between">
@@ -32,11 +30,10 @@
             <div class="">
               <button
                 pButton
-                label="Clear"
+                label="Refresh"
                 class="p-button-outlined"
                 icon="pi pi-filter-slash"
-                (click)="clear(dt)"
-              ></button>
+                (click)="clear(dt)"></button>
             </div>
             <span class="p-float-label">
               <p-calendar
@@ -45,8 +42,7 @@
                 dateFormat="yy"
                 inputId="yearpicker"
                 [style]="{ width: '12rem' }"
-                [inputStyle]="{ width: '12rem' }"
-              ></p-calendar>
+                [inputStyle]="{ width: '12rem' }"></p-calendar>
               <label for="float-input">Chọn năm</label>
             </span>
             <span class="">
@@ -56,8 +52,7 @@
                 type="button"
                 icon="pi pi-search"
                 class="p-button-rounded p-button-info"
-                (click)="fetchFilteredData()"
-              ></button>
+                (click)="fetchFilteredData()"></button>
             </span>
           </div>
           <!-- export csv -->
@@ -70,8 +65,7 @@
               (click)="exportExcel('full')"
               class="p-button-success mr-2"
               pTooltip="XLS"
-              tooltipPosition="bottom"
-            ></button>
+              tooltipPosition="bottom"></button>
             <button
               type="button"
               pButton
@@ -80,8 +74,7 @@
               (click)="exportExcel('selection')"
               class="p-button-info ml-auto"
               pTooltip="Selection Only"
-              tooltipPosition="bottom"
-            ></button>
+              tooltipPosition="bottom"></button>
           </div>
         </div>
       </ng-template>
@@ -96,8 +89,7 @@
           <th
             style="white-space: wrap; min-width: 10rem"
             class="text-center"
-            pSortableColumn="absenceQuota"
-          >
+            pSortableColumn="absenceQuota">
             Hạn mức nghỉ phép
             <p-sortIcon field="absenceQuota"></p-sortIcon>
           </th>

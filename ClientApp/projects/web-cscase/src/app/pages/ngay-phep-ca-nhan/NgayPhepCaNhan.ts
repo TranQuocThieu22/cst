@@ -1,16 +1,11 @@
 export interface IndividualDayOff {
     id?: number;
-    dateFrom?: Date | string;
-    dateTo?: Date | string;
-    sumDay?: number;
-    numberOfDay_whole?: number;
-    numberOfDay_half?: number;
+    date?: Date | string;
     member?: Member;
     reason?: string;
-    isAnnual?: boolean;
-    totalIsAnnual?: number;
-    isWithoutPay?: boolean;
-    totalIsWithoutPay?: number;
+    periodType?: number;
+    dayOffType?: number;
+    isDayOffWithPayment?: boolean;
     approvalStatus?: string;
     note?: string;
 }
@@ -23,17 +18,12 @@ export interface Member {
 
 export interface IndividualDayOff_API_DO {
     id?: number;
-    dateFrom?: Date | string;
-    dateTo?: Date | string;
-    sumDay?: number;
-    numberOfDay_whole?: number;
-    numberOfDay_half?: number;
+    date?: Date | string;
     memberId?: number;
     reason?: string;
-    isAnnual?: boolean;
-    totalIsAnnual?: number;
-    isWithoutPay?: boolean;
-    totalIsWithoutPay?: number;
+    periodType?: number;
+    dayOffType?: number;
+    isDayOffWithPayment?: boolean;
     approvalStatus?: string;
     note?: string;
 }
