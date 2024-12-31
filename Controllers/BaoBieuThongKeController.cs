@@ -1,5 +1,4 @@
 ﻿using educlient.Data;
-using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,10 +10,11 @@ namespace educlient.Controllers
     [ApiController]
     public class BaoBieuThongKeController : ControllerBase
     {
-        private readonly IDbLiteContext database;
+        private readonly IDbLiteContext _database;
+
         public BaoBieuThongKeController(IDbLiteContext dataContext)
         {
-            database = dataContext;
+            _database = dataContext;
         }
 
         [HttpGet("ThongKeTinhTienAnTrua")]
@@ -32,11 +32,11 @@ namespace educlient.Controllers
 
             var resultList = new List<ThongKeTinhTienAnTruaDataDO>();
 
-            var membersTable = database.Table<AQMember>();
-            var dayOffsTable = database.Table<IndividualDayOff>();
-            var workingOnlineTable = database.Table<WorkingOnlineDay>();
-            var commissionTable = database.Table<Commission>();
-            var aqDayOffTable = database.Table<DayOff>();
+            var membersTable = _database.Table<AQMember>();
+            var dayOffsTable = _database.Table<IndividualDayOff>();
+            var workingOnlineTable = _database.Table<WorkingOnlineDay>();
+            var commissionTable = _database.Table<Commission>();
+            var aqDayOffTable = _database.Table<DayOff>();
 
             var membersData = membersTable.FindAll().ToList();
             if (membersData == null)
@@ -52,6 +52,8 @@ namespace educlient.Controllers
 
             foreach (var member in membersData)
             {
+                total_CommissionDay_full = 0;
+                total_CommissionDay_half = 0;
                 // Find day-off data for each member by month-year
                 total_IndividualDayOff_full = dayOffsTable.Find(x =>
                     x.memberId == member.id &&
@@ -90,43 +92,53 @@ namespace educlient.Controllers
 
                 total_WorkingOnline = total_WorkingOnline_full + total_WorkingOnline_half;
 
-                var commissionData = commissionTable.Find(x =>
-                    x.memberList.Where(m => m.id == member.id).Any() &&
-                    (x.dateFrom.Year == year &&
-                    x.dateFrom.Month == month)
-                    ).ToList();
+                var commissionData = commissionTable.Query()
+                    .Where(x => x.dateFrom.Year == year && x.dateFrom.Month == month)
+                    .ToList()  // Get filtered by date records first
+                    .Where(x => x.memberList.Select(m => m.id).Contains(member.id))  // Then filter for specific member ID
+                    .ToList();
 
-                foreach (var data in commissionData)
+                if (commissionData.Any())  // Check if commissionData contains records
                 {
-                    if (data.sumDay == 0.5)
+                    foreach (var data in commissionData)
                     {
-                        total_CommissionDay_half += 1;
-                    }
-                    else
-                    {
-                        DateTime startDate = data.dateFrom;
-                        DateTime endDate = data.dateTo;
-                        // If the record spans across different months
-                        if (startDate.Month != endDate.Month || startDate.Year != endDate.Year)
+                        if (data.sumDay == 0.5)
                         {
-                            // Calculate the days in the first month only
-                            DateTime monthStart = new DateTime(startDate.Year, startDate.Month, 1);
-                            DateTime monthEnd = monthStart.AddMonths(1).AddDays(-1);
-                            DateTime endOfFirstMonth = endDate < monthEnd ? endDate : monthEnd;
-
-                            if (startDate <= endOfFirstMonth)
-                            {
-                                int daysInFirstMonth = (endOfFirstMonth - startDate).Days + 1;
-                                total_CommissionDay_full += daysInFirstMonth;
-                            }
+                            total_CommissionDay_half += 1;
+                        }
+                        else if (data.sumDay > 0 && data.sumDay < 1)  // Fractional day condition
+                        {
+                            total_CommissionDay_half += 1;
                         }
                         else
                         {
-                            // If the record is within the same month
-                            total_CommissionDay_full += (int)data.sumDay;
+                            DateTime startDate = data.dateFrom;
+                            DateTime endDate = data.dateTo;
+                            // If the record spans across different months
+                            if (startDate.Month != endDate.Month || startDate.Year != endDate.Year)
+                            {
+                                DateTime monthStart = new DateTime(startDate.Year, startDate.Month, 1);
+                                DateTime monthEnd = monthStart.AddMonths(1).AddDays(-1);
+                                DateTime endOfFirstMonth = endDate < monthEnd ? endDate : monthEnd;
+
+                                if (startDate <= endOfFirstMonth)
+                                {
+                                    int daysInFirstMonth = (endOfFirstMonth - startDate).Days + 1;
+                                    total_CommissionDay_full += daysInFirstMonth;
+                                }
+                            }
+                            else
+                            {
+                                total_CommissionDay_full += (int)data.sumDay;
+                            }
                         }
                     }
                 }
+                else
+                {
+                    total_CommissionDay_full = 0;  // Set to 0 if no commission data
+                }
+
 
                 var AQDayOffData = aqDayOffTable.Find(x =>
                     x.dateFrom.Year == year &&
@@ -170,8 +182,8 @@ namespace educlient.Controllers
         public ThongKeTinhTienCongTacResult ThongKeTinhTienCongTac([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, int? year = null)
         {
             // Get the tables
-            var membersTable = database.Table<AQMember>();
-            var commissionTable = database.Table<Commission>();
+            var membersTable = _database.Table<AQMember>();
+            var commissionTable = _database.Table<Commission>();
 
             var membersData = membersTable.FindAll().ToList();
             if (membersData == null)
@@ -235,9 +247,9 @@ namespace educlient.Controllers
         public ThongKeNgayNghiCaNhanResult ThongKeNgayNghiById([FromQuery] int year, [FromQuery] int month, [FromQuery] int? query_memberId = null)
         {
             // Get the tables
-            var membersTable = database.Table<AQMember>();
-            var dayOffsTable = database.Table<IndividualDayOff>();
-            var aqDayOffTable = database.Table<DayOff>();
+            var membersTable = _database.Table<AQMember>();
+            var dayOffsTable = _database.Table<IndividualDayOff>();
+            var aqDayOffTable = _database.Table<DayOff>();
 
             var member = membersTable.FindById(query_memberId);
             if (member == null)
@@ -310,7 +322,6 @@ namespace educlient.Controllers
             public int total_WorkingOnline_half { get; set; }
             public int total_CommissionDay_full { get; set; }
             public int total_CommissionDay_half { get; set; }
-
             public int total_AQDayOff { get; set; }
         }
 
