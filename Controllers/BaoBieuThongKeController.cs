@@ -200,11 +200,6 @@ namespace educlient.Controllers
             var resultList = new List<ThongKeTinhTienCongTacDataDO>();
             foreach (var member in membersData)
             {
-                //var commissionData = commissionTable.Find(x =>
-                //    x.memberList.Where(m => m.id == member.id).Any() &&
-                //    ((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value)) &&
-                //    x.dateFrom.Year == year
-                //    ).ToList();
                 var commissionData = commissionTable.Query()
                   .Where(x => x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value)
                   .ToList()  // Get filtered by date records first
