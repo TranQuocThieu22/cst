@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace educlient.Controllers
@@ -199,12 +200,16 @@ namespace educlient.Controllers
             var resultList = new List<ThongKeTinhTienCongTacDataDO>();
             foreach (var member in membersData)
             {
-                var commissionData = commissionTable.Find(x =>
-                    x.memberList.Where(m => m.id == member.id).Any() &&
-                    ((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value)) &&
-                    x.dateFrom.Year == year
-                    ).ToList();
-
+                //var commissionData = commissionTable.Find(x =>
+                //    x.memberList.Where(m => m.id == member.id).Any() &&
+                //    ((x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value)) &&
+                //    x.dateFrom.Year == year
+                //    ).ToList();
+                var commissionData = commissionTable.Query()
+                  .Where(x => x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value)
+                  .ToList()  // Get filtered by date records first
+                  .Where(x => x.memberList.Select(m => m.id).Contains(member.id))  // Then filter for specific member ID
+                  .ToList();
                 float countCommission = 0;
                 var totalExpense = 0;
 
