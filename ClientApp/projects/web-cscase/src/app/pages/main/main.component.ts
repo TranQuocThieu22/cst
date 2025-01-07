@@ -43,7 +43,7 @@ export class MainComponent implements OnInit, OnDestroy {
       }
     });
     if (localStorage.getItem("dateRange") == null) {
-      this.selectedOption = "24-25"
+      this.selectedOption = "25-26"
       localStorage.setItem("dateRange", this.selectedOption)
     }
     this.selectedOption = localStorage.getItem("dateRange")

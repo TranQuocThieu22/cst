@@ -398,23 +398,10 @@ namespace educlient.Controllers
                 list_matruong = "'" + StringMaTruong + "'";
             }
 
-            string ngayBatDau = "'01/01/2022'";
-            string ngayKetThuc = "'29/12/2024'";
-            if (model.dateRange == "22-23")
-            {
-                ngayBatDau = "'01/01/2022'";
-                ngayKetThuc = "'01/01/2023'";
-            }
-            else if (model.dateRange == "23-24")
-            {
-                ngayBatDau = "'01/01/2023'";
-                ngayKetThuc = "'01/01/2024'";
-            }
-            else if (model.dateRange == "24-25")
-            {
-                ngayBatDau = "'01/01/2024'";
-                ngayKetThuc = "'01/01/2025'";
-            }
+            string ngayBatDau = $"'01/01/20{model.dateRange.Split("-")[0]}'";
+            string ngayKetThuc = $"'01/01/20{model.dateRange.Split("-")[1]}'";
+
+
             string list_trangthai = ""; // "'Mở case', 'Đang xử lý', 'Đã xử lý', 'Đã gửi mail', 'Đóng case'";
 
             List<workItem0> lstAll;
