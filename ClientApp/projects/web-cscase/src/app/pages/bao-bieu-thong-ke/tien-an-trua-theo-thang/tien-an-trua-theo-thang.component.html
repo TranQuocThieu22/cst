@@ -35,45 +35,52 @@
                                 (click)="clear(dt1)">
                             </button>
                         </div>
-                        <span class="p-float-label">
-                            <p-calendar
-                                [(ngModel)]="selectedMonthYear"
-                                view="month" dateFormat="mm/yy"
-                                [readonlyInput]="true"
-                                inputId="monthpicker"
-                                [style]="{'width':'12rem'}" [inputStyle]="{'width':'12rem'}">
-                            </p-calendar>
-                            <label for="float-input">Chọn tháng</label>
-                        </span>
-                        <span class="">
-                            <button
-                                pButton pRipple
-                                type="button"
-                                icon="pi pi-search"
-                                class="p-button-rounded p-button-info"
-                                (click)="fetchFilteredLunchPaymentReport()">
-                            </button>
-                        </span>
-                        <span class="p-float-label">
-                            <p-inputNumber inputId="lunchPaymentType1" [(ngModel)]="lunchPaymentType1"></p-inputNumber>
-                            <label for="inputnumber">Nhân viên chính thức</label>
-                        </span>
-                        <span class="p-float-label">
-                            <p-inputNumber inputId="lunchPaymentType2" [(ngModel)]="lunchPaymentType2"></p-inputNumber>
-                            <label for="inputnumber">Nhân viên thử việc</label>
-                        </span>
-                        <span class="p-float-label">
-                            <p-inputNumber inputId="lunchPaymentType3" [(ngModel)]="lunchPaymentType3"></p-inputNumber>
-                            <label for="inputnumber">Thực tập sinh</label>
-                        </span>
-                        <span>
-                            <button
-                                pButton type="button"
-                                label="Tổng kết tiền ăn trưa"
-                                class="p-button-outlined"
-                                (click)="calculateEachMemberActualWorkingDayAndPayment()">
-                            </button>
-                        </span>
+                        <div class="flex flex-row gap-3">
+                            <span class="p-float-label">
+                                <p-calendar
+                                    [(ngModel)]="selectedMonthYear"
+                                    view="month" dateFormat="mm/yy"
+                                    [readonlyInput]="true"
+                                    inputId="monthpicker"
+                                    [style]="{'width':'12rem'}" [inputStyle]="{'width':'12rem'}">
+                                </p-calendar>
+                                <label for="float-input">Chọn tháng</label>
+                            </span>
+                            <span class="">
+                                <button
+                                    pButton pRipple
+                                    type="button"
+                                    icon="pi pi-search"
+                                    class="p-button-rounded p-button-info"
+                                    (click)="fetchFilteredLunchPaymentReport()">
+                                </button>
+                            </span>
+                        </div>
+                        <div class="flex flex-row gap-3 mt-3 md:mt-0 flex-wrap">
+                            <span class="p-float-label mt-3 lg:mt-0">
+                                <p-inputNumber inputId="lunchPaymentType1"
+                                    [(ngModel)]="lunchPaymentType1"></p-inputNumber>
+                                <label for="inputnumber">Nhân viên chính thức</label>
+                            </span>
+                            <span class="p-float-label mt-3 lg:mt-0">
+                                <p-inputNumber inputId="lunchPaymentType2"
+                                    [(ngModel)]="lunchPaymentType2"></p-inputNumber>
+                                <label for="inputnumber">Nhân viên thử việc</label>
+                            </span>
+                            <span class="p-float-label mt-3 lg:mt-0">
+                                <p-inputNumber inputId="lunchPaymentType3"
+                                    [(ngModel)]="lunchPaymentType3"></p-inputNumber>
+                                <label for="inputnumber">Thực tập sinh</label>
+                            </span>
+                            <span>
+                                <button
+                                    pButton type="button"
+                                    label="Tổng kết tiền ăn trưa"
+                                    class="p-button-outlined"
+                                    (click)="calculateEachMemberActualWorkingDayAndPayment()">
+                                </button>
+                            </span>
+                        </div>
                     </div>
                     <div class="mt-3 mb-2">
                         <button type="button" pButton pRipple icon="pi pi-file-excel"
