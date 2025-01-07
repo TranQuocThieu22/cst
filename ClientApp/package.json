@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "dev": "ng serve web-cscase --port 4202 --proxy-config projects/web-cscase/proxy.conf.js",
     "build-cscase": "ng build web-cscase",
     "cscase": "ng serve web-cscase --port 4202 --proxy-config projects/web-cscase/proxy.conf.js",
     "build": "ng build web-cscase",
