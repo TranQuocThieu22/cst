@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
 import { HttpClient } from '@angular/common/http';
 import { Table } from 'primeng/table';
-import { IndividualDayOffReport } from './thong-ke-nghi-phep-nam-DT';
+import { IndividualQuotaReport } from './thong-ke-nghi-phep-nam-DT';
 @Component({
   selector: 'app-thong-ke-nghi-phep-nam',
   templateUrl: './thong-ke-nghi-phep-nam.component.html',
@@ -10,7 +10,7 @@ import { IndividualDayOffReport } from './thong-ke-nghi-phep-nam-DT';
 })
 export class ThongKeNghiPhepNamComponent implements OnInit {
 
-  AQIndividualWFT_DayOffReport: IndividualDayOffReport[];
+  AQIndividualWFT_DayOffReport: IndividualQuotaReport[];
   selectedYearInput: any;
 
   selectedRecords: any[];
@@ -42,9 +42,10 @@ export class ThongKeNghiPhepNamComponent implements OnInit {
       params = { year: year };
     }
 
-    this.https.get<any>("/api/NgayPhepCaNhan/Thongkenghiphepnam", { params: params }).subscribe({
+    this.https.get<any>("/api/BaoBieuThongKe/Thongkehanmuccanhan", { params: params }).subscribe({
       next: (res: any) => {
         this.AQIndividualWFT_DayOffReport = res.data;
+        console.log(res.data);
       },
       error: (error) => {
         console.log(error);

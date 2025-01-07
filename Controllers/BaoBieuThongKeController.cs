@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using static educlient.Controllers.NgayPhepCaNhanController;
 
 namespace educlient.Controllers
 {
@@ -319,6 +320,158 @@ namespace educlient.Controllers
             };
         }
 
+        [HttpGet("Thongkehanmuccanhan")]
+        public ThongKeCaNhanNamHienTaiResult GetThongkehanmuccanhan([FromQuery] int year)
+        {
+            var resultList = new List<ThongKeNghiPhepVaLamOnlineDO>();
+
+            var AQMemberTable = _database.Table<AQMember>();
+            var dayOffsTable = _database.Table<IndividualDayOff>();
+            var workingOnlineTable = _database.Table<WorkingOnlineDay>();
+
+            var membersData = AQMemberTable.FindAll().ToList();
+            if (membersData == null)
+            {
+                return new ThongKeCaNhanNamHienTaiResult
+                {
+                    message = "Member not found",
+                    code = 404,
+                    result = false,
+                    data = null
+                };
+            }
+
+            foreach (var member in membersData)
+            {
+                //dayOff data
+                int minAbsenceQuota = AQMemberTable.FindById(member.id).minAbsenceQuota;
+                int additionalAbsenceQuota = AQMemberTable.FindById(member.id).additionalAbsenceQuota;
+                float totalDayOff = 0;
+                float totalDayOff_with_permission = 0;
+                float totalDayOff_without_permission = 0;
+                float totalDayOff_fullType1 = 0;
+                float totalDayOff_fullType2 = 0;
+                float totalDayOff_halfType1 = 0;
+                float totalDayOff_halfType2 = 0;
+                float totalDayOff_type3_4 = 0;
+                float usedMinAbsenceQuota = 0;
+                float usedAdditionalAbsenceQuota = 0;
+                float remainMinAbsenceQuota = 0;
+                float remainAdditionalAbsenceQuota = 0;
+
+                var dayOffData = dayOffsTable.Find(x =>
+                        x.memberId == member.id &&
+                        x.date.Year == year &&
+                        x.approvalStatus == "Đã duyệt"
+                        ).ToList();
+
+                totalDayOff = dayOffData.Count;
+
+                foreach (var dayOff in dayOffData)
+                {
+                    totalDayOff_with_permission += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? 1 : 0;
+                    totalDayOff_fullType1 += (dayOff.periodType == 1 && dayOff.dayOffType == 1) ? 1 : 0;
+                    totalDayOff_fullType2 += (dayOff.periodType == 1 && dayOff.dayOffType == 2) ? 1 : 0;
+                    totalDayOff_halfType1 += ((dayOff.periodType == 2 || dayOff.periodType == 3) && dayOff.dayOffType == 1) ? 1 : 0;
+                    totalDayOff_halfType2 += ((dayOff.periodType == 2 || dayOff.periodType == 3) && dayOff.dayOffType == 2) ? 1 : 0;
+                    totalDayOff_type3_4 += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? 1 : 0;
+                }
+
+                usedMinAbsenceQuota = (float)(totalDayOff_fullType1 + totalDayOff_halfType1 * 0.5);
+                usedAdditionalAbsenceQuota = (float)(totalDayOff_fullType2 + totalDayOff_halfType2 * 0.5);
+                remainMinAbsenceQuota = minAbsenceQuota - usedMinAbsenceQuota;
+                remainAdditionalAbsenceQuota = additionalAbsenceQuota - usedAdditionalAbsenceQuota;
+
+                totalDayOff_without_permission = totalDayOff - totalDayOff_with_permission;
+
+
+                //workingOnline data
+                int minWfhQuota = AQMemberTable.FindById(member.id).minWFHQuota;
+                int additionalWfhQuota = AQMemberTable.FindById(member.id).additionalWFHQuota;
+                float totalWorkingOnlineDay = 0;
+                float totalWorkingOnlineDay_with_permission = 0;
+                float totalWorkingOnlineDay_without_permission = 0;
+                float totalWorkingOnlineDay_fullType1 = 0;
+                float totalWorkingOnlineDay_fullType2 = 0;
+                float totalWorkingOnlineDay_halfType1 = 0;
+                float totalWorkingOnlineDay_halfType2 = 0;
+                float totalWorkingOnlineDay_type3_4 = 0;
+                float usedMinWfhQuota = 0;
+                float usedAdditionalWfhQuota = 0;
+                float remainMinWfhQuota = 0;
+                float remainAdditionalWfhQuota = 0;
+
+                var workingOnlineDayData = workingOnlineTable.Find(x =>
+                        x.memberId == member.id &&
+                        x.date.Year == year &&
+                        x.approvalStatus == "Đã duyệt"
+                        ).ToList();
+
+                totalWorkingOnlineDay = workingOnlineDayData.Count;
+
+                foreach (var workingOnlineDay in workingOnlineDayData)
+                {
+                    totalWorkingOnlineDay_with_permission += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+                    totalWorkingOnlineDay_fullType1 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 1) ? 1 : 0;
+                    totalWorkingOnlineDay_fullType2 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 2) ? 1 : 0;
+                    totalWorkingOnlineDay_halfType1 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 1) ? 1 : 0;
+                    totalWorkingOnlineDay_halfType2 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 2) ? 1 : 0;
+                    totalWorkingOnlineDay_type3_4 += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+                }
+
+                usedMinWfhQuota = (float)(totalWorkingOnlineDay_fullType1 + totalWorkingOnlineDay_halfType1 * 0.5);
+                usedAdditionalWfhQuota = (float)(totalWorkingOnlineDay_fullType2 + totalWorkingOnlineDay_halfType2 * 0.5);
+                remainMinWfhQuota = minWfhQuota - usedMinWfhQuota;
+                remainAdditionalWfhQuota = additionalWfhQuota - usedAdditionalWfhQuota;
+
+                totalWorkingOnlineDay_without_permission = totalWorkingOnlineDay - totalWorkingOnlineDay_with_permission;
+
+                var ThongKeCaNhanByMember = new ThongKeNghiPhepVaLamOnlineDO
+                {
+                    memberId = member.id,
+                    fullName = member.fullName,
+                    role = member.role,
+                    employeeType = member.employeeType,
+                    minAbsenceQuota = minAbsenceQuota,
+                    //dayOff data
+                    additionalAbsenceQuota = additionalAbsenceQuota,
+                    totalDayOff = totalDayOff,
+                    totalDayOffFullType1 = totalDayOff_fullType1,
+                    totalDayOffFullType2 = totalDayOff_fullType2,
+                    totalDayOffHalfType1 = totalDayOff_halfType1,
+                    totalDayOffHalfType2 = totalDayOff_halfType2,
+                    totalDayOffType3_4 = totalDayOff_type3_4,
+                    usedAdditionalAbsenceQuota = usedAdditionalAbsenceQuota,
+                    usedMinAbsenceQuota = usedMinAbsenceQuota,
+                    remainAdditionalAbsenceQuota = remainAdditionalAbsenceQuota,
+                    remainMinAbsenceQuota = remainMinAbsenceQuota,
+                    //workingOnline data
+                    minWfhQuota = minWfhQuota,
+                    additionalWfhQuota = additionalWfhQuota,
+                    totalWorkOnlineDay = totalWorkingOnlineDay,
+                    totalWorkOnlineDayFullType1 = totalWorkingOnlineDay_fullType1,
+                    totalWorkOnlineDayFullType2 = totalWorkingOnlineDay_fullType2,
+                    totalWorkOnlineDayHalfType1 = totalWorkingOnlineDay_halfType1,
+                    totalWorkOnlineDayHalfType2 = totalWorkingOnlineDay_halfType2,
+                    totalWorkOnlineDayType3_4 = totalWorkingOnlineDay_type3_4,
+                    usedAdditionalWfhQuota = usedAdditionalWfhQuota,
+                    usedMinWfhQuota = usedMinWfhQuota,
+                    remainAdditionalWfhQuota = remainAdditionalWfhQuota,
+                    remainMinWfhQuota = remainMinWfhQuota,
+                };
+
+                resultList.Add(ThongKeCaNhanByMember);
+            }
+
+            return new ThongKeCaNhanNamHienTaiResult
+            {
+                message = "Success",
+                code = 200,
+                result = true,
+                data = resultList
+            };
+        }
+
         public class ThongKeTinhTienAnTruaDataDO
         {
             public int id { get; set; }
@@ -369,5 +522,41 @@ namespace educlient.Controllers
             public List<ThongKeNgayNghiCaNhanDataDO> data { get; set; }
         }
 
+        public class ThongKeCaNhanNamHienTaiResult : ApiResultBaseDO
+        {
+            public List<ThongKeNghiPhepVaLamOnlineDO> data { get; set; }
+        }
+
+        public class ThongKeNghiPhepVaLamOnlineDO
+        {
+            public int memberId { get; set; }
+            public string fullName { get; set; }
+            public string role { get; set; }
+            public int employeeType { get; set; }
+            public int minAbsenceQuota { get; set; }
+            public int additionalAbsenceQuota { get; set; }
+            public float totalDayOff { get; set; }
+            public float totalDayOffFullType1 { get; set; }
+            public float totalDayOffFullType2 { get; set; }
+            public float totalDayOffHalfType1 { get; set; }
+            public float totalDayOffHalfType2 { get; set; }
+            public float totalDayOffType3_4 { get; set; }
+            public float usedMinAbsenceQuota { get; set; }
+            public float usedAdditionalAbsenceQuota { get; set; }
+            public float remainMinAbsenceQuota { get; set; }
+            public float remainAdditionalAbsenceQuota { get; set; }
+            public int minWfhQuota { get; set; }
+            public int additionalWfhQuota { get; set; }
+            public float totalWorkOnlineDay { get; set; }
+            public float totalWorkOnlineDayFullType1 { get; set; }
+            public float totalWorkOnlineDayFullType2 { get; set; }
+            public float totalWorkOnlineDayHalfType1 { get; set; }
+            public float totalWorkOnlineDayHalfType2 { get; set; }
+            public float totalWorkOnlineDayType3_4 { get; set; }
+            public float usedMinWfhQuota { get; set; }
+            public float usedAdditionalWfhQuota { get; set; }
+            public float remainMinWfhQuota { get; set; }
+            public float remainAdditionalWfhQuota { get; set; }
+        }
     }
 }

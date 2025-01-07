@@ -1,4 +1,5 @@
-export interface IndividualDayOffReport {
+export interface IndividualQuotaReport {
+    id?: number;
     fullName?: string;
     nickName?: string;
     absenceQuota?: number;
@@ -10,10 +11,11 @@ export interface IndividualDayOffReport {
     wfhQuotaLeft?: number;
 }
 
-export interface IndividualDayOffReport_API_DO {
-    fullName?: string;
-    nickName?: string;
-    absenceQuota?: number;
-    wfhQuota?: number;
-    dayOffs?: number;
-}
+// export interface IndividualQuotaReport_API_DO {
+//     id?: number;
+//     fullName?: string;
+//     nickName?: string;
+//     absenceQuota?: number;
+//     wfhQuota?: number;
+//     dayOffs?: number;
+// }

@@ -53,7 +53,6 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     this.https.get<any>("/api/BaoBieuThongKe/ThongKeTinhTienAnTrua", { params: params }).subscribe({
       next: (res: any) => {
         this.AQLunchPaymentReport = res.data;
-        console.log(res.data);
       },
       error: (error) => {
         console.log(error);

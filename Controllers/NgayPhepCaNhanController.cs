@@ -300,6 +300,7 @@ namespace educlient.Controllers
                 result = true
             };
         }
+
         [HttpGet("Thongkenghiphepnam")]
         public ThongKePhepNamResult GetNghiPhepInYear([FromQuery] int year, [FromQuery] int? query_memberId = null)
         {
@@ -352,6 +353,7 @@ namespace educlient.Controllers
                 // Combine member data with their day-off data
                 var resultData = new ThongKePhepNamDataDO
                 {
+                    id = member.id,
                     fullName = member.fullName,
                     nickName = member.nickName,
                     //absenceQuota = member.absenceQuota,
@@ -470,6 +472,7 @@ namespace educlient.Controllers
         }
         public class ThongKePhepNamDataDO
         {
+            public int id { get; set; }
             public string fullName { get; set; }
             public string nickName { get; set; }
             public int absenceQuota { get; set; }

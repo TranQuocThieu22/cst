@@ -1,4 +1,5 @@
-<div class="block">
+<!-- individual dayoff report -->
+<div class="block mb-4">
   <div class="card p-4">
     <!-- header -->
     <p-card
@@ -11,6 +12,7 @@
     <p-table
       #dt
       [value]="AQIndividualWFT_DayOffReport"
+      dataKey="id"
       [rows]="5"
       [showCurrentPageReport]="true"
       [rowsPerPageOptions]="[5, 10, 25]"
@@ -80,60 +82,287 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Nick name
+          <th rowspan="5" style="text-align: center; width:15%">
+            Tên nhân viên
           </th>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Tên đầy đủ
+          <th style="text-align: center;" colspan="2" rowspan="4">
+            Hạn mức<br>ngày phép
           </th>
-          <th
-            style="white-space: wrap; min-width: 10rem"
-            class="text-center"
-            pSortableColumn="absenceQuota">
-            Hạn mức nghỉ phép
-            <p-sortIcon field="absenceQuota"></p-sortIcon>
+          <th style="text-align: center;" colspan="6">
+            Số ngày đã nghỉ
           </th>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Tổng ngày nghỉ phép
+          <th style="text-align: center;" colspan="2" rowspan="4">
+            Hạn mức đã sử dụng
           </th>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Tên số ngày phép còn lại
-          </th>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Hạn mức % online
-          </th>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Hạn mức số ngày online
-          </th>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Số ngày online
-          </th>
-          <th style="white-space: nowrap; min-width: 10rem" class="text-center">
-            Số ngày online còn lại
+          <th style="text-align: center;" colspan="2" rowspan="4">
+            Hạn mức<br>còn lại
           </th>
         </tr>
+        <tr>
+          <th style="text-align: center; width:5%" rowspan="4">Tổng cộng</th>
+          <th style="text-align: center;" colspan="5">Phân loại</th>
+        </tr>
+        <tr>
+          <th style="text-align: center;" colspan="4">Có tính phép</th>
+          <th style="text-align: center; width:5%" rowspan="3">Không tính phép</th>
+        </tr>
+        <tr>
+          <th style="text-align: center;" colspan="2">Cả ngày</th>
+          <th style="text-align: center;" colspan="2">Nửa buổi</th>
+        </tr>
+        <tr>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+        </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-AQMember>
+      <ng-template pTemplate="body" let-AQMember let-expanded="expanded">
         <tr [pSelectableRow]="AQMember">
-          <td style="text-align: center">{{ AQMember.nickName }}</td>
           <td style="text-align: center">{{ AQMember.fullName }}</td>
-          <td style="text-align: center">{{ AQMember.absenceQuota }}</td>
-          <td style="text-align: center">{{ AQMember.dayOffs }}</td>
-          <td style="text-align: center">
-            {{ calculateSummary("songayphepconlai", AQMember) }}
+          <td class="text-center">
+            {{AQMember.minAbsenceQuota}}
           </td>
-          <td style="text-align: center">{{ AQMember.wfhQuota }}%</td>
-          <td style="text-align: center">
-            {{ calculateSummary("hanmucsongayonline", AQMember) }}
+          <td class="text-center">
+            {{AQMember.additionalAbsenceQuota}}
           </td>
-          <td style="text-align: center">{{ AQMember.total_wfh }}</td>
-          <td style="text-align: center">
-            {{ calculateSummary("songayonlineconlai", AQMember) }}
+          <td class="text-center">
+            {{AQMember.totalDayOff}}
+          </td>
+          <td class="text-center">
+            {{AQMember.totalDayOffFullType1}}
+          </td>
+          <td class="text-center">
+            {{AQMember.totalDayOffFullType2}}
+          </td>
+          <td class="text-center">
+            {{AQMember.totalDayOffHalfType1}}
+          </td>
+          <td class="text-center">
+            {{AQMember.totalDayOffHalfType2}}
+          </td>
+          <td class="text-center">
+            {{AQMember.totalDayOffType3_4}}
+          </td>
+          <td class="text-center">
+            {{AQMember.usedMinAbsenceQuota}}
+          </td>
+          <td class="text-center">
+            {{AQMember.usedAdditionalAbsenceQuota}}
+          </td>
+          <td class="text-center">
+            {{AQMember.remainMinAbsenceQuota}}
+          </td>
+          <td class="text-center">
+            {{AQMember.remainAdditionalAbsenceQuota}}
           </td>
         </tr>
       </ng-template>
-      <ng-template pTemplate="footer"> </ng-template>
     </p-table>
   </div>
-  <!-- end lunch report -->
+</div>
+
+
+<!-- working online report -->
+<div class="block">
+  <div class="card p-4">
+    <!-- header -->
+    <p-card
+      header="header"
+      class="mb-2"
+      style="font-weight: bold; font-size: x-large; color: navy">
+      Thống kê làm việc online theo năm
+    </p-card>
+    <!-- data table -->
+    <p-table
+      #dt
+      [value]="AQIndividualWFT_DayOffReport"
+      dataKey="id"
+      [rows]="5"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[5, 10, 25]"
+      [paginator]="true"
+      selectionMode="multiple"
+      [(selection)]="selectedRecords"
+      [exportHeader]="'customExportHeader'"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-gridlines p-datatable-sm"
+      reorderableColumns="true"
+      responsiveLayout="scroll">
+      <!-- toolbar -->
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between">
+          <!-- sort/filter -->
+          <div class="flex flex-row flex-wrap gap-3 mt-3 mb-2">
+            <div class="">
+              <button
+                pButton
+                label="Refresh"
+                class="p-button-outlined"
+                icon="pi pi-filter-slash"
+                (click)="clear(dt)"></button>
+            </div>
+            <span class="p-float-label">
+              <p-calendar
+                [(ngModel)]="selectedYearInput"
+                view="year"
+                dateFormat="yy"
+                inputId="yearpicker"
+                [style]="{ width: '12rem' }"
+                [inputStyle]="{ width: '12rem' }"></p-calendar>
+              <label for="float-input">Chọn năm</label>
+            </span>
+            <span class="">
+              <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-search"
+                class="p-button-rounded p-button-info"
+                (click)="fetchFilteredData()"></button>
+            </span>
+          </div>
+          <!-- export csv -->
+          <div class="mt-3 mb-2">
+            <button
+              type="button"
+              pButton
+              pRipple
+              icon="pi pi-file-excel"
+              (click)="exportExcel('full')"
+              class="p-button-success mr-2"
+              pTooltip="Tất cả"
+              tooltipPosition="bottom"></button>
+            <button
+              type="button"
+              pButton
+              pRipple
+              icon="pi pi-filter"
+              (click)="exportExcel('selection')"
+              class="p-button-info ml-auto"
+              pTooltip="Chỉ dòng được chọn"
+              tooltipPosition="bottom"></button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th rowspan="4" style="text-align: center; width:15%">
+            Tên nhân viên
+          </th>
+          <!-- <th style="text-align: center;" colspan="2" rowspan="4"> -->
+          <th style="text-align: center;" colspan="2" rowspan="3">
+            Hạn mức<br>ngày làm online
+          </th>
+          <!-- <th style="text-align: center;" colspan="6"> -->
+          <th style="text-align: center;" colspan="4">
+            Số ngày đã làm online
+          </th>
+          <!-- <th style="text-align: center;" colspan="2" rowspan="4"> -->
+          <th style="text-align: center; width:12%" colspan="1" rowspan="4">
+            Hạn mức<br>đã sử dụng<br>(số lượng)
+          </th>
+          <!-- <th style="text-align: center;" colspan="2" rowspan="4"> -->
+          <th style="text-align: center; width:12%" colspan="1" rowspan="4">
+            Hạn mức<br>còn lại<br>(số lượng)
+          </th>
+        </tr>
+        <tr>
+          <th style="text-align: center; width:10%" rowspan="4">
+            Tổng cộng
+          </th>
+          <!-- <th style="text-align: center;" colspan="5"> -->
+          <th style="text-align: center;" colspan="3">
+            Phân loại
+          </th>
+        </tr>
+        <tr>
+          <!-- <th style="text-align: center;" colspan="4"> -->
+          <th style="text-align: center;" colspan="2">
+            Có tính phép
+          </th>
+          <th style="text-align: center; width:10%" rowspan="3">Không tính phép</th>
+        </tr>
+        <tr>
+          <th style="text-align: center; width:10%" colspan="1">
+            %
+          </th>
+          <!-- <th style="text-align: center;" colspan="2"> -->
+          <th style="text-align: center; width:10%" colspan="1">
+            Số lượng
+          </th>
+          <!-- <th style="text-align: center;" colspan="2"> -->
+          <th style="text-align: center;" colspan="1">
+            Cả ngày
+          </th>
+          <!-- <th style="text-align: center;" colspan="2"> -->
+          <th style="text-align: center;" colspan="1">
+            Nửa buổi
+          </th>
+        </tr>
+        <!-- <tr>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+          <th style="white-space: wrap; width:8%">Cơ bản</th>
+          <th style="white-space: wrap; width:8%">Tăng thêm</th>
+        </tr> -->
+      </ng-template>
+      <ng-template pTemplate="body" let-AQMember let-expanded="expanded">
+        <tr>
+          <td style="text-align: center">{{ AQMember.fullName }}</td>
+          <td class="text-center">
+            {{AQMember.minWfhQuota}}
+          </td>
+          <td class="text-center">
+            {{AQMember.minWfhQuota}}
+          </td>
+          <!-- <td class="text-center">
+            {{AQMember.additionalWfhQuota}}
+          </td> -->
+          <td class="text-center">
+            {{AQMember.totalWorkOnlineDay}}
+          </td>
+          <td class="text-center">
+            {{AQMember.totalWorkOnlineDayFullType1}}
+          </td>
+          <!-- <td class="text-center">
+            {{AQMember.totalWorkOnlineDayFullType2}}
+          </td> -->
+          <td class="text-center">
+            {{AQMember.totalWorkOnlineDayHalfType1}}
+          </td>
+          <!-- <td class="text-center">
+            {{AQMember.totalWorkOnlineDayHalfType2}}
+          </td> -->
+          <td class="text-center">
+            {{AQMember.totalWorkOnlineDayType3_4}}
+          </td>
+          <td class="text-center">
+            {{AQMember.usedMinWfhQuota}}
+          </td>
+          <!-- <td class="text-center">
+            {{AQMember.usedAdditionalWfhQuota}}
+          </td> -->
+          <td class="text-center">
+            {{AQMember.remainMinWfhQuota}}
+          </td>
+          <!-- <td class="text-center">
+            {{AQMember.remainAdditionalWfhQuota}}
+          </td> -->
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
