@@ -98,8 +98,11 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
     if (!this.AQCommissionPaymentReport) return 0;
     let total = 0;
     switch (type) {
-      case 'total_commissionDay':
-        total = this.AQCommissionPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay, 0);
+      case 'total_commissionDay_full':
+        total = this.AQCommissionPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay_full, 0);
+        break;
+      case 'total_commissionDay_half':
+        total = this.AQCommissionPaymentReport.reduce((acc, report) => acc + report.total_CommissionDay_half, 0);
         break;
       case 'total_commissionPayment':
         total = this.AQCommissionPaymentReport.reduce((acc, report) => acc + report.total_CommissionPayment, 0);

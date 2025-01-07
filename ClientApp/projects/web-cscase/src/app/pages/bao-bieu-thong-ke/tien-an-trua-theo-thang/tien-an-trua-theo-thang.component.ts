@@ -129,6 +129,13 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     // }
   }
 
+  calculateSummaryLunchPayment() {
+    this.calculateEachMemberActualWorkingDayAndPayment();
+    this.calculateSummary();
+  }
+
+
+
   exportExcel(type: string) {
     let data = [];
     if (type === 'full') {

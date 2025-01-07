@@ -68,12 +68,12 @@
                         <button type="button" pButton pRipple icon="pi pi-file-excel"
                             (click)="exportExcel('full')"
                             class="p-button-success mr-2"
-                            pTooltip="XLS" tooltipPosition="bottom">
+                            pTooltip="Tất cả" tooltipPosition="bottom">
                         </button>
                         <button type="button" pButton pRipple icon="pi pi-filter"
                             (click)="exportExcel('selection')"
                             class="p-button-info ml-auto"
-                            pTooltip="Selection Only" tooltipPosition="bottom">
+                            pTooltip="Chỉ dòng được chọn" tooltipPosition="bottom">
                         </button>
                     </div>
                 </div>
@@ -90,10 +90,18 @@
                     </th>
                     <th style="white-space: wrap; min-width:10rem"
                         class="text-center"
-                        pSortableColumn="total_CommissionDay">
-                        Tổng số ngày công tác
-                        <p-sortIcon field="total_CommissionDay"></p-sortIcon>
+                        pSortableColumn="total_CommissionDay_full">
+                        Tổng số ngày công tác (trọn ngày)
+                        <p-sortIcon field="total_CommissionDay_full"></p-sortIcon>
                     </th>
+
+                    <th style="white-space: wrap; min-width:10rem"
+                        class="text-center"
+                        pSortableColumn="total_CommissionDay_half">
+                        Tổng số ngày công tác (nửa ngày)
+                        <p-sortIcon field="total_CommissionDay_half"></p-sortIcon>
+                    </th>
+
                     <th style="white-space: wrap; min-width:10rem"
                         class="text-center"
                         pSortableColumn="total_CommissionPayment">
@@ -106,7 +114,8 @@
                 <tr [pSelectableRow]="AQMember">
                     <td style="text-align: center;">{{AQMember.nickName}}</td>
                     <td style="text-align: center;">{{AQMember.fullName}}</td>
-                    <td style="text-align: center;">{{AQMember.total_CommissionDay}}</td>
+                    <td style="text-align: center;">{{AQMember.total_CommissionDay_full}}</td>
+                    <td style="text-align: center;">{{AQMember.total_CommissionDay_half}}</td>
                     <td style="text-align: center;">
                         {{AQMember.total_CommissionPayment | currency: 'VND'}}
                     </td>
@@ -115,7 +124,8 @@
             <ng-template pTemplate="footer">
                 <tr>
                     <td colspan="2" style="text-align: center;">Tổng cộng:</td>
-                    <td style="text-align: center;">{{calculateTotal('total_commissionDay')}}</td>
+                    <td style="text-align: center;">{{calculateTotal('total_commissionDay_full')}}</td>
+                    <td style="text-align: center;">{{calculateTotal('total_commissionDay_half')}}</td>
                     <td style="text-align: center;">{{calculateTotal('total_commissionPayment') | currency: 'VND'}}</td>
                 </tr>
             </ng-template>

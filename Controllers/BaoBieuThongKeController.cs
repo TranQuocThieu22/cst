@@ -107,10 +107,10 @@ namespace educlient.Controllers
                         {
                             total_CommissionDay_half += 1;
                         }
-                        else if (data.sumDay > 0 && data.sumDay < 1)  // Fractional day condition
-                        {
-                            total_CommissionDay_half += 1;
-                        }
+                        //else if (data.sumDay > 0 && data.sumDay < 1)  // Fractional day condition
+                        //{
+                        //    total_CommissionDay_half += 1;
+                        //}
                         else
                         {
                             DateTime startDate = data.dateFrom;
@@ -182,6 +182,10 @@ namespace educlient.Controllers
         [HttpGet("ThongKeTinhTienCongTac")]
         public ThongKeTinhTienCongTacResult ThongKeTinhTienCongTac([FromQuery] DateTime? query_dateFrom = null, [FromQuery] DateTime? query_dateTo = null, int? year = null)
         {
+            var totalExpense = 0;
+            int total_CommissionDay_full = 0;
+            int total_CommissionDay_half = 0;
+
             // Get the tables
             var membersTable = _database.Table<AQMember>();
             var commissionTable = _database.Table<Commission>();
@@ -200,20 +204,25 @@ namespace educlient.Controllers
             var resultList = new List<ThongKeTinhTienCongTacDataDO>();
             foreach (var member in membersData)
             {
+                totalExpense = 0;
+                total_CommissionDay_full = 0;
+                total_CommissionDay_half = 0;
                 var commissionData = commissionTable.Query()
                   .Where(x => x.dateFrom >= query_dateFrom.Value && x.dateTo <= query_dateTo.Value)
                   .ToList()  // Get filtered by date records first
                   .Where(x => x.memberList.Select(m => m.id).Contains(member.id))  // Then filter for specific member ID
                   .ToList();
-                float countCommission = 0;
-                var totalExpense = 0;
 
                 if (commissionData.Any(d => d.memberList.Any(m => m.id == member.id)))
                 {
                     // Execute only for members with a commission
                     commissionData.ForEach(d =>
                     {
-                        countCommission += d.sumDay;
+                        if (d.sumDay == 0.5)
+                        {
+                            total_CommissionDay_half += 1;
+                        }
+                        total_CommissionDay_full += (int)d.sumDay;
                         var memberExpenseData = d.memberList.Find(x => x.id == member.id);
                         if (memberExpenseData != null)
                         {
@@ -228,7 +237,8 @@ namespace educlient.Controllers
                     id = member.id,
                     fullName = member.fullName,
                     nickName = member.nickName,
-                    total_CommissionDay = countCommission,
+                    total_CommissionDay_full = total_CommissionDay_full,
+                    total_CommissionDay_half = total_CommissionDay_half,
                     total_CommissionPayment = totalExpense
                 };
 
@@ -335,7 +345,8 @@ namespace educlient.Controllers
             public int id { get; set; }
             public string fullName { get; set; }
             public string nickName { get; set; }
-            public float total_CommissionDay { get; set; }
+            public float total_CommissionDay_full { get; set; }
+            public float total_CommissionDay_half { get; set; }
             public float total_CommissionPayment { get; set; }
         }
 
