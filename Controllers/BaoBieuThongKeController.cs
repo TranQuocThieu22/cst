@@ -53,6 +53,7 @@ namespace educlient.Controllers
 
             foreach (var member in membersData)
             {
+                total_AQDayOff = 0;
                 total_CommissionDay_full = 0;
                 total_CommissionDay_half = 0;
                 // Find day-off data for each member by month-year
