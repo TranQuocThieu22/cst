@@ -575,27 +575,18 @@ namespace educlient.Controllers
 
 
                     // Kiểm tra thời gian ngày dữ kiến đôi với releaseCStTime nếu ngày dự kiến trước releaseCST time thì không thêm ngày
-                    if (dr["ngaydukien"] != null)
+                    try
                     {
-                        DateTime d = (DateTime)dr["ngaydukien"];
-                        dr["hieuluc"] = calcTuanRelease(d);
-                    }
-                    bool ngayDuKienCoTruoc = UtilsCscase.IsNgayDuKienCoTruocReleaseCST((DateTime)dr["ngaydukien"]);
-                    if (ngayDuKienCoTruoc && dayTargetCanAdd >= 0 && dr["ngaydukien"].ToString() != "")
-                    {
-                        var targetDate = (DateTime)dr["ngaydukien"];
-                        if (dr["mucdo"].ToString().ToLower().Contains("1"))
+                        if (dr["ngaydukien"] != null)
                         {
-                            targetDate = targetDate.AddDays(1);
-                            while (!IsWeekDay(targetDate))
-                            {
-                                targetDate = targetDate.AddDays(1);
-                            }
+                            DateTime d = (DateTime)dr["ngaydukien"];
+                            dr["hieuluc"] = calcTuanRelease(d);
                         }
-                        else
-                        if (dr["mucdo"].ToString().ToLower().Contains("2"))
+                        bool ngayDuKienCoTruoc = UtilsCscase.IsNgayDuKienCoTruocReleaseCST((DateTime)dr["ngaydukien"]);
+                        if (ngayDuKienCoTruoc && dayTargetCanAdd >= 0 && dr["ngaydukien"].ToString() != "")
                         {
-                            for (int i = 0; i < 2; i++)
+                            var targetDate = (DateTime)dr["ngaydukien"];
+                            if (dr["mucdo"].ToString().ToLower().Contains("1"))
                             {
                                 targetDate = targetDate.AddDays(1);
                                 while (!IsWeekDay(targetDate))
@@ -603,39 +594,55 @@ namespace educlient.Controllers
                                     targetDate = targetDate.AddDays(1);
                                 }
                             }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < dayTargetCanAdd; i++)
+                            else
+                            if (dr["mucdo"].ToString().ToLower().Contains("2"))
                             {
-                                /*if (dr["macase"].ToString() == "40818")
-                             {
-                                 await Console.Out.WriteLineAsync("ss");
-                              }*/
-                                targetDate = targetDate.AddDays(1);
-                                while (!IsWeekDay(targetDate))
+                                for (int i = 0; i < 2; i++)
                                 {
                                     targetDate = targetDate.AddDays(1);
+                                    while (!IsWeekDay(targetDate))
+                                    {
+                                        targetDate = targetDate.AddDays(1);
+                                    }
                                 }
                             }
+                            else
+                            {
+                                for (int i = 0; i < dayTargetCanAdd; i++)
+                                {
+                                    /*if (dr["macase"].ToString() == "40818")
+                                 {
+                                     await Console.Out.WriteLineAsync("ss");
+                                  }*/
+                                    targetDate = targetDate.AddDays(1);
+                                    while (!IsWeekDay(targetDate))
+                                    {
+                                        targetDate = targetDate.AddDays(1);
+                                    }
+                                }
+                            }
+                            dr["ngaydukien"] = targetDate.ToString();
                         }
-                        dr["ngaydukien"] = targetDate.ToString();
-                    }
-                    // FIX 4
-                    if (dr["trangthai"].ToString().ToLower().Contains("đang phân tích")
-                       || dr["trangthai"].ToString().ToLower().Contains("đang chờ phân tích"))
-                    {
-                        dr["dabangiao"] = "";
-                        dr["ngaydukien"] = DBNull.Value;
-                        dr["hieuluc"] = "";
-                    }
+                        // FIX 4
+                        if (dr["trangthai"].ToString().ToLower().Contains("đang phân tích")
+                           || dr["trangthai"].ToString().ToLower().Contains("đang chờ phân tích"))
+                        {
+                            dr["dabangiao"] = "";
+                            dr["ngaydukien"] = DBNull.Value;
+                            dr["hieuluc"] = "";
+                        }
 
-                    if (dr["trangthai"].ToString().ToLower().Contains("đã xử lý"))
-                    {
-                        dr["trangthai"] = "Đang test";
-                    }
+                        if (dr["trangthai"].ToString().ToLower().Contains("đã xử lý"))
+                        {
+                            dr["trangthai"] = "Đang test";
+                        }
 
-                    dt.Rows.Add(dr);
+                        dt.Rows.Add(dr);
+                    }
+                    catch (Exception)
+                    {
+                            var zz = dr["ngaydukien"];
+                    }
                 } // each record
 
                 sRet = JsonConvert.SerializeObject(dt);
