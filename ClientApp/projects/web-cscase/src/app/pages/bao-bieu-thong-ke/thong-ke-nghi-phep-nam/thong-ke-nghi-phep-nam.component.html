@@ -12,7 +12,7 @@
     <p-table
       #dt
       [value]="AQIndividualWFT_DayOffReport"
-      dataKey="id"
+      dataKey="memberId"
       [rows]="5"
       [showCurrentPageReport]="true"
       [rowsPerPageOptions]="[5, 10, 25]"
@@ -123,7 +123,7 @@
           <th style="white-space: wrap; width:8%">Tăng thêm</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-AQMember let-expanded="expanded">
+      <ng-template pTemplate="body" let-AQMember>
         <tr [pSelectableRow]="AQMember">
           <td style="text-align: center">{{ AQMember.fullName }}</td>
           <td class="text-center">
@@ -183,7 +183,7 @@
     <p-table
       #dt
       [value]="AQIndividualWFT_DayOffReport"
-      dataKey="id"
+      dataKey="memberId"
       [rows]="5"
       [showCurrentPageReport]="true"
       [rowsPerPageOptions]="[5, 10, 25]"
@@ -319,8 +319,8 @@
           <th style="white-space: wrap; width:8%">Tăng thêm</th>
         </tr> -->
       </ng-template>
-      <ng-template pTemplate="body" let-AQMember let-expanded="expanded">
-        <tr>
+      <ng-template pTemplate="body" let-AQMember>
+        <tr [pSelectableRow]="AQMember">
           <td style="text-align: center">{{ AQMember.fullName }}</td>
           <td class="text-center">
             {{AQMember.minWfhQuota}}
