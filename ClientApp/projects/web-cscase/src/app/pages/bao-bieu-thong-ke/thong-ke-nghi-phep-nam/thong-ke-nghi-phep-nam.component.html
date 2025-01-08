@@ -323,7 +323,7 @@
         <tr [pSelectableRow]="AQMember">
           <td style="text-align: center">{{ AQMember.fullName }}</td>
           <td class="text-center">
-            {{AQMember.minWfhQuota}}
+            {{ displayWFHPercent(AQMember.minWfhQuota)}}%
           </td>
           <td class="text-center">
             {{AQMember.minWfhQuota}}

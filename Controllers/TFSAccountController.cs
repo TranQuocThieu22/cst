@@ -236,7 +236,7 @@ namespace educlient.Controllers
 
             try
             {
-                if (inputData.adminPassword == "12345")
+                if (inputData.adminPassword == "244466666")
                 {
                     var AQMemberTable = database.Table<AQMember>();
                     var NhanVienAQ = AQMemberTable.FindAll().ToList();
@@ -278,7 +278,7 @@ namespace educlient.Controllers
 
             try
             {
-                if (inputData.adminPassword == "12345")
+                if (inputData.adminPassword == "244466666")
                 {
                     var AQMemberTable = database.Table<AQMember>();
                     var user = AQMemberTable.Query()
