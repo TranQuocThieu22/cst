@@ -240,7 +240,7 @@
                         <p-table
                             [value]="wfhIndividualInfo"
                             styleClass="p-datatable-sm p-datatable-gridlines">
-                            <ng-template pTemplate="header">
+                            <!-- <ng-template pTemplate="header">
                                 <tr>
                                     <th colspan="2" rowspan="4">
                                         Hạn mức<br>ngày làm online
@@ -279,10 +279,54 @@
                                     <th style="white-space: wrap; width:8%">Cơ bản</th>
                                     <th style="white-space: wrap; width:8%">Tăng thêm</th>
                                 </tr>
-
-                            </ng-template>
-                            <ng-template pTemplate="body" let-member>
+                            </ng-template> -->
+                            <ng-template pTemplate="header">
                                 <tr>
+                                    <th style="text-align: center;" colspan="2" rowspan="3">
+                                        Hạn mức<br>ngày làm online
+                                    </th>
+                                    <th style="text-align: center;" colspan="4">
+                                        Số ngày đã làm online
+                                    </th>
+                                    <th style="text-align: center; width:12%" colspan="1" rowspan="4">
+                                        Hạn mức<br>đã sử dụng<br>(số lượng)
+                                    </th>
+                                    <th style="text-align: center; width:12%" colspan="1" rowspan="4">
+                                        Hạn mức<br>còn lại<br>(số lượng)
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; width:10%" rowspan="4">
+                                        Tổng cộng
+                                    </th>
+                                    <th style="text-align: center;" colspan="3">
+                                        Phân loại
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center;" colspan="2">
+                                        Có tính phép
+                                    </th>
+                                    <th style="text-align: center; width:10%" rowspan="3">Không tính phép</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; width:10%" colspan="1">
+                                        %
+                                    </th>
+                                    <th style="text-align: center; width:10%" colspan="1">
+                                        Số lượng
+                                    </th>
+                                    <th style="text-align: center;" colspan="1">
+                                        Cả ngày
+                                    </th>
+                                    <th style="text-align: center;" colspan="1">
+                                        Nửa buổi
+                                    </th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-member>
+                                <!-- <tr>
                                     <td class="text-center">
                                         {{wfhIndividualInfo[0].minWfhQuota}}
                                     </td>
@@ -319,6 +363,32 @@
                                     <td class="text-center">
                                         {{wfhIndividualInfo[0].remainAdditionalWfhQuota}}
                                     </td>
+                                </tr> -->
+                                <tr>
+                                    <td class="text-center">
+                                        {{ displayWFHPercent(member.minWfhQuota)}}%
+                                    </td>
+                                    <td class="text-center">
+                                        {{member.minWfhQuota}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{member.totalWorkOnlineDay}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{member.totalWorkOnlineDayFullType1}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{member.totalWorkOnlineDayHalfType1}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{member.totalWorkOnlineDayType3_4}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{member.usedMinWfhQuota}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{member.remainMinWfhQuota}}
+                                    </td>
                                 </tr>
                             </ng-template>
                         </p-table>
@@ -352,12 +422,12 @@
                         inputId="quotaType1"></p-radioButton>
                     <label for="quotaType1">Hạn mức cơ bản</label>
                 </div>
-                <div class="field-radiobutton">
+                <!-- <div class="field-radiobutton">
                     <p-radioButton name="wfhQuotaRadioButton" value="2"
                         [(ngModel)]="WorkingOnline.wfhType"
                         inputId="quotaType2"></p-radioButton>
                     <label for="quotaType2">Hạn mức tăng thêm</label>
-                </div>
+                </div> -->
                 <div class="field-radiobutton">
                     <p-radioButton name="wfhQuotaRadioButton" value="3"
                         [(ngModel)]="WorkingOnline.wfhType"

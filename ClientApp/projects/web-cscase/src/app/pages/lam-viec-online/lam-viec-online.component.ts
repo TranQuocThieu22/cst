@@ -491,6 +491,14 @@ export class LamViecOnlineComponent implements OnInit {
 
   }
 
+  displayWFHPercent(wfhQuota: number) {
+    const currentYear = new Date().getFullYear();
+    const totalDaysOfYear = (new Date(currentYear, 11, 31).getDate() === 31) ? 366 : 365;
+    if (wfhQuota !== undefined) {
+      return Math.round((wfhQuota / totalDaysOfYear) * 100);
+    }
+  }
+
   clear(table: Table) {
     table.clear();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
