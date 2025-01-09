@@ -28,7 +28,7 @@ export interface EduCase {
   thongtinkh: string;
   dapungcongty: string;
   comment: string;
-
+  releaseVersion: string
   reviewcase: string;
 }
 

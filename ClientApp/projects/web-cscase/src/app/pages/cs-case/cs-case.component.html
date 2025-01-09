@@ -76,7 +76,7 @@
             </ng-select>
           </div>
 
-          <div class="col-lg-3 col-md-12 my-1 px-1">
+          <div class="col-lg-2 col-md-12 my-1 px-1">
             <div class="input-group">
               <input class="form-control" placeholder="Tìm mã Case hoặc yêu cầu" type="text" [(ngModel)]="searchText"
                 (keyup.enter)="doSearch()" (input)="ChangeSearch($event.target.value)" />
@@ -87,10 +87,21 @@
               </div>
             </div>
           </div>
+          <div class="col-lg-2 col-md-12  my-1 px-1">
+            <div class="input-group ">
+              <input class="form-control" placeholder="Tìm version release" type="text" [(ngModel)]="searchReleaseVersion"
+                (keyup.enter)="doSearchReleaseVersion()" (input)="ChangeSearch($event.target.value)" />
+              <div class="input-group-append">
+                <button class="btn btn-outline-primary" type="button" (click)="doSearchReleaseVersion()">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
+            </div>
+          </div>
 
           <ng-container *ngIf="this.dataCsCase_Filter && this.dataCsCase_Filter.length>0">
             <div class="col-lg-1 col-md-12 my-1 px-1">
-              <div class="d-flex justify-content-center justify-content-lg-end">
+              <div class="d-flex ">
                 <button class="btn btn-outline-primary text-nowrap mr-1" [disabled]="!this.dataCsCase_Filter"
                   (click)="Print()">In</button>
 
@@ -181,8 +192,8 @@
                   <span [hidden]="reverseOrderby" class="icon-down"></span>
                 </th>
 
-                <th style="width: 4%" class="align-middle cusdbg clickable" [class.active]="orderby==='dabangiao'"
-                (click)="setOrder('dabangiao')">Phiên bản release
+                <th style="width: 8%" class="align-middle cusdbg clickable" [class.active]="orderby==='releaseVersion'"
+                (click)="setOrder('releaseVersion')">Phiên bản release
                 <span [hidden]="!reverseOrderby" class="icon-up"></span>
                 <span [hidden]="reverseOrderby" class="icon-down"></span>
               </th>
@@ -289,11 +300,11 @@
                   <td class="align-middle text-left">{{dt.loaihopdong}}</td>
                   <td class="align-middle text-left">{{dt.mucdo}}</td>
                   <td class="align-middle text-center">{{dt.ngaydukien | date: 'dd/MM/yyyy'}}</td>
-
+          
                   <td class="align-middle text-center link-primary clickable" (click)="XemChiTiet(dt, 1)">
                     <span placement="top" [tooltip]="popupTooltip" (mouseover)="hoverTooltip(3)">{{dt.dabangiao}}</span>
                   </td>
-
+                  <td class="align-middle text-center">{{dt.releaseVersion}}</td>
                   <td class="align-middle text-center">{{dt.ngayemail | date: 'dd/MM/yyyy'}}</td>
 
                   <ng-container *ngIf="isHideMail">

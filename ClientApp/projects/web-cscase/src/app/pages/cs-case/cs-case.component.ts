@@ -53,6 +53,7 @@ export class CsCaseComponent implements OnInit {
   public selectloaicase = [];
   public selectphanhe = [];
   public searchText = "";
+  public searchReleaseVersion = "";
 
   //  private listmatruong: any; private liststate: any; private listloaicase: any; private listphanhe: any;
   public total = 0;
@@ -189,6 +190,7 @@ export class CsCaseComponent implements OnInit {
 
       if (data_goc.data_case) {
         this.dataCsCase_Goc = data_goc.data_case.map((v) => ({
+          releaseVersion: v.releaseVersion,
           macase: v.macase,
           matruong: v.matruong,
           tentruong: v.tentruong,
@@ -640,6 +642,50 @@ export class CsCaseComponent implements OnInit {
     //   this.total = this.dataCsCase_Goc.length ?? 0;
     //   this.pages = Math.ceil((this.total + this.pageLimit - 1) / this.pageLimit);
     // }
+  }
+
+  public doSearchReleaseVersion() {
+    this.ismess = "";
+    this.currentPage = 1;
+
+    if (!this.dataCsCase_Goc || this.dataCsCase_Goc.length <= 0) {
+      this.ismess = "Không tìm thấy dữ liệu";
+      return;
+    }
+
+    if (this.searchReleaseVersion.length > 0) {
+      this.dataCsCase_Search = this.dataCsCase_Goc.filter(
+        (s) => s.releaseVersion &&
+          s.releaseVersion.toLowerCase().includes(this.searchReleaseVersion.toLowerCase())
+      );
+
+      if (this.dataCsCase_Search && this.dataCsCase_Search.length > 0) {
+        this.dataCsCase_Temp = this.dataCsCase_Search;
+        this.dataCsCase_Filter = this.dataCsCase_Search
+          .slice((this.currentPage - 1) * this.pageLimit)
+          .filter((_u, i) => i < this.pageLimit);
+
+        this.total = this.dataCsCase_Search.length ?? 0;
+        this.pages = Math.ceil(
+          (this.total + this.pageLimit - 1) / this.pageLimit
+        );
+      } else {
+        this.dataCsCase_Filter = this.dataCsCase_Search = this.dataCsCase_Temp = [];
+        this.ismess = 'Không tìm thấy dữ liệu';
+        this.total = 0;
+        this.pages = 0;
+      }
+    } else {
+      this.dataCsCase_Search = null;
+      this.dataCsCase_Temp = this.dataCsCase_Goc;
+      this.dataCsCase_Filter = this.dataCsCase_Goc
+        .slice((this.currentPage - 1) * this.pageLimit)
+        .filter((_u, i) => i < this.pageLimit);
+      this.total = this.dataCsCase_Goc.length ?? 0;
+      this.pages = Math.ceil(
+        (this.total + this.pageLimit - 1) / this.pageLimit
+      );
+    }
   }
 
   // page change
