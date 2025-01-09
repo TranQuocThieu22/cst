@@ -101,7 +101,7 @@ export class ThongKeNghiPhepNamComponent implements OnInit {
     return wfhQuotaNumber;
   }
 
-  exportExcel(type: string) {
+  exportExcel_individualDayOff(type: string) {
     let data = [];
     if (type === 'full') {
       data = this.AQIndividualWFT_DayOffReport;
@@ -113,21 +113,67 @@ export class ThongKeNghiPhepNamComponent implements OnInit {
     import("xlsx").then(xlsx => {
       data = data.map(report => {
         return {
-          'Full Name': report.fullName,
-          'Nick Name': report.nickName,
-          'absenceQuota': report.absenceQuota,
-          'dayOffs': report.dayOffs,
-          'absenceQuotaLeft': report.absenceQuotaLeft,
-          'wfhQuota': report.wfhQuota,
-          'wfhQuotaNumber': report.wfhQuotaNumber,
-          'total_wfh': report.total_wfh,
-          'wfhQuotaLeft': report.wfhQuotaLeft
+          'Họ tên': report.fullName,
+          'Hạn mức ngày phép cơ bản': report.minAbsenceQuota,
+          'Hạn mức ngày phép tăng thêm': report.additionalAbsenceQuota,
+          'Tổng ngày đã nghỉ': report.totalDayOff,
+          'Tổng ngày đã nghỉ sử dụng hạn mức cơ bản (cả ngày)': report.totalDayOffFullType1,
+          'Tổng ngày đã nghỉ sử dụng hạn mức cơ bản (nửa ngày)': report.totalDayOffFullType2,
+          'Tổng ngày đã nghỉ sử dụng hạn mức tăng thêm (cả ngày)': report.totalDayOffHalfType1,
+          'Tổng ngày đã nghỉ sử dụng hạn mức tăng thêm (nửa ngày)': report.totalDayOffHalfType2,
+          'Tổng ngày đã nghỉ không sử dụng ngày phép': report.totalDayOffType3_4,
+          'Hạn mức cơ bản đã sử dụng': report.usedMinAbsenceQuota,
+          'Hạn mức tăng thêm đã sử dụng': report.usedAdditionalAbsenceQuota,
+          'Hạn mức cở bản còn lại': report.remainMinAbsenceQuota,
+          'Hạn mức tăng thêm còn lại': report.remainAdditionalAbsenceQuota
         };
       });
       const worksheet = xlsx.utils.json_to_sheet(data);
       const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, "annual_wfh&leave_report");
+      this.saveAsExcelFile(excelBuffer, "hanmucngaynghiphep");
+    });
+  }
+
+  exportExcel_workingOnline(type: string) {
+    let data = [];
+    if (type === 'full') {
+      data = this.AQIndividualWFT_DayOffReport;
+    }
+    else {
+      data = this.selectedRecords;
+    }
+
+    import("xlsx").then(xlsx => {
+      data = data.map(report => {
+        return {
+          // minWfhQuota?: number;
+          // additionalWfhQuota?: number;
+          // totalWorkOnlineDay?: number;
+          // totalWorkOnlineDayFullType1?: number;
+          // totalWorkOnlineDayFullType2?: number;
+          // totalWorkOnlineDayHalfType1?: number;
+          // totalWorkOnlineDayHalfType2?: number;
+          // totalWorkOnlineDayType3_4?: number;
+          // usedMinWfhQuota?: number;
+          // usedAdditionalWfhQuota?: number;
+          // remainMinWfhQuota?: number;
+          // remainAdditionalWfhQuota?: number;
+          'Họ tên': report.fullName,
+          'Hạn mức làm việc online (%)': this.displayWFHPercent(report.minWfhQuota),
+          'Hạn mức làm việc online (sl)': report.minWfhQuota,
+          'Tổng ngày làm việc online': report.totalWorkOnlineDay,
+          'Tổng ngày làm việc online sử dụng hạn mức(cả ngày)': report.totalWorkOnlineDayFullType1,
+          'Tổng ngày làm việc online sử dụng hạn mức(nửa ngày)': report.totalWorkOnlineDayFullType2,
+          'Tổng ngày làm việc online không sử dụng hạn mức': report.totalWorkOnlineDayType3_4,
+          'Hạn mức đã sử dụng (sl)': report.usedMinWfhQuota,
+          'Hạn mức còn lại (sl)': report.remainMinWfhQuota,
+        };
+      });
+      const worksheet = xlsx.utils.json_to_sheet(data);
+      const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+      const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+      this.saveAsExcelFile(excelBuffer, "hanmucngaynghiphep");
     });
   }
 

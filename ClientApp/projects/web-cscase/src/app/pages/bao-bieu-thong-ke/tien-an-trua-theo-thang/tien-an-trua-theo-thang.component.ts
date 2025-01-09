@@ -147,27 +147,50 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     import("xlsx").then(xlsx => {
       data = data.map(report => {
         return {
-          'Member ID': report.id,
-          'Full Name': report.fullName,
-          'Nick Name': report.nickName,
-          'Total Individual Day Off': report.total_IndividualDayOff,
-          'Total Working Online': report.total_WorkingOnline,
-          'Total Commission Day': report.total_CommissionDay,
-          'Total AQ Day Off': report.total_AQDayOff,
-          'Actual Working Day': report.actual_workingDay
+          // id: number;
+          // fullName?: string;
+          // nickName?: string;
+          // employeeType?: number;
+          // total_IndividualDayOff?: number;
+          // total_WorkingOnline?: number;
+          // total_IndividualDayOff_full?: number;
+          // total_IndividualDayOff_half?: number;
+          // total_WorkingOnline_full?: number;
+          // total_WorkingOnline_half?: number;
+          // total_CommissionDay_full?: number;
+          // total_CommissionDay_half?: number;
+          // total_AQDayOff?: number;
+          // office_workingDay?: number;
+          // lunchPayment?: number;
+          'Họ tên': report.fullName,
+          'Tổng ngày nghỉ': report.total_IndividualDayOff,
+          'Nghỉ (cả ngày)': report.total_IndividualDayOff_full,
+          'Nghỉ (nửa ngày)': report.total_IndividualDayOff_half,
+          'Tổng ngày làm việc online': report.total_WorkingOnline,
+          'Làm online (cả ngày)': report.total_WorkingOnline_full,
+          'làm online (nửa ngày)': report.total_WorkingOnline_half,
+          'Công tác (cả ngày)': report.total_CommissionDay_full,
+          'Công tác (nửa ngày)': report.total_CommissionDay_half,
+          'Ngày nghỉ chung': report.total_AQDayOff,
+          'Đi làm thực tế': report.office_workingDay,
+          'Tiền ăn trưa': report.lunchPayment
         };
       });
 
       // Calculate the sum of each column
       const summary = {
-        'Member ID': '',
-        'Full Name': '',
-        'Nick Name': 'Tổng cộng',
-        'Total Individual Day Off': data.reduce((sum, report) => sum + report['Total Individual Day Off'], 0),
-        'Total Working Online': data.reduce((sum, report) => sum + report['Total Working Online'], 0),
-        'Total Commission Day': data.reduce((sum, report) => sum + report['Total Commission Day'], 0),
-        'Total AQ Day Off': data.reduce((sum, report) => sum + report['Total AQ Day Off'], 0),
-        'Actual Working Day': data.reduce((sum, report) => sum + report['Actual Working Day'], 0)
+        'Họ tên': '',
+        'Tổng ngày nghỉ': '',
+        'Nghỉ (cả ngày)': '',
+        'Nghỉ (nửa ngày)': '',
+        'Tổng ngày làm việc online': '',
+        'Làm online (cả ngày)': '',
+        'làm online (nửa ngày)': '',
+        'Công tác (cả ngày)': '',
+        'Công tác (nửa ngày)': '',
+        'Ngày nghỉ chung': '',
+        'Đi làm thực tế': 'Tổng cộng',
+        'Tiền ăn trưa': data.reduce((sum, report) => sum + report['Tiền ăn trưa'], 0)
       };
 
       data.push(summary);

@@ -123,15 +123,14 @@ export class TienLamViecNgoaiGioTheoQuiComponent implements OnInit {
     import("xlsx").then(xlsx => {
       data = data.map(report => {
         return {
-          'Full Name': report.fullName,
-          'Nick Name': report.nickName,
-          'OT sumHours': report.sumHours
+          'Họ tên': report.fullName,
+          'Tổng giờ làm OT': report.sumHours
         };
       });
       const worksheet = xlsx.utils.json_to_sheet(data);
       const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, "workingOT_payment_report");
+      this.saveAsExcelFile(excelBuffer, "lamviecngoaigio");
     });
   }
 

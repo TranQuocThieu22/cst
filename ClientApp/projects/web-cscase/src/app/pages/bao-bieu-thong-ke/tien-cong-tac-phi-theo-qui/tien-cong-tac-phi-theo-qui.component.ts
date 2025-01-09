@@ -125,16 +125,27 @@ export class TienCongTacPhiTheoQuiComponent implements OnInit {
     import("xlsx").then(xlsx => {
       data = data.map(report => {
         return {
-          'Full Name': report.fullName,
-          'Nick Name': report.nickName,
-          'Total Commission Day': report.total_CommissionDay,
-          'Total Commission Payment': report.total_CommissionPayment
+          'Họ tên': report.fullName,
+          'Số ngày công (cả ngày)': report.total_CommissionDay_full,
+          'Số ngày công (nửa ngày)': report.total_CommissionDay_half,
+          'Tổng tiền công tác': report.total_CommissionPayment
         };
       });
+
+      // Calculate the sum of each column
+      const summary = {
+        'Họ tên': '',
+        'Số ngày công (cả ngày)': '',
+        'Số ngày công (nửa ngày)': 'Tổng cộng',
+        'Tổng tiền công tác': data.reduce((sum, report) => sum + report['Tổng tiền công tác'], 0)
+      };
+
+      data.push(summary);
+
       const worksheet = xlsx.utils.json_to_sheet(data);
       const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, "Commission_payment_report");
+      this.saveAsExcelFile(excelBuffer, "tiencongtac");
     });
   }
 
