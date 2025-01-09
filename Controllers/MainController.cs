@@ -464,6 +464,7 @@ namespace educlient.Controllers
                 dt.Columns.Add("phanhe", typeof(string));
                 dt.Columns.Add("comment", typeof(string));
                 dt.Columns.Add("tinhnangmoi", typeof(bool));
+                dt.Columns.Add("releaseVersion", typeof(string));
 
                 if (!string.IsNullOrEmpty(model.filter?.macase))
                 {
@@ -490,7 +491,8 @@ namespace educlient.Controllers
                         {
                             dr["tinhnangmoi"] = true;
                         }
-                     
+                        else if (kvp.Key.ToLower().Equals("aq.userguiderequested"))
+                            dr["releaseVersion"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("aq.customer"))
                             dr["matruong"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("system.createddate"))
@@ -543,6 +545,7 @@ namespace educlient.Controllers
                             dr["thongtinkh"] = kvp.Value;
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
                             dr["dapungcongty"] = kvp.Value;
+                      
 
                     } // for each fields
 
@@ -843,6 +846,8 @@ namespace educlient.Controllers
                              dr["thongtinkh"] = kvp.Value;
                         else if (!string.IsNullOrEmpty(model.filter?.macase) && kvp.Key.ToLower().Equals("microsoft.vsts.common.descriptionhtml"))
                             dr["dapungcongty"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.userguiderequested"))
+                            dr["releaseVersion"] = kvp.Value;
 
                     } // for each fields
 
@@ -1764,6 +1769,7 @@ public class EduCase
 
     public string reviewcase { get; set; }         // Comment
 
+    public string releaseVersion { get; set; }
 
 }
 

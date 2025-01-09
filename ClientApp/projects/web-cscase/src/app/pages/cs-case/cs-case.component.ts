@@ -137,6 +137,8 @@ export class CsCaseComponent implements OnInit {
         if (res && res.code === 200) {
           if (res.data) {
             this.data_Goc = res.data;
+            console.log(this.data_Goc);
+
             sessionStorage.setItem("db", JSON.stringify(this.data_Goc));
             sessionStorage.setItem("s", "1");
             this.dataServices.IsData.next(true);

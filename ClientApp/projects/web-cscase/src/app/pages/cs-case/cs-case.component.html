@@ -181,6 +181,12 @@
                   <span [hidden]="reverseOrderby" class="icon-down"></span>
                 </th>
 
+                <th style="width: 4%" class="align-middle cusdbg clickable" [class.active]="orderby==='dabangiao'"
+                (click)="setOrder('dabangiao')">Phiên bản release
+                <span [hidden]="!reverseOrderby" class="icon-up"></span>
+                <span [hidden]="reverseOrderby" class="icon-down"></span>
+              </th>
+
                 <th style="width: 5%" class="align-middle cus100 clickable" [class.active]="orderby==='ngayemail'"
                   (click)="setOrder('ngayemail')">Ngày gửi mail
                   <span [hidden]="!reverseOrderby" class="icon-up"></span>
