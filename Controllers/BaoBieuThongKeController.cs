@@ -40,7 +40,11 @@ namespace educlient.Controllers
             var commissionTable = _database.Table<Commission>();
             var aqDayOffTable = _database.Table<DayOff>();
 
-            var membersData = membersTable.FindAll().ToList();
+            var membersData = membersTable.Query().Where(
+                x => x.isActive == true &&
+                x.isLunchStatus == true
+                ).ToList();
+
             if (membersData == null)
             {
                 return new ThongKeTinhTienAnTruaResult
