@@ -296,6 +296,8 @@ export class NhanSuAqComponent implements OnInit {
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
     this.openDialog = true;
+    console.log(this.aqmemberUpdate);
+
   }
 
   handleIsLunchStatusChange(event) {
