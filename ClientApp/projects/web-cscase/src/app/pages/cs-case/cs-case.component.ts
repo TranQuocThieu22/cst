@@ -594,54 +594,6 @@ export class CsCaseComponent implements OnInit {
         (this.total + this.pageLimit - 1) / this.pageLimit
       );
     }
-
-    // if ((this.selectmatruong && this.selectmatruong.length > 0)
-    //   || (this.selectrangthai && this.selectrangthai.length > 0)
-    //   || (this.selectloaicase && this.selectloaicase.length > 0)
-    //   || (this.selectphanhe && this.selectphanhe.length > 0)
-    //   || (this.searchText && this.searchText.length > 0)) {
-
-    //   // neu su dung thì chuyển .some thành this.listmatruong.includes(s.matruong)
-    //   // this.listmatruong = this.selectmatruong ? this.selectmatruong.join(',') : '';
-    //   // this.liststate = this.selectrangthai ? this.selectrangthai.join(',') : '';
-    //   this.dataCsCase_Search = this.dataCsCase_Goc.filter(s => s.matruong
-    //     && ((this.listmatruong && this.listmatruong.length > 0) ? this.listmatruong.some(x => x.matruong === s.matruong) : true)
-    //     && ((this.liststate && this.liststate.length > 0) ? this.liststate.some(x => x.trangthai === s.trangthai) : true)
-    //     && ((this.listloaicase && this.listloaicase.length > 0) ? this.listloaicase.some(x => x.loaicase === s.loaicase) : true)
-    //     && ((this.listphanhe && this.listphanhe.length > 0) ? this.listphanhe.some(x => x.phanhe === s.phanhe) : true)
-    //     && ((this.searchText && this.searchText.length > 0) ?
-    //       (s.chitietyc.toLowerCase().includes(this.searchText.toLowerCase())
-    //         || s.macase.toLowerCase().includes(this.searchText.toLowerCase())
-    //       ) : true
-    //     )
-    //   );
-
-    //   if (this.dataCsCase_Search && this.dataCsCase_Search.length > 0) {
-    //     this.dataCsCase_Temp = this.dataCsCase_Search;
-    //     this.dataCsCase_Filter = this.dataCsCase_Search
-    //       .slice((this.currentPage - 1) * this.pageLimit)
-    //       .filter((_u, i) => i < this.pageLimit);
-
-    //     this.total = this.dataCsCase_Search.length ?? 0;
-    //     this.pages = Math.ceil((this.total + this.pageLimit - 1) / this.pageLimit);
-    //   }
-    //   else {
-    //     this.dataCsCase_Filter = this.dataCsCase_Search = this.dataCsCase_Temp = [];
-    //     this.ismess = 'Không tìm thấy dữ liệu';
-    //     this.total = 0;
-    //     this.pages = 0;
-    //   }
-    // }
-    // else // clear all
-    // {
-    //   this.searchText = ''; this.listloaicase = ''; this.listmatruong = ''; this.listphanhe = ''; this.liststate = '';
-    //   this.dataCsCase_Search = null;
-    //   this.dataCsCase_Temp = this.dataCsCase_Goc;
-    //   this.dataCsCase_Filter = this.dataCsCase_Goc.slice((this.currentPage - 1) * this.pageLimit)
-    //     .filter((_u, i) => i < this.pageLimit);
-    //   this.total = this.dataCsCase_Goc.length ?? 0;
-    //   this.pages = Math.ceil((this.total + this.pageLimit - 1) / this.pageLimit);
-    // }
   }
 
   public doSearchReleaseVersion() {
@@ -655,8 +607,27 @@ export class CsCaseComponent implements OnInit {
 
     if (this.searchReleaseVersion.length > 0) {
       this.dataCsCase_Search = this.dataCsCase_Goc.filter(
-        (s) => s.releaseVersion &&
-          s.releaseVersion.toLowerCase().includes(this.searchReleaseVersion.toLowerCase())
+        (s) =>
+          s.releaseVersion &&
+          s.releaseVersion.toLowerCase().includes(this.searchReleaseVersion.toLowerCase()) &&
+          (this.selectmatruong && this.selectmatruong.length > 0
+            ? this.selectmatruong.find((x) => x === s.matruong)
+            : true) &&
+          (this.selectrangthai && this.selectrangthai.length > 0
+            ? this.selectrangthai.find((x) => x === s.trangthai)
+            : true) &&
+          (this.selectloaicase && this.selectloaicase.length > 0
+            ? this.selectloaicase.find((x) => x === s.loaicase)
+            : true) &&
+          (this.selectphanhe && this.selectphanhe.length > 0
+            ? this.selectphanhe.find((x) => x === s.phanhe)
+            : true) &&
+          (this.searchText && this.searchText.length > 0
+            ? s.chitietyc
+              .toLowerCase()
+              .includes(this.searchText.toLowerCase()) ||
+            s.macase.toLowerCase().includes(this.searchText.toLowerCase())
+            : true)
       );
 
       if (this.dataCsCase_Search && this.dataCsCase_Search.length > 0) {
@@ -670,8 +641,11 @@ export class CsCaseComponent implements OnInit {
           (this.total + this.pageLimit - 1) / this.pageLimit
         );
       } else {
-        this.dataCsCase_Filter = this.dataCsCase_Search = this.dataCsCase_Temp = [];
-        this.ismess = 'Không tìm thấy dữ liệu';
+        this.dataCsCase_Filter =
+          this.dataCsCase_Search =
+          this.dataCsCase_Temp =
+          [];
+        this.ismess = "Không tìm thấy dữ liệu";
         this.total = 0;
         this.pages = 0;
       }
