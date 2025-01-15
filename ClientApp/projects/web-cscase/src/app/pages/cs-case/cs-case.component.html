@@ -89,10 +89,10 @@
           </div>
           <div class="col-lg-1 col-md-13  my-1 px-1">
             <div class="input-group ">
-              <input class="form-control" placeholder="Tìm phiên bản" type="text" [(ngModel)]="searchReleaseVersion"
-                (keyup.enter)="doSearchReleaseVersion()" (input)="ChangeSearch($event.target.value)" />
+              <input class="form-control" placeholder="Tìm phiên bản" type="text" [(ngModel)]="searchSchoolVersion"
+                (keyup.enter)="doSearchSchoolVersion()" (input)="ChangeSearch($event.target.value)" />
               <div class="input-group-append">
-                <button class="btn btn-outline-primary" type="button" (click)="doSearchReleaseVersion()">
+                <button class="btn btn-outline-primary" type="button" (click)="doSearchSchoolVersion()">
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
               </div>
@@ -192,8 +192,8 @@
                   <span [hidden]="reverseOrderby" class="icon-down"></span>
                 </th>
 
-                <th style="width: 8%" class="align-middle cusdbg clickable" [class.active]="orderby==='releaseVersion'"
-                (click)="setOrder('releaseVersion')">Phiên bản release
+                <th style="width: 8%" class="align-middle cusdbg clickable" [class.active]="orderby==='schoolVersion'"
+                (click)="setOrder('schoolVersion')">Phiên bản release
                 <span [hidden]="!reverseOrderby" class="icon-up"></span>
                 <span [hidden]="reverseOrderby" class="icon-down"></span>
               </th>
@@ -304,7 +304,7 @@
                   <td class="align-middle text-center link-primary clickable" (click)="XemChiTiet(dt, 1)">
                     <span placement="top" [tooltip]="popupTooltip" (mouseover)="hoverTooltip(3)">{{dt.dabangiao}}</span>
                   </td>
-                    <td class="align-middle text-center">{{dt.releaseVersion === '00-Not merge' ? '' : dt.releaseVersion}}</td>
+                    <td class="align-middle text-center">{{dt.schoolVersion === '00-Not merge' ? '' : dt.schoolVersion}}</td>
                   <td class="align-middle text-center">{{dt.ngayemail | date: 'dd/MM/yyyy'}}</td>
 
                   <ng-container *ngIf="isHideMail">

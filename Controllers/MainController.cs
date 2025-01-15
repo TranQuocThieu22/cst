@@ -274,7 +274,7 @@ namespace educlient.Controllers
                 foreach (var s in lst.Take(MAX_CASES).ToList())
                     sCaseList += (sCaseList.Length > 0 ? "," : "") + s.id;
 
-                string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,AQ.UserGuideRequested,AQ.ReviewCase";
+                string sTfsFieldList = "System.AssignedTo,System.Id,AQ.Customer,System.CreatedDate,System.Title,System.State,AQ.TargetDate,AQ.ReleaseDate,Microsoft.VSTS.Common.StateChangeDate,AQ.MailTo,AQ.Priority,AQ.CaseType,AQ.Module,AQ.Comment,AQ.ContractType,AQ.PriorityType,AQ.UserGuideRequested,AQ.ReviewCase,AQ.CustomerApply";
 
                 if (macase.Length > 0)
                 {
@@ -465,6 +465,8 @@ namespace educlient.Controllers
                 dt.Columns.Add("comment", typeof(string));
                 dt.Columns.Add("tinhnangmoi", typeof(bool));
                 dt.Columns.Add("releaseVersion", typeof(string));
+                dt.Columns.Add("phienBanTruongHieuLuc", typeof(string));
+                dt.Columns.Add("schoolVersion", typeof(string));
 
                 if (!string.IsNullOrEmpty(model.filter?.macase))
                 {
@@ -493,6 +495,8 @@ namespace educlient.Controllers
                         }
                         else if (kvp.Key.ToLower().Equals("aq.userguiderequested"))
                             dr["releaseVersion"] = kvp.Value;
+                        else if (kvp.Key.ToLower().Equals("aq.customerapply"))
+                            dr["schoolVersion"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("aq.customer"))
                             dr["matruong"] = kvp.Value;
                         else if (kvp.Key.ToLower().Equals("system.createddate"))
@@ -767,7 +771,7 @@ namespace educlient.Controllers
                 dt.Columns.Add("phanhe", typeof(string));
                 dt.Columns.Add("comment", typeof(string));
                 dt.Columns.Add("tinhnangmoi", typeof(bool));
-
+                dt.Columns.Add("schoolVersion", typeof(string));
                 if (!string.IsNullOrEmpty(model.filter?.macase))
                 {
                     dt.Columns.Add("thongtinkh", typeof(string));
@@ -1218,6 +1222,7 @@ namespace educlient.Controllers
                 dt.Columns.Add("teststate", typeof(string));
 
                 dt.Columns.Add("reviewcase", typeof(string));
+              
 
                 foreach (var r in lstAll)
                 {
@@ -1770,6 +1775,8 @@ public class EduCase
     public string reviewcase { get; set; }         // Comment
 
     public string releaseVersion { get; set; }
+
+    public string schoolVersion { get; set; }
 
 }
 

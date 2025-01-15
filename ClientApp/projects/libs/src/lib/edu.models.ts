@@ -30,6 +30,7 @@ export interface EduCase {
   comment: string;
   releaseVersion: string
   reviewcase: string;
+  schoolVersion: string
 }
 
 export interface EduCase_Excel {

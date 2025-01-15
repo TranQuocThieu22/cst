@@ -53,7 +53,7 @@ export class CsCaseComponent implements OnInit {
   public selectloaicase = [];
   public selectphanhe = [];
   public searchText = "";
-  public searchReleaseVersion = "";
+  public searchSchoolVersion = "";
 
   //  private listmatruong: any; private liststate: any; private listloaicase: any; private listphanhe: any;
   public total = 0;
@@ -187,7 +187,6 @@ export class CsCaseComponent implements OnInit {
     /// IF LOAD BY FILE EXCEL
     if (!data_goc.is_tfs) {
       this.IsTFS = false;
-
       if (data_goc.data_case) {
         this.dataCsCase_Goc = data_goc.data_case.map((v) => ({
           releaseVersion: v.releaseVersion,
@@ -241,6 +240,7 @@ export class CsCaseComponent implements OnInit {
           phanhe: v.phanhe,
           whatnew: v.whatnew,
           teststate: v.teststate,
+          schoolVersion: v.schoolVersion
         }));
       }
     } else {
@@ -596,7 +596,7 @@ export class CsCaseComponent implements OnInit {
     }
   }
 
-  public doSearchReleaseVersion() {
+  public doSearchSchoolVersion() {
     this.ismess = "";
     this.currentPage = 1;
 
@@ -605,11 +605,11 @@ export class CsCaseComponent implements OnInit {
       return;
     }
 
-    if (this.searchReleaseVersion.length > 0) {
+    if (this.searchSchoolVersion.length > 0) {
       this.dataCsCase_Search = this.dataCsCase_Goc.filter(
         (s) =>
-          s.releaseVersion &&
-          s.releaseVersion.toLowerCase().includes(this.searchReleaseVersion.toLowerCase()) &&
+          s.schoolVersion &&
+          s.schoolVersion.toLowerCase().includes(this.searchSchoolVersion.toLowerCase()) &&
           (this.selectmatruong && this.selectmatruong.length > 0
             ? this.selectmatruong.find((x) => x === s.matruong)
             : true) &&
