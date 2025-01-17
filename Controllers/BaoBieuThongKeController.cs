@@ -86,13 +86,20 @@ namespace educlient.Controllers
                     x.periodType == 1
                     ).ToList().Count;
 
-                total_WorkingOnline_half = workingOnlineTable.Find(x =>
-                    x.memberId == member.id &&
-                    x.date.Year == year &&
+                //total_WorkingOnline_half = workingOnlineTable.Find(x =>
+                //    x.memberId == member.id &&
+                //    x.date.Year == year &&
+                //    x.date.Month == month &&
+                //    x.approvalStatus == "Đã duyệt" &&
+                //    x.periodType == 2 || x.periodType == 3
+                //    ).ToList().Count;
+                total_WorkingOnline_half = workingOnlineTable.Query()
+                 .Where(x =>x.date.Year == year &&
                     x.date.Month == month &&
-                    x.approvalStatus == "Đã duyệt" &&
-                    x.periodType == 2 || x.periodType == 3
-                    ).ToList().Count;
+                    x.approvalStatus == "Đã duyệt" && x.periodType == 2 || x.periodType == 3)
+                 .ToList()
+                 .Where(x => x.memberId == member.id)
+                  .ToList().Count;
 
                 total_WorkingOnline = total_WorkingOnline_full + (float)(total_WorkingOnline_half*0.5);
 
