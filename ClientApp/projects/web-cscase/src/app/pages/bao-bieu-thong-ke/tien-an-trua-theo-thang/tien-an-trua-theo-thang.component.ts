@@ -85,7 +85,7 @@ export class TienAnTruaTheoThangComponent implements OnInit {
     const TotalWorkingDay = daysInMonth - totalWeekendDays;
 
     this.AQLunchPaymentReport.forEach((member) => {
-      member.office_workingDay = TotalWorkingDay - member.total_IndividualDayOff - member.total_WorkingOnline - member.total_CommissionDay_full - member.total_CommissionDay_half - member.total_AQDayOff;
+      member.office_workingDay = TotalWorkingDay - member.total_IndividualDayOff_full - member.total_WorkingOnline_full - member.total_CommissionDay_full - member.total_AQDayOff;
       switch (member.employeeType) {
         case 1:
           member.lunchPayment = member.office_workingDay * this.lunchPaymentType1;
