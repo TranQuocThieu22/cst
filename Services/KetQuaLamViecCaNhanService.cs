@@ -1315,19 +1315,22 @@ namespace educlient.Services
 
         private List<IndividualDayOff> GetNghiCaNhanData()
         {
-            return database.Table<IndividualDayOff>()
-                ?.Query()
-                .Select(x => new IndividualDayOff
-                {
-                    id = x.id,
-                    //dateFrom = x.dateFrom,
-                    //dateTo = x.dateTo,
-                    date = x.date,
-                    memberId = x.memberId,
-                    reason = x.reason,
-                    note = x.note
-                })
-                .ToList() ?? new List<IndividualDayOff>();
+            var query = database.Table<IndividualDayOff>()?.Query().ToList();
+            if (query == null)
+            {
+                throw new InvalidOperationException("Query() returned null.");
+            }
+
+            return query.Select(x => new IndividualDayOff
+            {
+                id = x?.id ?? default,
+                date = x?.date ?? default,
+                memberId = x?.memberId ?? default,
+                reason = x?.reason ?? string.Empty,
+                note = x?.note ?? string.Empty
+            }).ToList();
+
+
         }
 
         private List<Commission> GetNgayCongTacData()

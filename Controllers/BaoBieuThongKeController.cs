@@ -22,15 +22,16 @@ namespace educlient.Controllers
         [HttpGet("ThongKeTinhTienAnTrua")]
         public ThongKeTinhTienAnTruaResult ThongKeTinhTienAnTrua([FromQuery] int year, [FromQuery] int month)
         {
-            int total_IndividualDayOff = 0;
-            int total_WorkingOnline = 0;
+            float total_IndividualDayOff = 0;
+            float total_WorkingOnline = 0;
             int total_IndividualDayOff_full = 0;
             int total_IndividualDayOff_half = 0;
             int total_WorkingOnline_full = 0;
             int total_WorkingOnline_half = 0;
             int total_CommissionDay_full = 0;
             int total_CommissionDay_half = 0;
-            int total_AQDayOff = 0;
+            float total_CommissionDay = 0;
+            float total_AQDayOff = 0;
 
             var resultList = new List<ThongKeTinhTienAnTruaDataDO>();
 
@@ -74,7 +75,7 @@ namespace educlient.Controllers
                     x.periodType == 2 || x.periodType == 3
                     ).ToList().Count;
 
-                total_IndividualDayOff = total_IndividualDayOff_full + total_IndividualDayOff_half;
+                total_IndividualDayOff = total_IndividualDayOff_full + (float)(total_IndividualDayOff_half*0.5);
 
                 // Find wfh data for each member by month-year
                 total_WorkingOnline_full = workingOnlineTable.Find(x =>
@@ -93,7 +94,7 @@ namespace educlient.Controllers
                     x.periodType == 2 || x.periodType == 3
                     ).ToList().Count;
 
-                total_WorkingOnline = total_WorkingOnline_full + total_WorkingOnline_half;
+                total_WorkingOnline = total_WorkingOnline_full + (float)(total_WorkingOnline_half*0.5);
 
                 var commissionData = commissionTable.Query()
                     .Where(x => x.dateFrom.Year == year && x.dateFrom.Month == month)
@@ -142,7 +143,7 @@ namespace educlient.Controllers
                     total_CommissionDay_full = 0;  // Set to 0 if no commission data
                 }
 
-
+                total_CommissionDay = total_CommissionDay_full + (float)(total_CommissionDay_half * 0.5);
                 var AQDayOffData = aqDayOffTable.Find(x =>
                     x.dateFrom.Year == year &&
                     x.dateFrom.Month == month
@@ -167,7 +168,8 @@ namespace educlient.Controllers
                     total_WorkingOnline_half = total_WorkingOnline_half,
                     total_CommissionDay_full = total_CommissionDay_full,
                     total_CommissionDay_half = total_CommissionDay_half,
-                    total_AQDayOff = total_AQDayOff
+                    total_AQDayOff = total_AQDayOff,
+                    total_CommissionDay = total_CommissionDay
                 };
 
                 resultList.Add(resultData);
@@ -324,7 +326,7 @@ namespace educlient.Controllers
         public ThongKeCaNhanNamHienTaiResult GetThongkehanmuccanhan([FromQuery] int year)
         {
             var resultList = new List<ThongKeNghiPhepVaLamOnlineDO>();
-
+            
             var AQMemberTable = _database.Table<AQMember>();
             var dayOffsTable = _database.Table<IndividualDayOff>();
             var workingOnlineTable = _database.Table<WorkingOnlineDay>();
@@ -365,24 +367,34 @@ namespace educlient.Controllers
                         x.approvalStatus == "Đã duyệt"
                         ).ToList();
 
-                totalDayOff = dayOffData.Count;
+               
 
                 foreach (var dayOff in dayOffData)
                 {
-                    totalDayOff_with_permission += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? 1 : 0;
-                    totalDayOff_fullType1 += (dayOff.periodType == 1 && dayOff.dayOffType == 1) ? 1 : 0;
-                    totalDayOff_fullType2 += (dayOff.periodType == 1 && dayOff.dayOffType == 2) ? 1 : 0;
-                    totalDayOff_halfType1 += ((dayOff.periodType == 2 || dayOff.periodType == 3) && dayOff.dayOffType == 1) ? 1 : 0;
-                    totalDayOff_halfType2 += ((dayOff.periodType == 2 || dayOff.periodType == 3) && dayOff.dayOffType == 2) ? 1 : 0;
+                totalDayOff_with_permission += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? 1 : 0;
+                  if(dayOff.periodType == 1)
+                  {
+                    totalDayOff_fullType1 += (dayOff.dayOffType == 1) ? 1 : 0;
+                    totalDayOff_fullType2 += (dayOff.dayOffType == 2) ? 1 : 0;
+
+                  }
+                    else if(dayOff.periodType == 2 || dayOff.periodType == 3)
+                    {
+                        totalDayOff_type3_4 += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? (float)0.5 : 0;
+                        totalDayOff_halfType1 += (dayOff.dayOffType == 1) ? 1 : 0;
+                        totalDayOff_halfType2 += (dayOff.dayOffType == 2) ? 1 : 0;
+                    }
+                    else
+                    {
                     totalDayOff_type3_4 += (dayOff.dayOffType == 3 || dayOff.dayOffType == 4) ? 1 : 0;
+                    }
                 }
 
-                usedMinAbsenceQuota = (float)(totalDayOff_fullType1 + totalDayOff_halfType1 * 0.5);
-                usedAdditionalAbsenceQuota = (float)(totalDayOff_fullType2 + totalDayOff_halfType2 * 0.5);
+                usedMinAbsenceQuota = (float)(totalDayOff_fullType1 + totalDayOff_halfType1 *0.5);
+                usedAdditionalAbsenceQuota = (float)(totalDayOff_fullType2 + totalDayOff_halfType2 *0.5);
                 remainMinAbsenceQuota = minAbsenceQuota - usedMinAbsenceQuota;
                 remainAdditionalAbsenceQuota = additionalAbsenceQuota - usedAdditionalAbsenceQuota;
 
-                totalDayOff_without_permission = totalDayOff - totalDayOff_with_permission;
 
 
                 //workingOnline data
@@ -390,7 +402,6 @@ namespace educlient.Controllers
                 int additionalWfhQuota = AQMemberTable.FindById(member.id).additionalWFHQuota;
                 float totalWorkingOnlineDay = 0;
                 float totalWorkingOnlineDay_with_permission = 0;
-                float totalWorkingOnlineDay_without_permission = 0;
                 float totalWorkingOnlineDay_fullType1 = 0;
                 float totalWorkingOnlineDay_fullType2 = 0;
                 float totalWorkingOnlineDay_halfType1 = 0;
@@ -407,16 +418,26 @@ namespace educlient.Controllers
                         x.approvalStatus == "Đã duyệt"
                         ).ToList();
 
-                totalWorkingOnlineDay = workingOnlineDayData.Count;
-
+                totalDayOff = (float)(totalDayOff_fullType1 + totalDayOff_fullType2 + totalDayOff_halfType1 * 0.5 + totalDayOff_halfType2 * 0.5 + totalDayOff_type3_4);
                 foreach (var workingOnlineDay in workingOnlineDayData)
                 {
                     totalWorkingOnlineDay_with_permission += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
-                    totalWorkingOnlineDay_fullType1 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 1) ? 1 : 0;
-                    totalWorkingOnlineDay_fullType2 += (workingOnlineDay.periodType == 1 && workingOnlineDay.wfhType == 2) ? 1 : 0;
-                    totalWorkingOnlineDay_halfType1 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 1) ? 1 : 0;
-                    totalWorkingOnlineDay_halfType2 += ((workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3) && workingOnlineDay.wfhType == 2) ? 1 : 0;
-                    totalWorkingOnlineDay_type3_4 += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+                 
+                    if(workingOnlineDay.periodType == 1)
+                    {
+                        totalWorkingOnlineDay_fullType1 += ( workingOnlineDay.wfhType == 1) ? 1 : 0;
+                        totalWorkingOnlineDay_fullType2 += ( workingOnlineDay.wfhType == 2) ? 1 : 0;
+                    }
+                    else if(workingOnlineDay.periodType == 2 || workingOnlineDay.periodType == 3)
+                    {
+                    totalWorkingOnlineDay_halfType1 += (workingOnlineDay.wfhType == 1) ? 1 : 0;
+                    totalWorkingOnlineDay_halfType2 += (workingOnlineDay.wfhType == 2) ? 1 : 0;
+                    totalWorkingOnlineDay_type3_4 += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? (float)0.5 : 0;
+                    }
+                    else
+                    {
+                        totalWorkingOnlineDay_type3_4 += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
+                    }
                 }
 
                 usedMinWfhQuota = (float)(totalWorkingOnlineDay_fullType1 + totalWorkingOnlineDay_halfType1 * 0.5);
@@ -424,7 +445,7 @@ namespace educlient.Controllers
                 remainMinWfhQuota = minWfhQuota - usedMinWfhQuota;
                 remainAdditionalWfhQuota = additionalWfhQuota - usedAdditionalWfhQuota;
 
-                totalWorkingOnlineDay_without_permission = totalWorkingOnlineDay - totalWorkingOnlineDay_with_permission;
+                totalWorkingOnlineDay = (float)(totalWorkingOnlineDay_fullType1 + totalWorkingOnlineDay_fullType2 + totalWorkingOnlineDay_halfType1 * 0.5 + totalWorkingOnlineDay_halfType2 * 0.5 + totalWorkingOnlineDay_type3_4);
 
                 var ThongKeCaNhanByMember = new ThongKeNghiPhepVaLamOnlineDO
                 {
@@ -478,15 +499,16 @@ namespace educlient.Controllers
             public string fullName { get; set; }
             public string nickName { get; set; }
             public int employeeType { get; set; }
-            public int total_IndividualDayOff { get; set; }
-            public int total_WorkingOnline { get; set; }
+            public float total_IndividualDayOff { get; set; }
+            public float total_WorkingOnline { get; set; }
             public int total_IndividualDayOff_full { get; set; }
             public int total_IndividualDayOff_half { get; set; }
             public int total_WorkingOnline_full { get; set; }
             public int total_WorkingOnline_half { get; set; }
             public int total_CommissionDay_full { get; set; }
             public int total_CommissionDay_half { get; set; }
-            public int total_AQDayOff { get; set; }
+            public float total_AQDayOff { get; set; }
+            public float total_CommissionDay { get; set; }
         }
 
         public class ThongKeTinhTienAnTruaResult : ApiResultBaseDO
