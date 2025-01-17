@@ -392,7 +392,9 @@ export class LamViecOnlineComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.resetCalendarSelection();
-        this.fetchWorkingOnlinesData();
+        this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
+        this.filter_dateto = new Date().toLocaleDateString('en-GB');
+        this.fetchWorkingOnlinesData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
       }
     });
     this.addNewWorkingOnlineDialog = false;

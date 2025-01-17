@@ -68,7 +68,8 @@ namespace educlient.Controllers
                 additionalAbsenceQuota = member.additionalAbsenceQuota,
                 minWFHQuota = member.minWFHQuota,
                 additionalWFHQuota = member.additionalWFHQuota,
-                employeeType = member.employeeType
+                employeeType = member.employeeType,
+                note = member.note
             }).ToList();
 
             return new AQMembersResult
@@ -122,7 +123,8 @@ namespace educlient.Controllers
                 additionalAbsenceQuota = aqMember.additionalAbsenceQuota,
                 minWFHQuota = aqMember.minWFHQuota,
                 additionalWFHQuota = aqMember.additionalWFHQuota,
-                employeeType = aqMember.employeeType
+                employeeType = aqMember.employeeType,
+                note = aqMember.note
             };
 
             returnData.Add(aqMemberReturn);
@@ -266,6 +268,7 @@ namespace educlient.Controllers
             existingRecord.contractExpireDate = inputData.contractExpireDate;
             existingRecord.contractType = inputData.contractType;
             existingRecord.employeeType = inputData.employeeType;
+            existingRecord.note = inputData.note;
 
             // Update the record in the collection
             AQMemberTable.Update(existingRecord);
@@ -294,7 +297,8 @@ namespace educlient.Controllers
                 contractStartDate = existingRecord.contractStartDate,
                 contractExpireDate = existingRecord.contractExpireDate,
                 contractType = existingRecord.contractType,
-                employeeType = existingRecord.employeeType
+                employeeType = existingRecord.employeeType,
+                note = existingRecord.note
             };
 
             return new UpdateResultDTO
@@ -799,6 +803,7 @@ public class AQMemberUpdateDTO
     public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
     public int employeeType { get; set; }
+    public string note { get; set; }
 }
 
 public class UpdateResultDTO : ApiResultBaseDO
@@ -837,6 +842,7 @@ public class AQMemberDTO
     public DateTime? contractExpireDate { get; set; } = null;
     public string contractType { get; set; }
     public int employeeType { get; set; }
+    public string note { get; set; }
 }
 
 public class MemberCommission

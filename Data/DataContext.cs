@@ -95,6 +95,7 @@ namespace educlient.Data
         public DateTime? contractExpireDate { get; set; } = null;
         public string contractType { get; set; }
         public int employeeType { get; set; }
+        public string note { get; set; }
     }
 
     //public class detailContract
