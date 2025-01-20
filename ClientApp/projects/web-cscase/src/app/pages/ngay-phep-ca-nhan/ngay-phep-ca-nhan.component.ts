@@ -35,6 +35,7 @@ export class NgayPhepCaNhanComponent implements OnInit {
       fullName: '',
       nickName: ''
     },
+    isDayOffWithPayment: true,
     approvalStatus: 'Chưa duyệt',
   };
   IndividualDayOff: IndividualDayOff = {
@@ -186,12 +187,6 @@ export class NgayPhepCaNhanComponent implements OnInit {
   }
 
   openAddDialog() {
-    if (this.userInfo) {
-      if (Object.keys(this.userInfo).length !== 0) {
-        this.fetchIndividualAbsenceQuota(this.userInfo.id)
-        this.IndividualDayOff.member.id = this.userInfo.id;
-      }
-    }
     this.isValidDateRange = true;
     this.fetchMemberListData();
     this.IndividualDayOff = {
@@ -202,6 +197,12 @@ export class NgayPhepCaNhanComponent implements OnInit {
       fullName: '',
       nickName: ''
     };
+    if (this.userInfo) {
+      if (Object.keys(this.userInfo).length !== 0) {
+        this.fetchIndividualAbsenceQuota(this.userInfo.id)
+        this.IndividualDayOff.member.id = this.userInfo.id;
+      }
+    }
     this.ThongTinNghiPhepCaNhan = [];
     this.resetCalendarSelection();
     // this.sumDay();

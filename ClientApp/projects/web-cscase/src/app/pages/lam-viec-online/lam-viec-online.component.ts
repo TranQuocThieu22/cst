@@ -171,17 +171,17 @@ export class LamViecOnlineComponent implements OnInit {
   }
 
   openAddDialog() {
+    this.isValidDateRange = true;
+    this.fetchMemberListData();
+    this.WorkingOnline = {
+      ...this.WorkingOnlineInitState
+    };
     if (this.userInfo) {
       if (Object.keys(this.userInfo).length !== 0) {
         this.fetchIndividualWfhQuota(this.userInfo.id)
         this.WorkingOnline.member.id = this.userInfo.id;
       }
     }
-    this.isValidDateRange = true;
-    this.fetchMemberListData();
-    this.WorkingOnline = {
-      ...this.WorkingOnlineInitState
-    };
     this.wfhIndividualInfo = [];
     this.resetCalendarSelection();
     // this.sumDay();
