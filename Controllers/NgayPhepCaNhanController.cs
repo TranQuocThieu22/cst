@@ -404,7 +404,6 @@ namespace educlient.Controllers
                     x.approvalStatus == "Đã duyệt"
                     ).ToList();
 
-            totalDayOff = dayOffData.Count;
 
             foreach (var dayOff in dayOffData)
             {
@@ -422,6 +421,8 @@ namespace educlient.Controllers
             remainAdditionalAbsenceQuota = additionalAbsenceQuota - usedAdditionalAbsenceQuota;
 
             totalDayOff_without_permission = totalDayOff - totalDayOff_with_permission;
+            totalDayOff = totalDayOff_fullType1 + totalDayOff_fullType2 + (float)(totalDayOff_halfType1 * 0.5) + (float)(totalDayOff_halfType2 * 0.5);
+
 
             var HanMucNghiPhep = new HanMucNghiPhepCaNhan
             {

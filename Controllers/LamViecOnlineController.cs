@@ -273,8 +273,6 @@ namespace educlient.Controllers
                     x.approvalStatus == "Đã duyệt"
                     ).ToList();
 
-            totalWorkingOnlineDay = workingOnlineDayData.Count;
-
             foreach (var workingOnlineDay in workingOnlineDayData)
             {
                 totalWorkingOnlineDay_with_permission += (workingOnlineDay.wfhType == 3 || workingOnlineDay.wfhType == 4) ? 1 : 0;
@@ -291,6 +289,7 @@ namespace educlient.Controllers
             remainAdditionalWfhQuota = additionalWfhQuota - usedAdditionalWfhQuota;
 
             totalWorkingOnlineDay_without_permission = totalWorkingOnlineDay - totalWorkingOnlineDay_with_permission;
+            totalWorkingOnlineDay = totalWorkingOnlineDay_fullType1 + totalWorkingOnlineDay_fullType2 + (float)(totalWorkingOnlineDay_halfType1 * 0.5) + (float)(totalWorkingOnlineDay_halfType2 * 0.5);
 
             var HanMucLamViecOnline = new HanMucLamViecOnlineCaNhan
             {
