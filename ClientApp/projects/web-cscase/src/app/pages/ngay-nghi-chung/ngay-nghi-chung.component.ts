@@ -21,6 +21,7 @@ export class NgayNghiChungComponent implements OnInit {
     dateFrom: '',
     dateTo: '',
     sumDay: 0,
+    sumDayWithWeekend: 0,
     reason: '',
     note: '',
   };
@@ -45,6 +46,7 @@ export class NgayNghiChungComponent implements OnInit {
 
     if (date1 > date2) {
       this.DayOff.sumDay = 0;
+      this.DayOff.sumDayWithWeekend = 0;
       this.isValidDateRange = false;
       return;
     }
@@ -58,6 +60,8 @@ export class NgayNghiChungComponent implements OnInit {
       }
     }
     this.DayOff.sumDay = diffDays;
+    const totalDays = Math.floor((date2.getTime() - new Date(this.DayOff.dateFrom).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    this.DayOff.sumDayWithWeekend = totalDays;
   }
 
   validateInputDates() {
@@ -101,7 +105,8 @@ export class NgayNghiChungComponent implements OnInit {
 
   ngOnInit() {
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-    this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    // this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.filter_dateto = new Date(new Date().getFullYear(), 11, 31).toLocaleDateString('en-GB');
     this.fetchDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
     this.resetCalendarSelection();
     this.sumDay();
@@ -203,7 +208,9 @@ export class NgayNghiChungComponent implements OnInit {
         // Your logic for handling the completion event (optional)
         this.resetCalendarSelection();
         this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-        this.filter_dateto = new Date().toLocaleDateString('en-GB');
+        // this.filter_dateto = new Date().toLocaleDateString('en-GB');
+        this.filter_dateto = new Date(new Date().getFullYear(), 11, 31).toLocaleDateString('en-GB');
+
         this.fetchDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
       }
     });
@@ -225,7 +232,9 @@ export class NgayNghiChungComponent implements OnInit {
       complete: () => {
         // Your logic for handling the completion event (optional)
         this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-        this.filter_dateto = new Date().toLocaleDateString('en-GB');
+        // this.filter_dateto = new Date().toLocaleDateString('en-GB');
+        this.filter_dateto = new Date(new Date().getFullYear(), 11, 31).toLocaleDateString('en-GB');
+
         this.fetchDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
       }
     });
@@ -258,7 +267,8 @@ export class NgayNghiChungComponent implements OnInit {
           complete: () => {
             // Your logic for handling the completion event (optional)
             this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-            this.filter_dateto = new Date().toLocaleDateString('en-GB');
+            // this.filter_dateto = new Date().toLocaleDateString('en-GB');
+            this.filter_dateto = new Date(new Date().getFullYear(), 11, 31).toLocaleDateString('en-GB');
             this.fetchDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
           }
         });
@@ -276,7 +286,8 @@ export class NgayNghiChungComponent implements OnInit {
   clear(table: Table) {
     table.clear();
     this.filter_datefrom = new Date(new Date().getFullYear(), 0, 1).toLocaleDateString('en-GB');
-    this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    // this.filter_dateto = new Date().toLocaleDateString('en-GB');
+    this.filter_dateto = new Date(new Date().getFullYear(), 11, 31).toLocaleDateString('en-GB');
     this.fetchDayOffsData(this.convertDateFormat(this.filter_datefrom), this.convertDateFormat(this.filter_dateto));
   }
 }

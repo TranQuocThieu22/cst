@@ -95,6 +95,7 @@ namespace educlient.Controllers
                 dateFrom = input.dateFrom,
                 dateTo = input.dateTo,
                 sumDay = input.sumDay,
+                sumDayWithWeekend = input.sumDayWithWeekend,
                 reason = input.reason,
                 note = input.note,
             }).ToList();
@@ -129,6 +130,7 @@ namespace educlient.Controllers
             existingRecord.dateFrom = inputData.dateFrom;
             existingRecord.dateTo = inputData.dateTo;
             existingRecord.sumDay = inputData.sumDay;
+            existingRecord.sumDayWithWeekend = inputData.sumDayWithWeekend;
             existingRecord.reason = inputData.reason;
             existingRecord.note = inputData.note;
 
@@ -179,6 +181,7 @@ namespace educlient.Controllers
         public DateTime dateFrom { get; set; }
         public DateTime dateTo { get; set; }
         public float sumDay { get; set; }
+        public float sumDayWithWeekend { get; set; }
         public string reason { get; set; }
         public string note { get; set; }
     }

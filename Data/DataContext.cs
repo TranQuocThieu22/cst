@@ -98,63 +98,6 @@ namespace educlient.Data
         public string note { get; set; }
     }
 
-    //public class detailContract
-    //{
-    //    public DateTime contractStartDate { get; set; } = DateTime.Now.Date;
-    //    public DateTime contractExpireDate { get; set; } = DateTime.Now.Date;
-    //    public int contractDuration { get; set; } = 0;
-    //    public string contractType { get; set; } = "";
-    //}
-
-    //public class detailAbsenceQuota
-    //{
-    //    public int minAbsenceQuota { get; set; } = 0;
-    //    public List<actualAbsenceQuotaByYear> actualAbsenceQuotaByYear { get; set; } = new List<actualAbsenceQuotaByYear>
-    //    {
-    //        new actualAbsenceQuotaByYear()
-    //    };
-    //}
-
-    //public class actualAbsenceQuotaByYear
-    //{
-    //    public int year { get; set; } = DateTime.Now.Year;
-    //    public int absenceQuota { get; set; } = 0;
-    //}
-
-    //public class detailWFHQuota
-    //{
-    //    public int minWFHQuota { get; set; } = 0;
-    //    public List<actualWFHQuotaByYear> actualWFHQuotaByYear { get; set; } = new List<actualWFHQuotaByYear> {
-    //        new actualWFHQuotaByYear()
-    //    };
-    //}
-
-    //public class actualWFHQuotaByYear
-    //{
-    //    public int year { get; set; } = DateTime.Now.Year;
-    //    public int WFHQuota { get; set; } = 0;
-    //}
-
-    //public class detailLunch
-    //{
-    //    public int year { get; set; } = DateTime.Now.Year;
-    //    public List<lunchByMonth> lunchByMonth { get; set; } = Enumerable.Range(DateTime.Now.Month, 12 - DateTime.Now.Month + 1)
-    //                        .Select(month => new lunchByMonth
-    //                        {
-    //                            month = month,
-    //                            isLunch = false,
-    //                        })
-    //                        .ToList();
-    //}
-
-    //public class lunchByMonth
-    //{
-    //    public int month { get; set; }
-    //    public bool isLunch { get; set; }
-    //    public int lunchFee { get; set; } = 0;
-    //    public string note { get; set; } = "";
-    //}
-
     public class DayOff
     {
         [BsonId]
@@ -162,6 +105,7 @@ namespace educlient.Data
         public DateTime dateFrom { get; set; }
         public DateTime dateTo { get; set; }
         public float sumDay { get; set; }
+        public float sumDayWithWeekend { get; set; }
         public string reason { get; set; }
         public string note { get; set; }
     }

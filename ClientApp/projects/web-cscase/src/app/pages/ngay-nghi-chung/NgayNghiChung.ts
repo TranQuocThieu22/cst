@@ -3,6 +3,7 @@ export interface DayOff {
     dateFrom?: Date | string;
     dateTo?: Date | string;
     sumDay?: number;
+    sumDayWithWeekend?: number;
     reason?: string;
     note?: string;
 }

@@ -102,9 +102,15 @@
             <p-sortIcon field="dateTo"></p-sortIcon>
           </th>
           <th style="white-space: nowrap; min-width:10rem" pSortableColumn="sumDay">
-            Tổng số ngày nghỉ
+            Tổng cộng ngày nghỉ
             <p-sortIcon field="sumDay"></p-sortIcon>
             <p-columnFilter type="numeric" field="sumDay" display="menu" class="mt-4"></p-columnFilter>
+          </th>
+          <th style="white-space: nowrap; min-width:10rem" pSortableColumn="sumDayWithWeekend">
+            Tổng cộng ngày nghỉ (có T7,CN)
+            <p-sortIcon field="sumDayWithWeekend"></p-sortIcon>
+            <p-columnFilter type="numeric" field="sumDayWithWeekend" display="menu" class="mt-4"></p-columnFilter>
+          </th>
           <th style="white-space: nowrap; min-width:25rem" class="text-center">
             Lý do nghỉ
             <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
@@ -131,6 +137,9 @@
           </td>
           <td style="white-space: nowrap; text-align: center; width: 15%;">
             {{DayOff.sumDay}}
+          </td>
+          <td style="white-space: nowrap; text-align: center; width: 15%;">
+            {{DayOff.sumDayWithWeekend}}
           </td>
           <td style="white-space: nowrap; text-align: left; width: 20%;">
             {{DayOff.reason}}
@@ -171,7 +180,7 @@
       </div>
 
       <div class="field col-5 md:col-4">
-        <label for="sumDay">Tổng cộng ngày nghỉ</label>
+        <label for="sumDay">Tổng cộng ngày nghỉ (trừ T7,CN)</label>
         <input type="number" pInputText id="sumDay" required [(ngModel)]="DayOff.sumDay" />
       </div>
 

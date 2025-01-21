@@ -184,9 +184,11 @@
       <i style="color: #1C325B;" class="pi pi-clock"></i>
       <span style="color: #1C325B;">Làm việc ngoài giờ</span>
     </a>
-    <a pButton class="p-button-text" routerLink="ketqualamvieccanhan" routerLinkActive="active-link">
+    <a *ngIf="userInfo.role === '1' || userInfo.role === 'admin'" pButton class="p-button-text"
+      routerLink="ketqualamvieccanhan"
+      routerLinkActive="active-link">
       <i style="color: #1C325B;" class="pi pi-file"></i>
-      <span style="color: #1C325B;">Kết quả làm việc cá nhân</span>
+      <span style="color: #1C325B;">Kết quả làm việc cá nhân (DEV)</span>
     </a>
     <a pButton class="p-button-text" routerLink="baobieuthongke" routerLinkActive="active-link">
       <i style="color: #1C325B;" class="pi pi-chart-bar"></i>
