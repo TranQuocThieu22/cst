@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using static educlient.Controllers.NgayPhepCaNhanController;
+using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 
 namespace educlient.Controllers
 {
@@ -41,7 +42,11 @@ namespace educlient.Controllers
             var commissionTable = _database.Table<Commission>();
             var aqDayOffTable = _database.Table<DayOff>();
 
-            var membersData = membersTable.FindAll().ToList();
+            var membersData = membersTable.Query().Where(x =>
+                x.isLunchStatus == true
+                ).ToList();
+
+
             if (membersData == null)
             {
                 return new ThongKeTinhTienAnTruaResult
