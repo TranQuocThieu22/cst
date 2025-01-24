@@ -92,9 +92,11 @@
                         <p-sortIcon field="time"></p-sortIcon>
                         <p-columnFilter type="numeric" field="sumDay" display="menu" class="mt-4"></p-columnFilter>
                     </th>
-                    <th style="white-space: nowrap; min-width: 100px;" class="text-center">
-                        Tên đầy đủ
-                        <p-columnFilter type="text" field="member" display="menu"></p-columnFilter>
+                    <th pSortableColumn="member.fullName" style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
+                        Họ tên
+                        <p-sortIcon field="member.fullName"></p-sortIcon>
+                        <p-columnFilter type="text" field="member.fullName" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap; min-width: 200px;" class="text-center">
                         Ghi chú thêm

@@ -78,29 +78,35 @@
                     <th style="white-space: nowrap; min-width:120px;" class="text-center">
                         <i class="pi pi-ellipsis-h"></i>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="approvalStatus" style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
                         Trạng thái
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="approvalStatus"></p-sortIcon>
+                        <p-columnFilter type="text" field="approvalStatus" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap; min-width:10rem" pSortableColumn="date">
                         Ngày làm việc online
                         <p-sortIcon field="date"></p-sortIcon>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="member.fullName" style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
                         Họ tên
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="member.fullName"></p-sortIcon>
+                        <p-columnFilter type="text" field="member.fullName" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap; min-width:20rem" class="text-center">
                         Lý do làm việc online
                         <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="periodType" style="white-space: nowrap; min-width:10rem" class="text-center">
                         Buổi
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="periodType"></p-sortIcon>
+                        <p-columnFilter type="text" field="periodType" display="menu"></p-columnFilter>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="wfhType" style="white-space: nowrap; min-width:10rem" class="text-center">
                         Phân loại hạn mức
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="wfhType"></p-sortIcon>
+                        <p-columnFilter type="text" field="wfhType" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap;" class="text-center">
                         Ghi chú thêm

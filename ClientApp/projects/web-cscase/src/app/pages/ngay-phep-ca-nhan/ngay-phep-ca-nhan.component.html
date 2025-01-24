@@ -77,9 +77,11 @@
                     <th style="white-space: nowrap; min-width:120px;" class="text-center">
                         <i class="pi pi-ellipsis-h"></i>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="approvalStatus" style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
                         Trạng thái
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="approvalStatus"></p-sortIcon>
+                        <p-columnFilter type="text" field="approvalStatus" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap; min-width:10rem" pSortableColumn="date">
                         Ngày nghỉ phép
@@ -89,23 +91,27 @@
                         class="text-center">
                         Họ tên
                         <p-sortIcon field="member.fullName"></p-sortIcon>
-                        <p-columnFilter type="text" field="fullName" display="menu"></p-columnFilter>
+                        <p-columnFilter type="text" field="member.fullName" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap; min-width:20rem" class="text-center">
                         Lý do nghỉ
                         <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="periodType" style="white-space: nowrap; min-width:10rem" class="text-center">
                         Buổi
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="periodType"></p-sortIcon>
+                        <p-columnFilter type="text" field="periodType" display="menu"></p-columnFilter>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="dayOffType" style="white-space: nowrap; min-width:10rem" class="text-center">
                         Loại ngày phép
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="dayOffType"></p-sortIcon>
+                        <p-columnFilter type="text" field="dayOffType" display="menu"></p-columnFilter>
                     </th>
-                    <th style="white-space: nowrap; min-width:10rem" class="text-center">
+                    <th pSortableColumn="isDayOffWithPayment" style="white-space: nowrap; min-width:10rem"
+                        class="text-center">
                         Nghỉ có lương
-                        <p-columnFilter type="text" field="reason" display="menu"></p-columnFilter>
+                        <p-sortIcon field="isDayOffWithPayment"></p-sortIcon>
+                        <p-columnFilter type="text" field="isDayOffWithPayment" display="menu"></p-columnFilter>
                     </th>
                     <th style="white-space: nowrap;" class="text-center">
                         Ghi chú thêm

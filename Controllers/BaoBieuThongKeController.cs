@@ -61,8 +61,16 @@ namespace educlient.Controllers
             foreach (var member in membersData)
             {
                 total_AQDayOff = 0;
+                total_IndividualDayOff_full = 0;
+                total_IndividualDayOff_half = 0;
+                total_IndividualDayOff = 0;
+                total_CommissionDay = 0;
                 total_CommissionDay_full = 0;
                 total_CommissionDay_half = 0;
+                total_WorkingOnline_full = 0;
+                total_WorkingOnline_half = 0;
+                total_WorkingOnline = 0;
+
                 // Find day-off data for each member by month-year
                 total_IndividualDayOff_full = dayOffsTable.Find(x =>
                     x.memberId == member.id &&
@@ -77,7 +85,7 @@ namespace educlient.Controllers
                     x.date.Year == year &&
                     x.date.Month == month &&
                     x.approvalStatus == "Đã duyệt" &&
-                    x.periodType == 2 || x.periodType == 3
+                    (x.periodType == 2 || x.periodType == 3)
                     ).ToList().Count;
 
                 total_IndividualDayOff = total_IndividualDayOff_full + (float)(total_IndividualDayOff_half * 0.5);
