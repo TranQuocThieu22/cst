@@ -16,8 +16,19 @@
 }
 
 .role-Developer {
-    background    : #b3e5fc;
-    color         : #23547b;
+    background    : #b3cde0;
+    color         : #0077b6;
+    border-radius : 2px;
+    padding       : .25em .5rem;
+    text-transform: uppercase;
+    font-weight   : 700;
+    font-size     : 14px;
+    letter-spacing: .3px;
+}
+
+.role-AQNew {
+    background    : #f0ede4;
+    color         : #008080;
     border-radius : 2px;
     padding       : .25em .5rem;
     text-transform: uppercase;

@@ -84,11 +84,12 @@ export class NhanSuAqComponent implements OnInit {
     private primengConfig: PrimeNGConfig
   ) {
     this.AQRoles = [
+      { role: "AQNew", code: "6", total: 0 },
       { role: "Developer", code: "1", total: 0 },
       { role: "Support", code: "2", total: 0 },
       { role: "Sale", code: "3", total: 0 },
       { role: "HR", code: "4", total: 0 },
-      { role: "BM", code: "5", total: 0 },
+      { role: "BM", code: "10", total: 0 },
     ];
     this.pc2_echartsExtentions = [
       PieChart,
@@ -256,7 +257,7 @@ export class NhanSuAqComponent implements OnInit {
   }
 
   getColor(index: number): string {
-    const colors = ["#b3e5fc", "#ffd8b2", "#8dbca1", "#fe1155", "#0a3d62"];
+    const colors = ["#008080", "#b3e5fc", "#ffd8b2", "#8dbca1", "#fe1155", "#0a3d62"];
     return colors[index % colors.length];
   }
 
