@@ -15,7 +15,7 @@ namespace educlient
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
-      tfsUrl = configuration.GetValue<string>("tfsUrl", null) ?? "https://dev.aqtech.vn:1443";
+      tfsUrl = configuration.GetValue<string>("tfsUrl", null) ?? "https://dev.aqtech.edu.vn";
     }
 
     public IConfiguration Configuration { get; }
