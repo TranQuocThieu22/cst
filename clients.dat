@@ -56,4 +56,6 @@
 { "maTruong": "DHVB", "TenTruong": "Trường ĐH VIỆT BẮC", "pass": "07062022", "Roles": "user" },
 { "maTruong": "CNTN", "TenTruong": "Trường ĐH Kỹ Thuật Công Nghiệp", "pass": "0977268777", "Roles": "user" },
 { "maTruong": "KKBD", "TenTruong": "Trường ĐH Kinh tế - Kỹ thuật Bình Dương", "pass": "20072022", "Roles": "user" },
+
+{ "maTruong": "VTT1", "TenTruong": "Học viện Bưu chính Viễn thông Trung Tâm 1", "pass": "02854457777", "Roles": "user" },
 ]
