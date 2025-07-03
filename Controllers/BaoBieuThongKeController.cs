@@ -40,6 +40,7 @@ namespace educlient.Controllers
             var aqDayOffTable = _database.Table<DayOff>();
 
             var membersData = membersTable.Query().Where(x =>
+                x.isActive == true &&
                 x.isLunchStatus == true
                 ).ToList();
 
@@ -236,7 +237,10 @@ namespace educlient.Controllers
             var membersTable = _database.Table<AQMember>();
             var commissionTable = _database.Table<Commission>();
 
-            var membersData = membersTable.FindAll().ToList();
+            var membersData = membersTable.Query().Where(x =>
+                x.isActive == true
+                ).ToList();
+
             if (membersData == null)
             {
                 return new ThongKeTinhTienCongTacResult
@@ -373,7 +377,10 @@ namespace educlient.Controllers
             var dayOffsTable = _database.Table<IndividualDayOff>();
             var workingOnlineTable = _database.Table<WorkingOnlineDay>();
 
-            var membersData = AQMemberTable.FindAll().ToList();
+            var membersData = AQMemberTable.Query().Where(x =>
+                x.isActive == true
+                ).ToList();
+
             if (membersData == null)
             {
                 return new ThongKeCaNhanNamHienTaiResult
