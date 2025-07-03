@@ -149,12 +149,12 @@ export class ReportCaNhanComponent implements OnInit {
           j === 0
             ? echarts.number.round(val, 2)
             : echarts.number.round(
-                Math.max(
-                  0,
-                  this.dataList[j - 1][i] + (Math.random() - 0.5) * 200
-                ),
-                2
-              );
+              Math.max(
+                0,
+                this.dataList[j - 1][i] + (Math.random() - 0.5) * 200
+              ),
+              2
+            );
         this.dataList[j].push(value);
         customVal.push(value);
       }
@@ -264,8 +264,6 @@ export class ReportCaNhanComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.userTotalDayOff_Month = res.data[0].userTotalDayOff_Month;
-          console.log(this.userTotalDayOff_Month);
-
           // this.userTotalDayOff_Month = res.data.userTotalDayOff_Month;
         },
         error: (error) => {

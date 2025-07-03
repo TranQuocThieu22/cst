@@ -98,7 +98,6 @@ export class LamViecOnlineComponent implements OnInit {
 
     this.https.get<any>("/api/ThongTinCaNhan/" + userId).subscribe({
       next: (res: any) => {
-        console.log(res.data[0]);
         this.userInfo = res.data[0];
       },
       error: (error) => {
@@ -166,8 +165,6 @@ export class LamViecOnlineComponent implements OnInit {
   openViewDialog(data: any) {
     this.viewWorkingOnlineDialog = true;
     this.WorkingOnline = { ...data };
-    console.log(this.WorkingOnline);
-
   }
 
   openAddDialog() {

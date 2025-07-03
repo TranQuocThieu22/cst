@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using static educlient.Controllers.NgayPhepCaNhanController;
-using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 
 namespace educlient.Controllers
 {
@@ -103,9 +100,8 @@ namespace educlient.Controllers
                     x.memberId == member.id &&
                     x.date.Year == year &&
                     x.date.Month == month &&
-                    x.approvalStatus == "Đã duyệt" && 
-                    x.periodType == 2 || 
-                    x.periodType == 3
+                    x.approvalStatus == "Đã duyệt" &&
+                    (x.periodType == 2 || x.periodType == 3)
                     ).ToList().Count;
                 total_WorkingOnline = total_WorkingOnline_full + (float)(total_WorkingOnline_half * 0.5);
 

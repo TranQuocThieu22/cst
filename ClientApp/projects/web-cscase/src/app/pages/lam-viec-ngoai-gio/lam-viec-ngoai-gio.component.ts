@@ -128,8 +128,6 @@ export class LamViecNgoaiGioComponent implements OnInit {
   openOTInfoDialog(data: any) {
     this.isOpenOTInfoDialog = true;
     this.OTDialogContent = { ...data };
-    console.log(this.OTDialogContent);
-
   }
 
 

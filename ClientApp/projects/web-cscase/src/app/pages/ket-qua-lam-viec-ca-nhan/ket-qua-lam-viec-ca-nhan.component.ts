@@ -126,18 +126,11 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
             }));
             this.PhanTramTiLeMoCase = res.data.phanTramTiLeMoCase
             const xAxisData = this.PhanTramTiLeMoCase.map((_, index) => `Week ${index + 1}`);
-            console.log(xAxisData);
             this.SoGioLamThieu = res.data.soGioLamThieu
-            this.PhanTramTiLeChenhLechThucTeVaUocLuong = res.data.phanTramTiLeChenhLechUocLuongVaThucTe
-            console.log(this.PhanTramTiLeChenhLechThucTeVaUocLuong);
-
-
             this.LineChartTyLeMoCaseOptions(xAxisData, this.PhanTramTiLeMoCase, this.TiLeMoCaseChartPieces,)
             this.LineChartSoGioLamVIecThieu(xAxisData, this.SoGioLamThieu, this.SoGioLamThieuPieces)
             this.LineChartPhanTramTiLeChenhLechThucTeVaUocLuongOptions(xAxisData, this.PhanTramTiLeChenhLechThucTeVaUocLuong, this.PhanTramTiLeChenhLechThucTeVaUocLuongChartPieces)
             this.caseMetricsList.sort((a, b) => b.weekNumber - a.weekNumber);
-
-
             this.spinner.hide("spinner-ketqualamvieccanhan");
 
           } else {
@@ -329,8 +322,6 @@ export class KetQuaLamViecCaNhanComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        console.log(this.MemberList);
-
       }
     });
   }

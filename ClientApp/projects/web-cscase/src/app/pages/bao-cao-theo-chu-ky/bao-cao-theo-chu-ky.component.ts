@@ -28,9 +28,6 @@ export class BaoCaoTheoChuKyComponent implements OnInit {
     this.https.post<any>("/api/BaoCaoTheoChuKy/sup", body).subscribe({
       next: (res: any) => {
         this.baoCaoChuKySup = res.data
-
-        console.log(this.baoCaoChuKySup);
-
       },
       error: (error) => {
         this.spinner.hide("spinner");
@@ -54,9 +51,6 @@ export class BaoCaoTheoChuKyComponent implements OnInit {
       next: (res: any) => {
         this.dataEstimateTimeAndActualTime = res.dataEstimateTimeAndActualTime
         this.dataTongCaseAndLoaiCase = res.dataTongCaseAndLoaiCase
-        console.log(this.dataEstimateTimeAndActualTime);
-        console.log(this.dataTongCaseAndLoaiCase);
-
       },
       error: (error) => {
         this.spinner.hide("spinner");

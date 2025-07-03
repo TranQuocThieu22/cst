@@ -30,10 +30,6 @@ export class TienLamViecNgoaiGioTheoQuiComponent implements OnInit {
     this.setQuarterList(this.selectedYearInput.getFullYear());
     this.selectedQuarter = this.getCurrentQuarter();
     this.fetchOTPaymentReport(this.getCurrentQuarter());
-
-    // console.log(this.quarterList);
-    // console.log(this.selectedQuarter);
-
   }
 
   convertDateFormat(date: string): string {

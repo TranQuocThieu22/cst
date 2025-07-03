@@ -297,8 +297,6 @@ export class NhanSuAqComponent implements OnInit {
     this.addNewMemberDialog = false;
     this.editMemberDialog = true;
     this.openDialog = true;
-    console.log(this.aqmemberUpdate);
-
   }
 
   handleIsLunchStatusChange(event) {
@@ -599,7 +597,6 @@ export class NhanSuAqComponent implements OnInit {
       },
       complete: () => {
         // Your logic for handling the completion event (optional)
-        console.log(this.AQmembers);
       },
     });
   }
