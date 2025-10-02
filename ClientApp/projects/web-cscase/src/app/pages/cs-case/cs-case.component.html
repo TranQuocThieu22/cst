@@ -170,7 +170,7 @@
                 </th>
                 <th style="width: 9%" class="align-middle clickable cus150" [class.active]="orderby==='mucdo'"
                   (click)="setOrder('mucdo')">
-                  Mức độ
+                  Mức độ ưu tiên
                   <span [hidden]="!reverseOrderby" class="icon-up"></span>
                   <span [hidden]="reverseOrderby" class="icon-down"></span>
                 </th>
@@ -193,13 +193,13 @@
                 </th>
 
                 <th style="width: 8%" class="align-middle cusdbg clickable" [class.active]="orderby==='schoolVersion'"
-                (click)="setOrder('schoolVersion')">Phiên bản release
+                (click)="setOrder('schoolVersion')">Phiên bản
                 <span [hidden]="!reverseOrderby" class="icon-up"></span>
                 <span [hidden]="reverseOrderby" class="icon-down"></span>
               </th>
 
                 <th style="width: 5%" class="align-middle cus100 clickable" [class.active]="orderby==='ngayemail'"
-                  (click)="setOrder('ngayemail')">Ngày gửi mail
+                  (click)="setOrder('ngayemail')">Ngày bàn giao (chính thức)
                   <span [hidden]="!reverseOrderby" class="icon-up"></span>
                   <span [hidden]="reverseOrderby" class="icon-down"></span>
                 </th>
