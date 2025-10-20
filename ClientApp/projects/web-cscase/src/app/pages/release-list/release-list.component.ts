@@ -76,7 +76,7 @@ export class ReleaseListComponent implements OnInit {
   }
 
   public selectNgay(version: string) {
-    // this.listChucNangMoi = [] Fix list chức năng không đi theo phiên bản
+    this.listChucNangMoi = [] // Fix list chức năng không đi theo phiên bản
     const rl_version = this.RL_Full.filter((s) => s.vesion === version);
 
     const tpm = rl_version.sort((a, b) => {
