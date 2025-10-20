@@ -138,6 +138,7 @@ namespace educlient.Controllers
                         string reqBody = pPOSTBody;
                         var reqBody0 = new StringContent(reqBody, Encoding.UTF8, "application/json");
                         res = await client.PostAsync(baseUrl, reqBody0);
+                        //string error = await res.Content.ReadAsStringAsync();
                     }
                     else
                         res = await client.GetAsync(baseUrl);
@@ -157,8 +158,9 @@ namespace educlient.Controllers
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine("[ERROR] Exception: " + ex.Message);
                 // throw xx;
                 return "";
             }
@@ -713,28 +715,42 @@ namespace educlient.Controllers
                 list_matruong = "'" + StringMaTruong + "'";
             }
 
-            string ngayBatDau = "'01/01/2022'";
-            string ngayKetThuc = "'29/12/2024'";
-            if (model.dateRange == "22-23")
+            string ngayBatDau;
+            string ngayKetThuc;
+
+            try
             {
-                ngayBatDau = "'01/01/2022'";
-                ngayKetThuc = "'01/01/2023'";
+                string[] yearParts = model.dateRange.Split('-');
+
+                if (yearParts.Length == 2 &&
+                    int.TryParse(yearParts[0], out int startYearShort) &&
+                    int.TryParse(yearParts[1], out int endYearShort))
+                {
+                    int startYearFull = 2000 + startYearShort;
+                    int endYearFull = 2000 + endYearShort;
+
+                    var dateStart = new DateTime(startYearFull, 1, 1);
+                    var dateEnd = new DateTime(endYearFull, 1, 1);
+
+                    ngayBatDau = $"'{dateStart.ToString("yyyy-MM-dd")}'";
+                    ngayKetThuc = $"'{dateEnd.ToString("yyyy-MM-dd")}'";
+                }
+                else
+                {
+                    throw new FormatException("Định dạng dateRange không hợp lệ.");
+                }
             }
-            else if (model.dateRange == "23-24")
+            catch (Exception)
             {
-                ngayBatDau = "'01/01/2023'";
-                ngayKetThuc = "'01/01/2024'";
+                ngayBatDau = $"'{new DateTime(2025, 1, 1).ToString("yyyy-MM-dd")}'";
+                ngayKetThuc = $"'{new DateTime(2026, 1, 1).ToString("yyyy-MM-dd")}'";
             }
-            else if (model.dateRange == "24-25")
-            {
-                ngayBatDau = "'01/01/2024'";
-                ngayKetThuc = "'01/01/2025'";
-            }
+
             string list_trangthai = ""; // "'Mở case', 'Đang xử lý', 'Đã xử lý', 'Đã gửi mail', 'Đóng case'";
 
             List<workItem0> lstAll;
 
-                var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
+            var lstAll0 = await DoTfsFetchData("Edusoft.Net-CS"
                                                , "Edusoft.Net-CS%20Team"
                                                , "'CS Case', 'CS CASE'"
                                                , ""
@@ -746,9 +762,8 @@ namespace educlient.Controllers
                                                  + " AND ([AQ.Priority] NOT IN ('5 - Cần theo dõi'))"
                                                  + " AND ([AQ.CaseType] NOT IN ('ST - Chỉnh định cho khách hàng', 'ZF - Task nội bộ AQ'))"
                                                  , !string.IsNullOrEmpty(model.filter?.macase) ? model.filter?.macase : ""
-                                               //, "38696"
                                                );
-                lstAll = lstAll0;
+            lstAll = lstAll0;
             var dayTargetCanAdd = double.Parse(config["targetDateAddDay"]);
             string sRet = "";
             if (lstAll != null && lstAll.Count > 0)
@@ -772,6 +787,7 @@ namespace educlient.Controllers
                 dt.Columns.Add("comment", typeof(string));
                 dt.Columns.Add("tinhnangmoi", typeof(bool));
                 dt.Columns.Add("schoolVersion", typeof(string));
+                dt.Columns.Add("releaseVersion", typeof(string));
                 if (!string.IsNullOrEmpty(model.filter?.macase))
                 {
                     dt.Columns.Add("thongtinkh", typeof(string));
@@ -1222,7 +1238,7 @@ namespace educlient.Controllers
                 dt.Columns.Add("teststate", typeof(string));
 
                 dt.Columns.Add("reviewcase", typeof(string));
-              
+         
 
                 foreach (var r in lstAll)
                 {

@@ -18,7 +18,7 @@
         <div class="row mx-2">
           <div class="col-lg-1 col-md-2 col-sm-12 font-weight-bold dontWrapIt">Mã Case:</div>
           <div class="col-lg-11 col-md-10 col-sm-12 font-weight-bold">
-            <span class="text-danger">{{datacase.macase}}</span> - {{datacase.chitietyc}}
+            <span class="text-danger">{{datacase?.macase}}</span> - {{datacase?.chitietyc}}
           </div>
         </div>
       </div>
@@ -28,8 +28,8 @@
         <div class="card mt-2 p-0">
           <div class="card-header font-weight-bold text-primary">Nội dung cần tối ưu, bổ sung</div>
           <div class="card-body m-0 p-0">
-            <div class="form-control custimg" (click)="onNoteClick($event)" [innerHTML]="datacase.thongtinkh | safeHtml"
-              style="overflow: auto; height: 68vh;">
+            <div class="form-control custimg" (click)="onNoteClick($event)"
+              [innerHTML]="datacase?.thongtinkh | safeHtml" style="overflow: auto; height: 68vh;">
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
           <div class="card-header font-weight-bold text-primary">Đáp ứng của Công ty</div>
           <div class="card-body m-0 p-0">
             <div class="form-control custimg" (click)="onNoteClick($event)"
-              [innerHTML]="datacase.dapungcongty | safeHtml" style="overflow: auto; height: 68vh;">
+              [innerHTML]="datacase?.dapungcongty | safeHtml" style="overflow: auto; height: 68vh;">
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@
           <div class="card-header font-weight-bold text-primary">AQ Comment</div>
           <div class="card-body m-0 p-0">
             <div class="form-control custimg" (click)="onNoteClick($event)"
-              [innerHTML]="datacase.comment !== null ? datacase.comment : '' | safeHtml"
+              [innerHTML]="datacase?.comment !== null ? datacase?.comment : '' | safeHtml"
               style="overflow: auto; height: 10vh;">
             </div>
           </div>
