@@ -13,6 +13,7 @@ import { KetQuaLamViecCaNhanComponent } from '../ket-qua-lam-viec-ca-nhan/ket-qu
 import { NgayPhepCaNhanComponent } from '../ngay-phep-ca-nhan/ngay-phep-ca-nhan.component';
 import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.component';
 import { BaoCaoTheoChuKyComponent } from '../bao-cao-theo-chu-ky/bao-cao-theo-chu-ky.component';
+import { DanhSachTruongComponent } from '../danh-sach-truong/danh-sach-truong.component';
 
 const routes: Routes = [
   { path: 'aq-main', pathMatch: 'full', redirectTo: 'aq' },
@@ -30,6 +31,7 @@ const routes: Routes = [
       { path: 'baobieuthongke', component: BaoBieuThongKeComponent, canActivate: [AuthGuard] },
       { path: 'ketqualamvieccanhan', component: KetQuaLamViecCaNhanComponent, canActivate: [AuthGuard] },
       { path: 'baocaotheochuky', component: BaoCaoTheoChuKyComponent, canActivate: [AuthGuard] },
+      { path: 'danhsachtruong', component: DanhSachTruongComponent, canActivate: [AuthGuard] },
       { path: '', redirectTo: 'aq', pathMatch: 'full' }
     ]
   },

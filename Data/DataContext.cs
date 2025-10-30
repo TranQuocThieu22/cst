@@ -172,4 +172,60 @@ namespace educlient.Data
         public int memberId { get; set; }
         public string note { get; set; }
     }
+
+    public class SchoolProfile
+    {
+        [BsonId]
+        public string IdTruong { get; set; }
+        public string MaTruong { get; set; }
+        public string TenTruong { get; set; }
+        public DateTime? ThoiDiemTrienKhai { get; set; }
+        public int? SoNamDungEdusoft { get; set; }
+        public DateTime? NgayHetHanNangCap { get; set; }
+        public string DiaChiTruong { get; set; }
+        public ContactPerson HieuTruong { get; set; }
+        public ContactPerson HieuPho { get; set; }
+        public ContactPerson TruongPhongDaoTao { get; set; }
+        public ContactPerson TruongPhongKhaoThi { get; set; }
+        public ContactPerson TruongPhongTaiVu { get; set; }
+        public ContactPerson Admin { get; set; }
+        public string GhiChuKinhDoanh { get; set; }
+        public string GhiChuKyThuat { get; set; }
+        public string GhiChuChamSoc { get; set; }
+        public AddinModule DanhSachAddin { get; set; }
+        public LuuYDacThu LuuYXuLyDacThu { get; set; }
+        public ThongTinServer ServerInfo { get; set; }
+
+    }
+
+    public class AddinModule
+    {
+        //public string IDAddin { get; set; }
+        //public string TenAddin { get; set; }
+        public string GhiChuSale { get; set; }
+        public string GhiChuDev { get; set; }
+        public string GhiChuSupport { get; set; }
+    }
+
+    public class ContactPerson
+    {
+        public string HoTen { get; set; }
+        public string DienThoai { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class LuuYDacThu
+    {
+        public string SupportGhiChuMoHinh { get; set; }
+        public string SupportGhiChuCachHoTro { get; set; }
+        public string DevGhiChu { get; set; }
+        public string SaleGhiChu { get; set; }
+    }
+
+    public class ThongTinServer
+    {
+        public string ThongTinChung { get; set; }
+        public string GhiChu { get; set; }
+        public string NguoiQuanLy { get; set; }
+    }
 }

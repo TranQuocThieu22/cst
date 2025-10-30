@@ -19,10 +19,7 @@
           <span class="nav-logout-btn" (click)="logOut()">Đăng xuất</span>
         </div>
       </div>
-      <p-avatar
-        size="large"
-        image="{{userInfo.avatar}}"
-        shape="circle"
+      <p-avatar size="large" image="{{userInfo.avatar}}" shape="circle"
         [style]="{'background-color':'#2196F3', 'color': '#ffffff'}">
       </p-avatar>
     </div>
@@ -39,31 +36,21 @@
       <div class="image-container flex flex-row align-items-center justify-content-center">
 
         <div *ngIf="userAvatar">
-          <label
-            for="fileInput"
-            pButton pRipple type="button"
-            icon="pi pi-image"
+          <label for="fileInput" pButton pRipple type="button" icon="pi pi-image"
             class="p-button-rounded p-button-info p-button-text align-items-center hover-button">
           </label>
         </div>
 
         <div class="flex flex-column mx-1">
           <label for="fileInput">
-            <img
-              [src]="userAvatar ? userAvatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
+            <img [src]="userAvatar ? userAvatar : 'https://www.w3schools.com/howto/img_avatar.png'" />
           </label>
-          <input
-            id="fileInput"
-            type="file"
-            [(ngModel)]="userAvatar"
-            class="select-profile-picture"
+          <input id="fileInput" type="file" [(ngModel)]="userAvatar" class="select-profile-picture"
             (change)="handleUploadAvatar($event)" hidden />
         </div>
 
         <div *ngIf="userAvatar">
-          <label
-            pButton pRipple type="button"
-            icon="pi pi-trash"
+          <label pButton pRipple type="button" icon="pi pi-trash"
             class="p-button-rounded p-button-danger p-button-text align-items-center hover-button"
             (click)="deleteInputImg()">
           </label>
@@ -81,8 +68,7 @@
   <ng-template pTemplate="footer">
     <p-button icon="pi pi-check" (click)="isOpen_EditAvatarDialog=false" label="Hủy"
       styleClass="p-button-text"></p-button>
-    <p-button icon="pi pi-check" (click)="handleUpdateAvatarAPI()" label="Lưu"
-      styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-check" (click)="handleUpdateAvatarAPI()" label="Lưu" styleClass="p-button-text"></p-button>
   </ng-template>
 </p-dialog>
 
@@ -94,48 +80,31 @@
 }"
 [style]="{width: '30vw', height: '50vh'}" -->
 
-<p-dialog
-  header="Đổi mật khẩu"
-  [(visible)]="isOpen_EditPasswordDialog"
-  [modal]="true"
-  [draggable]="true" [resizable]="false"
-  [closeOnEscape]="true"
-  [closable]="true"
-  [breakpoints]=" 
+<p-dialog header="Đổi mật khẩu" [(visible)]="isOpen_EditPasswordDialog" [modal]="true" [draggable]="true"
+  [resizable]="false" [closeOnEscape]="true" [closable]="true" [breakpoints]=" 
   { 
       '1200px': '50vw',  
       '600px': '100vw'
-  }"
-  [style]="{width: '30vw'}">
+  }" [style]="{width: '30vw'}">
   <div style=" height: fit-content;">
     <!-- start content -->
     <div class="flex flex-column mt-4">
       <div class="flex flex-column">
         <label>Mật khẩu cũ</label>
-        <p-password
-          [(ngModel)]="oldPassword"
-          [feedback]="false" [toggleMask]="true"
-          [style]="{'width':'100%'}"
+        <p-password [(ngModel)]="oldPassword" [feedback]="false" [toggleMask]="true" [style]="{'width':'100%'}"
           [inputStyle]="{'width':'100%'}">
         </p-password>
       </div>
       <div class="mt-4 flex flex-column">
         <label>Mật khẩu mới</label>
-        <p-password
-          [(ngModel)]="newPassword"
-          [toggleMask]="true"
-          [style]="{'width':'100%'}"
-          [inputStyle]="{'width':'100%'}"
-          (ngModelChange)="checkConfirmPassword()">
+        <p-password [(ngModel)]="newPassword" [toggleMask]="true" [style]="{'width':'100%'}"
+          [inputStyle]="{'width':'100%'}" (ngModelChange)="checkConfirmPassword()">
         </p-password>
       </div>
       <div class="mt-4 flex flex-column">
         <label>Xác nhận mật khẩu mới</label>
-        <p-password [(ngModel)]="confirmPassword"
-          [feedback]="false" [toggleMask]="true"
-          [style]="{'width':'100%'}"
-          [inputStyle]="{'width':'100%'}"
-          (ngModelChange)="checkConfirmPassword()"
+        <p-password [(ngModel)]="confirmPassword" [feedback]="false" [toggleMask]="true" [style]="{'width':'100%'}"
+          [inputStyle]="{'width':'100%'}" (ngModelChange)="checkConfirmPassword()"
           [ngClass]="[!isValidConfirmPassword ? 'ng-invalid ng-dirty' : '']">
         </p-password>
       </div>
@@ -146,8 +115,7 @@
     <!-- end content-->
   </div>
   <ng-template pTemplate="footer">
-    <p-button icon="pi pi-check" (click)="handleChangePassword()" label="Ok"
-      styleClass="p-button-text">
+    <p-button icon="pi pi-check" (click)="handleChangePassword()" label="Ok" styleClass="p-button-text">
     </p-button>
   </ng-template>
 </p-dialog>
@@ -185,14 +153,17 @@
       <span style="color: #1C325B;">Làm việc ngoài giờ</span>
     </a>
     <a *ngIf="userInfo.role === '1' || userInfo.role === '6' || userInfo.role === 'admin'" pButton class="p-button-text"
-      routerLink="ketqualamvieccanhan"
-      routerLinkActive="active-link">
+      routerLink="ketqualamvieccanhan" routerLinkActive="active-link">
       <i style="color: #1C325B;" class="pi pi-file"></i>
       <span style="color: #1C325B;">Kết quả làm việc cá nhân (DEV)</span>
     </a>
     <a pButton class="p-button-text" routerLink="baobieuthongke" routerLinkActive="active-link">
       <i style="color: #1C325B;" class="pi pi-chart-bar"></i>
       <span style="color: #1C325B;">Báo biểu thống kê</span>
+    </a>
+    <a pButton class="p-button-text" routerLink="danhsachtruong" routerLinkActive="active-link">
+      <i style="color: #1C325B;" class="pi pi-home"></i>
+      <span style="color: #1C325B;">Danh sách trường</span>
     </a>
     <a pButton class="p-button-text" (click)="logOut()">
       <i style="color: #1C325B;" class="pi pi-sign-out"></i>

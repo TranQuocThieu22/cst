@@ -1,0 +1,738 @@
+<p-dialog header="Thêm mới hồ sơ trường" [(visible)]="displayModal" [modal]="true" [style]="{width: '80vw'}"
+    [breakpoints]="{'992px': '90vw', '768px': '95vw'}" [draggable]="false" [resizable]="false">
+    <div class="p-3">
+        <div class="formgrid grid">
+            <div class="col-12">
+                <p-fieldset legend="Thông tin chung" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+
+                        <div class="field col-12 md:col-9">
+                            <label for="dropdownTruong">Tên trường</label>
+
+                            <p-dropdown id="dropdownTruong" [options]="danhSachTruong" [(ngModel)]="truongDaChon"
+                                optionLabel="tenTruong" [showClear]="true" [loading]="isLoading" [filter]="true"
+                                filterBy="tenTruong" placeholder="Chọn trường"
+                                (onChange)="onSelectTruong($event.value)">
+                                <ng-template pTemplate="emptyfilter">
+                                    <div>
+                                        <span>Không tìm thấy kết quả phù hợp</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="empty">
+                                    <div>
+                                        <span>Không có dữ liệu trường</span>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
+
+                        <div class="field col-12 md:col-3">
+                            <label for="inputMaTruong">Mã trường</label>
+                            <input id="inputMaTruong" pInputText [value]="truongDaChon?.maTruong || ''"
+                                [disabled]="true" />
+                        </div>
+
+                        <div class="field col-12">
+                            <label for="diaChiTruong">Địa chỉ trường</label>
+                            <textarea id="diaChiTruong" pInputTextarea rows="3"
+                                [(ngModel)]="newProfile.diaChiTruong"></textarea>
+                        </div>
+
+                        <div class="field col-12 md:col-4">
+                            <label for="thoiDiemTrienKhai">Thời điểm triển khai</label>
+                            <p-calendar id="thoiDiemTrienKhai" [showIcon]="true"
+                                [panelStyleClass]="'my-custom-calendar'" [appendTo]="'body'" dateFormat="dd/mm/yy"
+                                [(ngModel)]="newProfile.thoiDiemTrienKhai"></p-calendar>
+                        </div>
+
+                        <div class="field col-12 md:col-4">
+                            <label for="soNamDungEdusoft">Số năm dùng Edusoft</label>
+                            <p-inputNumber id="soNamDungEdusoft" mode="decimal" [showButtons]="true" [min]="0"
+                                [(ngModel)]="newProfile.soNamDungEdusoft">
+                            </p-inputNumber>
+                        </div>
+
+                        <div class="field col-12 md:col-4">
+                            <label for="ngayHetHanNangCap">Ngày hết hạn nâng cấp</label>
+                            <p-calendar id="ngayHetHanNangCap" [showIcon]="true"
+                                [panelStyleClass]="'my-custom-calendar'" [appendTo]="'body'" dateFormat="dd/mm/yy"
+                                [(ngModel)]="newProfile.ngayHetHanNangCap"></p-calendar>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-4">
+                <p-fieldset legend="Hiệu trưởng" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12">
+                            <label for="ht_hoTen">Họ tên</label>
+                            <input id="ht_hoTen" pInputText type="text" [(ngModel)]="newProfile.hieuTruong.hoTen" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="ht_dienThoai">Điện thoại</label>
+                            <input id="ht_dienThoai" pInputText type="text"
+                                [(ngModel)]="newProfile.hieuTruong.dienThoai" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="ht_email">Email</label>
+                            <input id="ht_email" pInputText type="text" [(ngModel)]="newProfile.hieuTruong.email" />
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-4">
+                <p-fieldset legend="Hiệu phó" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12">
+                            <label for="hp_hoTen">Họ tên</label>
+                            <input id="hp_hoTen" pInputText type="text" [(ngModel)]="newProfile.hieuPho.hoTen" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="hp_dienThoai">Điện thoại</label>
+                            <input id="hp_dienThoai" pInputText type="text"
+                                [(ngModel)]="newProfile.hieuPho.dienThoai" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="hp_email">Email</label>
+                            <input id="hp_email" pInputText type="text" [(ngModel)]="newProfile.hieuPho.email" />
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-4">
+                <p-fieldset legend="Trưởng phòng Đào tạo" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12">
+                            <label for="tpdt_hoTen">Họ tên</label>
+                            <input id="tpdt_hoTen" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongDaoTao.hoTen" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="tpdt_dienThoai">Điện thoại</label>
+                            <input id="tpdt_dienThoai" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongDaoTao.dienThoai" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="tpdt_email">Email</label>
+                            <input id="tpdt_email" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongDaoTao.email" />
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-4">
+                <p-fieldset legend="Trưởng phòng Khảo thí" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12">
+                            <label for="tpkt_hoTen">Họ tên</label>
+                            <input id="tpkt_hoTen" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongKhaoThi.hoTen" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="tpkt_dienThoai">Điện thoại</label>
+                            <input id="tpkt_dienThoai" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongKhaoThi.dienThoai" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="tpkt_email">Email</label>
+                            <input id="tpkt_email" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongKhaoThi.email" />
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-4">
+                <p-fieldset legend="Trưởng phòng Tài vụ" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12">
+                            <label for="tptv_hoTen">Họ tên</label>
+                            <input id="tptv_hoTen" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongTaiVu.hoTen" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="tptv_dienThoai">Điện thoại</label>
+                            <input id="tptv_dienThoai" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongTaiVu.dienThoai" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="tptv_email">Email</label>
+                            <input id="tptv_email" pInputText type="text"
+                                [(ngModel)]="newProfile.truongPhongTaiVu.email" />
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-4">
+                <p-fieldset legend="Admin" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12">
+                            <label for="ad_hoTen">Họ tên</label>
+                            <input id="ad_hoTen" pInputText type="text" [(ngModel)]="newProfile.admin.hoTen" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="ad_dienThoai">Điện thoại</label>
+                            <input id="ad_dienThoai" pInputText type="text" [(ngModel)]="newProfile.admin.dienThoai" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="ad_email">Email</label>
+                            <input id="ad_email" pInputText type="text" [(ngModel)]="newProfile.admin.email" />
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12">
+                <p-fieldset legend="Danh sách Addin" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12 md:col-4">
+                            <label for="addin_dev_note">Dev ghi chú</label>
+                            <textarea id="addin_dev_note" pInputTextarea rows="5"
+                                [(ngModel)]="newProfile.danhSachAddin.ghiChuDev"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label for="addin_sup_note">Sup ghi chú</label>
+                            <textarea id="addin_sup_note" pInputTextarea rows="5"
+                                [(ngModel)]="newProfile.danhSachAddin.ghiChuSupport"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label for="addin_sale_note">Sale ghi chú</label>
+                            <textarea id="addin_sale_note" pInputTextarea rows="5"
+                                [(ngModel)]="newProfile.danhSachAddin.ghiChuSale"></textarea>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12">
+                <p-fieldset legend="Ghi chú chung" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12 md:col-4">
+                            <label for="ghiChuKinhDoanh">Ghi chú Kinh doanh</label>
+                            <textarea id="ghiChuKinhDoanh" pInputTextarea rows="5"
+                                [(ngModel)]="newProfile.ghiChuKinhDoanh"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label for="ghiChuKyThuat">Ghi chú Kỹ thuật</label>
+                            <textarea id="ghiChuKyThuat" pInputTextarea rows="5"
+                                [(ngModel)]="newProfile.ghiChuKyThuat"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label for="ghiChuChamSoc">Ghi chú Chăm sóc</label>
+                            <textarea id="ghiChuChamSoc" pInputTextarea rows="5"
+                                [(ngModel)]="newProfile.ghiChuChamSoc"></textarea>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12">
+                <p-fieldset legend="Lưu ý đặc thù" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <label for="luuY_supportMoHinh">Support Ghi chú Mô hình</label>
+                            <textarea id="luuY_supportMoHinh" pInputTextarea rows="4"
+                                [(ngModel)]="newProfile.luuYXuLyDacThu.SupportGhiChuMoHinh"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="luuY_supportCachHoTro">Support Ghi chú Cách hỗ trợ</label>
+                            <textarea id="luuY_supportCachHoTro" pInputTextarea rows="4"
+                                [(ngModel)]="newProfile.luuYXuLyDacThu.SupportGhiChuCachHoTro"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="luuY_devGhiChu">Dev Ghi chú</label>
+                            <textarea id="luuY_devGhiChu" pInputTextarea rows="4"
+                                [(ngModel)]="newProfile.luuYXuLyDacThu.devGhiChu"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="luuY_saleGhiChu">Sale Ghi chú</label>
+                            <textarea id="luuY_saleGhiChu" pInputTextarea rows="4"
+                                [(ngModel)]="newProfile.luuYXuLyDacThu.saleGhiChu"></textarea>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12">
+                <p-fieldset legend="Thông tin Server" [toggleable]="true">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12">
+                            <label for="server_nguoiQuanLy">Người quản lý</label>
+                            <input id="server_nguoiQuanLy" pInputText type="text"
+                                [(ngModel)]="newProfile.serverInfo.nguoiQuanLy" />
+                        </div>
+                        <div class="field col-12">
+                            <label for="server_thongTinChung">Thông tin chung</label>
+                            <textarea id="server_thongTinChung" pInputTextarea rows="3"
+                                [(ngModel)]="newProfile.serverInfo.thongTinChung"></textarea>
+                        </div>
+                        <div class="field col-12">
+                            <label for="server_ghiChu">Ghi chú</label>
+                            <textarea id="server_ghiChu" pInputTextarea rows="3"
+                                [(ngModel)]="newProfile.serverInfo.ghiChu"></textarea>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <div class="col-12 flex justify-content-end mt-3">
+                <p-button label="Hủy" icon="pi pi-times" (click)="closeDialog()"
+                    styleClass="p-button-text mr-2 border-custom">
+                </p-button>
+                <p-button label="Lưu thông tin" (click)="saveProfile()" (click)="isLoading"></p-button>
+            </div>
+
+        </div>
+    </div>
+</p-dialog>
+
+<div class="school-selector-bar mb-3">
+    <p-dropdown id="dropdownChonHoSo" [options]="danhSachHoSoTruong" [ngModel]="hoSoTruongDangXem"
+        (ngModelChange)="onSelectHoSoTruong($event)" optionLabel="tenTruong" [showClear]="false" [loading]="isLoading"
+        [filter]="true" filterBy="tenTruong">
+        <ng-template pTemplate="emptyfilter">
+            <div>
+                <span>Không tìm thấy kết quả phù hợp</span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="empty">
+            <div>
+                <span>Không có dữ liệu trường</span>
+            </div>
+        </ng-template>
+
+    </p-dropdown>
+    <p-button label="Thêm trường" icon="pi pi-plus" (click)="showModal()"></p-button>
+</div>
+
+<nav class="tab-navbar">
+    <ul class="py-0">
+        <li *ngFor="let tab of tabs" [class.active]="selectedTab === tab.id" (click)="selectTab(tab.id)">
+            {{ tab.label }}
+        </li>
+    </ul>
+</nav>
+<div class="card card-profile">
+    <div class="tab-content mt-4">
+        <div *ngIf="selectedTab === 1">
+            <div *ngIf="hoSoTruongDangXem; else noSchoolSelected">
+
+                <div class="p-fluid formgrid grid school-profile-details" *ngIf="!editState[1]">
+
+                    <div class="field col-12 md:col-5">
+                        <label for="view_tenTruong">Tên trường</label>
+                        <input id="view_tenTruong" pInputText [ngModel]="hoSoTruongDangXem.tenTruong"
+                            [disabled]="true" />
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="view_maTruong">Mã trường</label>
+                        <input id="view_maTruong" pInputText [ngModel]="hoSoTruongDangXem.maTruong" [disabled]="true" />
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="view_soNamDungEdusoft">Số năm dùng Edusoft</label>
+                        <input id="view_soNamDungEdusoft" pInputText [ngModel]="hoSoTruongDangXem.soNamDungEdusoft"
+                            [disabled]="true" />
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label for="view_thoiDiemTrienKhai">Thời điểm triển khai</label>
+                        <input id="view_thoiDiemTrienKhai" pInputText
+                            [value]="hoSoTruongDangXem.thoiDiemTrienKhai | date:'dd/MM/yyyy'"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-9">
+                        <label for="view_diaChiTruong">Địa chỉ trường</label>
+                        <textarea id="view_diaChiTruong" pInputTextarea rows="1"
+                            [ngModel]="hoSoTruongDangXem.diaChiTruong" [disabled]="!editState[1]"></textarea>
+                    </div>
+
+                    <div class="field col-12 md:col-3">
+                        <label for="view_ngayHetHanNangCap">Ngày hết hạn nâng cấp</label>
+                        <input id="view_ngayHetHanNangCap" pInputText
+                            [value]="hoSoTruongDangXem.ngayHetHanNangCap | date:'dd/MM/yyyy'"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+
+                    <div class="field col-12 md:col-4">
+                        <label for="view_ht_hoTen">Họ tên Hiệu trưởng</label>
+                        <input id="view_ht_hoTen" pInputText [ngModel]="hoSoTruongDangXem.hieuTruong?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_ht_dienThoai">Số điện thoại</label>
+                        <input id="view_ht_dienThoai" pInputText [ngModel]="hoSoTruongDangXem.hieuTruong?.dienThoai"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_ht_email">Email</label>
+                        <input id="view_ht_email" pInputText [ngModel]="hoSoTruongDangXem.hieuTruong?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="view_hp_hoTen">Họ tên Hiệu phó</label>
+                        <input id="view_hp_hoTen" pInputText [ngModel]="hoSoTruongDangXem.hieuPho?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_hp_dienThoai">Số điện thoại</label>
+                        <input id="view_hp_dienThoai" pInputText [ngModel]="hoSoTruongDangXem.hieuPho?.dienThoai"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_hp_email">Email</label>
+                        <input id="view_hp_email" pInputText [ngModel]="hoSoTruongDangXem.hieuPho?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tpdt_hoTen">Họ tên trưởng phòng đào tạo</label>
+                        <input id="view_tpdt_hoTen" pInputText [ngModel]="hoSoTruongDangXem.truongPhongDaoTao?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tpdt_dienThoai">Số điện thoại</label>
+                        <input id="view_tpdt_dienThoai" pInputText
+                            [ngModel]="hoSoTruongDangXem.truongPhongDaoTao?.dienThoai" [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tpdt_email">Email</label>
+                        <input id="view_tpdt_email" pInputText [ngModel]="hoSoTruongDangXem.truongPhongDaoTao?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tpkt_hoTen">Họ tên trưởng phòng khảo thí</label>
+                        <input id="view_tpkt_hoTen" pInputText [ngModel]="hoSoTruongDangXem.truongPhongKhaoThi?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tpkt_dienThoai">Số điện thoại</label>
+                        <input id="view_tpkt_dienThoai" pInputText
+                            [ngModel]="hoSoTruongDangXem.truongPhongKhaoThi?.dienThoai" [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tpkt_email">Email</label>
+                        <input id="view_tpkt_email" pInputText [ngModel]="hoSoTruongDangXem.truongPhongKhaoThi?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tptv_hoTen">Họ tên trưởng phòng tài vụ</label>
+                        <input id="view_tptv_hoTen" pInputText [ngModel]="hoSoTruongDangXem.truongPhongTaiVu?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tptv_dienThoai">Số điện thoại</label>
+                        <input id="view_tptv_dienThoai" pInputText
+                            [ngModel]="hoSoTruongDangXem.truongPhongTaiVu?.dienThoai" [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_tptv_email">Email</label>
+                        <input id="view_tptv_email" pInputText [ngModel]="hoSoTruongDangXem.truongPhongTaiVu?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="view_ad_hoTen">Họ tên admin</label>
+                        <input id="view_ad_hoTen" pInputText [ngModel]="hoSoTruongDangXem.admin?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_ad_dienThoai">Số điện thoại</label>
+                        <input id="view_ad_dienThoai" pInputText [ngModel]="hoSoTruongDangXem.admin?.dienThoai"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_ad_email">Email</label>
+                        <input id="view_ad_email" pInputText [ngModel]="hoSoTruongDangXem.admin?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_note_dev">Ghi chú kỹ thuật</label>
+                        <textarea id="view_note_dev" pInputTextarea rows="5" [ngModel]="hoSoTruongDangXem.ghiChuKyThuat"
+                            [disabled]="!editState[1]"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_note_sup">Ghi chú chăm sóc</label>
+                        <textarea id="view_note_sup" pInputTextarea rows="5" [ngModel]="hoSoTruongDangXem.ghiChuChamSoc"
+                            [disabled]="!editState[1]"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="view_note_sale">Ghi chú kinh doanh</label>
+                        <textarea id="view_note_sale" pInputTextarea rows="5"
+                            [ngModel]="hoSoTruongDangXem.ghiChuKinhDoanh" [disabled]="!editState[1]"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-8">
+
+                    </div>
+                    <div class="field col-12 md:col-4 tab-actions-footer">
+                        <p-button *ngIf="editState[1]" label="Hủy" icon="pi pi-times" (click)="cancelEditMode()">
+
+                        </p-button>
+                        <p-button *ngIf="!editState[1]" label="Chỉnh sửa" icon="pi pi-pencil"
+                            (click)="toggleEditMode()">
+                        </p-button>
+                        <p-button *ngIf="editState[1]" label="Lưu" icon="pi pi-pencil">
+                        </p-button>
+                    </div>
+                </div>
+                <!-- ============ -->
+                <div class="p-fluid formgrid grid school-profile-details" *ngIf="editState[1] && hoSoTruongDangEdit">
+
+                    <div class="field col-12 md:col-5">
+                        <label for="edit_tenTruong">Tên trường</label>
+                        <input id="edit_tenTruong" pInputText [ngModel]="hoSoTruongDangEdit.tenTruong"
+                            [disabled]="true" />
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="edit_maTruong">Mã trường</label>
+                        <input id="edit_maTruong" pInputText [ngModel]="hoSoTruongDangEdit.maTruong"
+                            [disabled]="true" />
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="edit_soNamDungEdusoft">Số năm dùng Edusoft</label>
+                        <input id="edit_soNamDungEdusoft" pInputText [ngModel]="hoSoTruongDangEdit.soNamDungEdusoft"
+                            [disabled]="true" />
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label for="edit_thoiDiemTrienKhai">Thời điểm triển khai</label>
+                        <p-calendar id="edit_thoiDiemTrienKhai" [showIcon]="true" dateFormat="dd/mm/yy"
+                            [(ngModel)]="hoSoTruongDangEdit.thoiDiemTrienKhai" [panelStyleClass]="'my-custom-calendar'"
+                            [appendTo]="'body'"></p-calendar>
+                    </div>
+
+                    <div class="field col-12 md:col-9">
+                        <label for="edit_diaChiTruong">Địa chỉ trường</label>
+                        <textarea id="edit_diaChiTruong" pInputTextarea rows="1"
+                            [ngModel]="hoSoTruongDangEdit.diaChiTruong" [disabled]="!editState[1]"></textarea>
+                    </div>
+
+                    <div class="field col-12 md:col-3">
+                        <label for="edit_ngayHetHanNangCap">Ngày hết hạn nâng cấp</label>
+                        <p-calendar id="edit_ngayHetHanNangCap" [showIcon]="true" dateFormat="dd/mm/yy"
+                            [(ngModel)]="hoSoTruongDangEdit.ngayHetHanNangCap" [panelStyleClass]="'my-custom-calendar'"
+                            [appendTo]="'body'"></p-calendar>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_ht_hoTen">Họ tên Hiệu trưởng</label>
+                        <input id="edit_ht_hoTen" pInputText [ngModel]="hoSoTruongDangEdit.hieuTruong?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_ht_dienThoai">Số điện thoại</label>
+                        <input id="edit_ht_dienThoai" pInputText [ngModel]="hoSoTruongDangEdit.hieuTruong?.dienThoai"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_ht_email">Email</label>
+                        <input id="edit_ht_email" pInputText [ngModel]="hoSoTruongDangEdit.hieuTruong?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_hp_hoTen">Họ tên Hiệu phó</label>
+                        <input id="edit_hp_hoTen" pInputText [ngModel]="hoSoTruongDangEdit.hieuPho?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_hp_dienThoai">Số điện thoại</label>
+                        <input id="edit_hp_dienThoai" pInputText [ngModel]="hoSoTruongDangEdit.hieuPho?.dienThoai"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_hp_email">Email</label>
+                        <input id="edit_hp_email" pInputText [ngModel]="hoSoTruongDangEdit.hieuPho?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tpdt_hoTen">Họ tên trưởng phòng đào tạo</label>
+                        <input id="edit_tpdt_hoTen" pInputText [ngModel]="hoSoTruongDangEdit.truongPhongDaoTao?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tpdt_dienThoai">Số điện thoại</label>
+                        <input id="edit_tpdt_dienThoai" pInputText
+                            [ngModel]="hoSoTruongDangEdit.truongPhongDaoTao?.dienThoai" [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tpdt_email">Email</label>
+                        <input id="edit_tpdt_email" pInputText [ngModel]="hoSoTruongDangEdit.truongPhongDaoTao?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tpkt_hoTen">Họ tên trưởng phòng khảo thí</label>
+                        <input id="edit_tpkt_hoTen" pInputText [ngModel]="hoSoTruongDangEdit.truongPhongKhaoThi?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tpkt_dienThoai">Số điện thoại</label>
+                        <input id="edit_tpkt_dienThoai" pInputText
+                            [ngModel]="hoSoTruongDangEdit.truongPhongKhaoThi?.dienThoai" [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tpkt_email">Email</label>
+                        <input id="edit_tpkt_email" pInputText [ngModel]="hoSoTruongDangEdit.truongPhongKhaoThi?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tptv_hoTen">Họ tên trưởng phòng tài vụ</label>
+                        <input id="edit_tptv_hoTen" pInputText [ngModel]="hoSoTruongDangEdit.truongPhongTaiVu?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tptv_dienThoai">Số điện thoại</label>
+                        <input id="edit_tptv_dienThoai" pInputText
+                            [ngModel]="hoSoTruongDangEdit.truongPhongTaiVu?.dienThoai" [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_tptv_email">Email</label>
+                        <input id="edit_tptv_email" pInputText [ngModel]="hoSoTruongDangEdit.truongPhongTaiVu?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_ad_hoTen">Họ tên admin</label>
+                        <input id="edit_ad_hoTen" pInputText [ngModel]="hoSoTruongDangEdit.admin?.hoTen"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_ad_dienThoai">Số điện thoại</label>
+                        <input id="edit_ad_dienThoai" pInputText [ngModel]="hoSoTruongDangEdit.admin?.dienThoai"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_ad_email">Email</label>
+                        <input id="edit_ad_email" pInputText [ngModel]="hoSoTruongDangEdit.admin?.email"
+                            [disabled]="!editState[1]" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_note_dev">Ghi chú kỹ thuật</label>
+                        <textarea id="edit_note_dev" pInputTextarea rows="5"
+                            [ngModel]="hoSoTruongDangEdit.ghiChuKyThuat" [disabled]="!editState[1]"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_note_sup">Ghi chú chăm sóc</label>
+                        <textarea id="edit_note_sup" pInputTextarea rows="5"
+                            [ngModel]="hoSoTruongDangEdit.ghiChuChamSoc" [disabled]="!editState[1]"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="edit_note_sale">Ghi chú kinh doanh</label>
+                        <textarea id="edit_note_sale" pInputTextarea rows="5"
+                            [ngModel]="hoSoTruongDangEdit.ghiChuKinhDoanh" [disabled]="!editState[1]"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-8">
+
+                    </div>
+                    <div class="field col-12 md:col-4 tab-actions-footer">
+                        <p-button *ngIf="editState[1]" label="Hủy" icon="pi pi-times" (click)="cancelEditMode()">
+
+                        </p-button>
+                        <p-button *ngIf="!editState[1]" label="Chỉnh sửa" icon="pi pi-pencil"
+                            (click)="toggleEditMode()">
+                        </p-button>
+                        <p-button *ngIf="editState[1]" label="Lưu" icon="pi pi-pencil">
+                        </p-button>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #noSchoolSelected>
+                <div class="text-center p-4 mt-3">
+                    <i class="pi pi-info-circle" style="font-size: 2rem; color: var(--text-color-secondary);"></i>
+                    <p class="mt-2">Vui lòng chọn một hồ sơ trường từ dropdown ở trên để xem thông tin.</p>
+                </div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="selectedTab === 2">
+
+        </div>
+
+        <div *ngIf="selectedTab === 3">
+            <h4>Nội dung Tab 3</h4>
+            <p>Đây là nội dung của tab số 3.</p>
+        </div>
+
+        <div *ngIf="selectedTab === 4">
+            <div *ngIf="hoSoTruongDangXem; else noSchoolSelected">
+                <div class="xulydacthutruong mt-2">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <label for="xldt_sup_note">SUP ghi chú mô hình đặc thù trường</label>
+                            <textarea id="xldt_sup_note" pInputTextarea rows="5"
+                                [ngModel]="hoSoTruongDangXem.luuYXuLyDacThu.SupportGhiChuMoHinh"
+                                [disabled]="true"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="xldt_sup_note_method">SUP ghi chú cách hỗ trợ trường</label>
+                            <textarea id="xldt_sup_note_method" pInputTextarea rows="5"
+                                [ngModel]="hoSoTruongDangXem.luuYXuLyDacThu.SupportGhiChuCachHoTro"
+                                [disabled]="true"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="xldt_dev_note">DEV ghi chú xử lý kĩ thuật đặc thù trường</label>
+                            <textarea id="xldt_dev_note" pInputTextarea rows="5"
+                                [ngModel]="hoSoTruongDangXem.luuYXuLyDacThu.devGhiChu" [disabled]="true"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="xldt_sale_note">SALE ghi chú</label>
+                            <textarea id="xldt_sale_note" pInputTextarea rows="5"
+                                [ngModel]="hoSoTruongDangXem.luuYXuLyDacThu.saleGhiChu" [disabled]="true"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #noSchoolSelected>
+                <div class="text-center p-4 mt-3">
+                    <i class="pi pi-info-circle" style="font-size: 2rem; color: var(--text-color-secondary);"></i>
+                    <p class="mt-2">Vui lòng chọn một hồ sơ trường từ dropdown ở trên để xem thông tin.</p>
+                </div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="selectedTab === 5">
+            <div *ngIf="hoSoTruongDangXem; else noSchoolSelected">
+                <div class="server-info mt-2">
+                    <div class="p-fluid formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <label for="server_note">Ghi chú / Lưu ý về server</label>
+                            <textarea id="server_note" pInputTextarea rows="5"
+                                [ngModel]="hoSoTruongDangXem.serverInfo.ghiChu"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="server_info_detail">Thông tin các con server</label>
+                            <textarea id="server_info_detail" pInputTextarea rows="5"
+                                [ngModel]="hoSoTruongDangXem.serverInfo.thongTinChung"></textarea>
+                        </div>
+                        <div class="field col-12 md:col-12">
+                            <label for="server_manager">Người quản lý server</label>
+                            <input id="server_manager" pInputText
+                                [ngModel]="hoSoTruongDangXem.serverInfo.nguoiQuanLy" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #noSchoolSelected>
+                <div class="text-center p-4 mt-3">
+                    <i class="pi pi-info-circle" style="font-size: 2rem; color: var(--text-color-secondary);"></i>
+                    <p class="mt-2">Vui lòng chọn một hồ sơ trường từ dropdown ở trên để xem thông tin.</p>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

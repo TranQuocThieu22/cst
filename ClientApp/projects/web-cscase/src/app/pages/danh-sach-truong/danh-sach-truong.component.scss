@@ -1,0 +1,190 @@
+:host ::ng-deep .p-fieldset {
+    .p-fieldset-legend a {
+        flex-direction: row-reverse;
+        text-decoration: none;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+
+        .p-fieldset-legend-text {
+            font-size: 1.1rem;
+        }
+
+    }
+
+    .p-fieldset-toggler {
+        margin-right: 0;
+        margin-left: 0.5rem;
+    }
+
+    .p-fieldset-toggler::before {
+        font-family: 'primeicons' !important;
+    }
+
+    // Thu gọn
+    &:not(.p-fieldset-expanded) .p-fieldset-toggler::before {
+        content: '\e901' !important;
+    }
+
+    // Mở rộng
+    &.p-fieldset-expanded .p-fieldset-toggler::before {
+        content: '\e902' !important;
+    }
+}
+
+.col-12 {
+    margin-bottom: 10px;
+}
+
+.school-selector-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    ::ng-deep .p-dropdown {
+        width: 500px; // chiều rộng dropdown
+        border-radius: 16px;
+        border: 1.5px solid #25A7FB;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .p-dropdown-label {
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #25A7FB;
+        }
+
+        .p-dropdown-trigger {
+            color: #2196f3;
+
+            &:hover {
+                background: rgba(33, 150, 243, 0.1);
+            }
+        }
+    }
+
+    ::ng-deep .p-button {
+        border-radius: 1rem;
+    }
+
+}
+
+.tab-navbar {
+    ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        justify-content: flex-start;
+        overflow-x: auto; // Thêm thanh cuộn ngang KHI CẦN
+        white-space: nowrap; // Giữ các tab trên 1 hàng, không bị xuống dòng
+        -webkit-overflow-scrolling: touch; // Giúp cuộn mượt trên iOS
+        padding-bottom: 5px; // (Tùy chọn) Thêm chút đệm nếu thanh cuộn xuất hiện
+
+        /* Ẩn thanh cuộn để giao diện đẹp hơn */
+        &::-webkit-scrollbar {
+            display: none; // Ẩn thanh cuộn trên Chrome, Safari
+        }
+
+        -ms-overflow-style: none;
+        /* Ẩn trên IE/Edge */
+        scrollbar-width: none;
+
+        li {
+            cursor: pointer;
+            padding: 0.3rem 1rem;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            color: #808080;
+            background-color: #D9D9D9;
+            text-transform: uppercase;
+            font-size: 1rem;
+            border-right: 1px solid #979797;
+
+            &:first-child {
+                border-top-left-radius: 8px;
+            }
+
+            &:last-child {
+                border-top-right-radius: 8px;
+                border-right: none;
+            }
+
+            &:hover {
+                background-color: #e9ecef;
+            }
+
+            &.active {
+                background-color: #007bff;
+                color: #fff;
+            }
+        }
+    }
+}
+
+.tab-content {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+    input,
+    textarea {
+        border: 1px solid #25A7FB;
+        border-radius: 14px;
+    }
+
+    :host ::ng-deep .p-calendar .p-inputtext {
+        border: 1px solid #25A7FB;
+        border-radius: 14px;
+    }
+
+    label {
+        font-weight: 600;
+    }
+
+    .tab-actions-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.6rem;
+    }
+}
+
+:host ::ng-deep .border-custom {
+    border: 1px solid #3B82F6 !important;
+}
+
+
+// css border datepicker input trong tabcontent
+:host ::ng-deep #edit_thoiDiemTrienKhai .p-inputtext,
+:host ::ng-deep #edit_ngayHetHanNangCap .p-inputtext {
+    border: 1px solid #25A7FB;
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+}
+
+:host ::ng-deep #edit_thoiDiemTrienKhai .p-datepicker-trigger,
+:host ::ng-deep #edit_ngayHetHanNangCap .p-datepicker-trigger {
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+}
+
+//end css border datepicker input trong tabcontent
+
+@media (max-width: 768px) {
+    .school-selector-bar {
+        flex-direction: column;
+        align-items: stretch;
+
+        ::ng-deep .p-dropdown {
+            width: 100%; // chiều rộng dropdown
+        }
+    }
+}
+
+.card-profile {
+    border: 1.5px solid #25A7FB;
+    border-radius: 16px;
+}

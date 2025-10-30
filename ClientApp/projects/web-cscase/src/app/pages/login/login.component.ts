@@ -54,7 +54,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     else {
       this.spinner.show();
       this.submitted = true;
-      this.authenticationService.login(this.f.username.value.trim().toUpperCase(), this.f.password.value.trim())
+      this.authenticationService
+        .login(this.f.username.value.trim().toUpperCase(), this.f.password.value.trim())
         .subscribe((data: User) => {
           if (data) {
             if (data.maTruong) {

@@ -16,13 +16,13 @@
 }
 
 .sidebar-menu {
-  display       : flex;
+  display: flex;
   flex-direction: column;
 }
 
 .sidebar-menu a {
   margin-bottom: 0.5rem;
-  text-align   : left;
+  text-align: left;
 }
 
 .sidebar-menu .p-button-text {
@@ -39,40 +39,42 @@
 
 .main-content {
   margin-left: 1rem;
-  margin-top : 1rem;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  padding-bottom: 2rem;
 }
 
 .nav-account-btn {
   &:hover {
-    cursor          : pointer;
+    cursor: pointer;
     // color     : #1d4ed8;
     // color        : black;
-    opacity         : 0.75;
-    transition      : color 0.4s ease;
+    opacity: 0.75;
+    transition: color 0.4s ease;
   }
 }
 
 .nav-logout-btn {
-  color      : rgb(194, 10, 50);
+  color: rgb(194, 10, 50);
   font-weight: bold;
 
   &:hover {
-    cursor    : pointer;
-    color     : red;
+    cursor: pointer;
+    color: red;
     transition: color 0.3s ease;
   }
 }
 
 .image-container {
-  position  : relative;
-  display   : inline-block;
+  position: relative;
+  display: inline-block;
   text-align: center;
 }
 
 img {
-  height             : 500px;
-  width              : 500px;
+  height: 500px;
+  width: 500px;
   // border          : 3px solid #000;
   // border-radius: 50%;
-  cursor             : pointer;
+  cursor: pointer;
 }

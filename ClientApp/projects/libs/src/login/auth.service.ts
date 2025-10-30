@@ -49,17 +49,19 @@ export class AuthService {
     // };
     // return this.http.post<any>('api/main/login', { username, password })
     return this.http.post<any>('api/TFSAccount/login', { username, password })
-      .pipe(map((response: object) => {
-        if (response) {
-          //code mới
-          this.setSessionItem_UserData(response);
+      .pipe(
+        map((response: object) => {
+          if (response) {
+            //code mới
+            this.setSessionItem_UserData(response);
 
-          //code cũ
-          // sessionStorage.setItem('current-user', JSON.stringify(response));
-          // this.currentUserSubject.next(response);
-        }
-        return response;
-      }), catchError(error => throwError(error))
+            //code cũ
+            // sessionStorage.setItem('current-user', JSON.stringify(response));
+            // this.currentUserSubject.next(response);
+          }
+          console.log(response)
+          return response;
+        }), catchError(error => throwError(error))
       );
   }
 
