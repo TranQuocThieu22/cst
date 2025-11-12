@@ -1,148 +1,174 @@
-:host ::ng-deep .p-fieldset {
-    .p-fieldset-legend a {
-        flex-direction: row-reverse;
-        text-decoration: none;
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        align-items: center;
+/* === 1. BIẾN SCSS (Variables) === */
+$brand-blue: #25A7FB;
+$brand-blue-darker: #3B82F6;
+$disabled-bg: #f4f4f4;
+$disabled-color: #aaaaaa;
+$main-border-radius: 14px;
+$large-border-radius: 16px;
+$text-gray: #808080;
 
-        .p-fieldset-legend-text {
-            font-size: 1.1rem;
-        }
-
-    }
-
-    .p-fieldset-toggler {
-        margin-right: 0;
-        margin-left: 0.5rem;
-    }
-
-    .p-fieldset-toggler::before {
-        font-family: 'primeicons' !important;
-    }
-
-    // Thu gọn
-    &:not(.p-fieldset-expanded) .p-fieldset-toggler::before {
-        content: '\e901' !important;
-    }
-
-    // Mở rộng
-    &.p-fieldset-expanded .p-fieldset-toggler::before {
-        content: '\e902' !important;
-    }
+//Global
+input,
+textarea {
+    border: 1px solid $brand-blue;
+    border-radius: $main-border-radius;
+    resize: none;
 }
 
-.col-12 {
-    margin-bottom: 10px;
-}
-
-.school-selector-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-
-    ::ng-deep .p-dropdown {
-        width: 500px; // chiều rộng dropdown
-        border-radius: 16px;
-        border: 1.5px solid #25A7FB;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-        .p-dropdown-label {
-            padding: 8px 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #25A7FB;
-        }
-
-        .p-dropdown-trigger {
-            color: #2196f3;
-
-            &:hover {
-                background: rgba(33, 150, 243, 0.1);
-            }
-        }
-    }
-
-    ::ng-deep .p-button {
-        border-radius: 1rem;
-    }
-
-}
-
-.tab-navbar {
-    ul {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        justify-content: flex-start;
-        overflow-x: auto; // Thêm thanh cuộn ngang KHI CẦN
-        white-space: nowrap; // Giữ các tab trên 1 hàng, không bị xuống dòng
-        -webkit-overflow-scrolling: touch; // Giúp cuộn mượt trên iOS
-        padding-bottom: 5px; // (Tùy chọn) Thêm chút đệm nếu thanh cuộn xuất hiện
-
-        /* Ẩn thanh cuộn để giao diện đẹp hơn */
-        &::-webkit-scrollbar {
-            display: none; // Ẩn thanh cuộn trên Chrome, Safari
-        }
-
-        -ms-overflow-style: none;
-        /* Ẩn trên IE/Edge */
-        scrollbar-width: none;
-
-        li {
-            cursor: pointer;
-            padding: 0.3rem 1rem;
-            transition: all 0.2s ease;
-            font-weight: 600;
-            color: #808080;
-            background-color: #D9D9D9;
-            text-transform: uppercase;
-            font-size: 1rem;
-            border-right: 1px solid #979797;
-
-            &:first-child {
-                border-top-left-radius: 8px;
-            }
-
-            &:last-child {
-                border-top-right-radius: 8px;
-                border-right: none;
-            }
-
-            &:hover {
-                background-color: #e9ecef;
-            }
-
-            &.active {
-                background-color: #007bff;
-                color: #fff;
-            }
-        }
-    }
-}
-
-.tab-content {
-    background-color: #fff;
-    padding: 1.5rem;
-    border-radius: 16px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-
-    input,
-    textarea {
-        border: 1px solid #25A7FB;
-        border-radius: 14px;
-    }
-
-    :host ::ng-deep .p-calendar .p-inputtext {
-        border: 1px solid #25A7FB;
-        border-radius: 14px;
-    }
+/* === 2. LAYOUT & COMPONENT STYLES === */
+:host {
+    display: block;
 
     label {
         font-weight: 600;
+    }
+
+    .col-12 {
+        margin-bottom: 10px;
+    }
+
+    /* Style .card (Lấy từ file addin) */
+    .card {
+        border: 1.5px solid $brand-blue;
+        border-radius: $large-border-radius;
+        padding: 1rem;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Ghi đè .card cho card-profile (nếu cần) 
+    .card-profile {
+
+    }
+    */
+
+    /* Thanh tìm kiếm Addin (Lấy từ file addin cho Tab 2) */
+    .p-input-icon-left {
+        position: relative;
+
+        i {
+            color: $brand-blue;
+        }
+
+        input {
+            border: 1px solid $brand-blue;
+            border-radius: $main-border-radius;
+            font-size: 0.95rem;
+            padding-left: 2rem;
+            transition: all 0.2s ease;
+
+            &:focus {
+                outline: none;
+                border-color: $brand-blue-darker;
+                box-shadow: 0 0 4px rgba($brand-blue, 0.3);
+            }
+        }
+    }
+
+    /* Hiệu ứng cho icon con (child-count) (Lấy từ file addin) */
+    .child-count {
+        color: $brand-blue;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    // --- CÁC STYLE RIÊNG CỦA DANH-SACH-TRUONG ---
+    .school-selector-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+
+        // Giữ ::ng-deep ở đây là hợp lý vì nó RẤT cụ thể
+        ::ng-deep .p-dropdown {
+            width: 500px;
+            border-radius: $large-border-radius;
+            border: 1.5px solid $brand-blue;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            .p-dropdown-label {
+                padding: 8px 12px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                color: $brand-blue;
+            }
+
+            .p-dropdown-trigger {
+                color: $brand-blue;
+
+                &:hover {
+                    background: rgba($brand-blue, 0.1);
+                }
+            }
+        }
+
+        ::ng-deep .p-button {
+            border-radius: 1rem;
+        }
+    }
+
+    .tab-navbar {
+        ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            justify-content: flex-start;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+
+            li {
+                cursor: pointer;
+                padding: 0.3rem 1rem;
+                transition: all 0.2s ease;
+                font-weight: 600;
+                color: $text-gray;
+                background-color: #D9D9D9;
+                text-transform: uppercase;
+                font-size: 1rem;
+                border-right: 1px solid #979797;
+
+                &:first-child {
+                    border-top-left-radius: 8px;
+                }
+
+                &:last-child {
+                    border-top-right-radius: 8px;
+                    border-right: none;
+                }
+
+                &:hover {
+                    background-color: #e9ecef;
+                }
+
+                &.active {
+                    background-color: #007bff;
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    .tab-content {
+        background-color: #fff;
+        padding: 1rem 1rem 0 1rem;
+        // Đã được kế thừa từ .card
+        // border-radius: $large-border-radius; 
+        // box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .note-addin {
+        border-bottom: 1.5px solid $brand-blue;
+        padding-bottom: 5px;
     }
 
     .tab-actions-footer {
@@ -150,41 +176,379 @@
         justify-content: flex-end;
         gap: 0.6rem;
     }
-}
 
-:host ::ng-deep .border-custom {
-    border: 1px solid #3B82F6 !important;
-}
+    .table-scroll-wrapper {
+        overflow-x: auto;
+        width: 100%;
+    }
 
+    .card-addin {
+        border: none;
+        background-color: white;
+        padding: 0; // Ghi đè .card
+        box-shadow: none; // Ghi đè .card
+    }
 
-// css border datepicker input trong tabcontent
-:host ::ng-deep #edit_thoiDiemTrienKhai .p-inputtext,
-:host ::ng-deep #edit_ngayHetHanNangCap .p-inputtext {
-    border: 1px solid #25A7FB;
-    border-top-left-radius: 14px;
-    border-bottom-left-radius: 14px;
-}
-
-:host ::ng-deep #edit_thoiDiemTrienKhai .p-datepicker-trigger,
-:host ::ng-deep #edit_ngayHetHanNangCap .p-datepicker-trigger {
-    border-top-right-radius: 14px;
-    border-bottom-right-radius: 14px;
-}
-
-//end css border datepicker input trong tabcontent
-
-@media (max-width: 768px) {
-    .school-selector-bar {
-        flex-direction: column;
-        align-items: stretch;
-
-        ::ng-deep .p-dropdown {
-            width: 100%; // chiều rộng dropdown
-        }
+    .border-custom {
+        border: 1px solid $brand-blue-darker !important;
     }
 }
 
-.card-profile {
-    border: 1.5px solid #25A7FB;
-    border-radius: 16px;
+/* === 3. GLOBAL CLASSES (Lấy từ file addin) === */
+.p-cell-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Trạng thái Disabled (Tập trung) */
+.p-disabled,
+.p-component:disabled {
+    color: black !important;
+    background-color: $disabled-bg !important;
+    opacity: 0.8;
+}
+
+/* === 4. GHI ĐÈ STYLE PRIMENG (Tập trung) === */
+:host ::ng-deep {
+
+    /* Bảng Addin (Lấy từ file addin cho Tab 2) */
+    .p-datatable {
+        overflow: hidden;
+        table-layout: fixed;
+        width: 100%;
+
+        .p-datatable-thead>tr>th {
+            background-color: #f9f9f9 !important;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 1px solid $brand-blue !important;
+            border-top: 1px solid $brand-blue !important;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            padding: 0.6rem 0.7rem;
+
+        }
+
+        .p-datatable-tbody>tr {
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: #E5F5FF !important;
+            }
+
+            td {
+                padding: 0.6rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid $brand-blue;
+                cursor: pointer;
+            }
+
+            &.group-header {
+                background-color: #fff;
+                font-weight: 600;
+                cursor: pointer;
+
+                .pi {
+                    color: $brand-blue;
+                    transition: transform 0.2s ease;
+                    padding: 0.4rem;
+                    border-radius: 50%;
+
+                    &:hover {
+                        background-color: rgba($brand-blue, 0.2);
+                    }
+                }
+            }
+
+            &.child-row {
+                background-color: #fff;
+
+                td:first-child {
+                    // Thêm style thụt lề cho hàng con
+                    padding-left: 2.5rem !important;
+                    border-left: 1px solid $brand-blue;
+                }
+            }
+        }
+
+        /* Trạng thái rỗng */
+        .p-datatable-emptymessage {
+            text-align: center;
+            color: $text-gray;
+            font-style: italic;
+        }
+
+        /* Checkbox custom */
+        .custom-checkbox .p-checkbox-box.p-highlight {
+            border-color: #25a7fb !important;
+            background: #25a7fb !important;
+        }
+
+        .custom-checkbox .p-checkbox-box.p-highlight .p-checkbox-icon {
+            color: white !important;
+        }
+    }
+
+    /* Paginator (Lấy từ file addin) */
+    .p-paginator {
+        border: none !important;
+        margin-top: 0.8rem;
+        justify-content: flex-end;
+
+        .p-paginator-element {
+            border-radius: 50%;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: #EFF6FF !important;
+            }
+
+            &.p-highlight {
+                background-color: #EFF6FF !important;
+                color: $brand-blue !important;
+            }
+        }
+
+        .p-paginator-element.p-disabled {
+            background-color: $disabled-bg !important;
+            color: $disabled-color !important;
+        }
+    }
+
+    /* Dialog Chi tiết Addin (Lấy từ file addin) */
+    .p-dialog {
+        border-radius: $large-border-radius !important;
+
+        .p-dialog-header {
+            font-weight: 700;
+            color: $brand-blue-darker;
+            border-bottom: 1px solid $brand-blue;
+        }
+
+        .p-dialog-content {
+            p {
+                margin: 0.5rem 0;
+
+                strong {
+                    color: $brand-blue-darker;
+                }
+            }
+        }
+
+        .p-dialog-footer {
+            border-top: 1px solid #e5e5e5;
+            display: flex; // Thêm
+            justify-content: flex-end; // Thêm
+            gap: 0.5rem; // Thêm
+        }
+
+        .p-button-text {
+            color: $brand-blue-darker;
+
+            &:hover {
+                background-color: rgba($brand-blue, 0.1);
+            }
+        }
+    }
+
+    /* Style riêng cho dialog (Lấy từ file addin) */
+    .addin-dialog .p-dialog-content {
+        padding: 0.5rem 1rem 0.5rem 1.5rem !important;
+    }
+
+    .close-detail-butt {
+        border: 1px solid $brand-blue !important;
+    }
+
+    // --- CÁC GHI ĐÈ PRIMENG RIÊNG CỦA DANH-SACH-TRUONG ---
+
+    // --- p-fieldset ---
+    .p-fieldset {
+        .p-fieldset-legend a {
+            flex-direction: row-reverse;
+            text-decoration: none;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+
+            .p-fieldset-legend-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        .p-fieldset-toggler {
+            margin-right: 0;
+            margin-left: 0.5rem;
+
+            &::before {
+                font-family: 'primeicons' !important;
+            }
+        }
+
+        &:not(.p-fieldset-expanded) .p-fieldset-toggler::before {
+            content: '\e901' !important;
+        }
+
+        &.p-fieldset-expanded .p-fieldset-toggler::before {
+            content: '\e902' !important;
+        }
+    }
+
+    // --- p-inputtextarea Scrollbar ---
+    .p-inputtextarea {
+        &::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: $disabled-color;
+            border-radius: 10px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+        }
+    }
+
+    // --- p-calendar ---
+    .p-calendar {
+        .p-inputtext {
+            border: 1px solid $brand-blue;
+            border-top-left-radius: $main-border-radius;
+            border-bottom-left-radius: $main-border-radius;
+        }
+
+        .p-datepicker-trigger {
+            border-top-right-radius: $main-border-radius;
+            border-bottom-right-radius: $main-border-radius;
+        }
+    }
+
+    // --- p-inputnumber ---
+    .p-inputnumber {
+        .p-inputtext {
+            border: 1px solid $brand-blue;
+            border-top-left-radius: $main-border-radius;
+            border-bottom-left-radius: $main-border-radius;
+            border-right: none;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .p-button {
+            border: 1px solid $brand-blue;
+            border-left: none;
+        }
+
+        .p-inputnumber-button-up {
+            border-top-right-radius: $main-border-radius;
+            border-bottom-right-radius: 0;
+        }
+
+        .p-inputnumber-button-down {
+            border-bottom-right-radius: $main-border-radius;
+            border-top-right-radius: 0;
+        }
+    }
+
+    // --- p-dropdown (Styles chung) ---
+    .p-dropdown {
+        border-radius: $large-border-radius;
+        border: 1px solid $brand-blue;
+    }
+}
+
+
+/* === 5. MEDIA QUERIES === */
+@media (max-width: 768px) {
+    :host {
+        .tab-content {
+            padding: 1rem 0;
+        }
+
+        /* Lấy từ file addin */
+        .p-input-icon-left {
+            width: 100%;
+        }
+
+        /* Lấy từ file addin (ghi đè cho p-table mới) */
+        ::ng-deep .p-datatable {
+
+            .p-datatable-thead>tr>th,
+            .p-datatable-tbody>tr>td {
+                font-size: 0.85rem;
+                padding: 0.5rem;
+            }
+        }
+
+        /* Lấy từ file addin (cho dialog) */
+        ::ng-deep .p-dialog {
+            width: 90vw !important;
+        }
+
+        /* Lấy từ file addin (cho bảng cuộn ngang) */
+        .table-scroll-wrapper {
+            // .card-addin chứa .table-scroll-wrapper
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Style riêng của danh-sach-truong */
+        .school-selector-bar {
+            flex-direction: column;
+            align-items: stretch;
+
+            ::ng-deep .p-dropdown {
+                width: 100%;
+            }
+        }
+    }
+
+
+
+    ::ng-deep .p-paginator {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    /* Giới hạn hiển thị 3 số trang */
+    ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+        display: none;
+    }
+
+    ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:nth-child(-n+4) {
+        display: inline-flex;
+    }
+
+    /* Giữ lại các nút điều hướng */
+    ::ng-deep .p-paginator .p-paginator-prev,
+    ::ng-deep .p-paginator .p-paginator-next {
+        display: inline-flex;
+    }
+
+    ::ng-deep .p-paginator .p-paginator-first,
+    ::ng-deep .p-paginator .p-paginator-last {
+        display: none !important;
+    }
+
+    /* Căn giữa các nút số trang */
+    ::ng-deep .p-paginator .p-paginator-pages {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+    /* Ẩn dropdown chọn số hàng */
+    ::ng-deep .p-paginator-rpp-options {
+        display: none !important;
+    }
 }

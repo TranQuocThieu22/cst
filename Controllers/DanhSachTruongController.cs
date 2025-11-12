@@ -346,10 +346,6 @@ namespace educlient.Controllers
                     message = "Data not found"
                 };
             }
-
-            existingRecord.ThoiDiemTrienKhai = inputData.ThoiDiemTrienKhai;
-            existingRecord.SoNamDungEdusoft = inputData.SoNamDungEdusoft;
-            existingRecord.NgayHetHanNangCap = inputData.NgayHetHanNangCap;
             existingRecord.DiaChiTruong = inputData.DiaChiTruong;
             existingRecord.HieuTruong = inputData.HieuTruong;
             existingRecord.HieuPho = inputData.HieuPho;
@@ -399,15 +395,12 @@ namespace educlient.Controllers
                 ServerInfo = existingRecord.ServerInfo
             };
 
-            var returnList = new List<SchoolProfileDTO> { updatedSchoolProfileDTO };
-
             return new SchoolProfileUpdateResultDTO
             {
                 message = "Update Success",
                 code = 200,
                 result = true,
-                data = returnList,
-                numberOfNewRecord = 1
+                data = updatedSchoolProfileDTO,
             };
         }
     }
@@ -445,6 +438,7 @@ namespace educlient.Controllers
         public string IdTruong { get; set; }
         public string MaTruong { get; set; }
         public string TenTruong { get; set; }
+        public string NgayHetHan { get; set; }
     }
 
     public class SchoolDataApiResult : ApiResultBaseDO
@@ -486,9 +480,9 @@ namespace educlient.Controllers
         //public string IdTruong { get; set; }
         //public string MaTruong { get; set; }
         //public string TenTruong { get; set; }
-        public DateTime ThoiDiemTrienKhai { get; set; }
-        public int? SoNamDungEdusoft { get; set; }
-        public DateTime NgayHetHanNangCap { get; set; }
+        //public DateTime ThoiDiemTrienKhai { get; set; }
+        //public int? SoNamDungEdusoft { get; set; }
+        //public DateTime NgayHetHanNangCap { get; set; }
         public string DiaChiTruong { get; set; }
         public ContactPerson HieuTruong { get; set; }
         public ContactPerson HieuPho { get; set; }
@@ -506,8 +500,7 @@ namespace educlient.Controllers
 
     public class SchoolProfileUpdateResultDTO : ApiResultBaseDO
     {
-        public List<SchoolProfileDTO> data { get; set; }
-        public int numberOfNewRecord { get; set; }
+        public SchoolProfileDTO data { get; set; }
     }
 
     public class SchoolAddinDTO

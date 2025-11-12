@@ -228,4 +228,17 @@ namespace educlient.Data
         public string GhiChu { get; set; }
         public string NguoiQuanLy { get; set; }
     }
+
+    public class DanhSachAddin
+    {
+        public string IDAddin; 
+        public string IDAddinParent;
+        public string MaAddin;
+        public string TenAddin;
+        public string GhiChuAddin;
+        public string GhiChuSale;
+        public string GhiChuDev ;
+        public string GhiChuSupport;
+        public double? DonGia;
+    }
 }

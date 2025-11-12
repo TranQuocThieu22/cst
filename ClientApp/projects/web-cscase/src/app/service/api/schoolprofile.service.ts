@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import {
     SchoolDataApiResult, AddinSchoolDataApiResult, AddinSchoolInput,
     SchoolProfileInsertDTO, SchoolProfileInsertResultDTO,
-    SchoolProfileResultDTO
+    SchoolProfileResultDTO,
+    SchoolProfileUpdateDTO,
+    SchoolProfileUpdateResultDTO,
 } from '../../pages/danh-sach-truong/SchoolProfile';
 
 @Injectable({
@@ -30,6 +32,10 @@ export class SchoolProfileService {
 
     getAllSchoolProfile(): Observable<SchoolProfileResultDTO> {
         return this.http.get<SchoolProfileResultDTO>(this.schoolProfileUrl);
+    }
+
+    updateOneSchoolProfile(id: string, payload: SchoolProfileUpdateDTO): Observable<SchoolProfileUpdateResultDTO> {
+        return this.http.patch<SchoolProfileUpdateResultDTO>(`${this.schoolProfileUrl}/${id}`, payload);
     }
 
 }

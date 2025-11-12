@@ -25,9 +25,19 @@ namespace educlient
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowMyAngularApp",
+            //        builder =>
+            //        {
+            //            builder.WithOrigins("http://localhost:4202")
+            //                   .AllowAnyHeader()
+            //                   .AllowAnyMethod();
+            //        });
+            //});
 
             services.AddDistributedMemoryCache();
+            services.AddMemoryCache();
             services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;
@@ -82,6 +92,7 @@ namespace educlient
             }
 
             app.UseRouting();
+            //app.UseCors("AllowMyAngularApp");
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {

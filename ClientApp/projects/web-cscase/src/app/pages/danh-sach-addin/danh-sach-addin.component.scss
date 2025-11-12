@@ -1,0 +1,269 @@
+/* === 1. BIẾN SCSS (Variables) === */
+$brand-blue: #25A7FB;
+$brand-blue-darker: #3B82F6;
+$disabled-bg: #f4f4f4;
+$disabled-color: #aaaaaa;
+$main-border-radius: 14px;
+$large-border-radius: 16px;
+$text-gray: #808080;
+
+//Global
+input,
+textarea {
+    border: 1px solid $brand-blue;
+    border-radius: $main-border-radius;
+    resize: none;
+}
+
+/* === 2. LAYOUT & COMPONENT STYLES === */
+:host {
+    display: block;
+
+    label {
+        font-weight: 600;
+        color: $brand-blue-darker;
+    }
+
+    .card {
+        border: 1.5px solid $brand-blue;
+        border-radius: $large-border-radius;
+        padding: 1rem;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Thanh tìm kiếm Addin */
+    .p-input-icon-left {
+        position: relative;
+
+        i {
+            color: $brand-blue;
+        }
+
+        input {
+            border: 1px solid $brand-blue;
+            border-radius: $main-border-radius;
+            font-size: 0.95rem;
+            padding-left: 2rem;
+            transition: all 0.2s ease;
+
+            &:focus {
+                outline: none;
+                border-color: $brand-blue-darker;
+                box-shadow: 0 0 4px rgba($brand-blue, 0.3);
+            }
+        }
+    }
+
+    /* Bảng Addin */
+    ::ng-deep .p-datatable {
+        // border-radius: $large-border-radius;
+        overflow: hidden;
+        table-layout: fixed;
+        width: 100%;
+
+        .p-datatable-thead>tr>th {
+            background-color: #f9f9f9 !important;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 1px solid $brand-blue !important;
+            border-top: 1px solid $brand-blue !important;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            padding: 0.6rem 1rem;
+
+            &:nth-child(2) {
+                padding-right: 0;
+            }
+
+            &:nth-child(3) {
+                padding-left: 0;
+            }
+
+        }
+
+        .p-datatable-tbody>tr {
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: #E5F5FF !important;
+            }
+
+            td {
+                padding: 0.6rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid $brand-blue;
+                cursor: pointer;
+
+                &:nth-child(2) {
+                    padding-right: 0;
+                }
+
+                &:nth-child(3) {
+                    padding-left: 0;
+                }
+
+            }
+
+            &.group-header {
+                background-color: #fff;
+                font-weight: 600;
+                cursor: pointer;
+
+                .pi {
+                    color: $brand-blue;
+                    transition: transform 0.2s ease;
+                    padding: 0.4rem;
+                    border-radius: 50%;
+
+                    &:hover {
+                        background-color: rgba($brand-blue, 0.2);
+                    }
+                }
+
+                &:hover {
+                    background-color: #E5F5FF;
+                }
+            }
+
+            &.child-row {
+                background-color: #fff;
+
+                td:first-child {
+                    border-left: 1px solid $brand-blue;
+                }
+            }
+        }
+
+
+
+        /* Trạng thái rỗng */
+        .p-datatable-emptymessage {
+            text-align: center;
+            color: $text-gray;
+            font-style: italic;
+        }
+    }
+
+    /* Paginator */
+    ::ng-deep .p-paginator {
+        border: none !important;
+        margin-top: 0.8rem;
+        justify-content: flex-end;
+
+        .p-paginator-element {
+            border-radius: 50%;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: #EFF6FF !important;
+            }
+
+            &.p-highlight {
+                background-color: #EFF6FF !important;
+                color: $brand-blue !important;
+            }
+        }
+
+        .p-paginator-element.p-disabled {
+            background-color: $disabled-bg !important;
+            color: $disabled-color !important;
+        }
+    }
+
+    /* Dialog Chi tiết Addin */
+    ::ng-deep .p-dialog {
+        border-radius: $large-border-radius !important;
+
+        .p-dialog-header {
+            font-weight: 700;
+            color: $brand-blue-darker;
+            border-bottom: 1px solid $brand-blue;
+        }
+
+        .p-dialog-content {
+            p {
+                margin: 0.5rem 0;
+
+                strong {
+                    color: $brand-blue-darker;
+                }
+            }
+        }
+
+        .p-dialog-footer {
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .p-button-text {
+            color: $brand-blue-darker;
+
+            &:hover {
+                background-color: rgba($brand-blue, 0.1);
+            }
+        }
+    }
+
+    /* Hiệu ứng cho icon con (child-count) */
+    .child-count {
+        color: $brand-blue;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+}
+
+.p-cell-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* === 3. DIALOG XEM CHI TIẾT ADDIN === */
+.p-disabled,
+.p-component:disabled {
+    color: black !important;
+    background-color: $disabled-bg !important;
+    opacity: 0.8;
+}
+
+::ng-deep .addin-dialog .p-dialog-content {
+    padding: 0.5rem 1rem 0.5rem 1.5rem !important;
+}
+
+::ng-deep .close-detail-butt {
+    border: 1px solid $brand-blue !important;
+}
+
+::ng-deep .p-dialog .p-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+
+/* MEDIA QUERIES === */
+@media (max-width: 768px) {
+    :host {
+        .p-input-icon-left {
+            width: 100%;
+        }
+
+        ::ng-deep .p-table {
+
+            .p-datatable-thead>tr>th,
+            .p-datatable-tbody>tr>td {
+                font-size: 0.85rem;
+                padding: 0.5rem;
+            }
+        }
+
+        ::ng-deep .p-dialog {
+            width: 90vw !important;
+        }
+
+        ::ng-deep .p-datatable .p-datatable-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+}

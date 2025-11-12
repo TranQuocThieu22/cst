@@ -165,6 +165,10 @@
       <i style="color: #1C325B;" class="pi pi-home"></i>
       <span style="color: #1C325B;">Danh sách trường</span>
     </a>
+    <a pButton class="p-button-text" routerLink="danhsachaddin" routerLinkActive="active-link">
+      <i style="color: #1C325B;" class="pi pi-cog"></i>
+      <span style="color: #1C325B;">Danh sách addin</span>
+    </a>
     <a pButton class="p-button-text" (click)="logOut()">
       <i style="color: #1C325B;" class="pi pi-sign-out"></i>
       <span style="color: #1C325B;">Đăng xuất</span>
@@ -174,5 +178,7 @@
 
 
 <main class="main-content">
+  <p-toast></p-toast>
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
   <router-outlet></router-outlet>
 </main>

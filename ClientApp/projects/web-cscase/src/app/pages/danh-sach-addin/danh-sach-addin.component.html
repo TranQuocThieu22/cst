@@ -1,0 +1,123 @@
+<div class="mb-3">
+    <h4>Danh sách addin</h4>
+</div>
+
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-3">
+        <span class="p-input-icon-left w-25rem">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" [(ngModel)]="searchText" (input)="filterTable()"
+                placeholder="Tìm kiếm Addin..." class="w-full" />
+        </span>
+    </div>
+
+    <p-table [value]="filteredList" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" sortMode="single"
+        [loading]="isLoading" [tableStyle]="{'table-layout': 'fixed', 'min-width': '52rem'}">
+        <ng-template pTemplate="header">
+            <tr class="header-title">
+                <th style="width: 2.3rem"></th>
+                <th style="width: 5rem">STT</th>
+                <th pSortableColumn="maAddin" style="width: 10rem">
+                    Mã Addin <p-sortIcon field="maAddin"></p-sortIcon>
+                </th>
+                <th pSortableColumn="tenAddin" style="width: 25rem">
+                    Tên Addin <p-sortIcon field="tenAddin"></p-sortIcon>
+                </th>
+                <th>Mô tả tính năng</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-group let-ri="rowIndex">
+            <tr class="group-header" (click)="viewDetailAddin(group)">
+                <td class="text-center">
+                    <i *ngIf="group.children && group.children.length > 0" class="pi" [ngClass]="{
+                'pi-chevron-down': expandedGroups[group.idAddin],
+                'pi-chevron-right': !expandedGroups[group.idAddin]
+            }" (click)="toggleGroup(group.idAddin); $event.stopPropagation()"></i>
+                </td>
+                <td>{{ ri + 1 }}</td>
+                <td class="p-cell-truncate" [title]="group.maAddin">{{ group.maAddin }}</td>
+                <td class="p-cell-truncate" [title]="group.tenAddin">
+                    {{ group.tenAddin }}
+                </td>
+                <td>{{ group.ghiChuAddin }}</td>
+            </tr>
+
+            <ng-container *ngIf="expandedGroups[group.idAddin]">
+                <tr *ngFor="let item of group.children; let i = index" class="child-row"
+                    (click)="viewDetailAddin(item)">
+                    <td></td>
+                    <td>{{ ri + 1 }}.{{ i + 1 }}</td>
+                    <td class="p-cell-truncate" [title]="item.maAddin">{{ item.maAddin }}</td>
+                    <td class="p-cell-truncate" [title]="item.tenAddin">{{ item.tenAddin }}</td>
+                    <td>{{ item.ghiChuAddin }}</td>
+                </tr>
+            </ng-container>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5" class="text-center">Không có dữ liệu Addin.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog header="Chi tiết Addin" [(visible)]="displayDialog" [modal]="true" [style]="{ width: '80vw' }"
+    [draggable]="false" [resizable]="false" (onHide)="handleDialogClose()" styleClass="addin-dialog">
+
+    <div *ngIf="selectedAddin" class="p-fluid formgrid grid gap-3">
+
+        <div class="field col-12 md:col-6 mt-2">
+            <label><strong>Mã Addin</strong></label>
+            <input pInputText [(ngModel)]="selectedAddin.maAddin" [disabled]="true" />
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <label><strong>Tên Addin</strong></label>
+            <input pInputText [(ngModel)]="selectedAddin.tenAddin" [disabled]="true" />
+        </div>
+
+        <div class="field col-12">
+            <label><strong>Mô tả tính năng</strong></label>
+            <textarea pInputTextarea rows="10" [(ngModel)]="selectedAddin.ghiChuAddin" [disabled]="!isEditing"
+                class="w-full"></textarea>
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <label><strong>Đơn giá</strong></label>
+            <input pInputText type="number" [(ngModel)]="selectedAddin.donGia" [disabled]="!isEditing" />
+        </div>
+
+        <div class="field col-12">
+            <label><strong>Sale ghi chú</strong></label>
+            <textarea pInputTextarea rows="10" [(ngModel)]="selectedAddin.ghiChuSale" [disabled]="!isEditing"
+                class="w-full"></textarea>
+        </div>
+
+        <div class="field col-12">
+            <label><strong>Dev ghi chú</strong></label>
+            <textarea pInputTextarea rows="10" [(ngModel)]="selectedAddin.ghiChuDev" [disabled]="!isEditing"
+                class="w-full"></textarea>
+        </div>
+
+        <div class="field col-12">
+            <label><strong>Sup ghi chú</strong></label>
+            <textarea pInputTextarea rows="10" [(ngModel)]="selectedAddin.ghiChuSupport" [disabled]="!isEditing"
+                class="w-full"></textarea>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button *ngIf="!isEditing" icon="pi pi-pencil" label="Chỉnh sửa" (click)="enableEdit()" styleClass="mt-3">
+        </p-button>
+
+        <p-button *ngIf="isEditing" icon="pi pi-save" label="Lưu" (click)="updateAddin()"
+            styleClass="p-button-success mt-3">
+        </p-button>
+
+        <p-button icon="pi pi-times" label="Đóng" (click)="displayDialog = false"
+            styleClass="p-button-outlined p-button-danger mt-3">
+        </p-button>
+    </ng-template>
+</p-dialog>

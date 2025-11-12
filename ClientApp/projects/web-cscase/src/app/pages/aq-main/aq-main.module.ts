@@ -78,8 +78,9 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { PasswordModule } from 'primeng/password';
 import { TabViewModule } from 'primeng/tabview';
-import { DanhSachTruongComponent } from '../danh-sach-truong/danh-sach-truong.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DanhSachTruongModule } from '../danh-sach-truong/danh-sach-truong.module';
+import { DanhSachAddinComponent } from '../danh-sach-addin/danh-sach-addin.component';
 
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
@@ -87,7 +88,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent,
     BaoBieuThongKeComponent, TienAnTruaTheoThangComponent, TienCongTacPhiTheoQuiComponent,
     TienLamViecNgoaiGioTheoQuiComponent, ThongKeNghiPhepNamComponent, BaoCaoTheoChuKyComponent,
-    DanhSachTruongComponent
+    DanhSachAddinComponent
   ],
   imports: [
     FieldsetModule,
@@ -106,7 +107,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     AqMainRoutingModule,
     TableModule,
     ButtonModule,
-    TableModule,
     CalendarModule,
     SliderModule,
     DialogModule,
@@ -144,7 +144,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     SplitButtonModule,
     PasswordModule,
     TabViewModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DanhSachTruongModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [

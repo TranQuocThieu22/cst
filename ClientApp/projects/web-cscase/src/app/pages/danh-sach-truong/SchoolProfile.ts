@@ -2,6 +2,7 @@ export interface SchoolDataApiDTO {
     idTruong: string;
     maTruong: string;
     tenTruong: string;
+    ngayHetHan: string;
 }
 
 export interface SchoolDataApiResult {
@@ -50,8 +51,8 @@ export interface AddinModule {
 }
 
 export interface LuuYDacThu {
-    SupportGhiChuMoHinh: string;
-    SupportGhiChuCachHoTro: string;
+    supportGhiChuMoHinh: string;
+    supportGhiChuCachHoTro: string;
     devGhiChu: string;
     saleGhiChu: string;
 }
@@ -106,6 +107,25 @@ export interface SchoolProfileInsertDTO {
     serverInfo: ThongTinServer;
 }
 
+export interface SchoolProfileUpdateDTO {
+    // thoiDiemTrienKhai: Date | null;
+    // soNamDungEdusoft: number | null;
+    // ngayHetHanNangCap: Date | null;
+    diaChiTruong: string;
+    hieuTruong: ContactPerson;
+    hieuPho: ContactPerson;
+    truongPhongDaoTao: ContactPerson;
+    truongPhongKhaoThi: ContactPerson;
+    truongPhongTaiVu: ContactPerson;
+    admin: ContactPerson;
+    ghiChuKinhDoanh: string;
+    ghiChuKyThuat: string;
+    ghiChuChamSoc: string;
+    danhSachAddin: AddinModule;
+    luuYXuLyDacThu: LuuYDacThu;
+    serverInfo: ThongTinServer;
+}
+
 export interface ApiResultBaseDO {
     message: string;
     code: number;
@@ -119,4 +139,8 @@ export interface SchoolProfileInsertResultDTO extends ApiResultBaseDO {
 
 export interface SchoolProfileResultDTO extends ApiResultBaseDO {
     data: SchoolProfileDTO[];
+}
+
+export interface SchoolProfileUpdateResultDTO extends ApiResultBaseDO {
+    data: SchoolProfileUpdateDTO;
 }
