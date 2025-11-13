@@ -126,6 +126,55 @@ namespace educlient.Controllers
             return user;
         }
 
+        [HttpGet("sso-get-session")]
+        public IActionResult SsoGetSession()
+        {
+            var html = @"
+            <html>
+                <head><title>Đang xác thực...</title></head>
+                <body>
+                    <p>Đang xác thực đăng nhập, vui lòng chờ...</p>
+
+                    <script>
+                        // Gọi API lấy thông tin user theo session cookie
+                        fetch('/api/main/profile', { credentials: 'include' })
+                            .then(r => r.json())
+                            .then(user => {
+                                // Lưu user vào sessionStorage giống như FE login
+                                sessionStorage.setItem('current-user', JSON.stringify(user));
+
+                                // Redirect vào trang chính
+                                window.location.href = '/#/main/cscase';
+                            })
+                            .catch(err => {
+                                document.body.innerHTML = 'SSO thất bại: ' + err;
+                            });
+                    </script>
+                </body>
+            </html>";
+
+            return Content(html, "text/html");
+        }
+
+        [HttpGet("profile")]
+        public IActionResult GetCurrentUser()
+        {
+            var userJson = Session.GetString("current-user");
+
+            if (string.IsNullOrEmpty(userJson))
+            {
+                return Unauthorized(new
+                {
+                    message = "User is not logged in."
+                });
+            }
+
+            var user = JsonConvert.DeserializeObject<EduClient>(userJson);
+
+            return Ok(user);
+        }
+
+
         async Task<string> DoTfsQueryData(string pTfsHost, string pbaseUrl, string pQueryAppend, string pPOSTBody, string pBasicToken)
         {
             try
