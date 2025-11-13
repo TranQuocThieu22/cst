@@ -52,21 +52,13 @@ namespace educlient.Controllers
         [HttpPost, Route("login")]
         public object Login(LoginModel log)
         {
-            var dir = Path.Combine(AppContext.BaseDirectory, "clients.dat");
-            var clients = JsonConvert.DeserializeObject<List<EduClient>>(System.IO.File.ReadAllText(dir));
-            var user = clients.FirstOrDefault(r => r.MaTruong?.ToLower() == log?.username?.ToLower() && r.Pass == log.password);
+            return PerformLoginLogic(log);
+        }
 
-            if (user != null)
-            {
-                _logger.LogInformation("Login Success: " + log.username);
-                Session.SetString("current-user", JsonConvert.SerializeObject(user));
-            }
-            else
-            {
-                user = new EduClient { TenTruong = "Username or password is incorrect!" };
-                _logger.LogInformation("Login Fail: " + log.username);
-            }
-            return user;
+        [HttpPost, Route("autologin-sso")] 
+        public object AutoLogin([FromForm] LoginModel log)
+        {
+            return PerformLoginLogic(log);
         }
 
         [HttpGet, Route("logout")]
@@ -114,6 +106,25 @@ namespace educlient.Controllers
         static string TFS_HOST = Startup.tfsUrl;
 
         const string TFS_TOKEN_BASE64 = "QVFcdGZzdXNlcjpyY3phdmVsczJ6ZGw2bDZqdDZ6cXRxdGp0YW1wMzQ1NDQyYm9ycXk3cGNyd2doem1icHFx";
+
+        private object PerformLoginLogic(LoginModel log)
+        {
+            var dir = Path.Combine(AppContext.BaseDirectory, "clients.dat");
+            var clients = JsonConvert.DeserializeObject<List<EduClient>>(System.IO.File.ReadAllText(dir));
+            var user = clients.FirstOrDefault(r => r.MaTruong?.ToLower() == log?.username?.ToLower() && r.Pass == log.password);
+
+            if (user != null)
+            {
+                _logger.LogInformation("Login Success: " + log.username);
+                Session.SetString("current-user", JsonConvert.SerializeObject(user));
+            }
+            else
+            {
+                user = new EduClient { TenTruong = "Username or password is incorrect!" };
+                _logger.LogInformation("Login Fail: " + log.username);
+            }
+            return user;
+        }
 
         async Task<string> DoTfsQueryData(string pTfsHost, string pbaseUrl, string pQueryAppend, string pPOSTBody, string pBasicToken)
         {
