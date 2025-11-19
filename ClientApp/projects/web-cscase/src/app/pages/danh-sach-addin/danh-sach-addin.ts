@@ -17,3 +17,18 @@ export interface DanhSachAddinResultDTO {
     code: number;
     message: string;
 }
+
+export interface InputUpdateAddin {
+    idAddin: string;
+    ghiChuAddin: string;
+    ghiChuSale: string;
+    ghiChuDev: string;
+    ghiChuSupport: string;
+    donGia: number;
+}
+
+export interface UpdateAddinResultDTO {
+    result: boolean;
+    code: number;
+    message: string;
+}

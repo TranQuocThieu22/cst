@@ -20,10 +20,11 @@
                 <th pSortableColumn="maAddin" style="width: 10rem">
                     Mã Addin <p-sortIcon field="maAddin"></p-sortIcon>
                 </th>
-                <th pSortableColumn="tenAddin" style="width: 25rem">
+                <th pSortableColumn="tenAddin" style="width: 20rem">
                     Tên Addin <p-sortIcon field="tenAddin"></p-sortIcon>
                 </th>
-                <th>Mô tả tính năng</th>
+                <th style="width: 25rem">Mô tả tính năng</th>
+                <th style="width: 10rem">Đơn giá</th>
             </tr>
         </ng-template>
 
@@ -41,6 +42,7 @@
                     {{ group.tenAddin }}
                 </td>
                 <td>{{ group.ghiChuAddin }}</td>
+                <td>{{ group.donGia > 0 ? (group.donGia | number) : '' }}</td>
             </tr>
 
             <ng-container *ngIf="expandedGroups[group.idAddin]">
@@ -51,6 +53,7 @@
                     <td class="p-cell-truncate" [title]="item.maAddin">{{ item.maAddin }}</td>
                     <td class="p-cell-truncate" [title]="item.tenAddin">{{ item.tenAddin }}</td>
                     <td>{{ item.ghiChuAddin }}</td>
+                    <td>{{ item.donGia > 0 ? (item.donGia | number) : '' }}</td>
                 </tr>
             </ng-container>
         </ng-template>
@@ -106,13 +109,51 @@
             <textarea pInputTextarea rows="10" [(ngModel)]="selectedAddin.ghiChuSupport" [disabled]="!isEditing"
                 class="w-full"></textarea>
         </div>
+
+        <div class="field col-12 md:col-6">
+            <label><strong>File phụ lục word</strong></label>
+            <input #fileInputWord type="file" (change)="onFileSelect($event, 'word')" accept=".doc,.docx"
+                style="display: none" [disabled]="!isEditing" />
+
+            <div class="p-inputgroup">
+                <input pInputText type="text" [(ngModel)]="wordFileName" placeholder="Chưa chọn file..."
+                    [disabled]="true" />
+
+                <button class="choose-file-butt" pButton type="button" label="Chọn" (click)="fileInputWord.click()"
+                    [disabled]="!isEditing"></button>
+
+                <button *ngIf="wordFileName" pButton type="button" icon="pi pi-eye"
+                    class="p-button-primary view-file-butt" pTooltip="Tải file Word hiện tại" tooltipPosition="top"
+                    (click)="onDownloadFile('word')">
+                </button>
+            </div>
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <label><strong>File phụ lục PDF</strong></label>
+            <input #fileInputPdf type="file" (change)="onFileSelect($event, 'pdf')" accept=".pdf" style="display: none"
+                [disabled]="!isEditing" />
+
+            <div class="p-inputgroup">
+                <input pInputText type="text" [(ngModel)]="pdfFileName" placeholder="Chưa chọn file..."
+                    [disabled]="true" />
+
+                <button class="choose-file-butt" pButton type="button" label="Chọn" (click)="fileInputPdf.click()"
+                    [disabled]="!isEditing"></button>
+
+                <button *ngIf="pdfFileName" pButton type="button" icon="pi pi-eye"
+                    class="p-button-primary view-file-butt" pTooltip="Tải file PDF hiện tại" tooltipPosition="top"
+                    (click)="onDownloadFile('pdf')">
+                </button>
+            </div>
+        </div>
     </div>
 
     <ng-template pTemplate="footer">
         <p-button *ngIf="!isEditing" icon="pi pi-pencil" label="Chỉnh sửa" (click)="enableEdit()" styleClass="mt-3">
         </p-button>
 
-        <p-button *ngIf="isEditing" icon="pi pi-save" label="Lưu" (click)="updateAddin()"
+        <p-button *ngIf="isEditing" icon="pi pi-save" label="Lưu" (click)="handleUpdateAddin()"
             styleClass="p-button-success mt-3">
         </p-button>
 

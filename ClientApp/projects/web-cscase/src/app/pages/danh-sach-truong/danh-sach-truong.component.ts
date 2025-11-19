@@ -6,7 +6,7 @@ import {
     SchoolProfileDTO, SchoolProfileResultDTO, SchoolProfileInsertResultDTO
 } from "./SchoolProfile";
 
-import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 
@@ -37,6 +37,7 @@ export class DanhSachTruongComponent implements OnInit {
     danhSachHoSoTruong: SchoolProfileDTO[] = [];
     hoSoTruongDangXem: SchoolProfileDTO | null = null;
     hoSoTruongDangEdit: SchoolProfileDTO | null = null;
+    apiDataDangXem: SchoolDataApiDTO | null = null;
     isLoading: boolean = false;
     selectedAddinForDetail: AddinSchoolDataApiDTO | null = null;
 
@@ -65,13 +66,6 @@ export class DanhSachTruongComponent implements OnInit {
             const emptyLuuYDacThu = { supportGhiChuMoHinh: '', supportGhiChuCachHoTro: '', devGhiChu: '', saleGhiChu: '' };
             const emptyThongTinServer = { nguoiQuanLy: '', thongTinChung: '', ghiChu: '' };
             if (this.hoSoTruongDangEdit) {
-                if (this.hoSoTruongDangEdit.thoiDiemTrienKhai) {
-                    this.hoSoTruongDangEdit.thoiDiemTrienKhai = new Date(this.hoSoTruongDangEdit.thoiDiemTrienKhai);
-                }
-                if (this.hoSoTruongDangEdit.ngayHetHanNangCap) {
-                    this.hoSoTruongDangEdit.ngayHetHanNangCap = new Date(this.hoSoTruongDangEdit.ngayHetHanNangCap);
-                }
-
                 this.hoSoTruongDangEdit.hieuTruong = { ...emptyContactPerson, ...this.hoSoTruongDangEdit.hieuTruong };
                 this.hoSoTruongDangEdit.hieuPho = { ...emptyContactPerson, ...this.hoSoTruongDangEdit.hieuPho };
                 this.hoSoTruongDangEdit.truongPhongDaoTao = { ...emptyContactPerson, ...this.hoSoTruongDangEdit.truongPhongDaoTao };
@@ -100,9 +94,6 @@ export class DanhSachTruongComponent implements OnInit {
             idTruong: '',
             maTruong: '',
             tenTruong: '',
-            thoiDiemTrienKhai: null,
-            soNamDungEdusoft: null,
-            ngayHetHanNangCap: null,
             diaChiTruong: '',
             hieuTruong: { ...emptyContact },
             hieuPho: { ...emptyContact },
@@ -229,7 +220,6 @@ export class DanhSachTruongComponent implements OnInit {
                 newProfile.idTruong = apiSchool.idTruong;
                 newProfile.maTruong = apiSchool.maTruong;
                 newProfile.tenTruong = apiSchool.tenTruong;
-                newProfile.ngayHetHanNangCap = new Date(apiSchool.ngayHetHan);
                 truongCanThemMoi.push(newProfile);
             }
         }
@@ -274,21 +264,41 @@ export class DanhSachTruongComponent implements OnInit {
             })
         } else {
             this.hoSoTruongDangXem = hoSo;
+            this.apiDataDangXem = this.danhSachTruong.find(
+                apiSchool => apiSchool.idTruong === hoSo.idTruong
+            ) || null;
             if (this.selectedTab === 2) {
                 this.loadDataForTabAddin();
             }
             if (this.editState[this.selectedTab]) {
-                // this.hoSoTruongDangEdit = JSON.parse(JSON.stringify(this.hoSoTruongDangXem));
                 this.toggleEditMode();
             }
         }
     }
 
+    tinhSoNamSuDung(thoiDiemTrienKhaiStr: string | undefined | null): number | string {
+        if (!thoiDiemTrienKhaiStr) {
+            return '';
+        }
+
+        const ngayTrienKhai = new Date(thoiDiemTrienKhaiStr);
+        if (isNaN(ngayTrienKhai.getTime())) {
+            return '';
+        }
+
+        const homNay = new Date();
+        const duration = homNay.getTime() - ngayTrienKhai.getTime();
+        const totalDays = duration / (1000 * 60 * 60 * 24);
+
+        const soNam = Math.floor(totalDays / 365.25);
+
+        return soNam > 0 ? `${soNam} năm` : 0;
+    }
+
     saveTabInfo(): void {
         if (this.hoSoTruongDangEdit) {
             this.isLoading = true;
-            const { maTruong, idTruong, tenTruong, soNamDungEdusoft, ngayHetHanNangCap, thoiDiemTrienKhai,
-                ...updateData } = this.hoSoTruongDangEdit;
+            const { maTruong, idTruong, tenTruong, ...updateData } = this.hoSoTruongDangEdit;
             this.truongService.updateOneSchoolProfile(idTruong, updateData).subscribe(
                 (respone) => {
                     const savedProfile = JSON.parse(JSON.stringify(this.hoSoTruongDangEdit));
@@ -311,7 +321,6 @@ export class DanhSachTruongComponent implements OnInit {
             );
         }
     }
-
 
     loadDataForTabAddin(): void {
         this.selectedAddinForDetail = null;
@@ -343,30 +352,34 @@ export class DanhSachTruongComponent implements OnInit {
             this.messageService.add({ severity: 'warn', summary: 'Chưa chọn trường' });
             return;
         }
+        const newTab = window.open('about:blank', '_blank');
+        if (!newTab) {
+            this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Vui lòng cho phép pop-up cho trang này.' });
+            return;
+        }
 
         this.isSsoLoading = true;
 
-        // Hủy bất kỳ yêu cầu cũ nào
         if (this.ssoSub) {
             this.ssoSub.unsubscribe();
         }
 
-        // Gọi API "Endpoint 1" mà chúng ta vừa tạo trên Backend 1
         this.ssoSub = this.http.get<{ autoLoginUrl: string }>('/api/sso/get-autologin-url')
             .subscribe({
                 next: (response) => {
                     this.isSsoLoading = false;
                     if (response && response.autoLoginUrl) {
-                        // Mở URL nhận được trong một tab mới
-                        window.open(response.autoLoginUrl, '_blank');
+                        // 3. Chỉ điều hướng tab đã mở
+                        newTab.location.href = response.autoLoginUrl;
                     } else {
-                        // Xử lý lỗi
+                        newTab.close(); // Đóng tab nếu có lỗi
                         this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không thể lấy link đăng nhập.' });
                     }
                 },
                 error: (err) => {
                     this.isSsoLoading = false;
                     console.error('Lỗi khi gọi SSO API:', err);
+                    newTab.close(); // Đóng tab nếu có lỗi
                     this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không thể kết nối đến máy chủ.' });
                 }
             });

@@ -95,7 +95,7 @@ namespace educlient.Controllers
         [HttpGet, Route("GetApiTruong")]
         public async Task<SchoolDataApiResult> GetAll()
         {
-            var apiKey = config["apiKeyListTruong"];
+            var apiKey = config["apiKey"];
             var url = config["urlListTruong"];
             string jsonData = await GetDataTruong(url, apiKey);
 
@@ -130,7 +130,7 @@ namespace educlient.Controllers
         [HttpPost, Route("GetApiAddinTruong")]
         public async Task<ApiResultBaseDO> FetchAddinTruong([FromBody] SchoolAddinInput input)
         {
-            var apiKey = config["apiKeyListAddinTruong"];
+            var apiKey = config["apiKey"];
             var url = config["urlListAddinTruong"];
             var jsonData = await FetchApiAddinTruong(input.IDTruong, url, apiKey);
             if (string.IsNullOrEmpty(jsonData))
@@ -213,25 +213,22 @@ namespace educlient.Controllers
 
             var schoolProfiles = inputData.Select(item => new SchoolProfile
             {
-                IdTruong = item.IdTruong,
-                MaTruong = item.MaTruong,
-                TenTruong = item.TenTruong,
-                ThoiDiemTrienKhai = item.ThoiDiemTrienKhai,
-                SoNamDungEdusoft = item.SoNamDungEdusoft,
-                NgayHetHanNangCap = item.NgayHetHanNangCap,
-                DiaChiTruong = item.DiaChiTruong,
-                HieuTruong = item.HieuTruong,
-                HieuPho = item.HieuPho,
-                TruongPhongDaoTao = item.TruongPhongDaoTao,
-                TruongPhongKhaoThi = item.TruongPhongKhaoThi,
-                TruongPhongTaiVu = item.TruongPhongTaiVu,
-                Admin = item.Admin,
-                GhiChuKinhDoanh = item.GhiChuKinhDoanh,
-                GhiChuKyThuat = item.GhiChuKyThuat,
-                GhiChuChamSoc = item.GhiChuChamSoc,
-                DanhSachAddin = item.DanhSachAddin,
-                LuuYXuLyDacThu = item.LuuYXuLyDacThu,
-                ServerInfo = item.ServerInfo
+                    IdTruong = item.IdTruong,
+                    MaTruong = item.MaTruong,
+                    TenTruong = item.TenTruong,
+                    DiaChiTruong = item.DiaChiTruong,
+                    HieuTruong = item.HieuTruong,
+                    HieuPho = item.HieuPho,
+                    TruongPhongDaoTao = item.TruongPhongDaoTao,
+                    TruongPhongKhaoThi = item.TruongPhongKhaoThi,
+                    TruongPhongTaiVu = item.TruongPhongTaiVu,
+                    Admin = item.Admin,
+                    GhiChuKinhDoanh = item.GhiChuKinhDoanh,
+                    GhiChuKyThuat = item.GhiChuKyThuat,
+                    GhiChuChamSoc = item.GhiChuChamSoc,
+                    DanhSachAddin = item.DanhSachAddin,
+                    LuuYXuLyDacThu = item.LuuYXuLyDacThu,
+                    ServerInfo = item.ServerInfo
             }).ToList();
 
             if (schoolProfiles.Count == 1)
@@ -243,9 +240,6 @@ namespace educlient.Controllers
                     IdTruong = existingRecord.IdTruong,
                     MaTruong = existingRecord.MaTruong,
                     TenTruong = existingRecord.TenTruong,
-                    ThoiDiemTrienKhai = existingRecord.ThoiDiemTrienKhai,
-                    SoNamDungEdusoft = existingRecord.SoNamDungEdusoft,
-                    NgayHetHanNangCap = existingRecord.NgayHetHanNangCap,
                     DiaChiTruong = existingRecord.DiaChiTruong,
                     HieuTruong = existingRecord.HieuTruong,
                     HieuPho = existingRecord.HieuPho,
@@ -297,9 +291,6 @@ namespace educlient.Controllers
                 IdTruong = existingRecord.IdTruong,
                 MaTruong = existingRecord.MaTruong,
                 TenTruong = existingRecord.TenTruong,
-                ThoiDiemTrienKhai = existingRecord.ThoiDiemTrienKhai,
-                SoNamDungEdusoft = existingRecord.SoNamDungEdusoft,
-                NgayHetHanNangCap = existingRecord.NgayHetHanNangCap,
                 DiaChiTruong = existingRecord.DiaChiTruong,
                 HieuTruong = existingRecord.HieuTruong,
                 HieuPho = existingRecord.HieuPho,
@@ -377,9 +368,6 @@ namespace educlient.Controllers
                 IdTruong = existingRecord.IdTruong,
                 MaTruong = existingRecord.MaTruong,
                 TenTruong = existingRecord.TenTruong,
-                ThoiDiemTrienKhai = existingRecord.ThoiDiemTrienKhai,
-                SoNamDungEdusoft = existingRecord.SoNamDungEdusoft,
-                NgayHetHanNangCap = existingRecord.NgayHetHanNangCap,
                 DiaChiTruong = existingRecord.DiaChiTruong,
                 HieuTruong = existingRecord.HieuTruong,
                 HieuPho = existingRecord.HieuPho,
@@ -410,9 +398,6 @@ namespace educlient.Controllers
         public string IdTruong { get; set; }
         public string MaTruong { get; set; }
         public string TenTruong { get; set; }
-        public DateTime? ThoiDiemTrienKhai { get; set; }
-        public int? SoNamDungEdusoft { get; set; }
-        public DateTime? NgayHetHanNangCap { get; set; }
         public string DiaChiTruong { get; set; }
         public ContactPerson HieuTruong { get; set; }
         public ContactPerson HieuPho { get; set; }
@@ -439,6 +424,7 @@ namespace educlient.Controllers
         public string MaTruong { get; set; }
         public string TenTruong { get; set; }
         public string NgayHetHan { get; set; }
+        public string ThoiDiemTrienKhai { get; set; } 
     }
 
     public class SchoolDataApiResult : ApiResultBaseDO
@@ -451,9 +437,6 @@ namespace educlient.Controllers
         public string IdTruong { get; set; }
         public string MaTruong { get; set; }
         public string TenTruong { get; set; }
-        public DateTime? ThoiDiemTrienKhai { get; set; }
-        public int? SoNamDungEdusoft { get; set; }
-        public DateTime? NgayHetHanNangCap { get; set; }
         public string DiaChiTruong { get; set; }
         public ContactPerson HieuTruong { get; set; }
         public ContactPerson HieuPho { get; set; }
@@ -477,12 +460,6 @@ namespace educlient.Controllers
 
     public class SchoolProfileUpdateDTO
     {
-        //public string IdTruong { get; set; }
-        //public string MaTruong { get; set; }
-        //public string TenTruong { get; set; }
-        //public DateTime ThoiDiemTrienKhai { get; set; }
-        //public int? SoNamDungEdusoft { get; set; }
-        //public DateTime NgayHetHanNangCap { get; set; }
         public string DiaChiTruong { get; set; }
         public ContactPerson HieuTruong { get; set; }
         public ContactPerson HieuPho { get; set; }

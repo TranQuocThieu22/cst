@@ -3,6 +3,7 @@ export interface SchoolDataApiDTO {
     maTruong: string;
     tenTruong: string;
     ngayHetHan: string;
+    thoiDiemTrienKhai: string;
 }
 
 export interface SchoolDataApiResult {
@@ -67,9 +68,6 @@ export interface SchoolProfileDTO {
     idTruong: string;
     maTruong: string;
     tenTruong: string;
-    thoiDiemTrienKhai: Date | null;
-    soNamDungEdusoft: number | null;
-    ngayHetHanNangCap: Date | null;
     diaChiTruong: string;
     hieuTruong: ContactPerson;
     hieuPho: ContactPerson;
@@ -89,9 +87,6 @@ export interface SchoolProfileInsertDTO {
     idTruong: string;
     maTruong: string;
     tenTruong: string;
-    thoiDiemTrienKhai: Date | null;
-    soNamDungEdusoft: number | null;
-    ngayHetHanNangCap: Date | null;
     diaChiTruong: string;
     hieuTruong: ContactPerson;
     hieuPho: ContactPerson;
@@ -108,9 +103,6 @@ export interface SchoolProfileInsertDTO {
 }
 
 export interface SchoolProfileUpdateDTO {
-    // thoiDiemTrienKhai: Date | null;
-    // soNamDungEdusoft: number | null;
-    // ngayHetHanNangCap: Date | null;
     diaChiTruong: string;
     hieuTruong: ContactPerson;
     hieuPho: ContactPerson;

@@ -18,7 +18,7 @@ public class SsoController : ControllerBase
 
     private const string TARGET_USERNAME = "aq";
     private const string TARGET_PASSWORD = "67788469";
-    private const string TARGET_LOGIN_URL = "https://cst.aqtech.vn/api/main/login";
+    private const string TARGET_LOGIN_URL = "https://cst.aqtech.vn/api/main/autologin-sso";
 
     public SsoController(IMemoryCache cache)
     {
@@ -59,34 +59,36 @@ public class SsoController : ControllerBase
     [HttpGet("redirect-and-login")]
     public IActionResult RedirectAndLogin([FromQuery] string code)
     {
-        // 1. Lấy thông tin đăng nhập từ cache
         if (string.IsNullOrEmpty(code) || !_cache.TryGetValue(code, out SsoCredentials credentials))
         {
-            // Không tìm thấy code (đã hết hạn hoặc không hợp lệ)
             return Content("Link đăng nhập không hợp lệ hoặc đã hết hạn.", "text/html");
         }
 
-        // 2. XÓA token ngay lập tức (chỉ dùng 1 lần)
         _cache.Remove(code);
 
-        // 3. Tạo trang HTML động
         var html = $@"
-            <html>
-                <head><title>Đang chuyển hướng...</title></head>
-                <body onload=""document.forms[0].submit()"">
-                    <noscript>Vui lòng bấm nút 'Tiếp tục' để đăng nhập.</noscript>
-                    <p>Đang tự động đăng nhập, vui lòng chờ...</p>
-                    
-                    <form action=""{TARGET_LOGIN_URL}"" method=""POST"">
-                        <input type=""hidden"" name=""username"" value=""{credentials.username}"" />
-                        <input type=""hidden"" name=""password"" value=""{credentials.password}"" />
-                        
-                        <button type=""submit"">Tiếp tục</button>
-                    </form>
-                </body>
-            </html>";
+        <html>
+        <head><title>Đang đăng nhập...</title></head>
+        <body>
+            <p>Đang đăng nhập, vui lòng chờ…</p>
 
-        // 4. Trả về HTML
+            <!-- iframe ẩn để nhận JSON trả về -->
+            <iframe name=""hiddenFrame"" style=""display:none;"" onload=""onFormSubmitDone()""></iframe>
+            <form action=""{TARGET_LOGIN_URL}"" method=""POST"" target=""hiddenFrame"" id=""ssoForm"" >
+                <input type=""hidden"" name=""username"" value=""{credentials.username}"" />
+                <input type=""hidden"" name=""password"" value=""{credentials.password}"" />
+            </form>
+
+            <script>
+                function onFormSubmitDone() {{
+                    window.location.href = 'https://cst.aqtech.vn/api/main/sso-get-session';
+                }}
+                document.getElementById('ssoForm').submit();
+            </script>
+        </body>
+        </html>";
+
+
         return Content(html, "text/html", Encoding.UTF8);
     }
 }

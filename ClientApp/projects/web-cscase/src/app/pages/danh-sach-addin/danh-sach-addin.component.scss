@@ -230,6 +230,14 @@ textarea {
     padding: 0.5rem 1rem 0.5rem 1.5rem !important;
 }
 
+::ng-deep .choose-file-butt {
+    border-left: none;
+}
+
+::ng-deep .view-file-butt {
+    border-left: 1px solid #fff;
+}
+
 ::ng-deep .close-detail-butt {
     border: 1px solid $brand-blue !important;
 }

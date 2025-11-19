@@ -10,6 +10,7 @@ namespace educlient.Data
     public interface IDbLiteContext : IDisposable
     {
         ILiteCollection<T> Table<T>();
+        ILiteStorage<string> FileStorage { get; }
     }
 
 
@@ -26,6 +27,8 @@ namespace educlient.Data
             if (!Directory.Exists(dataDir)) Directory.CreateDirectory(dataDir);
             MainDB = new LiteDatabase("data/main.db");
         }
+
+        public ILiteStorage<string> FileStorage => MainDB.FileStorage;
 
         public void Dispose()
         {
@@ -179,9 +182,6 @@ namespace educlient.Data
         public string IdTruong { get; set; }
         public string MaTruong { get; set; }
         public string TenTruong { get; set; }
-        public DateTime? ThoiDiemTrienKhai { get; set; }
-        public int? SoNamDungEdusoft { get; set; }
-        public DateTime? NgayHetHanNangCap { get; set; }
         public string DiaChiTruong { get; set; }
         public ContactPerson HieuTruong { get; set; }
         public ContactPerson HieuPho { get; set; }
@@ -231,14 +231,25 @@ namespace educlient.Data
 
     public class DanhSachAddin
     {
-        public string IDAddin; 
-        public string IDAddinParent;
-        public string MaAddin;
-        public string TenAddin;
-        public string GhiChuAddin;
-        public string GhiChuSale;
-        public string GhiChuDev ;
-        public string GhiChuSupport;
-        public double? DonGia;
+        public string IDAddin { get; set; }
+        public string IDAddinParent { get; set; }
+        public string MaAddin { get; set; }
+        public string TenAddin { get; set; }
+        public string GhiChuAddin { get; set; }
+        public string GhiChuSale { get; set; }
+        public string GhiChuDev { get; set; }
+        public string GhiChuSupport { get; set; }
+        public double? DonGia { get; set; } 
+    }
+
+    public class AQDanhMucAddin
+    {
+        [BsonId]
+        public int IdKey { get; set; }
+        public string IDAddin { get; set; }
+        public string FileWordId { get; set; }
+        public string FilePdfId { get; set; }
+        public string FileWordName { get; set; }
+        public string FilePdfName { get; set; }
     }
 }
