@@ -18,6 +18,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Net.WebSockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace educlient.Controllers
     public class MainController : ControllerBase
     {
         private readonly IDbLiteContext database;
+        private string secretKey = "p994ZjcG4tirIF75JDFqO6YkYvu2Ris0rfP3U2OJqUIELsvWRL5Kt58xaFpzGFRG";
 
         ISession Session
         {
@@ -51,12 +53,6 @@ namespace educlient.Controllers
 
         [HttpPost, Route("login")]
         public object Login(LoginModel log)
-        {
-            return PerformLoginLogic(log);
-        }
-
-        [HttpPost, Route("autologin-sso")] 
-        public object AutoLogin([FromForm] LoginModel log)
         {
             return PerformLoginLogic(log);
         }
@@ -126,35 +122,66 @@ namespace educlient.Controllers
             return user;
         }
 
-        [HttpGet("sso-get-session")]
-        public IActionResult SsoGetSession()
+        [HttpGet("sso-login")]
+        public IActionResult SsoLogin(string token)
         {
+            var parts = token.Split('.');
+            if (parts.Length != 2)
+                return Unauthorized("Token không hợp lệ");
+
+            var payloadBase64 = parts[0];
+            var signature = parts[1];
+
+            var expectedSig = Sign(payloadBase64, secretKey);
+            if (expectedSig != signature)
+                return Unauthorized("Token không hợp lệ (sai signature)");
+
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(payloadBase64));
+            dynamic info = JsonConvert.DeserializeObject(json);
+
+            if (info.Exp != null && DateTime.UtcNow > info.Exp)
+                return Unauthorized("Token đã hết hạn");
+
+            var user = new EduClient
+            {
+                MaTruong = info.MaTruong,
+                TenTruong = info.TenTruong,
+                Roles = info.Roles
+            };
+
+            Session.SetString("current-user", JsonConvert.SerializeObject(user));
+
             var html = @"
             <html>
-                <head><title>Đang xác thực...</title></head>
                 <body>
-                    <p>Đang xác thực đăng nhập, vui lòng chờ...</p>
-
+                    <p>Đang đăng nhập, vui lòng chờ...</p>
                     <script>
-                        // Gọi API lấy thông tin user theo session cookie
                         fetch('/api/main/profile', { credentials: 'include' })
                             .then(r => r.json())
                             .then(user => {
-                                // Lưu user vào sessionStorage giống như FE login
                                 sessionStorage.setItem('current-user', JSON.stringify(user));
-
-                                // Redirect vào trang chính
                                 window.location.href = '/#/main/cscase';
                             })
-                            .catch(err => {
-                                document.body.innerHTML = 'SSO thất bại: ' + err;
-                            });
+                            .catch(err => document.body.innerHTML = 'SSO lỗi: ' + err);
                     </script>
                 </body>
             </html>";
 
             return Content(html, "text/html");
         }
+
+        private string Sign(string data, string key)
+        {
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var dataBytes = Encoding.UTF8.GetBytes(data);
+
+            using (var hmac = new HMACSHA256(keyBytes))
+            {
+                var hash = hmac.ComputeHash(dataBytes);
+                return Convert.ToBase64String(hash);
+            }
+        }
+
 
         [HttpGet("profile")]
         public IActionResult GetCurrentUser()
