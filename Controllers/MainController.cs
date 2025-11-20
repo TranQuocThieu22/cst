@@ -125,6 +125,7 @@ namespace educlient.Controllers
         [HttpGet("sso-login")]
         public IActionResult SsoLogin(string token)
         {
+            token = Uri.UnescapeDataString(token);
             var parts = token.Split('.');
             if (parts.Length != 2)
                 return Unauthorized("Token không hợp lệ");
