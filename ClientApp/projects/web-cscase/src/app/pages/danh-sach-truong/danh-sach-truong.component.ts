@@ -347,42 +347,10 @@ export class DanhSachTruongComponent implements OnInit {
         }
     }
 
-    navigateToOtherApp(): void {
-        if (!this.hoSoTruongDangXem) {
-            this.messageService.add({ severity: 'warn', summary: 'Chưa chọn trường' });
-            return;
-        }
-        const newTab = window.open('about:blank', '_blank');
-        if (!newTab) {
-            this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Vui lòng cho phép pop-up cho trang này.' });
-            return;
-        }
-
-        this.isSsoLoading = true;
-
-        if (this.ssoSub) {
-            this.ssoSub.unsubscribe();
-        }
-
-        this.ssoSub = this.http.get<{ autoLoginUrl: string }>('/api/sso/get-autologin-url')
-            .subscribe({
-                next: (response) => {
-                    this.isSsoLoading = false;
-                    if (response && response.autoLoginUrl) {
-                        // 3. Chỉ điều hướng tab đã mở
-                        newTab.location.href = response.autoLoginUrl;
-                    } else {
-                        newTab.close(); // Đóng tab nếu có lỗi
-                        this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không thể lấy link đăng nhập.' });
-                    }
-                },
-                error: (err) => {
-                    this.isSsoLoading = false;
-                    console.error('Lỗi khi gọi SSO API:', err);
-                    newTab.close(); // Đóng tab nếu có lỗi
-                    this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không thể kết nối đến máy chủ.' });
-                }
-            });
+    navigateToOtherApp() {
+        this.http.get<any>('/api/sso/sso-cst-url').subscribe(res => {
+            window.open(res.autoLoginUrl, "_blank");
+        });
     }
 
     onCloseAddinDialog(): void {
