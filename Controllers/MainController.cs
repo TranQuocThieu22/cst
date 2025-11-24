@@ -138,9 +138,9 @@ namespace educlient.Controllers
                 return Unauthorized("Token không hợp lệ (sai signature)");
 
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(payloadBase64));
-            dynamic info = JsonConvert.DeserializeObject(json);
+            var info = JsonConvert.DeserializeObject<SsoPayload>(json);
 
-            if (info.Exp != null && DateTime.UtcNow > info.Exp)
+            if (DateTime.UtcNow > info.Exp)
                 return Unauthorized("Token đã hết hạn");
 
             var user = new EduClient
@@ -1966,6 +1966,14 @@ public class CSCaseDataRelease
     public string ngaydukien { get; set; }
     public string whatnew { get; set; }
     public string reviewcase { get; set; }
+}
+
+public class SsoPayload
+{
+    public string MaTruong { get; set; }
+    public string TenTruong { get; set; }
+    public string Roles { get; set; }
+    public DateTime Exp { get; set; } 
 }
 
 // public class stringAdditionalDO
