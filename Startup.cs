@@ -25,17 +25,6 @@ namespace educlient
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowMyAngularApp",
-            //        builder =>
-            //        {
-            //            builder.WithOrigins("http://localhost:4202")
-            //                   .AllowAnyHeader()
-            //                   .AllowAnyMethod();
-            //        });
-            //});
-
             services.AddDistributedMemoryCache();
             services.AddMemoryCache();
             services.AddResponseCompression(options =>
@@ -50,11 +39,12 @@ namespace educlient
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            services.AddControllersWithViews()
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error;
-                });
+            //services.AddControllersWithViews()
+            //    .AddNewtonsoftJson(options =>
+            //    {
+            //        options.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error;
+            //    });
+            services.AddControllersWithViews();
             services.AddHttpClient();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
