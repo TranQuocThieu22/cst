@@ -126,6 +126,23 @@ namespace educlient.Controllers
             {
                 var apiRespone = JsonConvert.DeserializeObject<DanhSachAddinResultDTO>(jsonData);
 
+                if (apiRespone.data != null && apiRespone.data.Count > 0)
+                {
+                    var phuLucAddin = database.Table<AQDanhMucAddin>();
+                    var phuLucAddinList = phuLucAddin.FindAll().ToList();
+                    var phuLucAddinDict = phuLucAddinList.ToDictionary(x => x.IDAddin, x => x);
+
+                    foreach (var item in apiRespone.data)
+                    {
+                        if (phuLucAddinDict.ContainsKey(item.IDAddin))
+                        {
+                            var phuLucInfo = phuLucAddinDict[item.IDAddin];
+                            item.FileWordName = phuLucInfo.FileWordName;
+                            item.FilePdfName = phuLucInfo.FilePdfName;
+                        }
+                    }
+                }
+
                 apiRespone.message = "Success!";
                 return apiRespone;
             }

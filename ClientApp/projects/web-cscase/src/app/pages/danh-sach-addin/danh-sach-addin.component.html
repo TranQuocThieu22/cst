@@ -20,11 +20,13 @@
                 <th pSortableColumn="maAddin" style="width: 10rem">
                     Mã Addin <p-sortIcon field="maAddin"></p-sortIcon>
                 </th>
-                <th pSortableColumn="tenAddin" style="width: 20rem">
+                <th pSortableColumn="tenAddin" style="width: 15rem">
                     Tên Addin <p-sortIcon field="tenAddin"></p-sortIcon>
                 </th>
-                <th style="width: 25rem">Mô tả tính năng</th>
+                <th style="width: 20rem">Mô tả tính năng</th>
                 <th style="width: 10rem">Đơn giá</th>
+                <th class="text-center" style="width: 10rem">Phụ lục word</th>
+                <th class="text-center" style="width: 10rem">Phụ lục PDF</th>
             </tr>
         </ng-template>
 
@@ -41,8 +43,21 @@
                 <td class="p-cell-truncate" [title]="group.tenAddin">
                     {{ group.tenAddin }}
                 </td>
-                <td>{{ group.ghiChuAddin }}</td>
+                <td class="p-cell-truncate">{{ group.ghiChuAddin }}</td>
                 <td>{{ group.donGia > 0 ? (group.donGia | number) : '' }}</td>
+                <td class="text-center">
+                    <i *ngIf="group.fileWordName" class="pi pi-eye text-primary text-xl cursor-pointer"
+                        pTooltip="Tải file word hiện tại" tooltipPosition="top"
+                        (click)="onDownloadFileInTable(group, 'word'); $event.stopPropagation()">
+                    </i>
+                </td>
+
+                <td class="text-center">
+                    <i *ngIf="group.filePdfName" class="pi pi-eye text-primary text-xl cursor-pointer"
+                        pTooltip="Tải file PDF hiện tại" tooltipPosition="top"
+                        (click)="onDownloadFileInTable(group, 'pdf'); $event.stopPropagation()">
+                    </i>
+                </td>
             </tr>
 
             <ng-container *ngIf="expandedGroups[group.idAddin]">
@@ -54,6 +69,19 @@
                     <td class="p-cell-truncate" [title]="item.tenAddin">{{ item.tenAddin }}</td>
                     <td>{{ item.ghiChuAddin }}</td>
                     <td>{{ item.donGia > 0 ? (item.donGia | number) : '' }}</td>
+                    <td class="text-center">
+                        <i *ngIf="item.fileWordName" class="pi pi-eye text-primary text-xl cursor-pointer"
+                            pTooltip="Tải file word hiện tại" tooltipPosition="top"
+                            (click)="onDownloadFileInTable(item, 'word'); $event.stopPropagation()">
+                        </i>
+                    </td>
+
+                    <td class="text-center">
+                        <i *ngIf="item.filePdfName" class="pi pi-eye text-primary text-xl cursor-pointer"
+                            pTooltip="Tải file PDF hiện tại" tooltipPosition="top"
+                            (click)="onDownloadFileInTable(item, 'pdf'); $event.stopPropagation()">
+                        </i>
+                    </td>
                 </tr>
             </ng-container>
         </ng-template>
@@ -69,14 +97,22 @@
 <p-dialog header="Chi tiết Addin" [(visible)]="displayDialog" [modal]="true" [style]="{ width: '80vw' }"
     [draggable]="false" [resizable]="false" (onHide)="handleDialogClose()" styleClass="addin-dialog">
 
-    <div *ngIf="selectedAddin" class="p-fluid formgrid grid gap-3">
+    <div *ngIf="selectedAddin" class="p-fluid formgrid grid">
 
-        <div class="field col-12 md:col-6 mt-2">
+        <div class="field col-12 md:col-6">
             <label><strong>Mã Addin</strong></label>
             <input pInputText [(ngModel)]="selectedAddin.maAddin" [disabled]="true" />
         </div>
 
         <div class="field col-12 md:col-6">
+            <label><strong>Đơn giá</strong></label>
+            <p-inputNumber [(ngModel)]="selectedAddin.donGia" [disabled]="!isEditing" mode="decimal" locale="vi-VN"
+                [minFractionDigits]="0" [maxFractionDigits]="0" styleClass="w-full">
+            </p-inputNumber>
+            <!-- <input pInputText type="number" [(ngModel)]="selectedAddin.donGia" [disabled]="!isEditing" /> -->
+        </div>
+
+        <div class="field col-12 md:col-12">
             <label><strong>Tên Addin</strong></label>
             <input pInputText [(ngModel)]="selectedAddin.tenAddin" [disabled]="true" />
         </div>
@@ -85,11 +121,6 @@
             <label><strong>Mô tả tính năng</strong></label>
             <textarea pInputTextarea rows="10" [(ngModel)]="selectedAddin.ghiChuAddin" [disabled]="!isEditing"
                 class="w-full"></textarea>
-        </div>
-
-        <div class="field col-12 md:col-6">
-            <label><strong>Đơn giá</strong></label>
-            <input pInputText type="number" [(ngModel)]="selectedAddin.donGia" [disabled]="!isEditing" />
         </div>
 
         <div class="field col-12">

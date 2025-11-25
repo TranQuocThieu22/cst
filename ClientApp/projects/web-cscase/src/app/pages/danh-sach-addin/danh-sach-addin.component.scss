@@ -32,6 +32,8 @@ textarea {
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
+
+
     /* Thanh tìm kiếm Addin */
     .p-input-icon-left {
         position: relative;
@@ -143,6 +145,7 @@ textarea {
             color: $text-gray;
             font-style: italic;
         }
+
     }
 
     /* Paginator */
@@ -210,6 +213,20 @@ textarea {
         font-size: 0.85rem;
         font-weight: 500;
     }
+
+    // p-inputnumber
+    ::ng-deep .p-inputnumber-input {
+        border: 1px solid $brand-blue;
+        border-radius: $main-border-radius;
+    }
+
+    ::ng-deep .p-inputnumber-input:disabled {
+        background-color: $disabled-bg !important;
+        color: $disabled-color !important;
+        opacity: 0.8;
+        color: black !important;
+    }
+
 }
 
 .p-cell-truncate {

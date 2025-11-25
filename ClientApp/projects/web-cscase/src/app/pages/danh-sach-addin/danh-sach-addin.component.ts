@@ -250,7 +250,7 @@ export class DanhSachAddinComponent implements OnInit {
         this.dsAddinService.updateAddinFiles(formData).subscribe(
             (res) => {
                 if (res && res.result) {
-                    this.finishUpdate("Cập nhật thông tin và file thành công!");
+                    this.finishUpdate("Cập nhật thông tin thành công!");
                 } else {
                     this.finishUpdate("Cập nhật thông tin thành công, lỗi upload file.");
                 }
@@ -304,4 +304,37 @@ export class DanhSachAddinComponent implements OnInit {
         );
     }
 
+    // Thêm hàm này vào class DanhSachAddinComponent
+
+    onDownloadFileInTable(item: any, fileType: 'word' | 'pdf') {
+        if (!item || !item.idAddin) return;
+
+        // Lấy tên file từ đối tượng dòng hiện tại
+        const fileName = fileType === 'word' ? item.fileWordName : item.filePdfName;
+
+        if (!fileName) {
+            this.messageService.add({ severity: 'warn', summary: 'Thông báo', detail: 'File không tồn tại.' });
+            return;
+        }
+
+        this.isLoading = true; // Bật loading nhẹ
+        this.dsAddinService.downloadFile(item.idAddin, fileType).subscribe(
+            (blob) => {
+                this.isLoading = false;
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            },
+            (error) => {
+                this.isLoading = false;
+                console.error("Download error:", error);
+                this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Không thể tải file.' });
+            }
+        );
+    }
 }

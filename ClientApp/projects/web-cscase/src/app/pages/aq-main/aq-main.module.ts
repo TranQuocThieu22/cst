@@ -1,6 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA, LOCALE_ID } from '@angular/core';
+import { CommonModule, HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
 
+import localeVi from '@angular/common/locales/vi';
 import { AqMainRoutingModule } from './aq-main-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -82,6 +83,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DanhSachTruongModule } from '../danh-sach-truong/danh-sach-truong.module';
 import { DanhSachAddinComponent } from '../danh-sach-addin/danh-sach-addin.component';
 
+registerLocaleData(localeVi);
+
 @NgModule({
   declarations: [AqMainComponent, ReportCaNhanComponent, NhanSuAqComponent,
     NgayNghiChungComponent, NgayCongTacComponent, NgayPhepCaNhanComponent,
@@ -151,6 +154,7 @@ import { DanhSachAddinComponent } from '../danh-sach-addin/danh-sach-addin.compo
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: LOCALE_ID, useValue: 'vi-VN' },
     DataServices, TransTextService, UploadFilesService, ConfirmationService,
     MessageService
   ],

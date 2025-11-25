@@ -9,6 +9,8 @@ export interface DanhSachAddinDTO {
     ghiChuDev: string;
     ghiChuSupport: string;
     donGia: number;
+    fileWordName?: string;
+    filePdfName?: string;
 }
 
 export interface DanhSachAddinResultDTO {
