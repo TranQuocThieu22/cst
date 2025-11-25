@@ -239,7 +239,10 @@ namespace educlient.Data
         public string GhiChuSale { get; set; }
         public string GhiChuDev { get; set; }
         public string GhiChuSupport { get; set; }
-        public double? DonGia { get; set; } 
+        public double? DonGia { get; set; }
+
+        public string FileWordName { get; set; }
+        public string FilePdfName { get; set; }
     }
 
     public class AQDanhMucAddin
