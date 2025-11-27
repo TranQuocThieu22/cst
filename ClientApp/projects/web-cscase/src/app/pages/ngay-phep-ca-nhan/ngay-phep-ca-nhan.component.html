@@ -209,8 +209,8 @@
 </div>
 
 
-<p-dialog header="Nhập thông tin ngày nghỉ phép" [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '800px'}"
-    [contentStyle]="{minHeight: '350px'}" [modal]="true" styleClass="p-fluid">
+<p-dialog header="Nhập thông tin ngày nghỉ phép" [(visible)]="openDialog" [style]="{width: '100%', maxWidth: '85%'}"
+    [contentStyle]="{minHeight: '350px'}" [modal]="true" styleClass="p-fluid" [draggable]="false">
 
     <ng-template pTemplate="content">
         <div class="formgrid grid">
@@ -225,118 +225,21 @@
 
             <div class="field col-12 md:col-6">
                 <label for="icon">Chọn ngày</label>
-                <p-calendar [(ngModel)]="IndividualDayOff.date" [showIcon]="true" inputId="icon"
-                    dateFormat="dd/mm/yy">
+                <p-calendar [(ngModel)]="IndividualDayOff.date" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy">
                 </p-calendar>
             </div>
 
             <div class="field col-12">
                 <label *ngIf="checkIsLeader()" for="memberId">Họ tên nhân viên
                 </label>
-                <p-dropdown *ngIf="checkIsLeader()"
-                    [options]="MemberList"
-                    [(ngModel)]="IndividualDayOff.member.id"
-                    (onChange)="fetchIndividualAbsenceQuota(IndividualDayOff.member.id)"
-                    optionLabel="fullName" [filter]="true" filterBy="fullName" [showClear]="true"
-                    placeholder="Chọn nhân viên" optionValue="id">
+                <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="IndividualDayOff.member.id"
+                    (onChange)="fetchIndividualAbsenceQuota(IndividualDayOff.member.id)" optionLabel="fullName"
+                    [filter]="true" filterBy="fullName" [showClear]="true" placeholder="Chọn nhân viên"
+                    optionValue="id">
                 </p-dropdown>
             </div>
             <div *ngIf="checkIsLeader()" class="mt-2">
             </div>
-
-            <div *ngIf="ThongTinNghiPhepCaNhan.length > 0" class="field col-12">
-                <div class="flex flex-column">
-                    <span class="">Hạn mức nghỉ phép cá nhân {{ThongTinNghiPhepCaNhan[0].year}}</span>
-                    <div class="flex justify-content-center mt-2">
-                        <p-table
-                            [value]="ThongTinNghiPhepCaNhan"
-                            styleClass="p-datatable-sm p-datatable-gridlines">
-                            <ng-template pTemplate="header">
-                                <tr>
-                                    <th colspan="2" rowspan="4">
-                                        Hạn mức<br>ngày phép
-                                    </th>
-                                    <th style="text-align: center;" colspan="6">
-                                        Số ngày đã nghỉ
-                                    </th>
-                                    <th colspan="2" rowspan="4">
-                                        Hạn mức đã sử dụng
-                                    </th>
-                                    <th colspan="2" rowspan="4">
-                                        Hạn mức<br>còn lại
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th style="text-align: center; width:10%" rowspan="4">Tổng cộng</th>
-                                    <th style="text-align: center;" colspan="5">Phân loại</th>
-                                </tr>
-                                <tr>
-                                    <th style="text-align: center;" colspan="4">Có tính phép</th>
-                                    <th style="text-align: center; width:10%" rowspan="3">Không tính phép</th>
-                                </tr>
-                                <tr>
-                                    <th style="text-align: center;" colspan="2">Cả ngày</th>
-                                    <th style="text-align: center;" colspan="2">Nửa buổi</th>
-                                </tr>
-                                <tr>
-                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
-                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
-                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
-                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
-                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
-                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
-                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
-                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
-                                    <th style="white-space: wrap; width:8%">Cơ bản</th>
-                                    <th style="white-space: wrap; width:8%">Tăng thêm</th>
-                                </tr>
-
-                            </ng-template>
-                            <ng-template pTemplate="body" let-member>
-                                <tr>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].minAbsenceQuota}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].additionalAbsenceQuota}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].totalDayOff}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].totalDayOffFullType1}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].totalDayOffFullType2}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].totalDayOffHalfType1}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].totalDayOffHalfType2}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].totalDayOffType3_4}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].usedMinAbsenceQuota}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].usedAdditionalAbsenceQuota}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].remainMinAbsenceQuota}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ThongTinNghiPhepCaNhan[0].remainAdditionalAbsenceQuota}}
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-                </div>
-            </div>
-
             <ng-template #hanmuccanhan_elseblock>
                 <div class="flex flex-column">
                     <span class="">Hạn mức nghỉ phép cá nhân {{ThongTinNghiPhepCaNhan[0].year}}</span>
@@ -348,20 +251,14 @@
 
 
             <div class="field mt-2 col-12 sm:col-6 md:col-4">
-                <p-dropdown
-                    [options]="DayOffPeriod"
-                    [(ngModel)]="IndividualDayOff.periodType"
-                    optionLabel="label" [showClear]="true"
-                    placeholder="Chọn buổi nghỉ" optionValue="value">
+                <p-dropdown [options]="DayOffPeriod" [(ngModel)]="IndividualDayOff.periodType" optionLabel="label"
+                    [showClear]="true" placeholder="Chọn buổi nghỉ" optionValue="value">
                 </p-dropdown>
             </div>
             <div class="mt-2 col-12 sm:col-6 md:col-4">
                 <div class="ml-0 sm:ml-5 mt-2 md:mt-0">
                     <label for="isDayOffWithPayment">Có tính lương</label>
-                    <p-checkbox
-                        class="pb-2 ml-2"
-                        [(ngModel)]="IndividualDayOff.isDayOffWithPayment"
-                        binary="true"
+                    <p-checkbox class="pb-2 ml-2" [(ngModel)]="IndividualDayOff.isDayOffWithPayment" binary="true"
                         inputId="isDayOffWithPayment">
                     </p-checkbox>
                 </div>
@@ -369,26 +266,22 @@
             <div class="col-12 md:col-4 mt-2">
                 <label>Tính vào:</label>
                 <div class="mt-2 field-radiobutton">
-                    <p-radioButton name="adsenceQuotaRadioButton" value="1"
-                        [(ngModel)]="IndividualDayOff.dayOffType"
+                    <p-radioButton name="adsenceQuotaRadioButton" value="1" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType1"></p-radioButton>
                     <label for="quotaType1">Hạn mức cơ bản</label>
                 </div>
                 <div class="field-radiobutton">
-                    <p-radioButton name="adsenceQuotaRadioButton" value="2"
-                        [(ngModel)]="IndividualDayOff.dayOffType"
+                    <p-radioButton name="adsenceQuotaRadioButton" value="2" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType2"></p-radioButton>
                     <label for="quotaType2">Hạn mức tăng thêm</label>
                 </div>
                 <div class="field-radiobutton">
-                    <p-radioButton name="adsenceQuotaRadioButton" value="3"
-                        [(ngModel)]="IndividualDayOff.dayOffType"
+                    <p-radioButton name="adsenceQuotaRadioButton" value="3" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType3"></p-radioButton>
                     <label for="quotaType3">Nghỉ có phép nhưng không tính hạn mức</label>
                 </div>
                 <div class="field-radiobutton">
-                    <p-radioButton name="adsenceQuotaRadioButton" value="4"
-                        [(ngModel)]="IndividualDayOff.dayOffType"
+                    <p-radioButton name="adsenceQuotaRadioButton" value="4" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType4"></p-radioButton>
                     <label for="quotaType4">Nghỉ không phép</label>
                 </div>
@@ -396,27 +289,96 @@
 
             <div class="field col-12 mt-2">
                 <label for="reason">Lí do nghỉ phép</label>
-                <input
-                    type="text" pInputText id="reason" required
-                    [(ngModel)]="IndividualDayOff.reason" />
+                <input type="text" pInputText id="reason" required [(ngModel)]="IndividualDayOff.reason" />
             </div>
 
             <div class="field col-12">
                 <label>Ghi chú</label>
-                <textarea
-                    [rows]="5" [cols]="30"
-                    pInputTextarea [autoResize]="true"
-                    [(ngModel)]="IndividualDayOff.note">
+                <textarea [rows]="5" [cols]="30" pInputTextarea [autoResize]="true" [(ngModel)]="IndividualDayOff.note">
                 </textarea>
             </div>
 
             <div class="field col-12" *ngIf="checkIsLeader()">
                 <label for="approvalStatus">Trạng thái</label>
-                <p-selectButton
-                    [options]="approvalStatusOptions"
-                    [(ngModel)]="IndividualDayOff.approvalStatus"
+                <p-selectButton [options]="approvalStatusOptions" [(ngModel)]="IndividualDayOff.approvalStatus"
                     optionLabel="label" optionValue="value">
                 </p-selectButton>
+            </div>
+
+            <div *ngIf="ThongTinNghiPhepCaNhan.length > 0" class="field col-12">
+                <h5 class="mb-3 pl-1">Thông tin hạn mức năm {{ThongTinNghiPhepCaNhan[0].year}}</h5>
+
+                <div class="grid">
+                    <div class="col-12 md:col-4">
+                        <div class="surface-card p-4 shadow-2 border-round h-full">
+                            <div class="flex justify-content-between mb-3">
+                                <div>
+                                    <span class="block text-500 font-medium mb-3">Hạn mức cơ bản</span>
+                                    <div class="text-900 font-medium text-xl">
+                                        Còn lại: <span
+                                            class="text-green-600">{{ThongTinNghiPhepCaNhan[0].remainMinAbsenceQuota}}</span>
+                                        ngày
+                                    </div>
+                                </div>
+                                <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+                                    style="width:2.5rem;height:2.5rem">
+                                    <i class="pi pi-id-card text-blue-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex justify-content-between border-top-1 surface-border pt-2">
+                                <span class="text-500">Tổng:
+                                    <strong>{{ThongTinNghiPhepCaNhan[0].minAbsenceQuota}}</strong></span>
+                                <span class="text-500">Đã nghỉ: <strong
+                                        class="text-pink-500">{{ThongTinNghiPhepCaNhan[0].usedMinAbsenceQuota}}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 md:col-4">
+                        <div class="surface-card p-4 shadow-2 border-round h-full">
+                            <div class="flex justify-content-between mb-3">
+                                <div>
+                                    <span class="block text-500 font-medium mb-3">Hạn mức tăng thêm</span>
+                                    <div class="text-900 font-medium text-xl">
+                                        Còn lại: <span
+                                            class="text-green-600">{{ThongTinNghiPhepCaNhan[0].remainAdditionalAbsenceQuota}}</span>
+                                        ngày
+                                    </div>
+                                </div>
+                                <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
+                                    style="width:2.5rem;height:2.5rem">
+                                    <i class="pi pi-star text-orange-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex justify-content-between border-top-1 surface-border pt-2">
+                                <span class="text-500">Tổng:
+                                    <strong>{{ThongTinNghiPhepCaNhan[0].additionalAbsenceQuota}}</strong></span>
+                                <span class="text-500">Đã nghỉ: <strong
+                                        class="text-pink-500">{{ThongTinNghiPhepCaNhan[0].usedAdditionalAbsenceQuota}}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 md:col-4">
+                        <div class="surface-card p-4 shadow-2 border-round h-full">
+                            <div class="flex justify-content-between mb-3">
+                                <div>
+                                    <span class="block text-500 font-medium mb-3">Nghỉ loại khác</span>
+                                    <div class="text-900 font-medium text-xl">
+                                        Tổng: {{ThongTinNghiPhepCaNhan[0].totalDayOffType3_4}} ngày
+                                    </div>
+                                </div>
+                                <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
+                                    style="width:2.5rem;height:2.5rem">
+                                    <i class="pi pi-info-circle text-cyan-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="text-500 mt-1">
+                                <small>Bao gồm nghỉ không lương và nghỉ có phép không tính hạn mức.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -426,11 +388,10 @@
     <!-- edit/addnew DayOff -->
     <ng-template pTemplate="footer">
         <!-- icon="pi pi-times" -->
-        <button pButton pRipple label="Quay lại" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Quay lại" class="p-button-outlined" (click)="hideDialog()"></button>
         <!-- icon="pi pi-check"  -->
         <button [disabled]="!isValidDateRange" pButton pRipple
-            [label]="editIndividualDayOffDialog ? 'Lưu chỉnh sửa' : 'Tạo ngày nghỉ'"
-            class="p-button-text"
+            [label]="editIndividualDayOffDialog ? 'Lưu chỉnh sửa' : 'Tạo ngày nghỉ'" class="p-button-outlined"
             (click)="editIndividualDayOffDialog ? updateIndividualDayOff() : addNewIndividualDayOff()"></button>
     </ng-template>
 </p-dialog>
