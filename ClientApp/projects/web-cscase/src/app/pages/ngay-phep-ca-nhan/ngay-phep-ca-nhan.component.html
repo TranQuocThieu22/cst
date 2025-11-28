@@ -223,14 +223,8 @@
                 </span>
             </div>
 
-            <div class="field col-12 md:col-6">
-                <label for="icon">Chọn ngày</label>
-                <p-calendar [(ngModel)]="IndividualDayOff.date" [showIcon]="true" inputId="icon" dateFormat="dd/mm/yy">
-                </p-calendar>
-            </div>
-
-            <div class="field col-12">
-                <label *ngIf="checkIsLeader()" for="memberId">Họ tên nhân viên
+            <div class="field col-12 md:col-4">
+                <label *ngIf="checkIsLeader()" class="font-bold" for="memberId">Họ tên
                 </label>
                 <p-dropdown *ngIf="checkIsLeader()" [options]="MemberList" [(ngModel)]="IndividualDayOff.member.id"
                     (onChange)="fetchIndividualAbsenceQuota(IndividualDayOff.member.id)" optionLabel="fullName"
@@ -238,6 +232,51 @@
                     optionValue="id">
                 </p-dropdown>
             </div>
+
+            <div class="field col-8"></div>
+
+            <div class="field col-12 flex flex-column md:flex-row gap-3">
+
+                <!-- Ngày nghỉ -->
+                <div class="w-full md:w-3">
+                    <label for="icon" class="font-bold">Ngày nghỉ</label>
+                    <p-calendar [(ngModel)]="IndividualDayOff.date" [showIcon]="true" inputId="icon"
+                        dateFormat="dd/mm/yy">
+                    </p-calendar>
+                </div>
+
+                <div class="w-full md:w-1"></div>
+
+                <!-- Buổi nghỉ -->
+                <div class="w-full md:w-4">
+                    <label class="block mb-3 font-bold">Buổi nghỉ</label>
+
+                    <div class="flex flex-column sm:flex-row flex-wrap gap-3">
+                        <div *ngFor="let item of DayOffPeriod" class="field-radiobutton flex align-items-center mb-0">
+                            <p-radioButton name="periodTypeGroup" [value]="item.value"
+                                [(ngModel)]="IndividualDayOff.periodType" [inputId]="'period_' + item.value">
+                            </p-radioButton>
+
+                            <label [for]="'period_' + item.value" class="cursor-pointer ml-2 mb-0">
+                                {{ item.label }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Có tính lương -->
+                <div class="w-full md:w-4">
+                    <label for="isDayOffWithPayment" class="font-bold mb-3">Có tính lương</label>
+                    <div>
+                        <p-checkbox [(ngModel)]="IndividualDayOff.isDayOffWithPayment" binary="true"
+                            inputId="isDayOffWithPayment">
+                        </p-checkbox>
+                    </div>
+                </div>
+
+            </div>
+
+
             <div *ngIf="checkIsLeader()" class="mt-2">
             </div>
             <ng-template #hanmuccanhan_elseblock>
@@ -249,64 +288,45 @@
                 </div>
             </ng-template>
 
-
-            <div class="field mt-2 col-12 sm:col-6 md:col-4">
-                <p-dropdown [options]="DayOffPeriod" [(ngModel)]="IndividualDayOff.periodType" optionLabel="label"
-                    [showClear]="true" placeholder="Chọn buổi nghỉ" optionValue="value">
-                </p-dropdown>
-            </div>
-            <div class="mt-2 col-12 sm:col-6 md:col-4">
-                <div class="ml-0 sm:ml-5 mt-2 md:mt-0">
-                    <label for="isDayOffWithPayment">Có tính lương</label>
-                    <p-checkbox class="pb-2 ml-2" [(ngModel)]="IndividualDayOff.isDayOffWithPayment" binary="true"
-                        inputId="isDayOffWithPayment">
-                    </p-checkbox>
-                </div>
-            </div>
-            <div class="col-12 md:col-4 mt-2">
-                <label>Tính vào:</label>
-                <div class="mt-2 field-radiobutton">
+            <div class="col-12 mt-2 d-flex gap-5">
+                <div class="field-radiobutton d-flex align-items-center ">
                     <p-radioButton name="adsenceQuotaRadioButton" value="1" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType1"></p-radioButton>
-                    <label for="quotaType1">Hạn mức cơ bản</label>
+                    <label class="mb-0" for="quotaType1">Hạn mức cơ bản</label>
                 </div>
-                <div class="field-radiobutton">
+                <div class="field-radiobutton d-flex align-items-center">
                     <p-radioButton name="adsenceQuotaRadioButton" value="2" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType2"></p-radioButton>
-                    <label for="quotaType2">Hạn mức tăng thêm</label>
+                    <label class="mb-0" for="quotaType2">Hạn mức tăng thêm</label>
                 </div>
-                <div class="field-radiobutton">
+                <div class="field-radiobutton d-flex align-items-center">
                     <p-radioButton name="adsenceQuotaRadioButton" value="3" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType3"></p-radioButton>
-                    <label for="quotaType3">Nghỉ có phép nhưng không tính hạn mức</label>
+                    <label class="mb-0" for="quotaType3">Nghỉ có phép nhưng không tính hạn mức</label>
                 </div>
-                <div class="field-radiobutton">
+                <div class="field-radiobutton d-flex align-items-center">
                     <p-radioButton name="adsenceQuotaRadioButton" value="4" [(ngModel)]="IndividualDayOff.dayOffType"
                         inputId="quotaType4"></p-radioButton>
-                    <label for="quotaType4">Nghỉ không phép</label>
+                    <label class="mb-0" for="quotaType4">Nghỉ không phép</label>
                 </div>
             </div>
 
-            <div class="field col-12 mt-2">
+            <div class="field col-12 mt-2 font-bold">
                 <label for="reason">Lí do nghỉ phép</label>
                 <input type="text" pInputText id="reason" required [(ngModel)]="IndividualDayOff.reason" />
             </div>
 
-            <div class="field col-12">
-                <label>Ghi chú</label>
-                <textarea [rows]="5" [cols]="30" pInputTextarea [autoResize]="true" [(ngModel)]="IndividualDayOff.note">
-                </textarea>
+            <div class="field col-4 md:col-12 font-bold" *ngIf="checkIsLeader()">
+                <label for="approvalStatus">Trạng thái</label>
+                <p-dropdown id="approvalStatus" [options]="approvalStatusOptions"
+                    [(ngModel)]="IndividualDayOff.approvalStatus" optionLabel="label" optionValue="value"
+                    placeholder="Chọn trạng thái" [showClear]="true">
+                </p-dropdown>
             </div>
 
-            <div class="field col-12" *ngIf="checkIsLeader()">
-                <label for="approvalStatus">Trạng thái</label>
-                <p-selectButton [options]="approvalStatusOptions" [(ngModel)]="IndividualDayOff.approvalStatus"
-                    optionLabel="label" optionValue="value">
-                </p-selectButton>
-            </div>
 
             <div *ngIf="ThongTinNghiPhepCaNhan.length > 0" class="field col-12">
-                <h5 class="mb-3 pl-1">Thông tin hạn mức năm {{ThongTinNghiPhepCaNhan[0].year}}</h5>
+                <label class="mb-3 pl-1 font-bold">Thông tin hạn mức năm {{ThongTinNghiPhepCaNhan[0].year}}</label>
 
                 <div class="grid">
                     <div class="col-12 md:col-4">
@@ -319,10 +339,6 @@
                                             class="text-green-600">{{ThongTinNghiPhepCaNhan[0].remainMinAbsenceQuota}}</span>
                                         ngày
                                     </div>
-                                </div>
-                                <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
-                                    style="width:2.5rem;height:2.5rem">
-                                    <i class="pi pi-id-card text-blue-500 text-xl"></i>
                                 </div>
                             </div>
                             <div class="flex justify-content-between border-top-1 surface-border pt-2">
@@ -345,10 +361,7 @@
                                         ngày
                                     </div>
                                 </div>
-                                <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
-                                    style="width:2.5rem;height:2.5rem">
-                                    <i class="pi pi-star text-orange-500 text-xl"></i>
-                                </div>
+
                             </div>
                             <div class="flex justify-content-between border-top-1 surface-border pt-2">
                                 <span class="text-500">Tổng:
@@ -367,10 +380,6 @@
                                     <div class="text-900 font-medium text-xl">
                                         Tổng: {{ThongTinNghiPhepCaNhan[0].totalDayOffType3_4}} ngày
                                     </div>
-                                </div>
-                                <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
-                                    style="width:2.5rem;height:2.5rem">
-                                    <i class="pi pi-info-circle text-cyan-500 text-xl"></i>
                                 </div>
                             </div>
                             <div class="text-500 mt-1">

@@ -50,6 +50,14 @@ export class NgayPhepCaNhanComponent implements OnInit {
     { value: 3, label: 'Chiều' },
   ];
 
+
+  dayOffTypeOptions = [
+    { label: 'Hạn mức cơ bản', value: 1 },
+    { label: 'Hạn mức tăng thêm', value: 2 },
+    { label: 'Nghỉ có phép nhưng không tính hạn mức', value: 3 },
+    { label: 'Nghỉ không phép', value: 4 }
+  ];
+
   filter_datefrom: string = '';
   filter_dateto: string = '';
   isValidDateRange: boolean = true;
