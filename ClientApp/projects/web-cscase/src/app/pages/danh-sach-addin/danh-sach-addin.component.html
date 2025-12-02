@@ -67,7 +67,7 @@
                     <td>{{ ri + 1 }}.{{ i + 1 }}</td>
                     <td class="p-cell-truncate" [title]="item.maAddin">{{ item.maAddin }}</td>
                     <td class="p-cell-truncate" [title]="item.tenAddin">{{ item.tenAddin }}</td>
-                    <td>{{ item.ghiChuAddin }}</td>
+                    <td class="p-cell-truncate">{{ item.ghiChuAddin }}</td>
                     <td>{{ item.donGia > 0 ? (item.donGia | number) : '' }}</td>
                     <td class="text-center">
                         <i *ngIf="item.fileWordName" class="pi pi-eye text-primary text-xl cursor-pointer"
