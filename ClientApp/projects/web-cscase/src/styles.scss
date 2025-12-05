@@ -9,6 +9,10 @@ body {
   font-family: sans-serif !important;
 }
 
+textarea {
+  resize: none;
+}
+
 .clickable {
   cursor: pointer;
   outline: none;

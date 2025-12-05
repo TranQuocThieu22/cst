@@ -1,4 +1,5 @@
 using LiteDB;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -255,4 +256,41 @@ namespace educlient.Data
         public string FileWordName { get; set; }
         public string FilePdfName { get; set; }
     }
+
+    public class QuotationFeature
+    {
+        [BsonId]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public int? ParentId { get; set; }
+
+        public decimal? DetailPrice { get; set; }
+        public PackageIncluded? IncludedInPackage { get; set; }
+        public string? FeatureDescription { get; set; }
+        public string? DevNote { get; set; }
+        public string? SupNote { get; set; }
+        public string? SaleNote { get; set; }
+        public List<FeatureAttachment> Attachments { get; set; } = new List<FeatureAttachment>();
+        public string? YoutubeUrl { get; set; }
+
+    }
+
+    public class PackageIncluded
+    {
+        public bool Basic { get; set; }
+        public bool Standard { get; set; }
+        public bool Pro { get; set; }
+    }
+
+    public class FeatureAttachment
+    {
+        public string FileId { get; set; }   
+        public string FileName { get; set; }
+        public string FileType { get; set; }   
+        public long FileSize { get; set; }
+        public DateTime UploadDate { get; set; } = DateTime.Now;
+    }
+
+
 }

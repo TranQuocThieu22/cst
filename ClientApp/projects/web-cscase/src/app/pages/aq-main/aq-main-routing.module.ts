@@ -15,6 +15,7 @@ import { BaoBieuThongKeComponent } from '../bao-bieu-thong-ke/bao-bieu-thong-ke.
 import { BaoCaoTheoChuKyComponent } from '../bao-cao-theo-chu-ky/bao-cao-theo-chu-ky.component';
 import { DanhSachTruongComponent } from '../danh-sach-truong/danh-sach-truong.component';
 import { DanhSachAddinComponent } from '../danh-sach-addin/danh-sach-addin.component';
+import { TinhNangBaoGiaComponent } from '../tinh-nang-bao-gia/tinh-nang-bao-gia.component';
 
 const routes: Routes = [
   { path: 'aq-main', pathMatch: 'full', redirectTo: 'aq' },
@@ -34,6 +35,7 @@ const routes: Routes = [
       { path: 'baocaotheochuky', component: BaoCaoTheoChuKyComponent, canActivate: [AuthGuard] },
       { path: 'danhsachtruong', component: DanhSachTruongComponent, canActivate: [AuthGuard] },
       { path: 'danhsachaddin', component: DanhSachAddinComponent, canActivate: [AuthGuard] },
+      { path: 'tinhnangbaogia', component: TinhNangBaoGiaComponent, canActivate: [AuthGuard] },
       { path: '', redirectTo: 'aq', pathMatch: 'full' }
     ]
   },

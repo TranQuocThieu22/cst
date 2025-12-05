@@ -82,6 +82,8 @@ import { TabViewModule } from 'primeng/tabview';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DanhSachTruongModule } from '../danh-sach-truong/danh-sach-truong.module';
 import { DanhSachAddinComponent } from '../danh-sach-addin/danh-sach-addin.component';
+import { TinhNangBaoGiaComponent } from '../tinh-nang-bao-gia/tinh-nang-bao-gia.component';
+import { TreeTableModule } from 'primeng/treetable';
 
 registerLocaleData(localeVi);
 
@@ -91,9 +93,10 @@ registerLocaleData(localeVi);
     LamViecOnlineComponent, KetQuaLamViecCaNhanComponent, LamViecNgoaiGioComponent,
     BaoBieuThongKeComponent, TienAnTruaTheoThangComponent, TienCongTacPhiTheoQuiComponent,
     TienLamViecNgoaiGioTheoQuiComponent, ThongKeNghiPhepNamComponent, BaoCaoTheoChuKyComponent,
-    DanhSachAddinComponent
+    DanhSachAddinComponent, TinhNangBaoGiaComponent
   ],
   imports: [
+    TreeTableModule,
     FieldsetModule,
     FormsModule,
     ReactiveFormsModule,

@@ -1,0 +1,95 @@
+:host ::ng-deep {
+    .p-treetable {
+
+        // Thêm viền cho toàn bộ bảng
+        .p-treetable-table {
+            border-collapse: collapse;
+        }
+
+        // Kẻ dọc cho phần Header (Tiêu đề)
+        .p-treetable-thead>tr>th {
+            border-right: 1px solid #e5e7eb; // Màu xám nhạt (giống màu mặc định PrimeNG)
+            border-width: 0 1px 1px 0; // Kẻ phải và kẻ dưới
+            background-color: #f3f4f6; // Màu nền xám nhạt cho header
+
+            // Căn giữa tiêu đề luôn cho đẹp
+            &.text-center {
+                justify-content: center;
+            }
+        }
+
+        // Kẻ dọc cho phần Body (Dữ liệu)
+        .p-treetable-tbody>tr>td {
+            border-right: 1px solid #e5e7eb;
+            border-width: 0 1px 1px 0;
+        }
+
+        // --- Tùy chỉnh thêm (Optional) ---
+
+        // Bỏ đường kẻ bên phải của cột cuối cùng
+        .p-treetable-thead>tr>th:last-child,
+        .p-treetable-tbody>tr>td:last-child {
+            border-right: none;
+        }
+
+        // Màu nền xen kẽ cho các hàng //:nth-child(even)
+        .p-treetable-tbody>tr {
+            background-color: #f9fafb;
+
+            &.is-module-row {
+                background-color: #fffbf0 !important;
+                // Hoặc màu xám xanh nhẹ: #f8fafc
+
+                font-weight: 500;
+            }
+        }
+
+        .p-treetable-tbody>tr.is-group-row {
+
+            // Tắt đường kẻ dọc của tất cả các ô trong dòng Group
+            >td {
+                border-right: none !important;
+            }
+
+            // tô đậm dòng Group lên để giống tiêu đề hơn
+            background-color: #eef2f5 !important;
+            font-weight: bold;
+        }
+
+    }
+
+    .p-dialog-header {
+        padding-bottom: 0.5rem;
+    }
+
+}
+
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    // Cho phép cuộn ngang khi nội dung quá lớn
+    overflow-y: hidden;
+    // Ẩn cuộn dọc không cần thiết 
+    -webkit-overflow-scrolling: touch;
+    // Giúp cuộn mượt mà trên iPhone/iPad 
+
+    // Tùy chỉnh thanh cuộn cho đẹp (tùy chọn) 
+    &::-webkit-scrollbar {
+        height: 8px;
+        // Chiều cao thanh cuộn ngang
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+}

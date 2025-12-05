@@ -1,0 +1,400 @@
+<p-toolbar styleClass="mb-3">
+    <ng-template pTemplate="left">
+        <h3>Tính năng hợp đồng</h3>
+    </ng-template>
+
+    <ng-template pTemplate="right">
+        <button pButton pRipple label="Thêm mới" icon="pi pi-plus" class="p-button-success"
+            (click)="openAddDialog('group')">
+        </button>
+    </ng-template>
+</p-toolbar>
+
+<div class="card table-responsive-wrapper">
+    <p-treeTable [value]="treeData" [tableStyle]="{'min-width': '60rem'}" [loading]="loading">
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="text-center" style="width: 27%">Tên chức năng</th>
+                <th class="text-center" style="width: 10%">Đơn giá chi tiết</th>
+                <th class="text-center" style="width: 10%">Đơn giá (Gói cơ bản)</th>
+                <th class="text-center" style="width: 10%">Đơn giá (Gói tiêu chuẩn)</th>
+                <th class="text-center" style="width: 10%">Đơn giá (Gói Pro)</th>
+                <th class="text-center" style="width: 12%">Tài liệu</th>
+                <th class="text-center" style="width: 7%">Youtube</th>
+                <th class="text-center" style="width: 14%">Hành động</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode" (click)="onRowSelect(rowNode.node)" class="hover:bg-gray-100"
+                [class.cursor-pointer]="rowData.type !== 'group'" [class.is-group-row]="rowData.type === 'group'"
+                [class.is-module-row]="rowData.type === 'module'">
+
+                <td *ngIf="rowData.type === 'group'" colspan="8" class="bg-blue-50">
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    <span class="font-bold text-primary text-lg uppercase mr-2">{{ rowData.stt }}.</span>
+                    <span class="font-bold text-primary text-lg uppercase">{{ rowData.name }}</span>
+                </td>
+
+                <td *ngIf="rowData.type !== 'group'">
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    <span class="font-bold text-700 mr-1">{{ rowData.stt }}.</span>
+                    {{ rowData.name }}
+                </td>
+
+                <td *ngIf="rowData.type !== 'group'" class="text-center">
+                    <span *ngIf="!rowNode.node.children || rowNode.node.children.length === 0">
+                        {{ rowData.detailPrice | number:'1.0-0' }}
+                    </span>
+                </td>
+
+                <td *ngIf="rowData.type !== 'group'" class="text-center">
+                    <span *ngIf="rowNode.node.children && rowNode.node.children.length > 0"
+                        class="font-bold text-blue-600">
+                        {{ rowData.totalBasic | number:'1.0-0' }}
+                    </span>
+                    <i *ngIf="(!rowNode.node.children || rowNode.node.children.length === 0) && rowData.includedInPackage?.basic"
+                        class="pi pi-check text-green-500 text-xl font-bold"></i>
+                </td>
+
+                <td *ngIf="rowData.type !== 'group'" class="text-center">
+                    <span *ngIf="rowNode.node.children && rowNode.node.children.length > 0"
+                        class="font-bold text-orange-600">
+                        {{ rowData.totalStandard | number:'1.0-0' }}
+                    </span>
+                    <i *ngIf="(!rowNode.node.children || rowNode.node.children.length === 0) && rowData.includedInPackage?.standard"
+                        class="pi pi-check text-green-500 text-xl font-bold"></i>
+                </td>
+
+                <td *ngIf="rowData.type !== 'group'" class="text-center">
+                    <span *ngIf="rowNode.node.children && rowNode.node.children.length > 0"
+                        class="font-bold text-purple-600">
+                        {{ rowData.totalPro | number:'1.0-0' }}
+                    </span>
+                    <i *ngIf="(!rowNode.node.children || rowNode.node.children.length === 0) && rowData.includedInPackage?.pro"
+                        class="pi pi-check text-green-500 text-xl font-bold"></i>
+                </td>
+
+                <td *ngIf="rowData.type !== 'group'">
+                    <div class="flex flex-wrap gap-1 justify-content-center"
+                        *ngIf="rowData.attachments && rowData.attachments.length > 0">
+                        <ng-container *ngFor="let file of rowData.attachments">
+                            <button pButton class="p-button-rounded p-button-outlined p-button-sm w-2rem h-2rem p-0"
+                                [icon]="file.fileType === 'word' ? 'pi pi-file-word' : (file.fileType === 'pdf' ? 'pi pi-file-pdf' : (file.fileType === 'excel' ? 'pi pi-file-excel' : 'pi pi-file'))"
+                                [class.p-button-info]="file.fileType === 'word'"
+                                [class.p-button-danger]="file.fileType === 'pdf'"
+                                [class.p-button-success]="file.fileType === 'excel'" [pTooltip]="file.fileName"
+                                tooltipPosition="top"
+                                (click)="downloadFile(file.fileId, file.fileName); $event.stopPropagation()">
+                            </button>
+                        </ng-container>
+                    </div>
+                </td>
+
+                <td class="text-center" *ngIf="rowData.type !== 'group'">
+                    <a *ngIf="rowData.youtubeUrl" [href]="rowData.youtubeUrl" target="_blank">
+                        <i class="pi pi-youtube text-red-500 text-xl"></i>
+                    </a>
+                </td>
+
+                <td *ngIf="rowData.type !== 'group'" class="text-center">
+                    <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning mr-2"
+                        pTooltip="Chỉnh sửa" tooltipPosition="top"
+                        (click)="openEditDialog(rowData); $event.stopPropagation()">
+                    </button>
+                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger"
+                        pTooltip="Xóa" (click)="onDelete(rowData); $event.stopPropagation()">
+                    </button>
+                </td>
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <tr class="surface-100">
+                <td colspan="2" class="text-right font-bold text-xl text-600 p-3">
+                    TỔNG CỘNG:
+                </td>
+
+                <td class="text-center">
+                    <span class="text-blue-600 font-bold ">
+                        {{ grandTotalBasic | number:'1.0-0' }}
+                    </span>
+                </td>
+
+                <td class="text-center">
+                    <span class="text-orange-600 font-bold">
+                        {{ grandTotalStandard | number:'1.0-0' }}
+                    </span>
+                </td>
+
+                <td class="text-center">
+                    <span class="text-purple-600 font-bold">
+                        {{ grandTotalPro | number:'1.0-0' }}
+                    </span>
+                </td>
+
+                <td colspan="3"></td>
+            </tr>
+        </ng-template>
+
+
+        <p-treeTable [value]="treeData" [tableStyle]="{'min-width': '60rem'}">
+
+            <ng-template pTemplate="header"> ... </ng-template>
+
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData"> ... </ng-template>
+        </p-treeTable>
+    </p-treeTable>
+</div>
+
+<p-dialog [(visible)]="displayDialog" [modal]="true" [style]="{width: '80vw', height: '85vh'}" [maximizable]="true"
+    [draggable]="false" [resizable]="false">
+
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+            <i class="pi pi-info-circle text-primary text-xl"></i>
+            <span class="font-bold text-primary text-xl">Chi tiết tính năng</span>
+        </div>
+    </ng-template>
+
+    <div *ngIf="selectedFeature" class="p-fluid">
+
+        <div class="grid p-2 border-bottom-1 surface-border">
+            <div class="col-12 mb-2 font-bold text-xl text-primary">
+                {{ selectedFeature.name }}
+            </div>
+        </div>
+
+        <div class="grid p-2 mt-2" *ngIf="selectedFeature.type === 'feature'">
+            <div class="col-12 md:col-6">
+                <label class="font-bold block mb-1">Đơn giá</label>
+                <div class="text-primary-600 font-bold text-lg">{{ selectedFeature.detailPrice | number:'1.0-0' }} đ
+                </div>
+            </div>
+            <div class="col-12 md:col-6" *ngIf="selectedFeature.type === 'feature'">
+                <label class="font-bold block mb-1">Gói hỗ trợ</label>
+                <div class="flex gap-2">
+                    <span *ngIf="selectedFeature.includedInPackage?.basic" class="p-tag">Basic</span>
+                    <span *ngIf="selectedFeature.includedInPackage?.standard"
+                        class="p-tag severity-warning">Standard</span>
+                    <span *ngIf="selectedFeature.includedInPackage?.pro" class="p-tag severity-success">Pro</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid p-2 mt-2 surface-50 border-round" *ngIf="selectedFeature.type !== 'feature'">
+            <div class="col-12 font-bold mb-2 ">Đơn giá các gói</div>
+            <div class="col-4 text-center">
+                <div class="text-blue-600 font-bold text-xl mb-2">{{ selectedFeature.totalBasic | number:'1.0-0' }}
+                </div>
+                <span class="p-tag">Basic</span>
+            </div>
+            <div class="col-4 text-center">
+                <div class="text-orange-600 font-bold text-xl mb-2">{{ selectedFeature.totalStandard | number:'1.0-0' }}
+                </div>
+                <span class="p-tag">Standard</span>
+            </div>
+            <div class="col-4 text-center">
+                <div class="text-purple-600 font-bold text-xl mb-2">{{ selectedFeature.totalPro | number:'1.0-0' }}
+                </div>
+                <span class="p-tag">Pro</span>
+            </div>
+        </div>
+
+        <div class="grid p-2 mt-3">
+            <div class="col-12 mb-3" *ngIf="selectedFeature.featureDescription">
+                <label class="font-bold block mb-1">Mô tả chức năng</label>
+                <div class="p-2 surface-100 border-round" style="white-space: pre-wrap;">{{
+                    selectedFeature.featureDescription }}</div>
+            </div>
+
+            <div class="col-12" *ngIf="selectedFeature.devNote">
+                <label class="font-bold block mb-1">Ghi chú Dev</label>
+                <p class="surface-50 p-2 border-round">{{ selectedFeature.devNote }}</p>
+            </div>
+            <div class="col-12" *ngIf="selectedFeature.saleNote">
+                <label class="font-bold block mb-1">Ghi chú Sale</label>
+                <p class="surface-50 p-2 border-round">{{ selectedFeature.saleNote }}</p>
+            </div>
+            <div class="col-12" *ngIf="selectedFeature.supNote">
+                <label class="font-bold block mb-1">Ghi chú Support</label>
+                <p class="surface-50 p-2 border-round">{{ selectedFeature.supNote }}</p>
+            </div>
+        </div>
+
+        <div class="grid p-2 mt-2 border-top-1 surface-border"
+            *ngIf="(selectedFeature.attachments && selectedFeature.attachments.length > 0) || selectedFeature.youtubeUrl">
+            <div class="col-12 font-bold mb-2">Tài liệu đính kèm:</div>
+            <div class="col-12 flex flex-wrap gap-3">
+                <a *ngIf="selectedFeature.youtubeUrl" [href]="selectedFeature.youtubeUrl" target="_blank" pButton
+                    class="p-button-outlined p-button-danger" icon="pi pi-youtube" label="Youtube"></a>
+
+                <ng-container *ngFor="let file of selectedFeature.attachments">
+                    <button pButton type="button"
+                        [icon]="file.fileType === 'word' ? 'pi pi-file-word' : (file.fileType === 'pdf' ? 'pi pi-file-pdf' : 'pi pi-file')"
+                        [label]="file.fileName" class="p-button-outlined"
+                        [class.p-button-info]="file.fileType === 'word'"
+                        [class.p-button-danger]="file.fileType === 'pdf'"
+                        (click)="downloadFile(file.fileId, file.fileName)">
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton icon="pi pi-check" (click)="displayDialog=false" label="Đóng" class="p-button-text"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="dialogFormVisible" [style]="{width: '80vw', height: '85vh'}" [header]="dialogHeader"
+    [modal]="true" styleClass="p-fluid" [draggable]="false" [resizable]="false">
+
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+            <i class="pi pi-info-circle text-primary text-xl"></i>
+            <span class="font-bold text-primary text-xl">{{dialogHeader}}</span>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label class="font-bold">Loại</label>
+            <p-dropdown [options]="featureTypes" [(ngModel)]="formData.type" (onChange)="onTypeChange()"
+                [disabled]="isEditMode"> </p-dropdown>
+        </div>
+
+        <div class="field" *ngIf="formData.type !== 'group'">
+            <label class="font-bold">Thuộc về (Nhóm/Module cha) <span class="text-red-500">*</span></label>
+            <p-dropdown [options]="parentOptions" [(ngModel)]="formData.parentId" placeholder="Chọn cấp cha..."
+                [filter]="true" filterBy="label" [showClear]="true">
+            </p-dropdown>
+        </div>
+
+        <div class="field">
+            <label class="font-bold">Tên hiển thị <span class="text-red-500">*</span></label>
+            <textarea pInputTextarea [(ngModel)]="formData.name" rows="4"></textarea>
+            <!-- <input type="text" pInputText [(ngModel)]="formData.name" /> -->
+        </div>
+
+        <ng-container *ngIf="formData.type !== 'group'">
+
+            <div class="field">
+                <label class="font-bold">Youtube URL</label>
+                <input type="text" pInputText [(ngModel)]="formData.youtubeUrl" />
+            </div>
+
+            <div class="field">
+                <label class="font-bold">Mô tả chức năng</label>
+                <textarea pInputTextarea [(ngModel)]="formData.featureDescription" rows="10"></textarea>
+            </div>
+
+            <div class="formgrid grid border-top-1 surface-border pt-3 mt-3" *ngIf="formData.type !== 'group'">
+                <div class="col-12 font-bold mb-3 text-primary">Cấu hình giá</div>
+
+                <div class="field col-12 md:col-6">
+                    <label class="font-bold">Đơn giá</label>
+                    <p-inputNumber [(ngModel)]="formData.detailPrice" mode="currency" currency="VND"
+                        locale="vi-VN"></p-inputNumber>
+                </div>
+
+                <div class="field col-12">
+                    <label class="font-bold">Gói hỗ trợ</label>
+                    <div class="flex gap-4 mt-2">
+                        <div class="field-checkbox">
+                            <p-checkbox [(ngModel)]="formData.includedInPackage!.basic" [binary]="true"
+                                inputId="pkBasic"></p-checkbox>
+                            <label for="pkBasic">Basic</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <p-checkbox [(ngModel)]="formData.includedInPackage!.standard" [binary]="true"
+                                inputId="pkStandard"></p-checkbox>
+                            <label for="pkStandard">Standard</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <p-checkbox [(ngModel)]="formData.includedInPackage!.pro" [binary]="true"
+                                inputId="pkPro"></p-checkbox>
+                            <label for="pkPro">Pro</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p-tabView styleClass="mt-3">
+                <p-tabPanel header="Ghi chú Dev">
+                    <textarea pInputTextarea [(ngModel)]="formData.devNote" rows="10" class="w-full"></textarea>
+                </p-tabPanel>
+                <p-tabPanel header="Ghi chú Sale">
+                    <textarea pInputTextarea [(ngModel)]="formData.saleNote" rows="10" class="w-full"></textarea>
+                </p-tabPanel>
+                <p-tabPanel header="Ghi chú Support">
+                    <textarea pInputTextarea [(ngModel)]="formData.supNote" rows="10" class="w-full"></textarea>
+                </p-tabPanel>
+            </p-tabView>
+
+            <div class="field mt-3 border-top-1 surface-border pt-3">
+                <label class="font-bold block mb-2">Tài liệu đính kèm</label>
+
+                <div class="flex align-items-center gap-2 mb-3">
+                    <input type="file" #fileInput multiple style="display: none" (change)="onFilesSelected($event)">
+                    <button pButton type="button" label="Chọn tệp tin" icon="pi pi-upload" class="p-button-outlined"
+                        (click)="fileInput.click()"></button>
+                    <!-- <small class="text-500">Hỗ trợ: Word, PDF, Excel, Ảnh...</small> -->
+                </div>
+
+                <div *ngIf="uploadedFiles.length > 0" class="mb-3">
+                    <label class="text-sm font-bold text-green-700 block mb-1">File mới chọn:</label>
+                    <div class="flex flex-column gap-2">
+                        <div *ngFor="let file of uploadedFiles; let i = index"
+                            class="flex align-items-center justify-content-between p-2 surface-50 border-1 border-green-200 border-round">
+                            <div class="flex align-items-center gap-2 overflow-hidden">
+                                <i class="pi pi-file text-green-600"></i>
+                                <span class="text-sm text-overflow-ellipsis white-space-nowrap">{{file.name}}</span>
+                                <span class="text-xs text-500">({{ (file.size / 1024).toFixed(1) }} KB)</span>
+                            </div>
+                            <button pButton icon="pi pi-times"
+                                class="p-button-rounded p-button-text p-button-secondary p-button-sm flex-shrink-0"
+                                (click)="removeUploadedFile(i)"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="formData.attachments && formData.attachments.length > 0">
+                    <label class="text-sm font-bold text-700 block mb-1">File hiện tại:</label>
+                    <div class="flex flex-column gap-2">
+                        <div *ngFor="let file of formData.attachments"
+                            class="flex align-items-center justify-content-between p-2 surface-100 border-round">
+                            <div class="flex align-items-center gap-2 overflow-hidden">
+                                <i class="pi"
+                                    [ngClass]="{'pi-file-word text-blue-500': file.fileType==='word', 'pi-file-pdf text-red-500': file.fileType==='pdf', 'pi-file': file.fileType==='other'}"></i>
+                                <span class="text-sm text-overflow-ellipsis white-space-nowrap">{{file.fileName}}</span>
+                            </div>
+                            <div class="flex gap-1 flex-shrink-0">
+                                <button pButton icon="pi pi-download"
+                                    class="p-button-rounded p-button-text p-button-info p-button-sm"
+                                    (click)="downloadFile(file.fileId, file.fileName)"></button>
+                                <button pButton icon="pi pi-trash"
+                                    class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                                    (click)="markFileForDeletion(file.fileId)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </ng-container>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Hủy" icon="pi pi-times" class="p-button-text"
+            (click)="dialogFormVisible = false"></button>
+        <button pButton label="Lưu" icon="pi pi-check" class="p-button-primary" (click)="save()"></button>
+    </ng-template>
+
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast position="top-right"></p-toast>
