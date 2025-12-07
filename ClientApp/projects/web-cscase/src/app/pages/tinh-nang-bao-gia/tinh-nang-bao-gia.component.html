@@ -1,6 +1,6 @@
 <p-toolbar styleClass="mb-3">
     <ng-template pTemplate="left">
-        <h3>Tính năng hợp đồng</h3>
+        <h3>Chức năng hợp đồng</h3>
     </ng-template>
 
     <ng-template pTemplate="right">
@@ -296,27 +296,27 @@
 
                 <div class="field col-12 md:col-6">
                     <label class="font-bold">Đơn giá</label>
-                    <p-inputNumber [(ngModel)]="formData.detailPrice" mode="currency" currency="VND"
-                        locale="vi-VN"></p-inputNumber>
+                    <p-inputNumber [(ngModel)]="formData.detailPrice" mode="decimal" locale="vi-VN"
+                        [minFractionDigits]="0" [maxFractionDigits]="0"></p-inputNumber>
                 </div>
 
                 <div class="field col-12">
-                    <label class="font-bold">Gói hỗ trợ</label>
+                    <label class="font-bold">Gói hỗ trợ <span class="text-red-500">*</span></label>
                     <div class="flex gap-4 mt-2">
-                        <div class="field-checkbox">
-                            <p-checkbox [(ngModel)]="formData.includedInPackage!.basic" [binary]="true"
-                                inputId="pkBasic"></p-checkbox>
-                            <label for="pkBasic">Basic</label>
+                        <div class="field-radiobutton">
+                            <p-radioButton name="pkg" value="basic" [(ngModel)]="selectedPackageLevel"
+                                inputId="pkBasic"></p-radioButton>
+                            <label for="pkBasic" class="ml-2 cursor-pointer">Basic</label>
                         </div>
-                        <div class="field-checkbox">
-                            <p-checkbox [(ngModel)]="formData.includedInPackage!.standard" [binary]="true"
-                                inputId="pkStandard"></p-checkbox>
-                            <label for="pkStandard">Standard</label>
+                        <div class="field-radiobutton">
+                            <p-radioButton name="pkg" value="standard" [(ngModel)]="selectedPackageLevel"
+                                inputId="pkStandard"></p-radioButton>
+                            <label for="pkStandard" class="ml-2 cursor-pointer">Standard</label>
                         </div>
-                        <div class="field-checkbox">
-                            <p-checkbox [(ngModel)]="formData.includedInPackage!.pro" [binary]="true"
-                                inputId="pkPro"></p-checkbox>
-                            <label for="pkPro">Pro</label>
+                        <div class="field-radiobutton">
+                            <p-radioButton name="pkg" value="pro" [(ngModel)]="selectedPackageLevel"
+                                inputId="pkPro"></p-radioButton>
+                            <label for="pkPro" class="ml-2 cursor-pointer">Pro</label>
                         </div>
                     </div>
                 </div>

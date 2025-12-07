@@ -45,6 +45,10 @@ export class TinhNangBaoGiaComponent implements OnInit {
         { label: 'Module', value: 'module' },
         { label: 'Chức năng', value: 'feature' }
     ];
+
+    // Biến tạm để binding với Radio Button
+    selectedPackageLevel: string = '';
+
     parentOptions: SelectItem[] = [];
 
     // --- BIẾN QUẢN LÝ FILE (MỚI) ---
@@ -102,6 +106,9 @@ export class TinhNangBaoGiaComponent implements OnInit {
         this.isEditMode = false;
         this.formData = this.resetForm();
 
+        // Reset lựa chọn gói hỗ trợ
+        this.selectedPackageLevel = '';
+
         // Thiết lập loại và tiêu đề
         this.formData.type = type;
         this.dialogHeader = 'Thêm mới';
@@ -135,6 +142,18 @@ export class TinhNangBaoGiaComponent implements OnInit {
         }
         if (!this.formData.attachments) {
             this.formData.attachments = [];
+        }
+
+        // MAP DỮ LIỆU TỪ BOOLEAN SANG BIẾN STRING CHO RADIO BUTTON
+        this.selectedPackageLevel = '';
+        if (this.formData.includedInPackage) {
+            if (this.formData.includedInPackage.pro) {
+                this.selectedPackageLevel = 'pro';
+            } else if (this.formData.includedInPackage.standard) {
+                this.selectedPackageLevel = 'standard';
+            } else if (this.formData.includedInPackage.basic) {
+                this.selectedPackageLevel = 'basic';
+            }
         }
 
         this.updateParentOptions();
@@ -196,17 +215,20 @@ export class TinhNangBaoGiaComponent implements OnInit {
         }
 
         if (this.formData.type === 'feature') {
-            const pkg = this.formData.includedInPackage;
-
-            // Kiểm tra xem cả 3 cái đều là false (chưa check cái nào)
-            if (!pkg || (!pkg.basic && !pkg.standard && !pkg.pro)) {
+            if (!this.selectedPackageLevel) {
                 this.messageService.add({
                     severity: 'warn',
                     summary: 'Cảnh báo',
-                    detail: 'Vui lòng chọn ít nhất một gói hỗ trợ (Basic, Standard hoặc Pro)'
+                    detail: 'Vui lòng chọn một gói hỗ trợ (Basic, Standard hoặc Pro)'
                 });
                 return;
             }
+            this.formData.includedInPackage = { basic: false, standard: false, pro: false };
+
+            // Bật true cho gói được chọn
+            if (this.selectedPackageLevel === 'basic') this.formData.includedInPackage.basic = true;
+            if (this.selectedPackageLevel === 'standard') this.formData.includedInPackage.standard = true;
+            if (this.selectedPackageLevel === 'pro') this.formData.includedInPackage.pro = true;
         }
 
         // --- TẠO FORMDATA ---
@@ -344,13 +366,13 @@ export class TinhNangBaoGiaComponent implements OnInit {
         this.displayDialog = true;
     }
 
-    // --- HÀM XỬ LÝ CÂY VÀ TÍNH TOÁN (GIỮ NGUYÊN) ---
+    // --- HÀM XỬ LÝ CÂY VÀ TÍNH TOÁN ---
     buildTree(items: QuotationFeatureDTO[], parentId: number | null, prefix: string = ''): TreeNode[] {
 
-        // 1. Lấy danh sách các item thuộc cấp hiện tại (con của parentId)
+        // 1. Lấy danh sách các item thuộc cấp hiện tại
         const currentLevelItems = items.filter(i => {
-            if (parentId === null || parentId === -1) {
-                return i.parentId === null || i.parentId === -1;
+            if (parentId === null) {
+                return i.parentId === null;
             }
             return i.parentId === parentId;
         });
