@@ -36,9 +36,12 @@ namespace educlient.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
 
-            if (string.IsNullOrWhiteSpace(model.username.ToLower()) || string.IsNullOrWhiteSpace(model.password))
+            var username = model.username?.ToLower();
+
+            if (string.IsNullOrWhiteSpace(username)
+                || string.IsNullOrWhiteSpace(model.password))
             {
-                throw new ArgumentException("Username and password are required.");
+                return BadRequest("Username and password are required.");
             }
             try
             {

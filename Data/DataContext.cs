@@ -1,4 +1,4 @@
-using LiteDB;
+﻿using LiteDB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -25,8 +25,53 @@ namespace educlient.Data
         public DataContext(IConfiguration configuration)
         {
             this.configuration = configuration;
-            if (!Directory.Exists(dataDir)) Directory.CreateDirectory(dataDir);
-            MainDB = new LiteDatabase("data/main.db");
+
+            try
+            {
+                if (!Directory.Exists(dataDir))
+                {
+                    Directory.CreateDirectory(dataDir);
+                }
+
+                MainDB = new LiteDatabase(Path.Combine(dataDir, "main.db"));
+            }
+            catch (Exception ex)
+            {
+                // Nếu quá trình tạo thư mục hoặc mở Database bị lỗi, ghi log ra file
+                LogToFile(ex, "Loi khoi tao DataContext (Mo database LiteDB)");
+                throw; // Vẫn ném lỗi ra ngoài để ứng dụng biết là có lỗi
+            }
+        }
+
+        // Hàm hỗ trợ ghi log thủ công ra file
+        private void LogToFile(Exception ex, string context)
+        {
+            try
+            {
+                // Đảm bảo thư mục tồn tại trước khi ghi log
+                if (!Directory.Exists(dataDir))
+                {
+                    Directory.CreateDirectory(dataDir);
+                }
+
+                string logFilePath = Path.Combine(dataDir, "error_log.txt");
+                string logMessage = $@"
+====================================================================
+Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}
+Ngữ cảnh: {context}
+Message: {ex.Message}
+Inner Exception: {ex.InnerException?.Message}
+Stack Trace:
+{ex.StackTrace}
+====================================================================
+";
+                // AppendAllText sẽ tự tạo file nếu chưa có, hoặc ghi tiếp vào cuối file nếu đã có
+                File.AppendAllText(logFilePath, logMessage);
+            }
+            catch
+            {
+                // Không làm gì cả nếu việc ghi log cũng thất bại (tránh văng lỗi đè lỗi)
+            }
         }
 
         public ILiteStorage<string> FileStorage => MainDB.FileStorage;
@@ -38,7 +83,15 @@ namespace educlient.Data
 
         public ILiteCollection<T> Table<T>()
         {
-            return MainDB.GetCollection<T>();
+            try
+            {
+                return MainDB.GetCollection<T>();
+            }
+            catch (Exception ex)
+            {
+                LogToFile(ex, $"Loi khi truy van Table<{typeof(T).Name}>");
+                throw;
+            }
         }
 
     }

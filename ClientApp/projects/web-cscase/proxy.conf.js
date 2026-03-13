@@ -1,7 +1,7 @@
 const PROXY_CONFIG = [
   {
     context: ["/"],
-    // target: "https://cst.aqtech.vn",
+    // target: "https://vp.aqtech.edu.vn",
     target: "http://localhost:54383/",
     // target: "https://cst.aqtech.vn:4244/#/",
     secure: false,
